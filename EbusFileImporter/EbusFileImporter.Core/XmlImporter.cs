@@ -416,7 +416,7 @@ namespace EbusFileImporter.Core
                                             posTransDetail.id_PosTrans = latestPosTransID;
                                             break;
                                         case "2727":
-                                            transDetail.int2_Class = 5;
+                                            transDetail.int2_Class = 713;
                                             transDetail.int4_Revenue = (int)thisTrans.Element("Fare");
                                             transDetail.int4_NonRevenue = 0;
                                             transDetail.int2_TicketCount = 1;
