@@ -37,5 +37,9 @@ namespace EbusFileImporter.DataProvider
         public virtual DbSet<Tran> Trans { get; set; }
         public virtual DbSet<Staff> Staffs { get; set; }
         public virtual DbSet<Waybill> Waybills { get; set; }
+        public virtual DbSet<CashierDetail> CashierDetails { get; set; }
+        public virtual DbSet<CashierStaffESN> CashierStaffESNs { get; set; }
+        public virtual DbSet<CashierSigonSignoff> CashierSigonSignoffs { get; set; }
+        public virtual DbSet<Cashier> Cashiers { get; set; }
     }
 }

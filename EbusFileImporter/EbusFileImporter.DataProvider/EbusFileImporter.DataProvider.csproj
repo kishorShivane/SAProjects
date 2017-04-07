@@ -52,6 +52,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Cashier.cs">
+      <DependentUpon>EbusImporterDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CashierDetail.cs">
+      <DependentUpon>EbusImporterDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CashierSigonSignoff.cs">
+      <DependentUpon>EbusImporterDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CashierStaffESN.cs">
+      <DependentUpon>EbusImporterDB.tt</DependentUpon>
+    </Compile>
     <Compile Include="Duty.cs">
       <DependentUpon>EbusImporterDB.tt</DependentUpon>
     </Compile>

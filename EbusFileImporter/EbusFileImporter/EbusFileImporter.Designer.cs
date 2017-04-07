@@ -28,21 +28,69 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.lblProcessedCount = new System.Windows.Forms.Label();
+            this.lblErrorCount = new System.Windows.Forms.Label();
             this.SuspendLayout();
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(27, 41);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(63, 13);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "Processed :";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(55, 72);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(35, 13);
+            this.label2.TabIndex = 1;
+            this.label2.Text = "Error :";
+            // 
+            // lblProcessedCount
+            // 
+            this.lblProcessedCount.AutoSize = true;
+            this.lblProcessedCount.Location = new System.Drawing.Point(105, 41);
+            this.lblProcessedCount.Name = "lblProcessedCount";
+            this.lblProcessedCount.Size = new System.Drawing.Size(0, 13);
+            this.lblProcessedCount.TabIndex = 2;
+            // 
+            // lblErrorCount
+            // 
+            this.lblErrorCount.AutoSize = true;
+            this.lblErrorCount.Location = new System.Drawing.Point(105, 72);
+            this.lblErrorCount.Name = "lblErrorCount";
+            this.lblErrorCount.Size = new System.Drawing.Size(0, 13);
+            this.lblErrorCount.TabIndex = 3;
             // 
             // EbusFileImporter
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 262);
+            this.Controls.Add(this.lblErrorCount);
+            this.Controls.Add(this.lblProcessedCount);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.label1);
             this.Name = "EbusFileImporter";
             this.Text = "EbusFileImporter";
             this.Load += new System.EventHandler(this.EbusFileImporter_Load);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
+
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label lblProcessedCount;
+        private System.Windows.Forms.Label lblErrorCount;
     }
 }
 

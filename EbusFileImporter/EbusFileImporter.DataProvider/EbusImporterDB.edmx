@@ -4,7 +4,73 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="EbusImporterModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2005" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="EbusImporterModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2005" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Cashier">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="StaffNumber" Type="varchar" MaxLength="50" />
+          <Property Name="Date" Type="datetime" />
+          <Property Name="Time" Type="datetime" />
+          <Property Name="Revenue" Type="varchar" MaxLength="50" />
+          <Property Name="CashierID" Type="varchar" MaxLength="10" />
+          <Property Name="ImportDateTime" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="CashierDetail">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="StaffNumber" Type="varchar" MaxLength="50" />
+          <Property Name="SignOnDatTime" Type="datetime" />
+          <Property Name="SignOffDateTime" Type="datetime" />
+          <Property Name="Activity" Type="varchar" MaxLength="50" />
+          <Property Name="CashInType" Type="varchar" MaxLength="50" />
+          <Property Name="TransactionDateTime" Type="datetime" />
+          <Property Name="DriverTotal" Type="varchar" MaxLength="50" />
+          <Property Name="CashPaidIn" Type="varchar" MaxLength="50" />
+          <Property Name="Shorts" Type="varchar" MaxLength="50" />
+          <Property Name="NetTickets" Type="int" />
+          <Property Name="NetPasses" Type="int" />
+          <Property Name="CashInReceiptNo" Type="int" />
+          <Property Name="CashierID" Type="varchar" MaxLength="10" />
+          <Property Name="ImportDateTime" Type="datetime" />
+          <Property Name="Reason" Type="varchar" MaxLength="50" />
+          <Property Name="Overs" Type="varchar" MaxLength="50" />
+          <Property Name="Terminal" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="CashierSigonSignoff">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="StaffNumber" Type="varchar" MaxLength="50" />
+          <Property Name="SignOnDatTime" Type="datetime" />
+          <Property Name="SignOffDateTime" Type="datetime" />
+          <Property Name="Activity" Type="varchar" MaxLength="50" />
+          <Property Name="CashInType" Type="varchar" MaxLength="50" />
+          <Property Name="TransactionDateTime" Type="datetime" />
+          <Property Name="DriverTotal" Type="varchar" MaxLength="50" />
+          <Property Name="CashCollected" Type="varchar" MaxLength="50" />
+          <Property Name="Shorts" Type="varchar" MaxLength="50" />
+          <Property Name="NetTickets" Type="int" />
+          <Property Name="NetPasses" Type="int" />
+          <Property Name="WaybillNumber" Type="int" />
+          <Property Name="CashierID" Type="varchar" MaxLength="10" />
+          <Property Name="ImportDateTime" Type="datetime" />
+          <Property Name="Overs" Type="varchar" MaxLength="50" />
+          <Property Name="Terminal" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="CashierStaffESN">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ESN" Type="varchar" MaxLength="50" />
+          <Property Name="PSN" Type="bigint" />
+          <Property Name="ImportDateTime" Type="datetime" />
+        </EntityType>
         <EntityType Name="Duty">
           <Key>
             <PropertyRef Name="id_Duty" />
@@ -340,6 +406,10 @@ warning 6002: The table/view 'EbusImporter.dbo.Waybill' does not have a primary 
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="EbusImporterModelStoreContainer">
+          <EntitySet Name="Cashier" EntityType="Self.Cashier" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CashierDetail" EntityType="Self.CashierDetail" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CashierSigonSignoff" EntityType="Self.CashierSigonSignoff" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CashierStaffESN" EntityType="Self.CashierStaffESN" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Duty" EntityType="Self.Duty" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GPSRecord" EntityType="Self.GPSRecord" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Inspector" EntityType="Self.Inspector" Schema="dbo" store:Type="Tables" />
@@ -406,8 +476,7 @@ warning 6002: The table/view 'EbusImporter.dbo.Waybill' does not have a primary 
             <End Role="Trans" EntitySet="Trans" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="EbusImporterModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -789,7 +858,77 @@ warning 6002: The table/view 'EbusImporter.dbo.Waybill' does not have a primary 
             <End Role="Stage" EntitySet="Stages" />
             <End Role="Trans" EntitySet="Trans" />
           </AssociationSet>
+          <EntitySet Name="CashierDetails" EntityType="EbusImporterModel.CashierDetail" />
+          <EntitySet Name="CashierStaffESNs" EntityType="EbusImporterModel.CashierStaffESN" />
+          <EntitySet Name="CashierSigonSignoffs" EntityType="EbusImporterModel.CashierSigonSignoff" />
+          <EntitySet Name="Cashiers" EntityType="EbusImporterModel.Cashier" />
         </EntityContainer>
+        <EntityType Name="CashierDetail">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="StaffNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="SignOnDatTime" Type="DateTime" Precision="3" />
+          <Property Name="SignOffDateTime" Type="DateTime" Precision="3" />
+          <Property Name="Activity" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CashInType" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="TransactionDateTime" Type="DateTime" Precision="3" />
+          <Property Name="DriverTotal" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CashPaidIn" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Shorts" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="NetTickets" Type="Int32" />
+          <Property Name="NetPasses" Type="Int32" />
+          <Property Name="CashInReceiptNo" Type="Int32" />
+          <Property Name="CashierID" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="ImportDateTime" Type="DateTime" Precision="3" />
+          <Property Name="Reason" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Overs" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Terminal" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="CashierStaffESN">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ESN" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="PSN" Type="Int64" />
+          <Property Name="ImportDateTime" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="CashierSigonSignoff">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="StaffNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="SignOnDatTime" Type="DateTime" Precision="3" />
+          <Property Name="SignOffDateTime" Type="DateTime" Precision="3" />
+          <Property Name="Activity" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CashInType" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="TransactionDateTime" Type="DateTime" Precision="3" />
+          <Property Name="DriverTotal" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CashCollected" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Shorts" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="NetTickets" Type="Int32" />
+          <Property Name="NetPasses" Type="Int32" />
+          <Property Name="WaybillNumber" Type="Int32" />
+          <Property Name="CashierID" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="ImportDateTime" Type="DateTime" Precision="3" />
+          <Property Name="Overs" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Terminal" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Cashier">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="StaffNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Date" Type="DateTime" Precision="3" />
+          <Property Name="Time" Type="DateTime" Precision="3" />
+          <Property Name="Revenue" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CashierID" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="ImportDateTime" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1045,6 +1184,76 @@ warning 6002: The table/view 'EbusImporter.dbo.Waybill' does not have a primary 
                 <ScalarProperty Name="Imported_ETMID" ColumnName="Imported_ETMID" />
                 <ScalarProperty Name="Imported_GT" ColumnName="Imported_GT" />
                 <ScalarProperty Name="Imported_Revenue" ColumnName="Imported_Revenue" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CashierDetails">
+            <EntityTypeMapping TypeName="EbusImporterModel.CashierDetail">
+              <MappingFragment StoreEntitySet="CashierDetail">
+                <ScalarProperty Name="Terminal" ColumnName="Terminal" />
+                <ScalarProperty Name="Overs" ColumnName="Overs" />
+                <ScalarProperty Name="Reason" ColumnName="Reason" />
+                <ScalarProperty Name="ImportDateTime" ColumnName="ImportDateTime" />
+                <ScalarProperty Name="CashierID" ColumnName="CashierID" />
+                <ScalarProperty Name="CashInReceiptNo" ColumnName="CashInReceiptNo" />
+                <ScalarProperty Name="NetPasses" ColumnName="NetPasses" />
+                <ScalarProperty Name="NetTickets" ColumnName="NetTickets" />
+                <ScalarProperty Name="Shorts" ColumnName="Shorts" />
+                <ScalarProperty Name="CashPaidIn" ColumnName="CashPaidIn" />
+                <ScalarProperty Name="DriverTotal" ColumnName="DriverTotal" />
+                <ScalarProperty Name="TransactionDateTime" ColumnName="TransactionDateTime" />
+                <ScalarProperty Name="CashInType" ColumnName="CashInType" />
+                <ScalarProperty Name="Activity" ColumnName="Activity" />
+                <ScalarProperty Name="SignOffDateTime" ColumnName="SignOffDateTime" />
+                <ScalarProperty Name="SignOnDatTime" ColumnName="SignOnDatTime" />
+                <ScalarProperty Name="StaffNumber" ColumnName="StaffNumber" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CashierStaffESNs">
+            <EntityTypeMapping TypeName="EbusImporterModel.CashierStaffESN">
+              <MappingFragment StoreEntitySet="CashierStaffESN">
+                <ScalarProperty Name="ImportDateTime" ColumnName="ImportDateTime" />
+                <ScalarProperty Name="PSN" ColumnName="PSN" />
+                <ScalarProperty Name="ESN" ColumnName="ESN" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CashierSigonSignoffs">
+            <EntityTypeMapping TypeName="EbusImporterModel.CashierSigonSignoff">
+              <MappingFragment StoreEntitySet="CashierSigonSignoff">
+                <ScalarProperty Name="Terminal" ColumnName="Terminal" />
+                <ScalarProperty Name="Overs" ColumnName="Overs" />
+                <ScalarProperty Name="ImportDateTime" ColumnName="ImportDateTime" />
+                <ScalarProperty Name="CashierID" ColumnName="CashierID" />
+                <ScalarProperty Name="WaybillNumber" ColumnName="WaybillNumber" />
+                <ScalarProperty Name="NetPasses" ColumnName="NetPasses" />
+                <ScalarProperty Name="NetTickets" ColumnName="NetTickets" />
+                <ScalarProperty Name="Shorts" ColumnName="Shorts" />
+                <ScalarProperty Name="CashCollected" ColumnName="CashCollected" />
+                <ScalarProperty Name="DriverTotal" ColumnName="DriverTotal" />
+                <ScalarProperty Name="TransactionDateTime" ColumnName="TransactionDateTime" />
+                <ScalarProperty Name="CashInType" ColumnName="CashInType" />
+                <ScalarProperty Name="Activity" ColumnName="Activity" />
+                <ScalarProperty Name="SignOffDateTime" ColumnName="SignOffDateTime" />
+                <ScalarProperty Name="SignOnDatTime" ColumnName="SignOnDatTime" />
+                <ScalarProperty Name="StaffNumber" ColumnName="StaffNumber" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Cashiers">
+            <EntityTypeMapping TypeName="EbusImporterModel.Cashier">
+              <MappingFragment StoreEntitySet="Cashier">
+                <ScalarProperty Name="ImportDateTime" ColumnName="ImportDateTime" />
+                <ScalarProperty Name="CashierID" ColumnName="CashierID" />
+                <ScalarProperty Name="Revenue" ColumnName="Revenue" />
+                <ScalarProperty Name="Time" ColumnName="Time" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="StaffNumber" ColumnName="StaffNumber" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

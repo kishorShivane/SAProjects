@@ -97,7 +97,7 @@ namespace EbusFileImporter.Core.Helpers
                 //Declarations
                 string path = currentpath;
                 string file = Path.GetFileName(currentpath);
-                string path2 = dbname + @"\" + @"Duplicate\" + file;
+                string path2 = ConfigurationManager.AppSettings["FilePath"] + @"\" + dbname + @"\" + @"Duplicate\" + file;
 
                 //Checks if files exists and deletes if they do
                 if (File.Exists(path2))
@@ -127,8 +127,8 @@ namespace EbusFileImporter.Core.Helpers
                 string path = currentpath;
                 string file = Path.GetFileName(currentpath);
 
-                string dirPath1 = dbname + @"\" + @"Out\" + DateTime.Now.Year + @"\" + "0" + DateTime.Now.Month + @"\" + DateTime.Now.Day;
-                string path2 = dbname + @"\" + @"Out\" + DateTime.Now.Year + @"\" + "0" + DateTime.Now.Month + @"\" + DateTime.Now.Day + @"\" + file;
+                string dirPath1 = ConfigurationManager.AppSettings["FilePath"] + @"\" + dbname + @"\" + @"Out\" + DateTime.Now.Year + @"\" + "0" + DateTime.Now.Month + @"\" + DateTime.Now.Day;
+                string path2 = dirPath1 + @"\" + file;
 
                 //Checks directory or create it
                 if (!Directory.Exists(dirPath1))
@@ -208,6 +208,28 @@ namespace EbusFileImporter.Core.Helpers
                 result = Convert.ToInt32(revenueBalance);
             }
             return result;
+        }
+
+        public List<string> DirSearch(string sDir)
+        {
+            List<string> files = new List<string>();
+            try
+            {
+                foreach (string f in Directory.GetFiles(sDir))
+                {
+                    files.Add(sDir + @"\" + f);
+                }
+                foreach (string d in Directory.GetDirectories(sDir))
+                {
+                    files.AddRange(DirSearch(d));
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return files;
         }
     }
 }
