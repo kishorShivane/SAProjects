@@ -21,14 +21,14 @@ namespace EbusFileImporter.Core.Helpers
 
         public void SendMail(string fileName, string customer, string exception, EmailType type)
         {
+            string body = "";
             try
             {
                 System.Net.Mail.MailMessage mail = new System.Net.Mail.MailMessage();
-                var toMail = ConfigurationManager.AppSettings["ToMail"];
+                var toMail = Constants.ToEmail;
                 mail.To.Add(toMail);
 
                 mail.IsBodyHtml = true;
-                string body = "";
                 using (StreamReader reader = new StreamReader("C:\\eBusSuppliesTGX150AuditFiles\\EmailTemplate.html"))
                 {
                     body = reader.ReadToEnd();
@@ -61,7 +61,9 @@ namespace EbusFileImporter.Core.Helpers
             }
             catch (Exception)
             {
-                throw;
+                Log.Error("Email Sending failed");
+                Log.Info("Email Body: " + body);
+                return;
             }
         }
 

@@ -1,4 +1,8 @@
-﻿using EbusFileImporter.Core.Helpers;
+﻿using EbusFileImporter.App.Helpers;
+using EbusFileImporter.Core;
+using EbusFileImporter.Core.Helpers;
+using EbusFileImporter.Core.Interfaces;
+using EbusFileImporter.Helpers;
 using EbusFileImporter.Logger;
 using EbusFileImporter.Monitors;
 using System;
@@ -18,10 +22,12 @@ namespace EbusFileImporter.App
     {
         static ILogService logger = null;
         Helper helper = null;
+        IImporter importerEngine;
+        BackgroundWorker worker;
         public EbusFileImporter()
         {
             InitializeComponent();
-            logger = new FileLogService(ConfigurationManager.AppSettings["LogPath"]);
+            logger = new FileLogService(Constants.LogPath);
             helper = new Helper(logger);
         }
 
@@ -29,12 +35,60 @@ namespace EbusFileImporter.App
         {
             try
             {
-                DirectoryMonitor dirMonitor = new DirectoryMonitor("C:\\eBusSuppliesTGX150AuditFiles\\Incoming", logger);
+                worker = new BackgroundWorker();
+                worker.DoWork += new DoWorkEventHandler(StartProcess);
+                worker.RunWorkerAsync();
                 InitializeRefreshTimer();
+                //DirectoryMonitor dirMonitor = new DirectoryMonitor(Constants.DirectoryPath, logger);
+                //InitializeRefreshTimer(); 
             }
             catch (Exception ex)
             {
+                logger.Error("Failed in Form Load");
                 throw ex;
+            }
+        }
+
+        private void StartProcess(object sender, EventArgs e)
+        {
+            while (true)
+            {
+                #region logTrigger
+                var files = helper.DirSearch(Constants.DirectoryPath);
+                if (files.Any())
+                {
+                    files.ForEach(x =>
+                    {
+                        var splitPath = x.Replace("\\\\", "\\").Split('\\');
+
+                        if (splitPath.Length >= 5)
+                        {
+                            switch (splitPath[4])
+                            {
+                                case "In":
+                                    if (AppHelper.IsXmlFile(x))
+                                    {
+                                        logger.Info("Processing: XML file found - Start");
+                                        importerEngine = new XmlImporter(logger);
+                                        importerEngine.ProcessFile(x);
+                                        logger.Info("Processing: XML file found - End");
+                                    }
+                                    else
+                                    {
+                                        logger.Info("Processing: CSV file found - Start");
+                                        importerEngine = new CsvImporter(logger);
+                                        importerEngine.ProcessFile(x);
+                                        logger.Info("Processing: XML file found - End");
+                                    }
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                    });
+                }
+
+                #endregion
             }
         }
 
@@ -52,29 +106,27 @@ namespace EbusFileImporter.App
         {
             var error = 0;
             var processed = 0;
-            var files = helper.DirSearch(ConfigurationManager.AppSettings["FilePath"]);
+            var files = helper.DirSearch(Constants.DirectoryPath);
             if (files.Any())
             {
                 files.ForEach(x =>
                 {
                     var splitPath = x.Replace("\\\\", "\\").Split('\\');
-                    if (Helpers.Helper.IsXmlFile(x))
+                    if (splitPath.Length >= 5)
                     {
-                        if (splitPath.Length >= 5)
+                        switch (splitPath[4])
                         {
-                            switch (splitPath[4])
-                            {
-                                case "Error":
-                                    error++;
-                                    break;
-                                case "Out":
-                                    processed++;
-                                    break;
-                                default:
-                                    break;
-                            }
+                            case "Error":
+                                error++;
+                                break;
+                            case "Out":
+                                processed++;
+                                break;
+                            default:
+                                break;
                         }
                     }
+
                 });
             }
             lblProcessedCount.Text = processed.ToString();

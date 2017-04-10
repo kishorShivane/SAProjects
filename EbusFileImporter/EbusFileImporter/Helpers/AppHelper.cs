@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace EbusFileImporter.Helpers
 {
-    public class Helper
+    public class AppHelper
     {
-
         public static bool IsXmlFile(string strToCheck)
         {
             bool result = false;

@@ -31,16 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
@@ -52,95 +45,36 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Cashier.cs">
-      <DependentUpon>EbusImporterDB.tt</DependentUpon>
-    </Compile>
-    <Compile Include="CashierDetail.cs">
-      <DependentUpon>EbusImporterDB.tt</DependentUpon>
-    </Compile>
-    <Compile Include="CashierSigonSignoff.cs">
-      <DependentUpon>EbusImporterDB.tt</DependentUpon>
-    </Compile>
-    <Compile Include="CashierStaffESN.cs">
-      <DependentUpon>EbusImporterDB.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Duty.cs">
-      <DependentUpon>EbusImporterDB.tt</DependentUpon>
-    </Compile>
-    <Compile Include="EbusImporterDB.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>EbusImporterDB.Context.tt</DependentUpon>
-    </Compile>
-    <Compile Include="EbusImporterDB.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>EbusImporterDB.tt</DependentUpon>
-    </Compile>
-    <Compile Include="EbusImporterDB.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>EbusImporterDB.edmx</DependentUpon>
-    </Compile>
-    <Compile Include="GPSRecord.cs">
-      <DependentUpon>EbusImporterDB.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Inspector.cs">
-      <DependentUpon>EbusImporterDB.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Journey.cs">
-      <DependentUpon>EbusImporterDB.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Module.cs">
-      <DependentUpon>EbusImporterDB.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Module1.cs">
-      <DependentUpon>EbusImporterDB.tt</DependentUpon>
-    </Compile>
-    <Compile Include="PosTran.cs">
-      <DependentUpon>EbusImporterDB.tt</DependentUpon>
-    </Compile>
+    <Compile Include="DbHelper.cs" />
+    <Compile Include="DBService.cs" />
+    <Compile Include="Models\Cashier.cs" />
+    <Compile Include="Models\CashierDetail.cs" />
+    <Compile Include="Models\CashierSignonSignoff.cs" />
+    <Compile Include="Models\CashierStaffESN.cs" />
+    <Compile Include="Models\CsvDataToImport.cs" />
+    <Compile Include="Models\Duty.cs" />
+    <Compile Include="Models\Inspector.cs" />
+    <Compile Include="Models\Journey.cs" />
+    <Compile Include="Models\Module.cs" />
+    <Compile Include="Models\PosTrans.cs" />
+    <Compile Include="Models\Staff.cs" />
+    <Compile Include="Models\Stage.cs" />
+    <Compile Include="Models\Trans.cs" />
+    <Compile Include="Models\Waybill.cs" />
+    <Compile Include="Models\XmlDataToImport.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Staff.cs">
-      <DependentUpon>EbusImporterDB.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Stage.cs">
-      <DependentUpon>EbusImporterDB.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Tran.cs">
-      <DependentUpon>EbusImporterDB.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Waybill.cs">
-      <DependentUpon>EbusImporterDB.tt</DependentUpon>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <EntityDeploy Include="EbusImporterDB.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>EbusImporterDB.Designer.cs</LastGenOutput>
-    </EntityDeploy>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.Config" />
-    <None Include="EbusImporterDB.edmx.diagram">
-      <DependentUpon>EbusImporterDB.edmx</DependentUpon>
-    </None>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="EbusImporterDB.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>EbusImporterDB.edmx</DependentUpon>
-      <LastGenOutput>EbusImporterDB.Context.cs</LastGenOutput>
-    </Content>
-    <Content Include="EbusImporterDB.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>EbusImporterDB.edmx</DependentUpon>
-      <LastGenOutput>EbusImporterDB.cs</LastGenOutput>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\EbusFileImporter.Logger\EbusFileImporter.Logger.csproj">
+      <Project>{74FB6FE1-CCD7-47B8-A785-1A2DFC7DAE1B}</Project>
+      <Name>EbusFileImporter.Logger</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

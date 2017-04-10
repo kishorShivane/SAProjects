@@ -1,12 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using EbusFileImporter.Helpers;
-using EbusFileImporter.Enums;
 using EbusFileImporter.Core;
 using EbusFileImporter.Core.Interfaces;
 using EbusFileImporter.Logger;
@@ -33,15 +27,19 @@ namespace EbusFileImporter.Monitors
 
         private void FileCreated(Object sender, FileSystemEventArgs e)
         {
-            if (Helper.IsXmlFile(e.Name))
+            if (AppHelper.IsXmlFile(e.Name))
             {
-                logService.Info("Processing: XML file found");
+                logService.Info("Processing: XML file found - Start");
                 importerEngine = new XmlImporter(logService);
                 importerEngine.ProcessFile(e.FullPath);
+                logService.Info("Processing: XML file found - End");
             }
             else
             {
-                //ProcessFile(e.FullPath, FileType.CSV);
+                logService.Info("Processing: CSV file found - Start");
+                importerEngine = new CsvImporter(logService);
+                importerEngine.ProcessFile(e.FullPath);
+                logService.Info("Processing: XML file found - End");
             }
         }
     }
