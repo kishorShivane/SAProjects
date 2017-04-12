@@ -166,7 +166,7 @@ namespace EbusFileImporter.Core
                     string newTransactionDateTime = temp5 + " " + temp6;
                     string myTransactionDate = DateTime.ParseExact(newTransactionDateTime, "ddMMyyyy HHmmss", null).ToString("dd-MM-yyyy HH:mm:ss");
 
-                    if (!dbService.DoesRecordExist("CashierStaffESN", "ESN", esn, dbName))
+                    if (!dbService.DoesRecordExist("CashierStaffESN", "ESN", esn, dbName) && !cashierStaffESNDetails.Where(i=>i.ESN.Equals(esn)).Any())
                     {
                         cashierStaffESNDetails.Add(new CashierStaffESN()
                         {

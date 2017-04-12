@@ -103,7 +103,7 @@ namespace EbusFileImporter.DataProvider
 
         public int GetLatestIDUsed(string tableName, string keyField, string connectionKey)
         {
-            var result = 1;
+            var result = 0;
             SqlConnection con = null;
             SqlCommand cmd = null;
             try
@@ -134,7 +134,7 @@ namespace EbusFileImporter.DataProvider
                 con.Dispose();
                 cmd.Dispose();
             }
-            return result;
+            return ++result;
         }
 
         public bool InsertXmlFileData(XmlDataToImport xmlDataToImport, string connectionKey)

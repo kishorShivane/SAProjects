@@ -70,16 +70,15 @@ namespace EbusFileImporter.App
                                     {
                                         logger.Info("Processing: XML file found - Start");
                                         importerEngine = new XmlImporter(logger);
-                                        importerEngine.ProcessFile(x);
                                         logger.Info("Processing: XML file found - End");
                                     }
                                     else
                                     {
                                         logger.Info("Processing: CSV file found - Start");
                                         importerEngine = new CsvImporter(logger);
-                                        importerEngine.ProcessFile(x);
                                         logger.Info("Processing: XML file found - End");
                                     }
+                                    importerEngine.ProcessFile(x);
                                     break;
                                 default:
                                     break;
