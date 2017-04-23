@@ -25,39 +25,48 @@ namespace EbusFileImporter.Core.Helpers
             try
             {
                 System.Net.Mail.MailMessage mail = new System.Net.Mail.MailMessage();
-                var toMail = Constants.ToEmail;
-                mail.To.Add(toMail);
+                var emailTolist = Constants.ToEmail;
+                foreach (var id in emailTolist.Split(';'))
+                {
+                    mail.To.Add(id);
+                }
 
                 mail.IsBodyHtml = true;
-                using (StreamReader reader = new StreamReader("C:\\eBusSuppliesTGX150AuditFiles\\EmailTemplate.html"))
+                using (StreamReader reader = new StreamReader(Constants.EmailTemplate + "EmailTemplate.html"))
                 {
                     body = reader.ReadToEnd();
                 }
+
                 var message = GetMessageByEmailType(type);
                 string file = Path.GetFileName(fileName);
+
                 body = body.Replace("[*FileName*]", file);
                 body = body.Replace("[*ClientName*]", customer);
-                body = body.Replace("[*Error*]", exception);
+                if (type == EmailType.Error)
+                {
+                    body = body.Replace("[*Error*]", "Error Message: <div style='color:red'>" + exception + "</div>");
+                    mail.Subject = Constants.ErrorEmailSubject;
+                }
+                else
+                {
+                    body = body.Replace("[*Error*]", "");
+                    mail.Subject = Constants.DuplicateEmailSubject;
+                }
                 body = body.Replace("[*Message*]", message);
-                MailAddress address = new MailAddress("lourens@ebussupplies.co.za");
-                mail.From = address;
-                mail.Subject = "Ebus Import Error";
+
+                mail.From = new MailAddress(Constants.FromEmail);
                 mail.Body = body;
                 mail.IsBodyHtml = true;
-                SmtpClient client = new SmtpClient();
-                client.DeliveryMethod = SmtpDeliveryMethod.Network;
-                client.EnableSsl = false;
-                client.Host = "mail.ebussupplies.co.za";
-                client.Port = 25;
 
-                //Setup credentials to login to our sender email address ("UserName", "Password")
-                NetworkCredential credentials = new NetworkCredential("lourens@ebussupplies.co.za", "ebus0117836833");
+                SmtpClient client = new SmtpClient();
+                client.Credentials = new NetworkCredential(Constants.EmailUserName, Constants.EbusPassword);
                 client.UseDefaultCredentials = true;
-                client.Credentials = credentials;
+                client.Host = Constants.Host;
+                client.Port = Constants.Port;
+                client.DeliveryMethod = SmtpDeliveryMethod.Network;
 
                 //Send the msg
                 client.Send(mail);
-                Log.Info(message);
             }
             catch (Exception)
             {

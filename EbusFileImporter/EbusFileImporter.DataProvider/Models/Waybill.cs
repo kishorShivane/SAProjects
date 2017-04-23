@@ -9,6 +9,7 @@ namespace EbusFileImporter.DataProvider.Models
     public partial class Waybill
     {
         public int ModuleID { get; set; }
+        public int id_Module { get; set; }  
         public Nullable<System.DateTime> dat_Start { get; set; }
         public Nullable<System.DateTime> dat_End { get; set; }
         public Nullable<int> int4_Operator { get; set; }

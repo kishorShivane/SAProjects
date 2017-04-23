@@ -66,6 +66,42 @@ namespace EbusFileImporter.DataProvider
             return result;
         }
 
+        public bool DoesCashierRecordExist(string employee, string revenue, DateTime dateTime,string cashierID, string connectionKey)
+        {
+            var result = false;
+            SqlConnection con = null;
+            SqlCommand cmd = null;
+            try
+            {
+                using (con = GetConnection(GetConnectionString(connectionKey)))
+                {
+                    con.Open();
+                    string query = "SELECT * FROM Cashier WHERE StaffNumber ='" + employee + "' AND Revenue ='" + revenue + "' AND CashierID ='" + cashierID + "' AND CONVERT(VARCHAR(24),ImportDateTime,113) = CONVERT(VARCHAR(24),'" + dateTime + "',113);";
+                    using (cmd = new SqlCommand(query, con))
+                    {
+                        var item = cmd.ExecuteScalar();
+                        if (item != null)
+                        {
+                            result = true;
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                Logger.Error("Failed in DoesRecordExist");
+                throw;
+            }
+            finally
+            {
+                con.Close();
+                con.Dispose();
+                cmd.Dispose();
+            }
+
+            return result;
+        }
+
         public bool DoesRecordExist(string tableName, string searchField, int searchString, string connectionKey)
         {
             var result = false;
@@ -208,6 +244,7 @@ namespace EbusFileImporter.DataProvider
                     if (csvDataToImport.CashierDetails.Any()) DbHelper.BulkCopyDataToTable<CashierDetail>("CashierDetail", csvDataToImport.CashierDetails, con, transaction);
                     if (csvDataToImport.CashierSigonSignoffs.Any()) DbHelper.BulkCopyDataToTable<CashierSigonSignoff>("CashierSigonSignoff", csvDataToImport.CashierSigonSignoffs, con, transaction);
                     if (csvDataToImport.CashierStaffESNs.Any()) DbHelper.BulkCopyDataToTable<CashierStaffESN>("CashierStaffESN", csvDataToImport.CashierStaffESNs, con, transaction);
+                    if (csvDataToImport.Staffs.Any()) DbHelper.BulkCopyDataToTable<Staff>("Staff", csvDataToImport.Staffs, con, transaction);
 
                     transaction.Commit();
 
@@ -238,7 +275,7 @@ namespace EbusFileImporter.DataProvider
 
         public int GetNonRevenueFromPosTransTable(string serialNumber, string connectionKey)
         {
-            var result = 5;
+            var result = 800;
             SqlConnection con = null;
             SqlCommand cmd = null;
             try
@@ -261,6 +298,41 @@ namespace EbusFileImporter.DataProvider
             catch (Exception)
             {
                 Logger.Error("Failed in GetNonRevenueFormPosTrans");
+                throw;
+            }
+            finally
+            {
+                con.Close();
+                con.Dispose();
+                cmd.Dispose();
+            }
+            return result;
+        }
+
+        public bool CheckForDutyDuplicates(int int4_OperatorID, DateTime dat_DutyStartTime, DateTime dat_DutyStopTime, string connectionKey)
+        {
+            var result = false;
+            SqlConnection con = null;
+            SqlCommand cmd = null;
+            try
+            {
+                using (con = GetConnection(GetConnectionString(connectionKey)))
+                {
+                    con.Open();
+                    string query = "SELECT * FROM Duty WHERE int4_OperatorID = " + int4_OperatorID + " AND CONVERT(VARCHAR(24),dat_DutyStartTime,113) = CONVERT(VARCHAR(24),'" + dat_DutyStartTime + "',113) AND CONVERT(VARCHAR(24),dat_DutyStopTime,113) =  CONVERT(VARCHAR(24),'" + dat_DutyStopTime + "',113);";
+                    using (cmd = new SqlCommand(query, con))
+                    {
+                        var item = cmd.ExecuteScalar();
+                        if (item != null)
+                        {
+                            result = true;
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                Logger.Error("Failed in DoesRecordExist integer");
                 throw;
             }
             finally

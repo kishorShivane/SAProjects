@@ -13,6 +13,14 @@ namespace EbusFileImporter.App.Helpers
         public static string LogPath = ConfigurationManager.AppSettings["LogPath"];
         public static string EmailTemplate = ConfigurationManager.AppSettings["EmailTemplate"];
         public static bool EnableEmailTrigger = ConfigurationManager.AppSettings["EnableEmailTrigger"] == "true" ? true : false;
+        public static string ToEmail = ConfigurationManager.AppSettings["ToEmail"];
+        public static string FromEmail = ConfigurationManager.AppSettings["FromEmail"];
+        public static string DuplicateEmailSubject = ConfigurationManager.AppSettings["DuplicateEmailSubject"];
+        public static string ErrorEmailSubject = ConfigurationManager.AppSettings["ErrorEmailSubject"];
+        public static string Host = ConfigurationManager.AppSettings["Host"];
+        public static int Port = Convert.ToInt32(ConfigurationManager.AppSettings["Port"]);
+        public static string EmailUserName = ConfigurationManager.AppSettings["EmailUserName"];
+        public static string EbusPassword = ConfigurationManager.AppSettings["EbusPassword"];
 
     }
 }

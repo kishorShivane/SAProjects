@@ -11,6 +11,7 @@ using System.ComponentModel;
 using System.Configuration;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -37,7 +38,6 @@ namespace EbusFileImporter.App
             {
                 worker = new BackgroundWorker();
                 worker.DoWork += new DoWorkEventHandler(StartProcess);
-                worker.RunWorkerAsync();
                 InitializeRefreshTimer();
                 //DirectoryMonitor dirMonitor = new DirectoryMonitor(Constants.DirectoryPath, logger);
                 //InitializeRefreshTimer(); 
@@ -59,29 +59,32 @@ namespace EbusFileImporter.App
                 {
                     files.ForEach(x =>
                     {
-                        var splitPath = x.Replace("\\\\", "\\").Split('\\');
-
-                        if (splitPath.Length >= 5)
+                        if (!helper.IsFileLocked(x))
                         {
-                            switch (splitPath[4])
+                            var splitPath = x.Replace("\\\\", "\\").Split('\\');
+
+                            if (splitPath.Length >= 5)
                             {
-                                case "In":
-                                    if (AppHelper.IsXmlFile(x))
-                                    {
-                                        logger.Info("Processing: XML file found - Start");
-                                        importerEngine = new XmlImporter(logger);
-                                        logger.Info("Processing: XML file found - End");
-                                    }
-                                    else
-                                    {
-                                        logger.Info("Processing: CSV file found - Start");
-                                        importerEngine = new CsvImporter(logger);
-                                        logger.Info("Processing: XML file found - End");
-                                    }
-                                    importerEngine.ProcessFile(x);
-                                    break;
-                                default:
-                                    break;
+                                switch (splitPath[4])
+                                {
+                                    case "In":
+                                        if (AppHelper.IsXmlFile(x))
+                                        {
+                                            logger.Info("Processing: XML file found - Start - " + Path.GetFileName(x));
+                                            importerEngine = new XmlImporter(logger);
+                                            logger.Info("Processing: XML file found - End - " + Path.GetFileName(x));
+                                        }
+                                        else
+                                        {
+                                            logger.Info("Processing: CSV file found - Start - " + Path.GetFileName(x));
+                                            importerEngine = new CsvImporter(logger);
+                                            logger.Info("Processing: XML file found - End - " + Path.GetFileName(x));
+                                        }
+                                        importerEngine.ProcessFile(x);
+                                        break;
+                                    default:
+                                        break;
+                                }
                             }
                         }
                     });
@@ -95,13 +98,17 @@ namespace EbusFileImporter.App
         {
             lblProcessedCount.Text = "0";
             lblErrorCount.Text = "0";
-            Timer timer = new Timer();
-            timer.Interval = (5 * 1000); // 5 secs
-            timer.Tick += new EventHandler(TriggerRrefresh);
+            Timer logTimer = new Timer();
+            logTimer.Interval = (5 * 1000); // 5 secs
+            logTimer.Tick += new EventHandler(TriggerLogRrefresh);
+            logTimer.Start();
+
+            System.Timers.Timer timer = new System.Timers.Timer(1000);
+            timer.Elapsed += TriggerStartProcess;
             timer.Start();
         }
 
-        private void TriggerRrefresh(object sender, EventArgs e)
+        private void TriggerLogRrefresh(object sender, EventArgs e)
         {
             var error = 0;
             var processed = 0;
@@ -130,6 +137,12 @@ namespace EbusFileImporter.App
             }
             lblProcessedCount.Text = processed.ToString();
             lblErrorCount.Text = error.ToString();
+        }
+
+        private void TriggerStartProcess(object sender, EventArgs e)
+        {
+            if (!worker.IsBusy)
+                worker.RunWorkerAsync();
         }
     }
 }

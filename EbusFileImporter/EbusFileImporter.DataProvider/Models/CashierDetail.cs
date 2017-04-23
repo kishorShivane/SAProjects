@@ -26,5 +26,8 @@ namespace EbusFileImporter.DataProvider.Models
         public string Reason { get; set; }
         public string Overs { get; set; }
         public string Terminal { get; set; }
+        public string UID { get; set; }
+        public string ESN { get; set; }
+        public long PSN { get; set; }
     }
 }

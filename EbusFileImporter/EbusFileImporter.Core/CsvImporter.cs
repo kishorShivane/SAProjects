@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -21,6 +22,7 @@ namespace EbusFileImporter.Core
         Helper helper = null;
         EmailHelper emailHelper = null;
         DBService dbService = null;
+        string uid = "";
         public CsvImporter(ILogService logger)
         {
             Logger = logger;
@@ -51,6 +53,7 @@ namespace EbusFileImporter.Core
             var todayDate = DateTime.Now;
             var splitFilepath = filePath.Split('\\');
             var dbName = splitFilepath[splitFilepath.Length - 3];
+            uid = Guid.NewGuid().ToString();
 
             try
             {
@@ -66,15 +69,18 @@ namespace EbusFileImporter.Core
                 //Atamelang File chech
                 if (filename.Contains("eBusCashier") == true)
                 {
+                    Logger.Info("Found eBusCashier CSV file - " + filename);
                     //gets all the cashier file names
                     string[] csvFiles = Directory.GetFiles(Constants.DirectoryPath + @"\" + dbName + @"\" + @"Out\", "*.csv").Select(path => Path.GetFileName(path)).ToArray();
                     if (csvFiles.Length == 0 || !csvFiles.Where(x => x.Equals(filename)).Any())
                     {
+                        Logger.Info("Processing eBusCashier CSV file - " + filename);
                         LoadDataForAtamelang(filePath, dbName);
                         return true;
                     }
                     if (csvFiles.Where(x => x.Equals(filename)).Any())
                     {
+                        Logger.Info("Duplicate eBusCashier CSV file found - " + filename);
                         helper.MoveDuplicateFile(filename, dbName);
                         return false;
                     }
@@ -83,15 +89,18 @@ namespace EbusFileImporter.Core
                 //Import for all other clients
                 else
                 {
+                    Logger.Info("Found other CSV file - " + filename);
                     //check file name in out folder first against file to import.
                     string[] csvFiles = Directory.GetFiles(Constants.DirectoryPath + @"\" + dbName + @"\" + @"Out\", "*.csv").Select(path => Path.GetFileName(path)).ToArray();
                     if (csvFiles.Length == 0 || !csvFiles.Where(x => x.Equals(filename)).Any())
                     {
+                        Logger.Info("Processing other CSV file - " + filename);
                         LoadDataForOthers(filePath, dbName);
                         return true;
                     }
                     if (csvFiles.Where(x => x.Equals(filename)).Any())
                     {
+                        Logger.Info("Duplicate file found - " + Path.GetFileName(filePath));
                         helper.MoveDuplicateFile(filename, dbName);
                         return false;
                     }
@@ -104,6 +113,7 @@ namespace EbusFileImporter.Core
                 Logger.Error("Exception:" + exception);
                 helper.MoveErrorFile(filePath, dbName);
                 if (Constants.EnableEmailTrigger) emailHelper.SendMail(filePath, dbName, exception, EmailType.Error);
+                return result;
             }
 
             return result;
@@ -113,13 +123,32 @@ namespace EbusFileImporter.Core
         {
             try
             {
+                Thread.CurrentThread.CurrentCulture = new CultureInfo("en-GB");
                 var todayDate = DateTime.Now;
                 string fileName = Path.GetFileName(filePath);
                 var lines = File.ReadAllLines(filePath);
                 List<CashierStaffESN> cashierStaffESNDetails = new List<CashierStaffESN>();
                 List<CashierDetail> cashierDetails = new List<CashierDetail>();
                 List<CashierSigonSignoff> cashierSigonSignoffDetails = new List<CashierSigonSignoff>();
-                //atamalangContext = new AtmalangEbusImporterContext("AtmalangEbusImporterContext");
+
+                #region Check Duplicate file
+
+                if (lines.Any())
+                {
+                    Logger.Info("Duplicate check started");
+                    var lastLine = lines.LastOrDefault();
+                    string[] values = lastLine.Split(',');
+                    string receiptnumber = values[13].ToString().Trim();
+                    if (dbService.DoesRecordExist("CashierSigonSignoff", "WaybillNumber", Convert.ToInt32(receiptnumber), dbName))
+                    {
+                        Logger.Info("Duplicate file found - " + fileName);
+                        helper.MoveDuplicateFile(filePath, dbName);
+                        return;
+                    }
+                    Logger.Info("Duplicate check End");
+                }
+
+                #endregion
                 #region Process lines in CSV
 
                 lines.ToList().ForEach(x =>
@@ -166,7 +195,7 @@ namespace EbusFileImporter.Core
                     string newTransactionDateTime = temp5 + " " + temp6;
                     string myTransactionDate = DateTime.ParseExact(newTransactionDateTime, "ddMMyyyy HHmmss", null).ToString("dd-MM-yyyy HH:mm:ss");
 
-                    if (!dbService.DoesRecordExist("CashierStaffESN", "ESN", esn, dbName) && !cashierStaffESNDetails.Where(i=>i.ESN.Equals(esn)).Any())
+                    if (!dbService.DoesRecordExist("CashierStaffESN", "ESN", esn, dbName) && !cashierStaffESNDetails.Where(i => i.ESN.Equals(esn)).Any())
                     {
                         cashierStaffESNDetails.Add(new CashierStaffESN()
                         {
@@ -180,8 +209,8 @@ namespace EbusFileImporter.Core
 
                     switch (Name)
                     {
-                        case "Cashier":
-                        case "Supervisor":
+                        case "Seller":
+                        case "Driver":
                             cashierDetails.Add(new CashierDetail()
                             {
                                 StaffNumber = staffID,
@@ -200,11 +229,14 @@ namespace EbusFileImporter.Core
                                 ImportDateTime = todayDate,
                                 Reason = reason,
                                 Overs = overs,
-                                Terminal = terminal
+                                Terminal = terminal,
+                                UID = uid,
+                                ESN = esn,
+                                PSN = Convert.ToInt64(psn)
                             });
                             break;
-                        case "Seller":
-                        case "Driver":
+                        case "Cashier":
+                        case "Supervisor":
                             cashierSigonSignoffDetails.Add(new CashierSigonSignoff()
                             {
                                 StaffNumber = staffID,
@@ -222,7 +254,10 @@ namespace EbusFileImporter.Core
                                 CashierID = casherID,
                                 ImportDateTime = todayDate,
                                 Overs = overs,
-                                Terminal = terminal
+                                Terminal = terminal,
+                                UID = uid,
+                                ESN = esn,
+                                PSN = Convert.ToInt64(psn)
                             });
                             break;
                     }
@@ -254,12 +289,39 @@ namespace EbusFileImporter.Core
         {
             try
             {
+                Thread.CurrentThread.CurrentCulture = new CultureInfo("en-GB");
                 var todayDate = DateTime.Now;
                 string fileName = Path.GetFileName(filePath);
                 string newFile = fileName.Substring(0, 6);
 
                 var lines = File.ReadAllLines(filePath);
                 List<Cashier> cashierDetails = new List<Cashier>();
+
+                #region Check Duplicate file
+                if (lines.Any())
+                {
+                    Logger.Info("Duplicate check started");
+                    var firstLine = lines.FirstOrDefault();
+                    string[] values = firstLine.Split(',');
+                    string date = values[1].ToString().Trim();
+                    string time = values[2].ToString().Trim();
+                    string Employee = values[3].ToString().Trim();
+                    string Revenue = values[5].ToString().Trim();
+                    string CashierDate = DateTime.ParseExact(date, "yyyyMMdd", null).ToString("dd-MM-yyyy");
+                    string tempTime = DateTime.ParseExact(time, "HHmmss", null).ToString("HH:mm:ss tt");
+                    string CashierTime = CashierDate + " " + tempTime;
+                    DateTime Time12 = DateTime.Parse(CashierTime);
+                    if (dbService.DoesCashierRecordExist(Employee, Revenue, Time12, newFile, dbName))
+                    {
+                        Logger.Info("Duplicate file found - " + fileName);
+                        helper.MoveDuplicateFile(filePath, dbName);
+                        return;
+                    }
+                    Logger.Info("Duplicate check End");
+                }
+
+                #endregion
+
                 #region Process lines in CSV
                 lines.ToList().ForEach(x =>
                 {
@@ -299,10 +361,28 @@ namespace EbusFileImporter.Core
 
                 #endregion
 
+                #region Process Staff Information
+                Staff staffDetail = null;
+                if (!dbService.DoesRecordExist("Staff", "int4_StaffID", newFile, dbName))
+                {
+                    staffDetail = new Staff();
+                    staffDetail.int4_StaffID = Convert.ToInt32(newFile);
+                    staffDetail.str50_StaffName = "New Staff" + " - " + staffDetail.int4_StaffID;
+                    staffDetail.bit_InUse = true;
+                    staffDetail.int4_StaffTypeID = 1;
+                    staffDetail.int4_StaffSubTypeID = 0;
+                    //var runningBoard = dutyDetail.str_OperatorVersion;
+                    staffDetail.str4_LocationCode = "0001";//runningBoard.Substring(runningBoard.Length - 4, 4);
+                    staffDetail.str2_LocationCode = null;
+                }
+                #endregion
+
+
                 #region DB Insertion Section
                 var csvDataToImport = new CsvDataToImport()
                 {
-                    Cashiers = cashierDetails
+                    Cashiers = cashierDetails,
+                    Staffs = staffDetail == null ? new List<Staff>() : new List<Staff>() { staffDetail }
                 };
 
                 dbService.InsertCsvFileData(csvDataToImport, dbName);

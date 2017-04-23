@@ -12,5 +12,6 @@ namespace EbusFileImporter.DataProvider.Models
         public List<CashierDetail> CashierDetails { get; set; } = new List<CashierDetail>();
         public List<CashierSigonSignoff> CashierSigonSignoffs { get; set; } = new List<CashierSigonSignoff>();
         public List<CashierStaffESN> CashierStaffESNs { get; set; } = new List<CashierStaffESN>();
+        public List<Staff> Staffs { get; set; } = new List<Staff>();
     }
 }
