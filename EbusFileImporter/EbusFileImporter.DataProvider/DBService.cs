@@ -195,6 +195,7 @@ namespace EbusFileImporter.DataProvider
                     if (xmlDataToImport.Inspectors.Any()) DbHelper.BulkCopyDataToTable<Inspector>("Inspector", xmlDataToImport.Inspectors, con, transaction);
                     if (xmlDataToImport.Trans.Any()) DbHelper.BulkCopyDataToTable<Trans>("Trans", xmlDataToImport.Trans, con, transaction);
                     if (xmlDataToImport.PosTrans.Any()) DbHelper.BulkCopyDataToTable<PosTrans>("PosTrans", xmlDataToImport.PosTrans, con, transaction);
+                    if (xmlDataToImport.PosTrans.Any()) DbHelper.BulkCopyDataToTable<AuditFileStatus>("AuditFileStatus", xmlDataToImport.AuditFileStatuss, con, transaction);
                     transaction.Commit();
 
                     Logger.Info("Duties Inserted: " + xmlDataToImport.Duties.Count().ToString());
@@ -206,6 +207,7 @@ namespace EbusFileImporter.DataProvider
                     Logger.Info("Inspectors Inserted: " + xmlDataToImport.Inspectors.Count().ToString());
                     Logger.Info("PosTrans Inserted: " + xmlDataToImport.PosTrans.Count().ToString());
                     Logger.Info("Trans Inserted: " + xmlDataToImport.Trans.Count().ToString());
+                    Logger.Info("AuditFileStatus Inserted: " + xmlDataToImport.AuditFileStatuss.Count().ToString());
                     Logger.Info("Commited Changes");
                     Logger.Info("-------DB Transaction - End-------");
                 }

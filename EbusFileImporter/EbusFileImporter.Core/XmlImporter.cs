@@ -81,6 +81,7 @@ namespace EbusFileImporter.Core
                 var latestTransID = 0;
                 var latestPosTransID = 0;
                 var latestInspectorID = 0;
+                var latestAuditFileStatus = 0;
                 #endregion
 
                 #region Process Module Information
@@ -209,24 +210,25 @@ namespace EbusFileImporter.Core
                 AuditFileStatus auditFileDetail = null;
                 List<AuditFileStatus> auditFileDetails = new List<AuditFileStatus>();
                 var nodes125 = nodes.Where(x => x.Attribute("STXID").Value.Equals("125"));
-                if (nodes125 != null && nodes125.Count() > 1)
+                if (nodes125 != null && nodes125.Count() == 2)
                 {
                     auditFileDetail = new AuditFileStatus();
-                    nodes125.ToList().ForEach(x =>
-                    {
-                        var thisNode = x;
-                        var nextnode = nodes125.ToList()[1];
-                        auditFileDetail.id_duty = dutyDetail.id_Duty;
-                        auditFileDetail.DriverAuditStatus1 = (int)thisNode.Element("AuditStatus");
-                        auditFileDetail.DriverNumber1 = (int)thisNode.Element("DriverNumber");
-                        auditFileDetail.DriverCardSerialNumber1 = (string)thisNode.Element("DriverCardSerialNo");
-                        auditFileDetail.DriverStatus1DateTime = helper.ConvertToInsertDateTimeStringWithOutSeconds((string)node151.Element("DutyDate"), (string)thisNode.Element("Time"));
-                        auditFileDetail.DriverAuditStatus2 = (int)nextnode.Element("AuditStatus");
-                        auditFileDetail.DriverNumber2 = (int)nextnode.Element("DriverNumber");
-                        auditFileDetail.DriverCardSerialNumber2 = (string)nextnode.Element("DriverCardSerialNo");
-                        auditFileDetail.DriverStatus2DateTime = helper.ConvertToInsertDateTimeStringWithOutSeconds((string)node151.Element("DutyDate"), (string)nextnode.Element("Time"));
-                    });
+
+                    var thisNode = nodes125.ToList()[0];
+                    var nextnode = nodes125.ToList()[1];
+                    auditFileDetail.Id_Status = latestAuditFileStatus;
+                    auditFileDetail.id_duty = dutyDetail.id_Duty;
+                    auditFileDetail.DriverAuditStatus1 = (int)thisNode.Element("AuditStatus");
+                    auditFileDetail.DriverNumber1 = (int)thisNode.Element("DriverNumber");
+                    auditFileDetail.DriverCardSerialNumber1 = (string)thisNode.Element("DriverCardSerialNo");
+                    auditFileDetail.DriverStatus1DateTime = helper.ConvertToInsertDateTimeStringWithOutSeconds((string)node151.Element("DutyDate"), (string)thisNode.Element("Time"));
+                    auditFileDetail.DriverAuditStatus2 = (int)nextnode.Element("AuditStatus");
+                    auditFileDetail.DriverNumber2 = (int)nextnode.Element("DriverNumber");
+                    auditFileDetail.DriverCardSerialNumber2 = (string)nextnode.Element("DriverCardSerialNo");
+                    auditFileDetail.DriverStatus2DateTime = helper.ConvertToInsertDateTimeStringWithOutSeconds((string)node151.Element("DutyDate"), (string)nextnode.Element("Time"));
                     auditFileDetail.DutySignOffMode = (int)node154.Element("SignOffMode");
+
+                    auditFileDetails.Add(auditFileDetail);
                 }
                 else
                 {
@@ -827,8 +829,6 @@ namespace EbusFileImporter.Core
 
                 #endregion
 
-
-
                 #region DB Insertion Section
 
                 lock (thisLock)
@@ -840,6 +840,7 @@ namespace EbusFileImporter.Core
                     latestTransID = dbService.GetLatestIDUsed("Trans", "id_Trans", dbName);
                     latestPosTransID = dbService.GetLatestIDUsed("PosTrans", "id_PosTrans", dbName);
                     latestInspectorID = dbService.GetLatestIDUsed("Inspector", "id_Inspector", dbName);
+                    latestAuditFileStatus = dbService.GetLatestIDUsed("AuditFileStatus", "Id_Status", dbName);
 
                     #region Update Actual ID's
                     moduleDetail.id_Module = moduleDetail.id_Module + latestModuleID;
@@ -888,6 +889,11 @@ namespace EbusFileImporter.Core
                         x.id_Inspector = x.id_Inspector + latestInspectorID;
                     });
 
+                    auditFileDetails.ForEach(x=>
+                    {
+                        x.Id_Status = x.Id_Status + latestAuditFileStatus;
+                    });
+
                     #endregion
 
                     var xmlDataToImport = new XmlDataToImport()
@@ -900,7 +906,8 @@ namespace EbusFileImporter.Core
                         Trans = transDetails,
                         PosTrans = posTransDetails,
                         Staffs = staffDetail != null ? new List<Staff>() { staffDetail } : new List<Staff>(),
-                        Inspectors = inspectorDetails
+                        Inspectors = inspectorDetails,
+                        AuditFileStatuss = auditFileDetails
                     };
 
                     result = dbService.InsertXmlFileData(xmlDataToImport, dbName);
