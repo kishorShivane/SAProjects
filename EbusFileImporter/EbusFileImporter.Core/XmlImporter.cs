@@ -70,7 +70,43 @@ namespace EbusFileImporter.Core
                     Logger.Info("***********************************************************");
                     helper.MoveErrorFile(filePath, dbName);
                     if (Constants.EnableEmailTrigger) emailHelper.SendMail(filePath, dbName, "", EmailType.Error);
+                    return false;
                 }
+                #endregion
+
+                #region Check for validity of ExtendedWaybill date
+                Logger.Info("Check for validity of ExtendedWaybill date - Start");
+                var extendedWaybill = nodes.Where((x => x.Attribute("STXID").Value.Equals("122")));
+                var tempDutyDetail = nodes.Where((x => x.Attribute("STXID").Value.Equals("151"))).FirstOrDefault();
+                if (tempDutyDetail != null && extendedWaybill != null && extendedWaybill.Any())
+                {
+                    var dutyDate = helper.ConvertToInsertDateString(tempDutyDetail.Element("DutyDate").Value);
+                    var tempList = extendedWaybill.ToList();
+                    for (var i = tempList.Count() - 1; i >= 0; i--)
+                    {
+                        var tempDate = helper.ConvertToInsertDateString(tempList[i].Element("StartDate").Value);
+                        if (i == 0)
+                        {
+                            if (DateTime.Compare(tempDate, dutyDate) > 0)
+                            {
+                                helper.MoveDateProblemFile(filePath, dbName);
+                                if (Constants.EnableEmailTrigger) emailHelper.SendMail(filePath, dbName, "", EmailType.DateProblem);
+                                return false;
+                            }
+                            break;
+                        }
+
+                        var tempNextDate = helper.ConvertToInsertDateString(tempList[i - 1].Element("StartDate").Value);
+
+                        if (DateTime.Compare(tempNextDate, tempDate) > 0)
+                        {
+                            helper.MoveDateProblemFile(filePath, dbName);
+                            if (Constants.EnableEmailTrigger) emailHelper.SendMail(filePath, dbName, "", EmailType.DateProblem);
+                            return false;
+                        }
+                    }
+                }
+                Logger.Info("Check for validity of ExtendedWaybill date - End");
                 #endregion
 
                 #region Initialize Variables
@@ -163,14 +199,14 @@ namespace EbusFileImporter.Core
                 var node154 = nodes.Where(x => x.Attribute("STXID").Value.Equals("154")).FirstOrDefault();
                 var node155 = nodes.Where(x => x.Attribute("STXID").Value.Equals("155")).FirstOrDefault();
 
-                if (node151 != null && node122 != null && node154 != null && node155 != null)
+                if (node151 != null && node154 != null && node155 != null)
                 {
                     dutyDetail = new Duty();
                     dutyDetail.id_Duty = latestDutyID;
                     dutyDetail.id_Module = moduleDetail.id_Module;
                     dutyDetail.int4_DutyID = (int)node151.Element("DutyNo");
                     dutyDetail.int4_OperatorID = (int)node151.Element("DriverNumber");
-                    dutyDetail.str_ETMID = (string)node122.Element("ETMNumber");
+                    dutyDetail.str_ETMID = (string)node122?.Element("ETMNumber");
                     dutyDetail.int4_GTValue = (int)node151.Element("ETMCashTotal");
                     dutyDetail.int4_NextTicketNumber = (int)node151.Element("NextTicketNo");
                     dutyDetail.int4_DutySeqNum = (int)node151.Element("DutySeqNo.");
@@ -221,12 +257,13 @@ namespace EbusFileImporter.Core
                     auditFileDetail.DriverAuditStatus1 = (int)thisNode.Element("AuditStatus");
                     auditFileDetail.DriverNumber1 = (int)thisNode.Element("DriverNumber");
                     auditFileDetail.DriverCardSerialNumber1 = (string)thisNode.Element("DriverCardSerialNo");
-                    auditFileDetail.DriverStatus1DateTime = helper.ConvertToInsertDateTimeStringWithOutSeconds((string)node151.Element("DutyDate"), (string)thisNode.Element("Time"));
+                    auditFileDetail.DriverStatus1DateTime = helper.ConvertToInsertDateTimeString((string)node151.Element("DutyDate"), (string)thisNode.Element("Time"));
                     auditFileDetail.DriverAuditStatus2 = (int)nextnode.Element("AuditStatus");
                     auditFileDetail.DriverNumber2 = (int)nextnode.Element("DriverNumber");
                     auditFileDetail.DriverCardSerialNumber2 = (string)nextnode.Element("DriverCardSerialNo");
-                    auditFileDetail.DriverStatus2DateTime = helper.ConvertToInsertDateTimeStringWithOutSeconds((string)node151.Element("DutyDate"), (string)nextnode.Element("Time"));
+                    auditFileDetail.DriverStatus2DateTime = helper.ConvertToInsertDateTimeString((string)node151.Element("DutyDate"), (string)nextnode.Element("Time"));
                     auditFileDetail.DutySignOffMode = (int)node154.Element("SignOffMode");
+                    auditFileDetail.RecordModified = todayDate;
 
                     auditFileDetails.Add(auditFileDetail);
                 }
@@ -727,7 +764,7 @@ namespace EbusFileImporter.Core
                                             latestPosTransID++;
                                             posTransDetail = null;
                                         }
-                                        if (transDetail != null)
+                                        if (transDetail != null && ticketType.Trim() != "2AF8")
                                         {
                                             transDetails.Add(transDetail);
                                             latestTransID++;
@@ -889,9 +926,10 @@ namespace EbusFileImporter.Core
                         x.id_Inspector = x.id_Inspector + latestInspectorID;
                     });
 
-                    auditFileDetails.ForEach(x=>
+                    auditFileDetails.ForEach(x =>
                     {
                         x.Id_Status = x.Id_Status + latestAuditFileStatus;
+                        x.id_duty = x.id_duty + latestDutyID;
                     });
 
                     #endregion

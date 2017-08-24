@@ -103,6 +103,45 @@ namespace EbusFileImporter.Core.Helpers
             }
         }
 
+        public void MoveDateProblemFile(string currentpath, string dbname)
+        {
+            try
+            {
+                //Declarations
+                string path = currentpath;
+                string file = Path.GetFileName(currentpath);
+                //Current Path
+                string dirPath1 = Constants.DirectoryPath + @"\" + dbname + @"\" + @"DateProblem\" + DateTime.Now.Year + @"\" + "0" + DateTime.Now.ToString("MMMM") + @"\" + DateTime.Now.Day;
+                //New Path
+                string path2 = dirPath1 + @"\" + file;
+
+                //Checks if path exists and creates it if not
+                if (!Directory.Exists(dirPath1))
+                {
+                    Directory.CreateDirectory(dirPath1);
+                }
+                if (File.Exists(path2))
+                {
+                    File.Delete(path2);
+                }
+                //Checks if path exists and creates it if not
+                File.Copy(path, path2);
+                if (File.Exists(path))
+                {
+                    File.Delete(path);
+                }
+                Log.Info("Moved date problem file - " + file);
+            }
+            catch (Exception ex)
+            {
+                var exception = JsonConvert.SerializeObject(ex).ToString();
+                Log.Info("File move to date problem folder failed:" + exception);
+                Log.Info("File name: " + currentpath + " DBName: " + dbname);
+                if (Constants.EnableEmailTrigger) emailHelper.SendMail(currentpath, dbname, exception, EmailType.Error);
+                return;
+            }
+        }
+
         public void MoveDuplicateFile(string currentpath, string dbname)
         {
             try
@@ -111,7 +150,7 @@ namespace EbusFileImporter.Core.Helpers
                 string path = currentpath;
                 string file = Path.GetFileName(currentpath);
                 string dirPath = Constants.DirectoryPath + @"\" + dbname + @"\" + @"Duplicate\" + DateTime.Now.Year + @"\" + "0" + DateTime.Now.ToString("MMMM") + @"\" + DateTime.Now.Day;
-                string path2 = dirPath + file;
+                string path2 = dirPath+ @"\" + file;
 
                 if (!Directory.Exists(dirPath))
                 {
@@ -222,7 +261,7 @@ namespace EbusFileImporter.Core.Helpers
             var result = 0;
             if (productData.Length >= 12)
             {
-                var revenueBalance = productData.Substring(7, 6);
+                var revenueBalance = productData.Substring(6, 6);
                 result = Convert.ToInt32(revenueBalance);
             }
             return result;

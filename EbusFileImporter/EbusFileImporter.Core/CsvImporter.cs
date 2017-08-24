@@ -60,10 +60,6 @@ namespace EbusFileImporter.Core
                 Logger.Info("***********************************************************");
                 Logger.Info("Started Import");
                 Logger.Info("***********************************************************");
-                while (helper.IsFileLocked(filePath))
-                {
-                    Thread.Sleep(500);
-                }
 
                 string filename = Path.GetFileName(filePath);
                 //Atamelang File chech
@@ -130,7 +126,8 @@ namespace EbusFileImporter.Core
                 List<CashierStaffESN> cashierStaffESNDetails = new List<CashierStaffESN>();
                 List<CashierDetail> cashierDetails = new List<CashierDetail>();
                 List<CashierSigonSignoff> cashierSigonSignoffDetails = new List<CashierSigonSignoff>();
-
+                List<Staff> staffDetails = new List<Staff>();
+                Staff staffDetail = null;
                 #region Check Duplicate file
 
                 if (lines.Any())
@@ -261,6 +258,37 @@ namespace EbusFileImporter.Core
                             });
                             break;
                     }
+
+                    #region Process Staff Information
+                    if (!dbService.DoesRecordExist("Staff", "int4_StaffID", staffID, dbName) && !staffDetails.Where(i => i.int4_StaffID.ToString().Equals(staffID)).Any())
+                    {
+                        staffDetail = new Staff();
+                        staffDetail.int4_StaffID = Convert.ToInt32(staffID);
+                        staffDetail.str50_StaffName = "New Staff" + " - " + staffDetail.int4_StaffID;
+                        staffDetail.bit_InUse = true;
+                        staffDetail.int4_StaffTypeID = 1;
+                        staffDetail.int4_StaffSubTypeID = 0;
+                        //var runningBoard = dutyDetail.str_OperatorVersion;
+                        staffDetail.str4_LocationCode = "0001";//runningBoard.Substring(runningBoard.Length - 4, 4);
+                        staffDetail.str2_LocationCode = null;
+                        staffDetails.Add(staffDetail);
+                    }
+
+                    if (!dbService.DoesRecordExist("Staff", "int4_StaffID", casherID, dbName) && !staffDetails.Where(i => i.int4_StaffID.ToString().Equals(casherID)).Any())
+                    {
+                        staffDetail = new Staff();
+                        staffDetail.int4_StaffID = Convert.ToInt32(casherID);
+                        staffDetail.str50_StaffName = "New Staff" + " - " + staffDetail.int4_StaffID;
+                        staffDetail.bit_InUse = true;
+                        staffDetail.int4_StaffTypeID = 1;
+                        staffDetail.int4_StaffSubTypeID = 0;
+                        //var runningBoard = dutyDetail.str_OperatorVersion;
+                        staffDetail.str4_LocationCode = "0001";//runningBoard.Substring(runningBoard.Length - 4, 4);
+                        staffDetail.str2_LocationCode = null;
+                        staffDetails.Add(staffDetail);
+                    }
+                    #endregion
+
                 });
 
                 #endregion
@@ -270,7 +298,8 @@ namespace EbusFileImporter.Core
                 {
                     CashierDetails = cashierDetails,
                     CashierSigonSignoffs = cashierSigonSignoffDetails,
-                    CashierStaffESNs = cashierStaffESNDetails
+                    CashierStaffESNs = cashierStaffESNDetails,
+                    Staffs = staffDetails
                 };
 
                 dbService.InsertCsvFileData(csvDataToImport, dbName);
@@ -296,6 +325,8 @@ namespace EbusFileImporter.Core
 
                 var lines = File.ReadAllLines(filePath);
                 List<Cashier> cashierDetails = new List<Cashier>();
+                List<Staff> staffDetails = new List<Staff>();
+                Staff staffDetail = null;
 
                 #region Check Duplicate file
                 if (lines.Any())
@@ -357,12 +388,28 @@ namespace EbusFileImporter.Core
                         CashierID = newFile,
                         ImportDateTime = todayDate.ToString()
                     });
+
+                    #region Process Staff Information
+                    if (!dbService.DoesRecordExist("Staff", "int4_StaffID", Employee, dbName))
+                    {
+                        staffDetail = new Staff();
+                        staffDetail.int4_StaffID = Convert.ToInt32(Employee);
+                        staffDetail.str50_StaffName = "New Staff" + " - " + staffDetail.int4_StaffID;
+                        staffDetail.bit_InUse = true;
+                        staffDetail.int4_StaffTypeID = 1;
+                        staffDetail.int4_StaffSubTypeID = 0;
+                        //var runningBoard = dutyDetail.str_OperatorVersion;
+                        staffDetail.str4_LocationCode = "0001";//runningBoard.Substring(runningBoard.Length - 4, 4);
+                        staffDetail.str2_LocationCode = null;
+                        staffDetails.Add(staffDetail);
+                    }
+                    #endregion
+
                 });
 
                 #endregion
 
                 #region Process Staff Information
-                Staff staffDetail = null;
                 if (!dbService.DoesRecordExist("Staff", "int4_StaffID", newFile, dbName))
                 {
                     staffDetail = new Staff();
@@ -374,6 +421,7 @@ namespace EbusFileImporter.Core
                     //var runningBoard = dutyDetail.str_OperatorVersion;
                     staffDetail.str4_LocationCode = "0001";//runningBoard.Substring(runningBoard.Length - 4, 4);
                     staffDetail.str2_LocationCode = null;
+                    staffDetails.Add(staffDetail);
                 }
                 #endregion
 
@@ -382,7 +430,7 @@ namespace EbusFileImporter.Core
                 var csvDataToImport = new CsvDataToImport()
                 {
                     Cashiers = cashierDetails,
-                    Staffs = staffDetail == null ? new List<Staff>() : new List<Staff>() { staffDetail }
+                    Staffs = staffDetails
                 };
 
                 dbService.InsertCsvFileData(csvDataToImport, dbName);

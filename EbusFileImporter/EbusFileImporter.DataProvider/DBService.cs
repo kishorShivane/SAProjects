@@ -286,7 +286,7 @@ namespace EbusFileImporter.DataProvider
                 using (con = GetConnection(GetConnectionString(connectionKey)))
                 {
                     con.Open();
-                    string query = "SELECT (ISNULL(int4_Revenue,0)/ISNULL(int4_TripBal,1)) AS NonRevenue FROM PosTrans WHERE str_SerialNumber ='" + serialNumber + "' ORDER BY dat_TransTime DESC;";
+                    string query = "SELECT (ISNULL(int4_Revenue,0)/ISNULL(int4_TripBal,1)) AS NonRevenue FROM PosTrans WHERE str_SerialNumber ='" + serialNumber + "' AND int2_Class NOT IN (731,732,733,10022,10024,10004,10000,10001,‭10002‬) ORDER BY dat_TransTime DESC;";
                     using (cmd = new SqlCommand(query, con))
                     {
                         var item = cmd.ExecuteScalar();

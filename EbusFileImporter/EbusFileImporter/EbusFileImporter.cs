@@ -59,32 +59,32 @@ namespace EbusFileImporter.App
                 {
                     files.ForEach(x =>
                     {
-                        if (!helper.IsFileLocked(x))
-                        {
-                            var splitPath = x.Replace("\\\\", "\\").Split('\\');
 
-                            if (splitPath.Length >= 5)
+                        var splitPath = x.Replace("\\\\", "\\").Split('\\');
+
+                        if (splitPath.Length >= 5)
+                        {
+                            switch (splitPath[4])
                             {
-                                switch (splitPath[4])
-                                {
-                                    case "In":
+                                case "In":
+                                    if (!helper.IsFileLocked(x))
+                                    {
                                         if (AppHelper.IsXmlFile(x))
                                         {
-                                            logger.Info("Processing: XML file found - Start - " + Path.GetFileName(x));
+                                            logger.Info("Processing: XML file found - Start - " + Path.GetFileName(x) + " - Database: " + splitPath[3]);
                                             importerEngine = new XmlImporter(logger);
-                                            logger.Info("Processing: XML file found - End - " + Path.GetFileName(x));
                                         }
                                         else
                                         {
-                                            logger.Info("Processing: CSV file found - Start - " + Path.GetFileName(x));
+                                            logger.Info("Processing: CSV file found - Start - " + Path.GetFileName(x) + " - Database: " + splitPath[3]);
                                             importerEngine = new CsvImporter(logger);
-                                            logger.Info("Processing: XML file found - End - " + Path.GetFileName(x));
                                         }
                                         importerEngine.ProcessFile(x);
-                                        break;
-                                    default:
-                                        break;
-                                }
+                                        logger.Info("Processing: file - End - " + Path.GetFileName(x) + " - Database: " + splitPath[3]);
+                                    }
+                                    break;
+                                default:
+                                    break;
                             }
                         }
                     });
