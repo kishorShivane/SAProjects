@@ -54,9 +54,13 @@ namespace EbusFileImporter.Core
             var dbName = splitFilepath[splitFilepath.Length - 3];
             try
             {
-                Logger.Info("***********************************************************");
-                Logger.Info("Started Import");
-                Logger.Info("***********************************************************");
+                if (Constants.DetailedLogging)
+                {
+                    Logger.Info("***********************************************************");
+                    Logger.Info("Started Import");
+                    Logger.Info("***********************************************************");
+                }
+
 
                 XDocument xdoc = XDocument.Load(filePath);
                 var nodes = xdoc.Root.Elements().ToList();
@@ -65,9 +69,12 @@ namespace EbusFileImporter.Core
                 var fileClosureNode = nodes.Where((x => x.Attribute("STXID").Value.Equals("82")));
                 if (fileClosureNode == null || !fileClosureNode.Any())
                 {
-                    Logger.Info("***********************************************************");
-                    Logger.Info("No file closure found, Moving file to error folder");
-                    Logger.Info("***********************************************************");
+                    if (Constants.DetailedLogging)
+                    {
+                        Logger.Info("***********************************************************");
+                        Logger.Info("No file closure found, Moving file to error folder");
+                        Logger.Info("***********************************************************");
+                    }
                     helper.MoveErrorFile(filePath, dbName);
                     if (Constants.EnableEmailTrigger) emailHelper.SendMail(filePath, dbName, "", EmailType.Error);
                     return false;
@@ -106,7 +113,8 @@ namespace EbusFileImporter.Core
                         }
                     }
                 }
-                Logger.Info("Check for validity of ExtendedWaybill date - End");
+                if (Constants.DetailedLogging)
+                { Logger.Info("Check for validity of ExtendedWaybill date - End"); }
                 #endregion
 
                 #region Initialize Variables
@@ -269,9 +277,12 @@ namespace EbusFileImporter.Core
                 }
                 else
                 {
-                    Logger.Info("***********************************************************");
-                    Logger.Info("No AuditFileStatus node found, Moving file to error folder");
-                    Logger.Info("***********************************************************");
+                    if (Constants.DetailedLogging)
+                    {
+                        Logger.Info("***********************************************************");
+                        Logger.Info("No AuditFileStatus node found, Moving file to error folder");
+                        Logger.Info("***********************************************************");
+                    }
                     helper.MoveErrorFile(filePath, dbName);
                     if (Constants.EnableEmailTrigger) emailHelper.SendMail(filePath, dbName, "", EmailType.Error);
                 }
@@ -959,9 +970,13 @@ namespace EbusFileImporter.Core
             }
             catch (Exception ex)
             {
-                Logger.Error("Failed in XML ProcessFile");
-                var exception = JsonConvert.SerializeObject(ex).ToString();
-                Logger.Error("Exception:" + exception);
+                var exception = JsonConvert.SerializeObject(ex).ToString(); ;
+                if (Constants.DetailedLogging)
+                {
+                    Logger.Error("Failed in XML ProcessFile");
+                    Logger.Error("Exception:" + exception);
+                }
+
                 helper.MoveErrorFile(filePath, dbName);
                 if (Constants.EnableEmailTrigger) emailHelper.SendMail(filePath, dbName, exception, EmailType.Error);
                 return result;

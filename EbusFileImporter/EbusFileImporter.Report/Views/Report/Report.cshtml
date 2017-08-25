@@ -1,0 +1,32 @@
+﻿@model List<EbusFileImporter.Report.Models.GridModel>
+@{
+    ViewBag.Title = "Report";
+    var today = DateTime.Now.ToString("dd/mm/yyyy hhmmss");
+}
+
+<center>
+    <h2>Importer Status Report</h2>
+    <table cellpadding="2" cellspacing="2" border="1">
+        <tr>
+            <th>Customer Name</th>
+            <th>Files Imported Today</th>
+            <th>Files Imported Yesterday</th>
+            <th>Error</th>
+            <th>Date Problem</th>
+            <th>Duplicate</th>
+            <th>Last update</th>
+        </tr>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Customer</td>
+                <td>@item.ImportedToday</td>
+                <td>@item.ImportedYesterday</td>
+                <td>@item.ErrorCount</td>
+                <td>@item.DateProblem</td>
+                <td>@item.DuplicateCount</td>
+                <td>@today</td>
+            </tr>
+        }
+    </table>
+</center>

@@ -71,16 +71,25 @@ namespace EbusFileImporter.App
                                     {
                                         if (AppHelper.IsXmlFile(x))
                                         {
-                                            logger.Info("Processing: XML file found - Start - " + Path.GetFileName(x) + " - Database: " + splitPath[3]);
+                                            if(Constants.DetailedLogging) logger.Info("Processing: XML file found - Start - " + Path.GetFileName(x) + " - Database: " + splitPath[3]);
+                                            logger.Info("------------------------*********---------------------------");
+                                            logger.Info("Importing File Start: "+ DateTime.Now.ToString());
+                                            logger.Info("Client: "+ splitPath[3]);
+                                            logger.Info("File Name: " + Path.GetFileName(x));
                                             importerEngine = new XmlImporter(logger);
                                         }
                                         else
                                         {
-                                            logger.Info("Processing: CSV file found - Start - " + Path.GetFileName(x) + " - Database: " + splitPath[3]);
+                                            if (Constants.DetailedLogging) logger.Info("Processing: CSV file found - Start - " + Path.GetFileName(x) + " - Database: " + splitPath[3]);
+                                            logger.Info("------------------------*********---------------------------");
+                                            logger.Info("Importing File Start: " + DateTime.Now.ToString());
+                                            logger.Info("Client: " + splitPath[3]);
+                                            logger.Info("File Name: " + Path.GetFileName(x));
                                             importerEngine = new CsvImporter(logger);
                                         }
                                         importerEngine.ProcessFile(x);
-                                        logger.Info("Processing: file - End - " + Path.GetFileName(x) + " - Database: " + splitPath[3]);
+                                        if (Constants.DetailedLogging) logger.Info("Processing: file - End - " + Path.GetFileName(x) + " - Database: " + splitPath[3]);
+                                        logger.Info("------------------------*********---------------------------");
                                     }
                                     break;
                                 default:
@@ -132,7 +141,6 @@ namespace EbusFileImporter.App
                                 break;
                         }
                     }
-
                 });
             }
             lblProcessedCount.Text = processed.ToString();

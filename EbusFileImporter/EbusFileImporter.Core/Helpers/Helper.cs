@@ -72,7 +72,7 @@ namespace EbusFileImporter.Core.Helpers
                 string path = currentpath;
                 string file = Path.GetFileName(currentpath);
                 //Current Path
-                string dirPath1 = Constants.DirectoryPath + @"\" + dbname + @"\" + @"Error\" + DateTime.Now.Year + @"\" + "0" + DateTime.Now.ToString("MMMM") + @"\" + DateTime.Now.Day;
+                string dirPath1 = Constants.DirectoryPath + @"\" + dbname + @"\" + @"Error\" + DateTime.Now.Year + @"\" + DateTime.Now.ToString("MMMM") + @"\" + DateTime.Now.Day;
                 //New Path
                 string path2 = dirPath1 + @"\" + file;
 
@@ -91,13 +91,16 @@ namespace EbusFileImporter.Core.Helpers
                 {
                     File.Delete(path);
                 }
-                Log.Info("Moved error file - " + file);
+                if (Constants.DetailedLogging) Log.Info("Moved error file - " + file);
             }
             catch (Exception ex)
             {
                 var exception = JsonConvert.SerializeObject(ex).ToString();
-                Log.Info("File move to error folder failed:" + exception);
-                Log.Info("File name: " + currentpath + " DBName: " + dbname);
+                if (Constants.DetailedLogging)
+                {
+                    Log.Info("File move to error folder failed:" + exception);
+                    Log.Info("File name: " + currentpath + " DBName: " + dbname);
+                }
                 if (Constants.EnableEmailTrigger) emailHelper.SendMail(currentpath, dbname, exception, EmailType.Error);
                 return;
             }
@@ -130,13 +133,16 @@ namespace EbusFileImporter.Core.Helpers
                 {
                     File.Delete(path);
                 }
-                Log.Info("Moved date problem file - " + file);
+                if (Constants.DetailedLogging) Log.Info("Moved date problem file - " + file);
             }
             catch (Exception ex)
             {
                 var exception = JsonConvert.SerializeObject(ex).ToString();
-                Log.Info("File move to date problem folder failed:" + exception);
-                Log.Info("File name: " + currentpath + " DBName: " + dbname);
+                if (Constants.DetailedLogging)
+                {
+                    Log.Info("File move to date problem folder failed:" + exception);
+                    Log.Info("File name: " + currentpath + " DBName: " + dbname);
+                }
                 if (Constants.EnableEmailTrigger) emailHelper.SendMail(currentpath, dbname, exception, EmailType.Error);
                 return;
             }
@@ -150,7 +156,7 @@ namespace EbusFileImporter.Core.Helpers
                 string path = currentpath;
                 string file = Path.GetFileName(currentpath);
                 string dirPath = Constants.DirectoryPath + @"\" + dbname + @"\" + @"Duplicate\" + DateTime.Now.Year + @"\" + "0" + DateTime.Now.ToString("MMMM") + @"\" + DateTime.Now.Day;
-                string path2 = dirPath+ @"\" + file;
+                string path2 = dirPath + @"\" + file;
 
                 if (!Directory.Exists(dirPath))
                 {
@@ -167,16 +173,19 @@ namespace EbusFileImporter.Core.Helpers
                 {
                     File.Delete(path);
                 }
-                Log.Info("Moved duplicate file - " + file);
-                Log.Info("Sending duplicate file mail started");
+                if (Constants.DetailedLogging) Log.Info("Moved duplicate file - " + file);
+                if (Constants.DetailedLogging) Log.Info("Sending duplicate file mail started");
                 if (Constants.EnableEmailTrigger) emailHelper.SendMail(currentpath, dbname, "", EmailType.Duplicate);
-                Log.Info("Sending duplicate file mail completed");
+                if (Constants.DetailedLogging) Log.Info("Sending duplicate file mail completed");
             }
             catch (Exception ex)
             {
                 var exception = JsonConvert.SerializeObject(ex).ToString();
-                Log.Info("File move to duplicate folder failed:" + exception);
-                Log.Info("File name: " + currentpath + " DBName: " + dbname);
+                if (Constants.DetailedLogging)
+                {
+                    Log.Info("File move to duplicate folder failed:" + exception);
+                    Log.Info("File name: " + currentpath + " DBName: " + dbname);
+                }
                 if (Constants.EnableEmailTrigger) emailHelper.SendMail(currentpath, dbname, exception, EmailType.Error);
                 return;
             }
@@ -209,13 +218,16 @@ namespace EbusFileImporter.Core.Helpers
                 {
                     File.Delete(path);
                 }
-                Log.Info("Moved successful file - " + file);
+                if (Constants.DetailedLogging) Log.Info("Moved successful file - " + file);
             }
             catch (Exception ex)
             {
                 var exception = JsonConvert.SerializeObject(ex).ToString();
-                Log.Info("File move to success folder failed:" + exception);
-                Log.Info("File name: " + currentpath + " DBName: " + dbname);
+                if (Constants.DetailedLogging)
+                {
+                    Log.Info("File move to success folder failed:" + exception);
+                    Log.Info("File name: " + currentpath + " DBName: " + dbname);
+                }
                 if (Constants.EnableEmailTrigger) emailHelper.SendMail(currentpath, dbname, exception, EmailType.Error);
                 return;
             }
@@ -295,7 +307,7 @@ namespace EbusFileImporter.Core.Helpers
             }
             catch (Exception)
             {
-                Log.Error("Failed in DirSearch");
+                if (Constants.DetailedLogging) Log.Error("Failed in DirSearch");
                 throw;
             }
 

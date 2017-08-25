@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EbusFileImporter.App", "EbusFileImporter\EbusFileImporter.App.csproj", "{8C2186EB-E866-4FE0-B690-0C410FC71CA7}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EbusFileImporter.Core", "EbusFileImporter.Core\EbusFileImporter.Core.csproj", "{BD0F8A1A-34CC-4CD9-A7E5-7E3168C74DC9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EbusFileImporter.DataProvider", "EbusFileImporter.DataProvider\EbusFileImporter.DataProvider.csproj", "{D568D89F-68FA-4534-975B-0D3857A68097}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EbusFileImporter.Logger", "EbusFileImporter.Logger\EbusFileImporter.Logger.csproj", "{74FB6FE1-CCD7-47B8-A785-1A2DFC7DAE1B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EbusFileImporter.Report", "EbusFileImporter.Report\EbusFileImporter.Report.csproj", "{86A597A6-3475-4994-8D77-7A043E898640}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EbusFileImporter.App", "EbusFileImporter\EbusFileImporter.App.csproj", "{8C2186EB-E866-4FE0-B690-0C410FC71CA7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +19,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{8C2186EB-E866-4FE0-B690-0C410FC71CA7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8C2186EB-E866-4FE0-B690-0C410FC71CA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8C2186EB-E866-4FE0-B690-0C410FC71CA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8C2186EB-E866-4FE0-B690-0C410FC71CA7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BD0F8A1A-34CC-4CD9-A7E5-7E3168C74DC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BD0F8A1A-34CC-4CD9-A7E5-7E3168C74DC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BD0F8A1A-34CC-4CD9-A7E5-7E3168C74DC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -33,6 +31,14 @@ Global
 		{74FB6FE1-CCD7-47B8-A785-1A2DFC7DAE1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{74FB6FE1-CCD7-47B8-A785-1A2DFC7DAE1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{74FB6FE1-CCD7-47B8-A785-1A2DFC7DAE1B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{86A597A6-3475-4994-8D77-7A043E898640}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{86A597A6-3475-4994-8D77-7A043E898640}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{86A597A6-3475-4994-8D77-7A043E898640}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{86A597A6-3475-4994-8D77-7A043E898640}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C2186EB-E866-4FE0-B690-0C410FC71CA7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C2186EB-E866-4FE0-B690-0C410FC71CA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C2186EB-E866-4FE0-B690-0C410FC71CA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C2186EB-E866-4FE0-B690-0C410FC71CA7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

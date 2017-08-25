@@ -21,6 +21,6 @@ namespace EbusFileImporter.App.Helpers
         public static int Port = Convert.ToInt32(ConfigurationManager.AppSettings["Port"]);
         public static string EmailUserName = ConfigurationManager.AppSettings["EmailUserName"];
         public static string EbusPassword = ConfigurationManager.AppSettings["EbusPassword"];
-
+        public static string DetailedLogging = ConfigurationManager.AppSettings["DetailedLogging"];
     }
 }

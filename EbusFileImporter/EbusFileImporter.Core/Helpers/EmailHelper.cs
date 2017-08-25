@@ -35,7 +35,7 @@ namespace EbusFileImporter.Core.Helpers
 
                 smtp = new SmtpClient(Constants.Host, Convert.ToInt32(Constants.Port));
                 smtp.Credentials = new NetworkCredential(Constants.EmailUserName, Constants.EbusPassword);
-                smtp.EnableSsl = false;
+                smtp.EnableSsl = true;
                 mailfrom = new MailAddress(Constants.FromEmail);
 
                 MailAddress mailto = new MailAddress(Constants.ToEmail);

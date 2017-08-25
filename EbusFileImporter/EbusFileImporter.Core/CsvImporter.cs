@@ -57,26 +57,28 @@ namespace EbusFileImporter.Core
 
             try
             {
-                Logger.Info("***********************************************************");
-                Logger.Info("Started Import");
-                Logger.Info("***********************************************************");
-
+                if (Constants.DetailedLogging)
+                {
+                    Logger.Info("***********************************************************");
+                    Logger.Info("Started Import");
+                    Logger.Info("***********************************************************");
+                }
                 string filename = Path.GetFileName(filePath);
                 //Atamelang File chech
                 if (filename.Contains("eBusCashier") == true)
                 {
-                    Logger.Info("Found eBusCashier CSV file - " + filename);
+                    if (Constants.DetailedLogging) Logger.Info("Found eBusCashier CSV file - " + filename);
                     //gets all the cashier file names
                     string[] csvFiles = Directory.GetFiles(Constants.DirectoryPath + @"\" + dbName + @"\" + @"Out\", "*.csv").Select(path => Path.GetFileName(path)).ToArray();
                     if (csvFiles.Length == 0 || !csvFiles.Where(x => x.Equals(filename)).Any())
                     {
-                        Logger.Info("Processing eBusCashier CSV file - " + filename);
+                        if (Constants.DetailedLogging) Logger.Info("Processing eBusCashier CSV file - " + filename);
                         LoadDataForAtamelang(filePath, dbName);
                         return true;
                     }
                     if (csvFiles.Where(x => x.Equals(filename)).Any())
                     {
-                        Logger.Info("Duplicate eBusCashier CSV file found - " + filename);
+                        if (Constants.DetailedLogging) Logger.Info("Duplicate eBusCashier CSV file found - " + filename);
                         helper.MoveDuplicateFile(filename, dbName);
                         return false;
                     }
@@ -85,18 +87,18 @@ namespace EbusFileImporter.Core
                 //Import for all other clients
                 else
                 {
-                    Logger.Info("Found other CSV file - " + filename);
+                    if (Constants.DetailedLogging) Logger.Info("Found other CSV file - " + filename);
                     //check file name in out folder first against file to import.
                     string[] csvFiles = Directory.GetFiles(Constants.DirectoryPath + @"\" + dbName + @"\" + @"Out\", "*.csv").Select(path => Path.GetFileName(path)).ToArray();
                     if (csvFiles.Length == 0 || !csvFiles.Where(x => x.Equals(filename)).Any())
                     {
-                        Logger.Info("Processing other CSV file - " + filename);
+                        if (Constants.DetailedLogging) Logger.Info("Processing other CSV file - " + filename);
                         LoadDataForOthers(filePath, dbName);
                         return true;
                     }
                     if (csvFiles.Where(x => x.Equals(filename)).Any())
                     {
-                        Logger.Info("Duplicate file found - " + Path.GetFileName(filePath));
+                        if (Constants.DetailedLogging) Logger.Info("Duplicate file found - " + Path.GetFileName(filePath));
                         helper.MoveDuplicateFile(filename, dbName);
                         return false;
                     }
@@ -104,9 +106,12 @@ namespace EbusFileImporter.Core
             }
             catch (Exception ex)
             {
-                Logger.Error("Failed in CSV ProcessFile");
-                var exception = JsonConvert.SerializeObject(ex).ToString();
-                Logger.Error("Exception:" + exception);
+                var exception = JsonConvert.SerializeObject(ex).ToString(); ;
+                if (Constants.DetailedLogging)
+                {
+                    Logger.Error("Failed in CSV ProcessFile");
+                    Logger.Error("Exception:" + exception);
+                }
                 helper.MoveErrorFile(filePath, dbName);
                 if (Constants.EnableEmailTrigger) emailHelper.SendMail(filePath, dbName, exception, EmailType.Error);
                 return result;
@@ -331,7 +336,7 @@ namespace EbusFileImporter.Core
                 #region Check Duplicate file
                 if (lines.Any())
                 {
-                    Logger.Info("Duplicate check started");
+                    if (Constants.DetailedLogging) Logger.Info("Duplicate check started");
                     var firstLine = lines.FirstOrDefault();
                     string[] values = firstLine.Split(',');
                     string date = values[1].ToString().Trim();
@@ -344,11 +349,11 @@ namespace EbusFileImporter.Core
                     DateTime Time12 = DateTime.Parse(CashierTime);
                     if (dbService.DoesCashierRecordExist(Employee, Revenue, Time12, newFile, dbName))
                     {
-                        Logger.Info("Duplicate file found - " + fileName);
+                        if (Constants.DetailedLogging) Logger.Info("Duplicate file found - " + fileName);
                         helper.MoveDuplicateFile(filePath, dbName);
                         return;
                     }
-                    Logger.Info("Duplicate check End");
+                    if (Constants.DetailedLogging) Logger.Info("Duplicate check End");
                 }
 
                 #endregion
