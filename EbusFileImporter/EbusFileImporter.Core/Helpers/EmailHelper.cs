@@ -51,10 +51,15 @@ namespace EbusFileImporter.Core.Helpers
                     body = body.Replace("[*Error*]", "Error Message: <div style='color:red'>" + exception + "</div>");
                     newmsg.Subject = Constants.ErrorEmailSubject;
                 }
-                else
+                else if (type == EmailType.Duplicate)
                 {
                     body = body.Replace("[*Error*]", "");
                     newmsg.Subject = Constants.DuplicateEmailSubject;
+                }
+                else if (type == EmailType.DateProblem)
+                {
+                    body = body.Replace("[*Error*]", "");
+                    newmsg.Subject = Constants.DateProblemEmailSubject;
                 }
                 body = body.Replace("[*Message*]", message);
 

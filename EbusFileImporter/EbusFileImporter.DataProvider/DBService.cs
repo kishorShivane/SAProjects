@@ -9,6 +9,7 @@ using EbusFileImporter.DataProvider.Models;
 using EbusFileImporter.Logger;
 using System.Data;
 using System.ComponentModel;
+using EbusFileImporter.DataProvider.Helpers;
 
 namespace EbusFileImporter.DataProvider
 {
@@ -66,7 +67,7 @@ namespace EbusFileImporter.DataProvider
             return result;
         }
 
-        public bool DoesCashierRecordExist(string employee, string revenue, DateTime dateTime,string cashierID, string connectionKey)
+        public bool DoesCashierRecordExist(string employee, string revenue, DateTime dateTime, string cashierID, string connectionKey)
         {
             var result = false;
             SqlConnection con = null;
@@ -182,7 +183,7 @@ namespace EbusFileImporter.DataProvider
             {
                 try
                 {
-                    Logger.Info("-------DB Transaction - Start-------");
+                    if (Constants.DetailedLogging) Logger.Info("-------DB Transaction - Start-------");
 
                     con.Open();
                     transaction = con.BeginTransaction();
@@ -195,28 +196,31 @@ namespace EbusFileImporter.DataProvider
                     if (xmlDataToImport.Inspectors.Any()) DbHelper.BulkCopyDataToTable<Inspector>("Inspector", xmlDataToImport.Inspectors, con, transaction);
                     if (xmlDataToImport.Trans.Any()) DbHelper.BulkCopyDataToTable<Trans>("Trans", xmlDataToImport.Trans, con, transaction);
                     if (xmlDataToImport.PosTrans.Any()) DbHelper.BulkCopyDataToTable<PosTrans>("PosTrans", xmlDataToImport.PosTrans, con, transaction);
-                    if (xmlDataToImport.PosTrans.Any()) DbHelper.BulkCopyDataToTable<AuditFileStatus>("AuditFileStatus", xmlDataToImport.AuditFileStatuss, con, transaction);
+                    if (xmlDataToImport.AuditFileStatuss.Any()) DbHelper.BulkCopyDataToTable<AuditFileStatus>("AuditFileStatus", xmlDataToImport.AuditFileStatuss, con, transaction);
                     transaction.Commit();
 
-                    Logger.Info("Duties Inserted: " + xmlDataToImport.Duties.Count().ToString());
-                    Logger.Info("Modules Inserted: " + xmlDataToImport.Modules.Count().ToString());
-                    Logger.Info("Waybills Inserted:  " + xmlDataToImport.Waybills.Count().ToString());
-                    Logger.Info("Journeys Inserted:  " + xmlDataToImport.Journeys.Count().ToString());
-                    Logger.Info("Stages Inserted:  " + xmlDataToImport.Stages.Count().ToString());
-                    Logger.Info("Staffs Inserted: " + xmlDataToImport.Staffs.Count().ToString());
-                    Logger.Info("Inspectors Inserted: " + xmlDataToImport.Inspectors.Count().ToString());
-                    Logger.Info("PosTrans Inserted: " + xmlDataToImport.PosTrans.Count().ToString());
-                    Logger.Info("Trans Inserted: " + xmlDataToImport.Trans.Count().ToString());
-                    Logger.Info("AuditFileStatus Inserted: " + xmlDataToImport.AuditFileStatuss.Count().ToString());
-                    Logger.Info("Commited Changes");
-                    Logger.Info("-------DB Transaction - End-------");
+                    if (Constants.DetailedLogging)
+                    {
+                        Logger.Info("Duties Inserted: " + xmlDataToImport.Duties.Count().ToString());
+                        Logger.Info("Modules Inserted: " + xmlDataToImport.Modules.Count().ToString());
+                        Logger.Info("Waybills Inserted:  " + xmlDataToImport.Waybills.Count().ToString());
+                        Logger.Info("Journeys Inserted:  " + xmlDataToImport.Journeys.Count().ToString());
+                        Logger.Info("Stages Inserted:  " + xmlDataToImport.Stages.Count().ToString());
+                        Logger.Info("Staffs Inserted: " + xmlDataToImport.Staffs.Count().ToString());
+                        Logger.Info("Inspectors Inserted: " + xmlDataToImport.Inspectors.Count().ToString());
+                        Logger.Info("PosTrans Inserted: " + xmlDataToImport.PosTrans.Count().ToString());
+                        Logger.Info("Trans Inserted: " + xmlDataToImport.Trans.Count().ToString());
+                        Logger.Info("AuditFileStatus Inserted: " + xmlDataToImport.AuditFileStatuss.Count().ToString());
+                        Logger.Info("Commited Changes");
+                        Logger.Info("-------DB Transaction - End-------");
+                    }
                 }
                 catch (Exception)
                 {
-                    Logger.Error("Failed in InsertXmlFileData");
+                    if (Constants.DetailedLogging) Logger.Error("Failed in InsertXmlFileData");
                     transaction.Rollback();
-                    Logger.Info("Transaction Rolledback");
-                    Logger.Info("XML Data Insertion Failed in DB Service");
+                    if (Constants.DetailedLogging) Logger.Info("Transaction Rolledback");
+                    if (Constants.DetailedLogging) Logger.Info("XML Data Insertion Failed in DB Service");
                     throw;
                 }
                 finally
@@ -238,7 +242,7 @@ namespace EbusFileImporter.DataProvider
             {
                 try
                 {
-                    Logger.Info("-------DB Transaction - Start-------");
+                    if (Constants.DetailedLogging) Logger.Info("-------DB Transaction - Start-------");
 
                     con.Open();
                     transaction = con.BeginTransaction();
@@ -249,20 +253,22 @@ namespace EbusFileImporter.DataProvider
                     if (csvDataToImport.Staffs.Any()) DbHelper.BulkCopyDataToTable<Staff>("Staff", csvDataToImport.Staffs, con, transaction);
 
                     transaction.Commit();
-
-                    Logger.Info("Cashiers Inserted:  " + csvDataToImport.Cashiers.Count().ToString());
-                    Logger.Info("CashierStaffESNs Inserted: " + csvDataToImport.CashierStaffESNs.Count().ToString());
-                    Logger.Info("CashierDetails Inserted:  " + csvDataToImport.CashierDetails.Count().ToString());
-                    Logger.Info("CashierSigonSignoffs Inserted:  " + csvDataToImport.CashierSigonSignoffs.Count().ToString());
-                    Logger.Info("Commited Changes");
-                    Logger.Info("-------DB Transaction - End-------");
+                    if (Constants.DetailedLogging)
+                    {
+                        Logger.Info("Cashiers Inserted:  " + csvDataToImport.Cashiers.Count().ToString());
+                        Logger.Info("CashierStaffESNs Inserted: " + csvDataToImport.CashierStaffESNs.Count().ToString());
+                        Logger.Info("CashierDetails Inserted:  " + csvDataToImport.CashierDetails.Count().ToString());
+                        Logger.Info("CashierSigonSignoffs Inserted:  " + csvDataToImport.CashierSigonSignoffs.Count().ToString());
+                        Logger.Info("Commited Changes");
+                        Logger.Info("-------DB Transaction - End-------");
+                    }
                 }
                 catch (Exception)
                 {
-                    Logger.Error("Failed in InsertCsvFileData");
+                    if (Constants.DetailedLogging) Logger.Error("Failed in InsertCsvFileData");
                     transaction.Rollback();
-                    Logger.Info("Transaction Rolledback");
-                    Logger.Info("CSV Data Insertion Failed in DB Service");
+                    if (Constants.DetailedLogging) Logger.Info("Transaction Rolledback");
+                    if (Constants.DetailedLogging) Logger.Info("CSV Data Insertion Failed in DB Service");
                     throw;
                 }
                 finally
@@ -280,13 +286,15 @@ namespace EbusFileImporter.DataProvider
             var result = 800;
             SqlConnection con = null;
             SqlCommand cmd = null;
+            var classIDs = @"10002,10004,10000,10022,10024,10001,731,732,733‬";
             try
             {
 
                 using (con = GetConnection(GetConnectionString(connectionKey)))
                 {
                     con.Open();
-                    string query = "SELECT (ISNULL(int4_Revenue,0)/ISNULL(int4_TripBal,1)) AS NonRevenue FROM PosTrans WHERE str_SerialNumber ='" + serialNumber + "' AND int2_Class NOT IN (731,732,733,10022,10024,10004,10000,10001,‭10002‬) ORDER BY dat_TransTime DESC;";
+                    string query = @"SELECT (ISNULL(int4_Revenue,0)/ISNULL(int4_TripBal,1)) AS NonRevenue FROM PosTrans WHERE str_SerialNumber ='" + serialNumber + "' AND int2_Class NOT IN (" + classIDs + ") ORDER BY dat_TransTime DESC;";
+                    query = query.Replace("‬", "");
                     using (cmd = new SqlCommand(query, con))
                     {
                         var item = cmd.ExecuteScalar();
@@ -321,7 +329,7 @@ namespace EbusFileImporter.DataProvider
                 using (con = GetConnection(GetConnectionString(connectionKey)))
                 {
                     con.Open();
-                    string query = "SELECT * FROM Duty WHERE int4_OperatorID = " + int4_OperatorID + " AND CONVERT(VARCHAR(24),dat_DutyStartTime,113) = CONVERT(VARCHAR(24),'" + dat_DutyStartTime + "',113) AND CONVERT(VARCHAR(24),dat_DutyStopTime,113) =  CONVERT(VARCHAR(24),'" + dat_DutyStopTime + "',113);";
+                    string query = "SELECT * FROM Duty WHERE int4_OperatorID = " + int4_OperatorID + " AND CONVERT(VARCHAR(10),dat_DutyStartTime, 103) + ' ' + CONVERT(VARCHAR(8),dat_DutyStartTime, 108) = CONVERT(VARCHAR(24),'" + dat_DutyStartTime + "',113) AND CONVERT(VARCHAR(10),dat_DutyStopTime, 103) + ' ' + CONVERT(VARCHAR(8),dat_DutyStopTime, 108) =  CONVERT(VARCHAR(24),'" + dat_DutyStopTime + "',113);";
                     using (cmd = new SqlCommand(query, con))
                     {
                         var item = cmd.ExecuteScalar();

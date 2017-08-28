@@ -31,5 +31,6 @@ namespace EbusFileImporter.DataProvider.Models
         public Nullable<int> int4_AnnulCash { get; set; }
         public Nullable<int> id_SCTrans { get; set; }
         public Nullable<int> int4_TicketSerialNumber { get; set; }
+        public Nullable<DateTime> SmartCardExipry { get; set; }
     }
 }

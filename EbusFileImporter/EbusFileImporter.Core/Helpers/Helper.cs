@@ -175,7 +175,7 @@ namespace EbusFileImporter.Core.Helpers
                 }
                 if (Constants.DetailedLogging) Log.Info("Moved duplicate file - " + file);
                 if (Constants.DetailedLogging) Log.Info("Sending duplicate file mail started");
-                if (Constants.EnableEmailTrigger) emailHelper.SendMail(currentpath, dbname, "", EmailType.Duplicate);
+                //if (Constants.EnableEmailTrigger) emailHelper.SendMail(currentpath, dbname, "", EmailType.Duplicate);
                 if (Constants.DetailedLogging) Log.Info("Sending duplicate file mail completed");
             }
             catch (Exception ex)
@@ -287,6 +287,24 @@ namespace EbusFileImporter.Core.Helpers
                 var revenueBalance = "";
                 if (isFirstHalf) revenueBalance = productData.Substring(0, 6); else revenueBalance = productData.Substring(6, 6);
                 result = Convert.ToInt32(revenueBalance);
+            }
+            return result;
+        }
+
+        public DateTime? GetSmartCardExipryFromProductDate(string productData)
+        {
+            DateTime? result = null;
+            if (productData.Length >= 12)
+            {
+                var hexValue = productData.Substring(8, 4);
+                var binaryValue = Convert.ToString(Convert.ToInt32(hexValue, 16), 2).PadLeft(16, '0');
+                var day = Convert.ToInt32(binaryValue.Substring(0, 5), 2);
+                var month = Convert.ToInt32(binaryValue.Substring(5, 4), 2);
+                var year = Convert.ToInt32(binaryValue.Substring(9, 7), 2) + 1991;
+                if (year == 1991)
+                    result = null;
+                else
+                    result = new DateTime(year, month, day);
             }
             return result;
         }

@@ -68,8 +68,9 @@ namespace EbusFileImporter.Report.Controllers
                             }
                         }
                     }
-                    gridModels.Add(gridModel);
                 });
+
+                if (gridModel != null) gridModels.Add(gridModel);
             }
             return View(gridModels);
         }

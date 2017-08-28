@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EbusFileImporter.Core.Helpers
+namespace EbusFileImporter.DataProvider.Helpers
 {
     public partial class Constants
     {

@@ -55,6 +55,7 @@
   <ItemGroup>
     <Compile Include="DbHelper.cs" />
     <Compile Include="DBService.cs" />
+    <Compile Include="Helper\Constants.cs" />
     <Compile Include="Models\AuditFileStatus.cs" />
     <Compile Include="Models\Cashier.cs" />
     <Compile Include="Models\CashierDetail.cs" />

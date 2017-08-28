@@ -83,29 +83,28 @@ namespace EbusFileImporter.Core
 
                 #region Check for validity of ExtendedWaybill date
                 Logger.Info("Check for validity of ExtendedWaybill date - Start");
-                var extendedWaybill = nodes.Where((x => x.Attribute("STXID").Value.Equals("122")));
+                var extendedWaybill = nodes.Where((x => x.Attribute("STXID").Value.Equals("122"))).OrderBy(x => x.Attribute("Position").Value);
                 var tempDutyDetail = nodes.Where((x => x.Attribute("STXID").Value.Equals("151"))).FirstOrDefault();
                 if (tempDutyDetail != null && extendedWaybill != null && extendedWaybill.Any())
                 {
-                    var dutyDate = helper.ConvertToInsertDateString(tempDutyDetail.Element("DutyDate").Value);
+                    var foundDataProblem = false;
+                    var dutyDate = helper.ConvertToInsertDateTimeString(tempDutyDetail.Element("DutyDate").Value, tempDutyDetail.Element("DutyTime").Value);
                     var tempList = extendedWaybill.ToList();
-                    for (var i = tempList.Count() - 1; i >= 0; i--)
+                    for (var i = 0; i <= tempList.Count() - 1; i++)
                     {
-                        var tempDate = helper.ConvertToInsertDateString(tempList[i].Element("StartDate").Value);
-                        if (i == 0)
+                        DateTime? tempNextStartDate = null;
+                        var startDateTime = helper.ConvertToInsertDateTimeString(tempList[i].Element("StartDate").Value, tempList[i].Element("StartTime").Value);
+                        var stopDateTime = helper.ConvertToInsertDateTimeString(tempList[i].Element("StopDate").Value, tempList[i].Element("StopTime").Value);
+                        if ((i + 1) <= tempList.Count()-1)
                         {
-                            if (DateTime.Compare(tempDate, dutyDate) > 0)
-                            {
-                                helper.MoveDateProblemFile(filePath, dbName);
-                                if (Constants.EnableEmailTrigger) emailHelper.SendMail(filePath, dbName, "", EmailType.DateProblem);
-                                return false;
-                            }
-                            break;
+                            tempNextStartDate = helper.ConvertToInsertDateTimeString(tempList[i + 1].Element("StartDate").Value, tempList[i + 1].Element("StartTime").Value);
                         }
 
-                        var tempNextDate = helper.ConvertToInsertDateString(tempList[i - 1].Element("StartDate").Value);
+                        if (DateTime.Compare(startDateTime, stopDateTime) >= 0) foundDataProblem = true;
+                        if (i == 0 && DateTime.Compare(startDateTime, dutyDate) >= 0) foundDataProblem = true;
+                        if (tempNextStartDate != null && DateTime.Compare(tempNextStartDate.Value, stopDateTime) >= 0) foundDataProblem = true;
 
-                        if (DateTime.Compare(tempNextDate, tempDate) > 0)
+                        if (foundDataProblem)
                         {
                             helper.MoveDateProblemFile(filePath, dbName);
                             if (Constants.EnableEmailTrigger) emailHelper.SendMail(filePath, dbName, "", EmailType.DateProblem);
@@ -449,6 +448,7 @@ namespace EbusFileImporter.Core
                                                 transDetail.int2_Transfers = 1;
                                                 transDetail.int4_RevenueBal = 0;
                                                 transDetail.int4_TripBal = helper.GetTripBalanceFromProductData(productData);
+                                                transDetail.SmartCardExipry = helper.GetSmartCardExipryFromProductDate(productData);
                                                 if (!helper.IsTransferTransaction(productData))
                                                 {
                                                     //Adult MJ Transfer
@@ -470,6 +470,7 @@ namespace EbusFileImporter.Core
                                                 transDetail.int2_Transfers = 1;
                                                 transDetail.int4_RevenueBal = 0;
                                                 transDetail.int4_TripBal = helper.GetTripBalanceFromProductData(productData);
+                                                transDetail.SmartCardExipry = helper.GetSmartCardExipryFromProductDate(productData);
                                                 if (!helper.IsTransferTransaction(productData))
                                                 {
                                                     //Scholar MJ Transfer
