@@ -13,5 +13,6 @@ namespace EbusFileImporter.Report.Models
         public int ErrorCount { get; set; }
         public int DateProblem { get; set; }
         public int DuplicateCount { get; set; }
+        public string LastUpdated { get; set; }
     }
 }

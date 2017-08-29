@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -271,7 +272,7 @@ namespace EbusFileImporter.Core
                     auditFileDetail.DriverStatus2DateTime = helper.ConvertToInsertDateTimeString((string)node151.Element("DutyDate"), (string)nextnode.Element("Time"));
                     auditFileDetail.DutySignOffMode = (int)node154.Element("SignOffMode");
                     auditFileDetail.RecordModified = todayDate;
-
+                    auditFileDetail.AuditFileName = Path.GetFileName(filePath);
                     auditFileDetails.Add(auditFileDetail);
                 }
                 else
@@ -570,6 +571,8 @@ namespace EbusFileImporter.Core
                                                 transDetail.int4_TripBal = helper.GetTripBalanceFromProductData(productData);
                                                 posTransDetail = MapTransToPosTrans(transDetail);
                                                 posTransDetail.id_PosTrans = latestPosTransID;
+                                                posTransDetail.AmountRecharged = 0;
+                                                posTransDetail.TripsRecharged = helper.GetTripRechargedFromProductData(productData);
                                                 break;
                                             case "2718":
                                                 //Adult MJ 12 Recharge
@@ -583,6 +586,8 @@ namespace EbusFileImporter.Core
                                                 transDetail.int4_TripBal = helper.GetTripBalanceFromProductData(productData);
                                                 posTransDetail = MapTransToPosTrans(transDetail);
                                                 posTransDetail.id_PosTrans = latestPosTransID;
+                                                posTransDetail.AmountRecharged = 0;
+                                                posTransDetail.TripsRecharged = helper.GetTripRechargedFromProductData(productData);
                                                 break;
                                             case "2727":
                                                 //Adult MJ 14 Recharge
@@ -596,6 +601,8 @@ namespace EbusFileImporter.Core
                                                 transDetail.int4_TripBal = helper.GetTripBalanceFromProductData(productData);
                                                 posTransDetail = MapTransToPosTrans(transDetail);
                                                 posTransDetail.id_PosTrans = latestPosTransID;
+                                                posTransDetail.AmountRecharged = 0;
+                                                posTransDetail.TripsRecharged = helper.GetTripRechargedFromProductData(productData);
                                                 break;
                                             case "2722":
                                                 //Adult MJ 44 Recharge
@@ -609,6 +616,8 @@ namespace EbusFileImporter.Core
                                                 transDetail.int4_TripBal = helper.GetTripBalanceFromProductData(productData);
                                                 posTransDetail = MapTransToPosTrans(transDetail);
                                                 posTransDetail.id_PosTrans = latestPosTransID;
+                                                posTransDetail.AmountRecharged = 0;
+                                                posTransDetail.TripsRecharged = helper.GetTripRechargedFromProductData(productData);
                                                 break;
                                             case "2723":
                                                 //Adult MJ 52 Recharge
@@ -622,6 +631,8 @@ namespace EbusFileImporter.Core
                                                 transDetail.int4_TripBal = helper.GetTripBalanceFromProductData(productData);
                                                 posTransDetail = MapTransToPosTrans(transDetail);
                                                 posTransDetail.id_PosTrans = latestPosTransID;
+                                                posTransDetail.AmountRecharged = 0;
+                                                posTransDetail.TripsRecharged = helper.GetTripRechargedFromProductData(productData);
                                                 break;
                                             case "2716":
                                                 //Scholar MJ 10 Recharge
@@ -635,6 +646,8 @@ namespace EbusFileImporter.Core
                                                 transDetail.int4_TripBal = helper.GetTripBalanceFromProductData(productData);
                                                 posTransDetail = MapTransToPosTrans(transDetail);
                                                 posTransDetail.id_PosTrans = latestPosTransID;
+                                                posTransDetail.AmountRecharged = 0;
+                                                posTransDetail.TripsRecharged = helper.GetTripRechargedFromProductData(productData);
                                                 break;
                                             case "271C":
                                                 //Scholar MJ 44 Recharge
@@ -648,6 +661,8 @@ namespace EbusFileImporter.Core
                                                 transDetail.int4_TripBal = helper.GetTripBalanceFromProductData(productData);
                                                 posTransDetail = MapTransToPosTrans(transDetail);
                                                 posTransDetail.id_PosTrans = latestPosTransID;
+                                                posTransDetail.AmountRecharged = 0;
+                                                posTransDetail.TripsRecharged = helper.GetTripRechargedFromProductData(productData);
                                                 break;
                                             case "2726":
                                                 //SV 10 Recharge
@@ -661,6 +676,8 @@ namespace EbusFileImporter.Core
                                                 transDetail.int4_TripBal = 0;
                                                 posTransDetail = MapTransToPosTrans(transDetail);
                                                 posTransDetail.id_PosTrans = latestPosTransID;
+                                                posTransDetail.AmountRecharged = helper.GetHalfProductData(productData, true); ;
+                                                posTransDetail.TripsRecharged = 0;
                                                 break;
                                             case "2728":
                                                 //SV 20 Recharge
@@ -674,6 +691,8 @@ namespace EbusFileImporter.Core
                                                 transDetail.int4_TripBal = 0;
                                                 posTransDetail = MapTransToPosTrans(transDetail);
                                                 posTransDetail.id_PosTrans = latestPosTransID;
+                                                posTransDetail.AmountRecharged = helper.GetHalfProductData(productData, true); ;
+                                                posTransDetail.TripsRecharged = 0;
                                                 break;
                                             case "2714":
                                                 //SV 50 Recharge
@@ -687,6 +706,8 @@ namespace EbusFileImporter.Core
                                                 transDetail.int4_TripBal = 0;
                                                 posTransDetail = MapTransToPosTrans(transDetail);
                                                 posTransDetail.id_PosTrans = latestPosTransID;
+                                                posTransDetail.AmountRecharged = helper.GetHalfProductData(productData, true); ;
+                                                posTransDetail.TripsRecharged = 0;
                                                 break;
                                             case "2710":
                                                 //SV 100 Recharge
@@ -700,6 +721,8 @@ namespace EbusFileImporter.Core
                                                 transDetail.int4_TripBal = 0;
                                                 posTransDetail = MapTransToPosTrans(transDetail);
                                                 posTransDetail.id_PosTrans = latestPosTransID;
+                                                posTransDetail.AmountRecharged = helper.GetHalfProductData(productData, true); ;
+                                                posTransDetail.TripsRecharged = 0;
                                                 break;
                                             case "2711":
                                                 //SV 200 Recharge
@@ -713,6 +736,8 @@ namespace EbusFileImporter.Core
                                                 transDetail.int4_TripBal = 0;
                                                 posTransDetail = MapTransToPosTrans(transDetail);
                                                 posTransDetail.id_PosTrans = latestPosTransID;
+                                                posTransDetail.AmountRecharged = helper.GetHalfProductData(productData, true); ;
+                                                posTransDetail.TripsRecharged = 0;
                                                 break;
                                             case "2712":
                                                 //SV 300 Recharge
@@ -726,6 +751,8 @@ namespace EbusFileImporter.Core
                                                 transDetail.int4_TripBal = 0;
                                                 posTransDetail = MapTransToPosTrans(transDetail);
                                                 posTransDetail.id_PosTrans = latestPosTransID;
+                                                posTransDetail.AmountRecharged = helper.GetHalfProductData(productData, true); ;
+                                                posTransDetail.TripsRecharged = 0;
                                                 break;
                                             case "2AF9":
                                                 //Adult MJ Deposit

@@ -286,13 +286,14 @@ namespace EbusFileImporter.DataProvider
             var result = 800;
             SqlConnection con = null;
             SqlCommand cmd = null;
-            var classIDs = @"10002,10004,10000,10022,10024,10001,731,732,733‬";
+            var classIDs = @"10002,10004,10000,10022,10024,10001,731,732,733‬,741,742,743,744,745,746";
             try
             {
 
                 using (con = GetConnection(GetConnectionString(connectionKey)))
                 {
                     con.Open();
+                    //string query = @"SELECT (ISNULL(int4_Revenue,0)/(CASE WHEN ISNULL(int4_TripBal,1) = 0 THEN 1 ELSE ISNULL(int4_TripBal,1) END)) AS NonRevenue FROM PosTrans WHERE str_SerialNumber ='" + serialNumber + "' AND int2_Class NOT IN (" + classIDs + ") ORDER BY dat_TransTime DESC;";
                     string query = @"SELECT (ISNULL(int4_Revenue,0)/ISNULL(int4_TripBal,1)) AS NonRevenue FROM PosTrans WHERE str_SerialNumber ='" + serialNumber + "' AND int2_Class NOT IN (" + classIDs + ") ORDER BY dat_TransTime DESC;";
                     query = query.Replace("‬", "");
                     using (cmd = new SqlCommand(query, con))
@@ -307,7 +308,7 @@ namespace EbusFileImporter.DataProvider
             }
             catch (Exception)
             {
-                Logger.Error("Failed in GetNonRevenueFormPosTrans");
+                Logger.Error("Failed in GetNonRevenueFormPosTrans:" + serialNumber);
                 throw;
             }
             finally

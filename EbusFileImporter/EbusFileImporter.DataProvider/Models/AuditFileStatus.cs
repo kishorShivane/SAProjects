@@ -20,5 +20,6 @@ namespace EbusFileImporter.DataProvider.Models
         public System.DateTime DriverStatus2DateTime { get; set; }
         public int DutySignOffMode { get; set; }
         public System.DateTime RecordModified { get; set; }
+        public string AuditFileName { get; set; }
     }
 }

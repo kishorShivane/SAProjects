@@ -112,6 +112,10 @@
       <Project>{74FB6FE1-CCD7-47B8-A785-1A2DFC7DAE1B}</Project>
       <Name>EbusFileImporter.Logger</Name>
     </ProjectReference>
+    <ProjectReference Include="..\EbusFileImporter.Report\EbusFileImporter.Report.csproj">
+      <Project>{86a597a6-3475-4994-8d77-7a043e898640}</Project>
+      <Name>EbusFileImporter.Report</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">

@@ -114,7 +114,7 @@ namespace EbusFileImporter.Core.Helpers
                 string path = currentpath;
                 string file = Path.GetFileName(currentpath);
                 //Current Path
-                string dirPath1 = Constants.DirectoryPath + @"\" + dbname + @"\" + @"DateProblem\" + DateTime.Now.Year + @"\" + "0" + DateTime.Now.ToString("MMMM") + @"\" + DateTime.Now.Day;
+                string dirPath1 = Constants.DirectoryPath + @"\" + dbname + @"\" + @"DateProblem\" + DateTime.Now.Year + @"\" + DateTime.Now.ToString("MMMM") + @"\" + DateTime.Now.Day;
                 //New Path
                 string path2 = dirPath1 + @"\" + file;
 
@@ -155,7 +155,7 @@ namespace EbusFileImporter.Core.Helpers
                 //Declarations
                 string path = currentpath;
                 string file = Path.GetFileName(currentpath);
-                string dirPath = Constants.DirectoryPath + @"\" + dbname + @"\" + @"Duplicate\" + DateTime.Now.Year + @"\" + "0" + DateTime.Now.ToString("MMMM") + @"\" + DateTime.Now.Day;
+                string dirPath = Constants.DirectoryPath + @"\" + dbname + @"\" + @"Duplicate\" + DateTime.Now.Year + @"\" + DateTime.Now.ToString("MMMM") + @"\" + DateTime.Now.Day;
                 string path2 = dirPath + @"\" + file;
 
                 if (!Directory.Exists(dirPath))
@@ -200,7 +200,7 @@ namespace EbusFileImporter.Core.Helpers
                 string path = currentpath;
                 string file = Path.GetFileName(currentpath);
 
-                string dirPath1 = Constants.DirectoryPath + @"\" + dbname + @"\" + @"Out\" + DateTime.Now.Year + @"\" + "0" + DateTime.Now.ToString("MMMM") + @"\" + DateTime.Now.Day;
+                string dirPath1 = Constants.DirectoryPath + @"\" + dbname + @"\" + @"Out\" + DateTime.Now.Year + @"\" + DateTime.Now.ToString("MMMM") + @"\" + DateTime.Now.Day;
                 string path2 = dirPath1 + @"\" + file;
 
                 //Checks directory or create it
@@ -240,6 +240,18 @@ namespace EbusFileImporter.Core.Helpers
             {
                 var charArrayProdData = productData.ToCharArray();
                 var tripBalance = charArrayProdData[2].ToString() + charArrayProdData[3].ToString();
+                result = Convert.ToInt32(tripBalance, 16);
+            }
+            return result;
+        }
+
+        public int GetTripRechargedFromProductData(string productData)
+        {
+            var result = 0;
+            if (productData.Length >= 12)
+            {
+                var charArrayProdData = productData.ToCharArray();
+                var tripBalance = charArrayProdData[0].ToString() + charArrayProdData[1].ToString();
                 result = Convert.ToInt32(tripBalance, 16);
             }
             return result;
@@ -301,10 +313,15 @@ namespace EbusFileImporter.Core.Helpers
                 var day = Convert.ToInt32(binaryValue.Substring(0, 5), 2);
                 var month = Convert.ToInt32(binaryValue.Substring(5, 4), 2);
                 var year = Convert.ToInt32(binaryValue.Substring(9, 7), 2) + 1991;
-                if (year == 1991)
-                    result = null;
-                else
+                try
+                {
                     result = new DateTime(year, month, day);
+                }
+                catch (Exception)
+                {
+                    result = null;
+                }
+
             }
             return result;
         }
