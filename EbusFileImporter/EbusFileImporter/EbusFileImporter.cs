@@ -41,8 +41,8 @@ namespace EbusFileImporter.App
             {
                 worker = new BackgroundWorker();
                 worker.DoWork += new DoWorkEventHandler(StartProcess);
-                LoadGridData();
-                //InitializeRefreshTimer();
+                //LoadGridData();
+                InitializeRefreshTimer();
                 //DirectoryMonitor dirMonitor = new DirectoryMonitor(Constants.DirectoryPath, logger);
                 //InitializeRefreshTimer(); 
             }
@@ -99,7 +99,7 @@ namespace EbusFileImporter.App
                                     break;
                             }
                         }
-                        LoadGridData();
+                        //LoadGridData();
                     });
                 }
 
@@ -107,17 +107,17 @@ namespace EbusFileImporter.App
             }
         }
 
-        //public void InitializeRefreshTimer()
-        //{
-        //    Timer logTimer = new Timer();
-        //    logTimer.Interval = (20 * 1000); // 5 secs
-        //    logTimer.Tick += new EventHandler(TriggerLogRrefresh);
-        //    logTimer.Start();
+        public void InitializeRefreshTimer()
+        {
+            //Timer logTimer = new Timer();
+            //logTimer.Interval = (20 * 1000); // 5 secs
+            //logTimer.Tick += new EventHandler(TriggerLogRrefresh);
+            //logTimer.Start();
 
-        //    System.Timers.Timer timer = new System.Timers.Timer(1000);
-        //    timer.Elapsed += LoadGridData;
-        //    timer.Start();
-        //}
+            System.Timers.Timer timer = new System.Timers.Timer(1000);
+            timer.Elapsed += TriggerStartProcess;
+            timer.Start();
+        }
 
         private void TriggerLogRrefresh(object sender, EventArgs e)
         {
@@ -178,7 +178,7 @@ namespace EbusFileImporter.App
                         gridModels.Add(gridModel);
                         gridModel = new GridModel();
                     }
-                    if (splitPath.Length >= 5)
+                    if (splitPath.Length >= 7)
                     {
                         gridModel.Customer = splitPath[3];
                         if (splitPath[5] == thisYear.ToString() && splitPath[6] == thisMonth)
@@ -213,7 +213,7 @@ namespace EbusFileImporter.App
 
                 if (gridModel != null) gridModels.Add(gridModel);
             }
-            gridModels.ForEach(x => x.LastUpdated = DateTime.Now.ToString("dd/mm/yyyy hhmmss"));
+            if(gridModels.Any()) gridModels.ForEach(x => x.LastUpdated = DateTime.Now.ToString("dd/mm/yyyy hhmmss"));
             // Initialize the DataGridView.
             grdReportView.AutoGenerateColumns = true;
             grdReportView.AutoSize = true;

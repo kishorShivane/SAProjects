@@ -188,15 +188,25 @@ namespace EbusFileImporter.DataProvider
                     con.Open();
                     transaction = con.BeginTransaction();
                     if (xmlDataToImport.Modules.Any()) DbHelper.BulkCopyDataToTable<Module>("Module", xmlDataToImport.Modules, con, transaction);
+                    Logger.Info("Inserted Module");
                     if (xmlDataToImport.Duties.Any()) DbHelper.BulkCopyDataToTable<Duty>("Duty", xmlDataToImport.Duties, con, transaction);
+                    Logger.Info("Inserted Duty");
                     if (xmlDataToImport.Waybills.Any()) DbHelper.BulkCopyDataToTable<Waybill>("Waybill", xmlDataToImport.Waybills, con, transaction);
+                    Logger.Info("Inserted Waybill");
                     if (xmlDataToImport.Journeys.Any()) DbHelper.BulkCopyDataToTable<Journey>("Journey", xmlDataToImport.Journeys, con, transaction);
+                    Logger.Info("Inserted Journey");
                     if (xmlDataToImport.Stages.Any()) DbHelper.BulkCopyDataToTable<Stage>("Stage", xmlDataToImport.Stages, con, transaction);
+                    Logger.Info("Inserted Stage");
                     if (xmlDataToImport.Staffs.Any()) DbHelper.BulkCopyDataToTable<Staff>("Staff", xmlDataToImport.Staffs, con, transaction);
+                    Logger.Info("Inserted Staff");
                     if (xmlDataToImport.Inspectors.Any()) DbHelper.BulkCopyDataToTable<Inspector>("Inspector", xmlDataToImport.Inspectors, con, transaction);
+                    Logger.Info("Inserted Inspector");
                     if (xmlDataToImport.Trans.Any()) DbHelper.BulkCopyDataToTable<Trans>("Trans", xmlDataToImport.Trans, con, transaction);
+                    Logger.Info("Inserted Trans");
                     if (xmlDataToImport.PosTrans.Any()) DbHelper.BulkCopyDataToTable<PosTrans>("PosTrans", xmlDataToImport.PosTrans, con, transaction);
+                    Logger.Info("Inserted PosTrans");
                     if (xmlDataToImport.AuditFileStatuss.Any()) DbHelper.BulkCopyDataToTable<AuditFileStatus>("AuditFileStatus", xmlDataToImport.AuditFileStatuss, con, transaction);
+                    Logger.Info("Inserted AuditFileStatus");
                     transaction.Commit();
 
                     if (Constants.DetailedLogging)

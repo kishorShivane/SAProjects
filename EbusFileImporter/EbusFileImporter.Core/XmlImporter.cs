@@ -285,6 +285,7 @@ namespace EbusFileImporter.Core
                     }
                     helper.MoveErrorFile(filePath, dbName);
                     if (Constants.EnableEmailTrigger) emailHelper.SendMail(filePath, dbName, "", EmailType.Error);
+                    return false;
                 }
 
                 #endregion
