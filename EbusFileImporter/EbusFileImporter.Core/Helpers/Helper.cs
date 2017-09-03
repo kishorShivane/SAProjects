@@ -47,21 +47,45 @@ namespace EbusFileImporter.Core.Helpers
 
         public DateTime ConvertToInsertDateString(string date)
         {
-            return Convert.ToDateTime(DateTime.ParseExact(date, "ddMMyy", null).ToString("yyyy-MM-dd"));
+            try
+            {
+                return Convert.ToDateTime(DateTime.ParseExact(date, "ddMMyy", null).ToString("yyyy-MM-dd"));
+            }
+            catch (Exception)
+            {
+                Log.Info("Error: ConvertToInsertDateString: Date-" + date);
+                throw;
+            }
         }
 
         public DateTime ConvertToInsertDateTimeString(string strDate, string strTime)
         {
-            if (strTime.Length < 6) strTime = strTime.PadRight(6, '0');
-            string time = DateTime.ParseExact(strTime, "HHmmss", null).ToString("HH:mm:ss");
-            return Convert.ToDateTime(DateTime.ParseExact(strDate, "ddMMyy", null).ToString("yyyy-MM-dd") + " " + time);
+            try
+            {
+                if (strTime.Length < 6) strTime = strTime.PadRight(6, '0');
+                string time = DateTime.ParseExact(strTime, "HHmmss", null).ToString("HH:mm:ss");
+                return Convert.ToDateTime(DateTime.ParseExact(strDate, "ddMMyy", null).ToString("yyyy-MM-dd") + " " + time);
+            }
+            catch (Exception)
+            {
+                Log.Info("Error: ConvertToInsertDateTimeString: Date-" + strDate + " Time-" + strTime);
+                throw;
+            }
         }
 
         public DateTime ConvertToInsertDateTimeStringWithOutSeconds(string strDate, string strTime)
         {
-            if (strTime.Length < 6) strTime = strTime.PadRight(6, '0');
-            string time = DateTime.ParseExact(strTime, "HHmmss", null).ToString("HH:mm");
-            return Convert.ToDateTime(DateTime.ParseExact(strDate, "ddMMyy", null).ToString("yyyy-MM-dd") + " " + time);
+            try
+            {
+                if (strTime.Length < 6) strTime = strTime.PadRight(6, '0');
+                string time = DateTime.ParseExact(strTime, "HHmmss", null).ToString("HH:mm");
+                return Convert.ToDateTime(DateTime.ParseExact(strDate, "ddMMyy", null).ToString("yyyy-MM-dd") + " " + time);
+            }
+            catch (Exception)
+            {
+                Log.Info("Error: ConvertToInsertDateTimeString: Date-" + strDate + " Time-" + strTime);
+                throw;
+            }
         }
 
         public void MoveErrorFile(string currentpath, string dbname)
@@ -235,77 +259,127 @@ namespace EbusFileImporter.Core.Helpers
 
         public int GetTripBalanceFromProductData(string productData)
         {
-            var result = 0;
-            if (productData.Length >= 12)
+            try
             {
-                var charArrayProdData = productData.ToCharArray();
-                var tripBalance = charArrayProdData[2].ToString() + charArrayProdData[3].ToString();
-                result = Convert.ToInt32(tripBalance, 16);
+                var result = 0;
+                if (productData.Length >= 12)
+                {
+                    var charArrayProdData = productData.ToCharArray();
+                    var tripBalance = charArrayProdData[2].ToString() + charArrayProdData[3].ToString();
+                    result = Convert.ToInt32(tripBalance, 16);
+                }
+                return result;
             }
-            return result;
+            catch (Exception)
+            {
+                Log.Info("Error: GetTripBalanceFromProductData: ProductData-" + productData);
+                throw;
+            }
         }
 
         public int GetTripRechargedFromProductData(string productData)
         {
-            var result = 0;
-            if (productData.Length >= 12)
+            try
             {
-                var charArrayProdData = productData.ToCharArray();
-                var tripBalance = charArrayProdData[0].ToString() + charArrayProdData[1].ToString();
-                result = Convert.ToInt32(tripBalance, 16);
+                var result = 0;
+                if (productData.Length >= 12)
+                {
+                    var charArrayProdData = productData.ToCharArray();
+                    var tripBalance = charArrayProdData[0].ToString() + charArrayProdData[1].ToString();
+                    result = Convert.ToInt32(tripBalance, 16);
+                }
+                return result;
             }
-            return result;
+            catch (Exception)
+            {
+                Log.Info("Error: GetTripRechargedFromProductData: ProductData-" + productData);
+                throw;
+            }
         }
 
         public bool IsTransferTransaction(string productData)
         {
-            var result = false;
-            if (productData.Length >= 12)
+            try
             {
-                var charArrayProdData = productData.ToCharArray();
-                var transfer = charArrayProdData[4].ToString() + charArrayProdData[5].ToString();
-                result = (Convert.ToInt32(transfer, 16) > 0) ? true : false;
+                var result = false;
+                if (productData.Length >= 12)
+                {
+                    var charArrayProdData = productData.ToCharArray();
+                    var transfer = charArrayProdData[4].ToString() + charArrayProdData[5].ToString();
+                    result = (Convert.ToInt32(transfer, 16) > 0) ? true : false;
+                }
+                return result;
             }
-            return result;
+            catch (Exception)
+            {
+                Log.Info("Error: IsTransferTransaction: ProductData-" + productData);
+                throw;
+            }
         }
 
         public int GetNonRevenueFromProductData(string productData)
         {
-            var result = 0;
-            if (productData.Length >= 12)
+            try
             {
-                var nonRevenue = productData.Substring(0, 6);
-                result = Convert.ToInt32(nonRevenue);
+                var result = 0;
+                if (productData.Length >= 12)
+                {
+                    var nonRevenue = productData.Substring(0, 6);
+                    result = Convert.ToInt32(nonRevenue);
+                }
+                return result;
             }
-            return result;
+            catch (Exception)
+            {
+                Log.Info("Error: GetNonRevenueFromProductData: ProductData-" + productData);
+                throw;
+            }
         }
 
         public int GetRevenueBalanceFromProductData(string productData)
         {
-            var result = 0;
-            if (productData.Length >= 12)
+            try
             {
-                var revenueBalance = productData.Substring(6, 6);
-                result = Convert.ToInt32(revenueBalance);
+                var result = 0;
+                if (productData.Length >= 12)
+                {
+                    var revenueBalance = productData.Substring(6, 6);
+                    result = Convert.ToInt32(revenueBalance);
+                }
+                return result;
             }
-            return result;
+            catch (Exception)
+            {
+                Log.Info("Error: GetRevenueBalanceFromProductData: ProductData-" + productData);
+                throw;
+            }
         }
 
         public int GetHalfProductData(string productData, bool isFirstHalf)
         {
-            var result = 0;
-            if (productData.Length >= 12)
+            try
             {
-                var revenueBalance = "";
-                if (isFirstHalf) revenueBalance = productData.Substring(0, 6); else revenueBalance = productData.Substring(6, 6);
-                result = Convert.ToInt32(revenueBalance);
+                var result = 0;
+                if (productData.Length >= 12)
+                {
+                    var revenueBalance = "";
+                    if (isFirstHalf) revenueBalance = productData.Substring(0, 6); else revenueBalance = productData.Substring(6, 6);
+                    result = Convert.ToInt32(revenueBalance);
+                }
+                return result;
             }
-            return result;
+            catch (Exception)
+            {
+                Log.Info("Error: GetHalfProductData: ProductData-" + productData);
+                throw;
+            }
         }
 
         public DateTime? GetSmartCardExipryFromProductDate(string productData)
         {
-            DateTime? result = null;
+            try
+            {
+                DateTime? result = null;
             if (productData.Length >= 12)
             {
                 var hexValue = productData.Substring(8, 4);
@@ -324,6 +398,12 @@ namespace EbusFileImporter.Core.Helpers
 
             }
             return result;
+            }
+            catch (Exception)
+            {
+                Log.Info("Error: GetSmartCardExipryFromProductDate: ProductData-" + productData);
+                throw;
+            }
         }
 
         public List<string> DirSearch(string sDir)

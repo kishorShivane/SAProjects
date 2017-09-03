@@ -35,7 +35,9 @@ namespace EbusFileImporter.Core.Helpers
 
                 smtp = new SmtpClient(Constants.Host, Convert.ToInt32(Constants.Port));
                 smtp.Credentials = new NetworkCredential(Constants.EmailUserName, Constants.EbusPassword);
-                smtp.EnableSsl = true;
+                smtp.EnableSsl = false;
+                smtp.UseDefaultCredentials = true;
+                smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
                 mailfrom = new MailAddress(Constants.FromEmail);
 
                 MailAddress mailto = new MailAddress(Constants.ToEmail);
@@ -65,6 +67,14 @@ namespace EbusFileImporter.Core.Helpers
 
                 newmsg.IsBodyHtml = true;
                 newmsg.Body = body;
+
+                System.Net.ServicePointManager.ServerCertificateValidationCallback = delegate (object s,
+               System.Security.Cryptography.X509Certificates.X509Certificate certificate,
+               System.Security.Cryptography.X509Certificates.X509Chain chain,
+               System.Net.Security.SslPolicyErrors sslPolicyErrors)
+                {
+                    return true;
+                };
 
                 smtp.Send(newmsg);
 
@@ -116,7 +126,7 @@ namespace EbusFileImporter.Core.Helpers
             {
                 Log.Error("Email Sending failed");
                 Log.Info("Email Body: " + body);
-                Log.Error("Exception - " + JsonConvert.SerializeObject(ex));               
+                Log.Error("Exception - " + JsonConvert.SerializeObject(ex));
                 return;
             }
         }

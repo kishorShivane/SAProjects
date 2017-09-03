@@ -70,12 +70,7 @@ namespace EbusFileImporter.Core
                 var fileClosureNode = nodes.Where((x => x.Attribute("STXID").Value.Equals("82")));
                 if (fileClosureNode == null || !fileClosureNode.Any())
                 {
-                    if (Constants.DetailedLogging)
-                    {
-                        Logger.Info("***********************************************************");
-                        Logger.Info("No file closure found, Moving file to error folder");
-                        Logger.Info("***********************************************************");
-                    }
+                    Logger.Info("No file closure found, Moving file to error folder");
                     helper.MoveErrorFile(filePath, dbName);
                     if (Constants.EnableEmailTrigger) emailHelper.SendMail(filePath, dbName, "", EmailType.Error);
                     return false;
@@ -96,7 +91,7 @@ namespace EbusFileImporter.Core
                         DateTime? tempNextStartDate = null;
                         var startDateTime = helper.ConvertToInsertDateTimeString(tempList[i].Element("StartDate").Value, tempList[i].Element("StartTime").Value);
                         var stopDateTime = helper.ConvertToInsertDateTimeString(tempList[i].Element("StopDate").Value, tempList[i].Element("StopTime").Value);
-                        if ((i + 1) <= tempList.Count()-1)
+                        if ((i + 1) <= tempList.Count() - 1)
                         {
                             tempNextStartDate = helper.ConvertToInsertDateTimeString(tempList[i + 1].Element("StartDate").Value, tempList[i + 1].Element("StartTime").Value);
                         }
@@ -107,6 +102,7 @@ namespace EbusFileImporter.Core
 
                         if (foundDataProblem)
                         {
+                            Logger.Info("Date Problem found, Moving file to error folder.");
                             helper.MoveDateProblemFile(filePath, dbName);
                             if (Constants.EnableEmailTrigger) emailHelper.SendMail(filePath, dbName, "", EmailType.DateProblem);
                             return false;
@@ -244,7 +240,7 @@ namespace EbusFileImporter.Core
 
                 if (dbService.CheckForDutyDuplicates(dutyDetail.int4_OperatorID.Value, dutyDetail.dat_DutyStartTime.Value, dutyDetail.dat_DutyStopTime.Value, dbName))
                 {
-                    Logger.Info("Duplicate file found");
+                    Logger.Info("Error: Duplicate file found");
                     helper.MoveDuplicateFile(filePath, dbName);
                     return false;
                 }
@@ -277,12 +273,7 @@ namespace EbusFileImporter.Core
                 }
                 else
                 {
-                    if (Constants.DetailedLogging)
-                    {
-                        Logger.Info("***********************************************************");
-                        Logger.Info("No AuditFileStatus node found, Moving file to error folder");
-                        Logger.Info("***********************************************************");
-                    }
+                    Logger.Info("Error: No AuditFileStatus node found, Moving file to error folder");
                     helper.MoveErrorFile(filePath, dbName);
                     if (Constants.EnableEmailTrigger) emailHelper.SendMail(filePath, dbName, "", EmailType.Error);
                     return false;
@@ -372,13 +363,11 @@ namespace EbusFileImporter.Core
 
                                 var eachStageNodes = eachJourneyNodes.Where(j => Convert.ToInt32(j.Attribute("Position").Value) > Convert.ToInt32(thisNode113.Attribute("Position").Value) && Convert.ToInt32(j.Attribute("Position").Value) < nextPosition).ToList();
 
-
                                 var cashTransNodes = eachStageNodes.Where(j => j.Attribute("STXID").Value.Equals("157"));
                                 var smartCardTransNodes = eachStageNodes.Where(j => j.Attribute("STXID").Value.Equals("188"));
 
                                 if ((cashTransNodes != null && cashTransNodes.Any()) || (smartCardTransNodes != null && smartCardTransNodes.Any()))
                                 {
-
                                     cashTransNodes.ToList().ForEach(t =>
                                     {
                                         var thisTrans = t;
@@ -1005,7 +994,7 @@ namespace EbusFileImporter.Core
                     Logger.Error("Failed in XML ProcessFile");
                     Logger.Error("Exception:" + exception);
                 }
-
+                Logger.Error("Exception:" + exception);
                 helper.MoveErrorFile(filePath, dbName);
                 if (Constants.EnableEmailTrigger) emailHelper.SendMail(filePath, dbName, exception, EmailType.Error);
                 return result;

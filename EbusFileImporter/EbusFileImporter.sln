@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EbusFileImporter.Report", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EbusFileImporter.App", "EbusFileImporter\EbusFileImporter.App.csproj", "{8C2186EB-E866-4FE0-B690-0C410FC71CA7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EbusFileImporter.Service", "EbusFileImporter.Service\EbusFileImporter.Service.csproj", "{F2DA1841-9937-4D80-A1BF-B161894C6215}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{8C2186EB-E866-4FE0-B690-0C410FC71CA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8C2186EB-E866-4FE0-B690-0C410FC71CA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8C2186EB-E866-4FE0-B690-0C410FC71CA7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2DA1841-9937-4D80-A1BF-B161894C6215}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2DA1841-9937-4D80-A1BF-B161894C6215}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2DA1841-9937-4D80-A1BF-B161894C6215}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2DA1841-9937-4D80-A1BF-B161894C6215}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
