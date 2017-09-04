@@ -1,8 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
-MinimumVisualStudioVersion = 10.0.40219.1
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EbusFileImporter.Core", "EbusFileImporter.Core\EbusFileImporter.Core.csproj", "{BD0F8A1A-34CC-4CD9-A7E5-7E3168C74DC9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EbusFileImporter.DataProvider", "EbusFileImporter.DataProvider\EbusFileImporter.DataProvider.csproj", "{D568D89F-68FA-4534-975B-0D3857A68097}"
@@ -14,6 +12,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EbusFileImporter.App", "EbusFileImporter\EbusFileImporter.App.csproj", "{8C2186EB-E866-4FE0-B690-0C410FC71CA7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EbusFileImporter.Service", "EbusFileImporter.Service\EbusFileImporter.Service.csproj", "{F2DA1841-9937-4D80-A1BF-B161894C6215}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "EbusFileImporter.Setup", "EbusFileImporter.Setup\EbusFileImporter.Setup.vdproj", "{4981F7DC-39E5-4D0C-B9E1-453134FBE086}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +45,8 @@ Global
 		{F2DA1841-9937-4D80-A1BF-B161894C6215}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F2DA1841-9937-4D80-A1BF-B161894C6215}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F2DA1841-9937-4D80-A1BF-B161894C6215}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4981F7DC-39E5-4D0C-B9E1-453134FBE086}.Debug|Any CPU.ActiveCfg = Debug
+		{4981F7DC-39E5-4D0C-B9E1-453134FBE086}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
