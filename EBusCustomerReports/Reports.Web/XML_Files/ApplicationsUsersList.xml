@@ -1,0 +1,72 @@
+﻿<applicationUsersList>
+  <!-- IMPORTANT: keep connectionkey in LOWERCASE, the same key is used in web.config too ..both places it should be LOWERCASE!-->
+  <!-- <user name ="John" password ="54321" companyname ="Ntambanana" connectionkey = "tabanana30"></user>  !-->
+  <user name ="fanie" password ="12345" companyname ="Ntambanana" connectionkey = "tabanana30"></user>
+  <user name ="ebusntb" password ="ebus@123" companyname ="Ntambanana" connectionkey = "tabanana30"></user>
+  <user name ="Jonathanntb" password ="Jonathan" companyname ="Ntambanana" connectionkey = "tabanana30"></user>
+  <user name ="gewayne" password ="gewayne" companyname ="Ntambanana" connectionkey = "tabanana30"></user>
+  <user name ="cynthia" password ="intruder" companyname ="Ntambanana" connectionkey = "tabanana30"></user>
+  <user name ="Cassim" password ="Cassim" companyname ="Ntambanana" connectionkey = "tabanana30"></user>
+  <user name ="BOB" password ="BOB" companyname ="Ntambanana" connectionkey = "tabanana30"></user>
+  <user name ="lisa" password ="lisa" companyname ="Ntambanana" connectionkey = "tabanana30"></user>
+  <user name ="karlntb" password ="karl123" companyname ="Ntambanana" connectionkey = "tabanana30"></user>
+  <user name ="kobusntb" password ="kobus" companyname ="Ntambanana" connectionkey = "tabanana30"></user>
+  <user name ="nereshntb" password ="neresh" companyname ="Ntambanana" connectionkey = "tabanana30"></user>
+  
+  <user name ="Mathews" password ="mathews@123" companyname ="GNTMokopane" connectionkey = "mokopane10"></user>
+  <user name ="BaleseMP" password ="balese@123" companyname ="GNTMokopane" connectionkey = "mokopane10"></user>
+  <user name ="Dhumazimp" password ="dhumazi" companyname ="GNTMokopane" connectionkey = "mokopane10"></user>
+  <user name ="Hlungwanemp" password ="Hlungwane" companyname ="GNTMokopane" connectionkey = "mokopane10"></user>
+  <user name ="ebusmok" password ="ebus@123" companyname ="GNTMokopane" connectionkey = "mokopane10"></user>
+  <user name ="Jonathanmp" password ="Jonathan" companyname ="GNTMokopane" connectionkey = "mokopane10"></user>
+  <user name ="Mabu" password ="mabu@123" companyname ="GNTMokopane" connectionkey = "mokopane10"></user>
+  <user name ="JacquesMP" password ="Jacques" companyname ="GNTMokopane" connectionkey = "mokopane10"></user>
+  <user name ="Mokopane" password ="mokopanerevenue" companyname ="GNTMokopane" connectionkey = "mokopane10"></user>
+  
+  <user name ="Willie" password ="willie@123" companyname ="GautengCoaches" connectionkey = "gautengcoaches40"></user>
+  <user name ="ebusgc" password ="ebus@123" companyname ="GautengCoaches" connectionkey = "gautengcoaches40"></user>
+  <user name ="Michael" password ="michael@123" companyname ="GautengCoaches" connectionkey = "gautengcoaches40"></user>
+  <user name ="Jonathangc" password ="Jonathan" companyname ="GautengCoaches" connectionkey = "gautengcoaches40"></user>
+  <user name ="Corlie" password ="corlie@123" companyname ="GautengCoaches" connectionkey = "gautengcoaches40"></user>
+  <user name ="karlgc" password ="karl123" companyname ="GautengCoaches" connectionkey = "gautengcoaches40"></user>
+  <user name ="kobusgc" password ="kobus" companyname ="GautengCoaches" connectionkey = "gautengcoaches40"></user>
+  <user name ="demo" password ="demo123" companyname ="DEMO" connectionkey = "gautengcoaches40"></user>
+  
+  <user name ="ebusmh" password ="ebus@123" companyname ="GNTMarbleHall" connectionkey = "marblehall20"></user>
+  <user name ="BaleseMH" password ="balese@123" companyname ="GNTMarbleHall" connectionkey = "marblehall20"></user>
+  <user name ="Hlungwanemh" password ="Hlungwane" companyname ="GNTMarbleHall" connectionkey = "marblehall20"></user>
+  <user name ="DhumaziMH" password ="dhumazi" companyname ="GNTMarbleHall" connectionkey = "marblehall20"></user>
+  <user name ="supervisormh" password ="supervisormh" companyname ="GNTMarbleHall" connectionkey = "marblehall20"></user>
+  <user name ="Jonathanmbh" password ="Jonathan" companyname ="GNTMarbleHall" connectionkey = "marblehall20"></user>
+  <user name ="andrew" password ="andrew" companyname ="GNTMarbleHall" connectionkey = "marblehall20"></user>
+  <user name ="Nolundimh" password ="nolundimh" companyname ="GNTMarbleHall" connectionkey = "marblehall20"></user>
+  <user name ="JacquesMH" password ="Jacques" companyname ="GNTMarbleHall" connectionkey = "marblehall20"></user>
+  <user name ="Marblehall" password ="marblehallrevenue" companyname ="GNTMarbleHall" connectionkey = "marblehall20"></user>
+  <user name ="Nompie" password ="nompie" companyname ="GNTMarbleHall" connectionkey = "marblehall20"></user>
+
+  <user name ="ugu" password ="ugu123" companyname ="UGU" connectionkey = "ugu50"></user>
+  <user name ="BONGANI" password ="BONGANI123" companyname ="UGU" connectionkey = "ugu50"></user>
+  <user name ="Dan" password ="Dan123" companyname ="UGU" connectionkey = "ugu50"></user>
+
+  <user name ="Nick" password ="nick" companyname ="Atamelang" connectionkey = "atamelang70"></user>
+  <user name ="kele" password ="kele" companyname ="Atamelang" connectionkey = "atamelang70"></user>
+  <user name ="atamelang" password ="atamelang" companyname ="Atamelang" connectionkey = "atamelang70"></user>
+  <!--<user name ="demo" password ="demo123" companyname ="Atamelang" connectionkey = "atamelang70"></user>!-->
+  
+  <user name ="mpume" password ="mpume" companyname ="Sihlangene" connectionkey = "sihlangene80"></user>
+  <user name ="Njabulo" password ="njabulo" companyname ="Sihlangene" connectionkey = "sihlangene80"></user>
+  
+  <user name ="xulu" password ="xulu" companyname ="Ezakheni" connectionkey = "ezakheni90"></user>
+  
+  
+  <user name ="lisaikhwezi" password ="lisa" companyname ="Ikhwezi" connectionkey = "ikhwezi60"></user>
+  <user name ="kishor" password ="kishor" companyname ="Ikhwezi" connectionkey = "ikhwezi60"></user>
+  <user name ="suresh" password ="suresh" companyname ="Ikhwezi" connectionkey = "ikhwezi60"></user>
+  <user name ="abu" password ="abu" companyname ="Ikhwezi" connectionkey = "ikhwezi60"></user>
+  <user name ="Kobusikh" password ="kobus" companyname ="Ikhwezi" connectionkey = "ikhwezi60"></user>
+  <user name ="Neresh" password ="Neresh" companyname ="Ikhwezi" connectionkey = "ikhwezi60"></user>
+  <user name ="karlikh" password ="karl123" companyname ="Ikhwezi" connectionkey = "ikhwezi60"></user>
+  
+  <user name ="Sharon" password ="Sharon" companyname ="Mthonjaneni" connectionkey = "mthonjaneni95"></user>
+  
+</applicationUsersList>

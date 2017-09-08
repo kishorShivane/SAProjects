@@ -1,0 +1,261 @@
+﻿@model Reports.Services.Models.HomeViewModel
+@{
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+    var date = DateTime.Now.Date.AddDays(-1).ToString("dd-MMM-yyyy");
+    var key = ((Helpers.Security.EBusPrinciple)System.Threading.Thread.CurrentPrincipal).Properties.ConnKey;
+    ViewBag.Title = "Home";
+}
+
+@section scripts
+{
+    <script src="~/Scripts/Charts/Chart.js"></script>
+    <style>
+        .barSt {
+            min-height: 10px;
+            text-align: center;
+            background-color: #D3EF12;
+            margin: 2px;
+            font-weight: bold;
+            border: 2px solid;
+            border-radius: 25px;
+            border-color: #D3EF12;
+            color: midnightblue;
+        }
+    </style>
+    <script>
+        var lineChartData;
+        $(document).ready(function () {
+            var days = "@Model.DaysString";
+            var dayz = days.split(",");
+
+            lineChartData = {
+                labels: dayz,
+
+                datasets: [{
+                    label: "DiverRevenue",
+                    fillColor: "rgba(220,220,220,0.2)",
+                    strokeColor: "#337ab7",
+                    pointColor: "#337ab7",
+                    pointStrokeColor: "#fff",
+                    pointHighlightFill: "#fff",
+                    pointHighlightStroke: "rgba(151,187,205,1)",
+                    data: [@Model.DaysRevenueString]
+                },
+                {
+                    label: "SellersRevenue",
+                    fillColor: "rgba(151,187,205,0.2)",
+                    strokeColor: "#f0ad4e",
+                    pointColor: "#f0ad4e",
+                    pointStrokeColor: "#fff",
+                    pointHighlightFill: "#fff",
+                    pointHighlightStroke: "green",
+                    data: [@Model.DaysSellersRevenueString]
+                }]
+            };
+        })
+
+        window.onload = function () {
+            var ctx = document.getElementById("canvas").getContext("2d");
+            window.myLine = new Chart(ctx).Line(lineChartData, {
+                responsive: true,
+                showTooltips: true,
+                multiTooltipTemplate: "R " + "<%= value %>",
+                tooltipTemplate: "R " + "<%= value %>",
+                //onAnimationComplete: function () {
+                //    debugger;
+                //    var ctx = this.chart.ctx;
+                //    ctx.font = this.scale.font;
+                //    ctx.fillStyle = "#000"
+                //    ctx.textAlign = "center";
+                //    ctx.textBaseline = "bottom";
+
+                //    this.datasets.forEach(function (dataset) {
+                //        dataset.points.forEach(function (points) {
+                //            ctx.fillText( "R " + points.value.format(), points.x, points.y - 10);
+                //        });
+                //    })
+                //}
+            });
+        }
+
+        Number.prototype.format = function (n, x) {
+            var re = '\\d(?=(\\d{' + (x || 3) + '})+' + (n > 0 ? '\\.' : '$') + ')';
+            return this.toFixed(Math.max(0, ~~n)).replace(new RegExp(re, 'g'), '$&,');
+        };
+    </script>
+    <style>
+        .imgBoxes {
+            height: 15px;
+            width: 15px;
+            margin-left: 2px;
+        }
+    </style>
+}
+<!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+
+
+<div id="page-wrapper">
+    <div class="row">
+        <div class="col-md-4">
+            <h1 class="page-header" style="margin: 10px; color: #5e5e5e !important">Home</h1>
+        </div>
+        <div class="col-md-8" style="margin-top: 20px; text-align: right;">
+            <a style="font-weight:bold;text-decoration:underline;font-style:italic;" href="@Url.Action("AuditStatus", "Report")" ">The accuracy of all reports are dependent on communication from the buses</a>
+        </div>
+    </div>
+    <!-- /.row -->
+    <div class="row barSt">
+        Yesterdays Summary
+    </div>
+    <div class="row">
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="margin10px">
+                            <table style="font-size: 12px">
+                                <tr>
+                                    <td style="width: 45px;">Drivers</td>
+                                    <td style="width: 30px;">(@Model.DriversCount)</td>
+                                    <td style="font-style: italic">R @Model.RevenueFromDrivers</td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 45px;">Sellers</td>
+                                    <td style="width: 30px;">(@Model.SellersCount)</td>
+                                    <td style="font-style: italic">R @Model.RevenueFromSellers</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">Total Cash</td>
+                                    <td style="font-style: italic">R @Model.RevenueSum</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <a href="#">
+                    <div class="panel-footer" style="padding: 7px 7px">
+                        <span class="pull-left">Revenue- @date</span>
+                        <div class="clearfix"></div>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="margin10px">
+                            <table>
+                                <tr style="text-align: center;">
+                                    <td style="font-size: 16px;">Cash</td>
+                                    <td style="font-size: 16px;">&nbsp / &nbsp</td>
+                                    <td style="font-size: 16px;">Pass</td>
+                                    @if (!key.ToString().ToLower().Equals("atamelang70"))
+                                    {
+                                        <td style="font-size: 16px;">&nbsp / &nbsp</td>
+                                        <td style="font-size: 16px;">Transfer </td>
+                                    }
+                                </tr>
+                                <tr style="text-align: center;">
+                                    <td style="font-size: 16px;">@Model.TotalCashPassengers</td>
+                                    <td style="font-size: 16px;">&nbsp /&nbsp</td>
+                                    <td style="font-size: 16px;">@Model.TotalPasses</td>
+                                    @if (!key.ToString().ToLower().Equals("atamelang70"))
+                                    {
+                                        <td style="font-size: 16px;">&nbsp / &nbsp</td>
+                                        <td style="font-size: 16px;">@Model.TotalTransfers</td>
+                                    }
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <a href="#">
+                    <div class="panel-footer">
+                        <span class="pull-left">Passengers- @date</span>
+                        <div class="clearfix"></div>
+                    </div>
+                </a>
+
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="margin10px">
+                            <table>
+                                <tr style="text-align: center;">
+                                    <td style="font-size: 16px;">Scheduled</td>
+                                    <td style="font-size: 16px;">&nbsp Vs &nbsp</td>
+                                    <td style="font-size: 16px;">Operated </td>
+                                </tr>
+                                <tr style="text-align: center;">
+                                    <td style="font-size: 16px;">@Model.ScheduledDistance </td>
+                                    <td style="font-size: 16px;">&nbsp / &nbsp</td>
+                                    <td style="font-size: 16px;">@Model.OperatedDistance </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <a href="#">
+                    <div class="panel-footer">
+                        <span class="pull-left">Kilometres- @date</span>
+                        <div class="clearfix"></div>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="margin10px">
+                            <table>
+                                <tr style="text-align: center;">
+                                    <td style="font-size: 16px;">Scheduled</td>
+                                    <td style="font-size: 16px;">&nbsp Vs &nbsp</td>
+                                    <td style="font-size: 16px;">Operated </td>
+                                </tr>
+                                <tr style="text-align: center;">
+                                    <td style="font-size: 16px;">@Model.ScheduledTripsCount</td>
+                                    <td style="font-size: 16px;">&nbsp / &nbsp</td>
+                                    <td style="font-size: 16px;">@Model.OperatedTripsCount </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <a href="#">
+                    <div class="panel-footer">
+                        <span class="pull-left">Trips- @date</span>
+                        <div class="clearfix"></div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <i class="fa fa-bar-chart-o fa-fw"></i><b>
+                        Weekly Revenue Summary : Drivers<img class="imgBoxes" src="http://41.76.211.195/EBusBackOffice/Images/blue.PNG" />
+                        &nbsp Sellers<img class="imgBoxes" src="http://41.76.211.195/EBusBackOffice/Images/yellow.PNG" />
+                    </b>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div style="margin-left: 5px;">
+                            <canvas id="canvas" height="200" width="600"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

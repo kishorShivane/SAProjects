@@ -1,0 +1,127 @@
+﻿@model List<Reports.Services.Models.AuditStatus>
+@{
+    ViewBag.Title = "Audit Communication Status";
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+    var date = DateTime.Now.Date;
+    var greenCount = Model.Count(s => s.ColorName.ToLower().Equals("green"));
+    var yellowCount = Model.Count(s => s.ColorName.ToLower().Equals("yellow"));
+    var redCount = Model.Count(s => s.ColorName.ToLower().Equals("red"));
+}
+@section scripts
+{
+    <script src="~/Scripts/Multiselect/bootstrap-multiselect.js"></script>
+    <link href="~/Styles/Multiselect/bootstrap-multiselect.css" rel="stylesheet" />
+    <link href="~/Styles/Jquery/jquery.ui.theme.css" rel="stylesheet" />
+    <link href="~/Styles/Jquery/jquery.ui.dialog.css" rel="stylesheet" />
+    <link href="~/Styles/Jquery/jquery.ui.button.css" rel="stylesheet" />
+    <link href="~/Styles/Jquery/jquery.ui.core.css" rel="stylesheet" />
+    <link href="~/Styles/Jquery/jquery.ui.base.css" rel="stylesheet" />
+    <link href="~/Styles/Jquery/jquery.ui.all.css" rel="stylesheet" />
+    <link href="~/Styles/Jquery/jquery-ui.css" rel="stylesheet" />
+    <script src="~/Scripts/JqueryVal/jquery.validate-vsdoc.js"></script>
+    <script src="~/Scripts/JqueryVal/jquery.validate.js"></script>
+    <script src="~/Scripts/JqueryVal/jquery.validate.min.js"></script>
+    <script src="~/Scripts/JqueryVal/jquery.validate.unobtrusive.js"></script>
+    <script src="~/Scripts/JqueryVal/jquery.validate.unobtrusive.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#Print").click(function () {
+                $("#buttonsSection").hide();
+                window.print();
+                $("#buttonsSection").show();
+            });
+        });
+    </script>
+
+    <style>
+        body {
+            -webkit-print-color-adjust: exact;
+        }
+
+        td {
+            align-content: center;
+            text-align: center;
+        }
+
+        #legend tr td {
+            text-align: left;
+        }
+    </style>
+}
+
+<div id="page-wrapper">
+    <div class="row">
+        <div class="col-md-6 col-sm-12">
+            <h2 class="page-header" style="margin: 10px; color: #5e5e5e !important">Audit Communication Status</h2>
+        </div>
+        <div class="col-md-3 col-sm-12" id="buttonsSection">
+            <button id="Print" type="submit" style="margin-top: 10px; margin-left: 20px; width: 140px;" class="btn btn-info">
+                Print
+            </button>
+        </div>
+    </div>
+    <div class="row">
+        <table id="legend" style="text-align: left; margin-left: 20px;">
+            <tr>
+                <td style="width: 70px;"><b style="color: red;">Red : </b></td>
+                <td>Busses not communicated > 2 days.</td>
+            </tr>
+            <tr>
+                <td style="width: 70px;"><b style="color: yellow;">Yellow : </b></td>
+                <td>Busses communicated 2 days ago.</td>
+            </tr>
+            <tr>
+                <td style="width: 70px;"><b style="color: green;">Green : </b></td>
+                <td>Busses communicated yesterday.</td>
+            </tr>
+        </table>
+    </div>
+    <div class="row" style="height:10px;">
+
+    </div>
+    <br />
+    <div class="row" style="height:20px;margin-left: 20px;">
+        <table>
+            <tr>
+                <td style="width:70px;">Red(@redCount)</td>
+                <td style="width:70px;">Yellow(@yellowCount)</td>
+                <td style="width:70px;">Geeen(@greenCount)</td>
+            </tr>
+        </table>
+    </div>
+    <br />
+    <div class="row">
+        <table id="statusTable" style="width: 80%;">
+            <thead>
+                <tr style="font-weight: bold; border-bottom: 1px solid black;">
+                    <td>Bus Num</td>
+                    <td>ETM Num</td>
+                    <td>ETM Type</td>
+                    <td>Latest Audit Date</td>
+                    <td>Status</td>
+                </tr>
+            </thead>
+            <tr style="height: 5px;">
+                <td colspan="4"></td>
+            </tr>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td style="width: 15%;">@item.str_BusId</td>
+                    <td style="width: 15%;">@item.Str_ETMID</td>
+                    <td style="width: 15%;">@item.ETMType</td>
+                    <td style="width: 25%;">@item.LastestDate</td>
+                    <td style="width:25%; background-color:@item.Color">
+                        <label style="height:100%;width:100%;background-color:@item.Color;color:@item.Color;">@item.ColorName</label>
+                    </td>
+                </tr>
+                <tr style="height: 5px;">
+                    <td colspan="4"></td>
+                </tr>
+            }
+        </table>
+    </div>
+    <div class="row" style="min-height: 10px;">
+    </div>
+</div>

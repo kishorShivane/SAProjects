@@ -1,0 +1,376 @@
+﻿@model Reports.Services.Models.RouteMaster.RouteMaster
+@{
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+    ViewBag.Title = "Route Master";
+}
+<style>
+    .popover {
+        max-height: 600px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1010;
+        display: none;
+        max-width: 600px;
+        padding: 1px;
+        text-align: left;
+        white-space: normal;
+        background-color: #ffffff;
+        border: 1px solid #ccc;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        -webkit-border-radius: 6px;
+        -moz-border-radius: 6px;
+        border-radius: 6px;
+        -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        -webkit-background-clip: padding-box;
+        -moz-background-clip: padding;
+        background-clip: padding-box;
+    }
+
+    .form-group input[type="checkbox"] {
+        display: none;
+    }
+
+        .form-group input[type="checkbox"] + .btn-group > label span {
+            width: 20px;
+        }
+
+            .form-group input[type="checkbox"] + .btn-group > label span:first-child {
+                display: none;
+            }
+
+            .form-group input[type="checkbox"] + .btn-group > label span:last-child {
+                display: inline-block;
+            }
+
+        .form-group input[type="checkbox"]:checked + .btn-group > label span:first-child {
+            display: inline-block;
+        }
+
+        .form-group input[type="checkbox"]:checked + .btn-group > label span:last-child {
+            display: none;
+        }
+
+    .thead-inverse th {
+        color: #fff;
+        background-color: #373a3c;
+        text-align: center;
+    }
+
+    .table-striped td {
+        text-align: center;
+    }
+
+    .modal-lg {
+        min-width: 1250px;
+    }
+
+    .transaction {
+        min-width: 900px;
+    }
+
+    .linkEdit {
+        text-decoration: none;
+        cursor: pointer;
+        color: green;
+    }
+
+    .linkDelete {
+        text-decoration: none;
+        cursor: pointer;
+        color: red;
+    }
+
+    .linkView {
+        text-decoration: none;
+        cursor: pointer;
+        color: blue;
+    }
+
+    .tick {
+        text-decoration: none;
+        color: darkgreen;
+    }
+
+    .cross {
+        text-decoration: none;
+        color: darkred;
+    }
+
+    .modal-title {
+        margin: 0;
+        line-height: 1.428571;
+        font-size: medium;
+    }
+
+    .popover-title .close {
+        position: relative;
+        bottom: 3px;
+    }
+
+    .select2 {
+        float: left;
+    }
+
+    .btn {
+        padding: 0px 12px;
+        max-height: 30px;
+    }
+</style>
+<script>
+    $(document).ready(function () {
+        $("select.select2").select2({ width: "80%" });
+        $("select.select2Mini").select2({ width: "35%" });
+        $("select.select2Line").select2({ tags: true, width: "80%" });
+    });
+</script>
+
+<div class="container-fluid">
+    <div id="page-wrapper">
+        <div class="row">
+            <div class="col-lg-12">
+                <h2 class="page-header" style="margin: 10px; color: #337ab7 !important">Route Master</h2>
+            </div>
+        </div>
+        <div class="row" id="divRouteEditor">
+            <div class="panel panel-info">
+                <div class="panel-heading" style="background-color: #337ab7 !important;background-image: none;">
+                    <a data-toggle="collapse" href="#pnlSearch" style="color:white;text-decoration:none;">Search Route</a>
+                </div>
+                <div id="pnlSearch" class="panel-collapse collapse in">
+                    <div class="panel-body">
+                        <div class="row text-center">
+                            <div class="col-md-9">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon" style="min-width: 90px;">Route Number</div>
+                                        @Html.DropDownListFor(m => m.Routes, null, new { id = "ddlRouteNumber", @class = "form-control select2", placeholder = "Route Number" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <button type="button" class="btn btn-info" id="btnSearch">Search&nbsp;<i class="fa fa-1x fa-search"></i></button> &nbsp; &nbsp; &nbsp; &nbsp;
+                                <button type="button" class="btn btn-danger" id="btnClearSearch">Clear</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <div class="panel" id="divSearchResults">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table-responsive">
+                                <table class="table table-striped" id="tblMainRouteResults">
+                                    <thead class="thead-inverse">
+                                        <tr>
+                                            <th>Main Route Number</th>
+                                            <th>Main Route Name</th>
+                                            <th>Main Route Stages</th>
+                                            <th>View</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @Html.Partial("_ListSubRoutes")
+            @Html.Partial("_AddEditSubRoute", Model.SubRouteMaster)
+            <input type="hidden" id="hdnIndexModelTitle" value="" />
+        </div>
+    </div>
+</div>
+<div id="popover-content" class="hidden" style="width:500px;">
+
+</div>
+<script>
+    var divRouteEditor = $("div#divRouteEditor");
+    var divSubRoute = $('div#divSubRoute');
+    var divAddEditSubRoute = $("div#divAddEditSubRoute");
+
+    $(document).ready(function () {
+        SearchMainRoutes();
+        BindMainRoutes(true);
+        RemoveHighlightedCssOnFocus();
+        ClearSearchControls();
+        $("button#btnSearch").trigger("click");
+        $("button#btnClear").click(function () {
+            ClearControlValues($("div#divRouteEditor"));
+        });
+        BindPopOver();
+        $(document).on("click", ".popover .close", function () {
+            $(this).parents(".popover").popover('hide');
+        });
+        //$("table#tblMainRouteResults tr").hover(function () { $(this).css("color", "red"); }, function () { $(this).css("color", ""); });
+    });
+
+    function BindPopOver() {
+        $("[data-toggle=popover]").popover({
+            trigger: "click",
+            html: true,
+            title: 'Main Route Stages <a href="#" class="close" data-dismiss="alert">&times;</a>',
+            content: function () {
+                $("div.popover").hide();
+                $('div#popover-content').html("").html(ConvertToHtml($(this).parent().find("input#hdnMainRoute").attr("value")));
+                return $('#popover-content').html();
+            }
+        });
+    }
+    function BindMainRoutes(isFromPageLoad) {
+        var routeNumber = $("select#ddlRouteNumber").val();
+        var tableBody = $("table#tblMainRouteResults").find("tbody");
+        var rows = "";
+        if (!isFromPageLoad && routeNumber == "") {
+            alert("Please enter search criteria!!");
+            $("#ddlRouteNumber").focus();
+            return false;
+        }
+        else {
+            $.ajax({
+                async: false,
+                url: '@Url.Action("SearchMainRoutes", "RouteMaster")',
+                type: 'Post',
+                data: JSON.stringify({ routeNumber: routeNumber }),
+                dataType: 'json',
+                contentType: 'application/json',
+                error: function (xhr) {
+                    alert('Error: ' + xhr.statusText);
+                },
+                success: function (result) {
+                    //Now Process the data
+                    tableBody.html();
+                    if (result.length == 0) {
+                        alert("No records found for the selected criteria!!");
+                        tableBody.html("");
+                    }
+                    else {
+                        $(result).each(function (index) {
+                            var CurrentItem = this;
+                            var stages = JSON.stringify(CurrentItem.RouteStages).replace(/\"/g, "##");
+                            rows = rows + "<tr><td><span id='lblRouteNumber'>" + CurrentItem.RouteNumber + "</span></td><td><span id='lblRouteDetail'>" + CurrentItem.RouteDetail + "</span></td>";
+                            rows = rows + "<td><a data-placement='left' data-toggle='popover' data-container='body' data-placement='left' data-html='true' id='login'>Main Route Stages</a><input type='hidden' value='" + stages + "' id='hdnMainRoute' /></td>";
+                            rows = rows + "<td><a id='lnkRouteView' class='linkView' value='" + CurrentItem.RouteNumber + "'><span class='fa-stack fa-sm '><i class='fa fa-plus fa-stack-1x '></i></span></a></td><tr>";
+                        });
+
+                        tableBody.html("").html(rows);
+                        BindPopOver();
+                    }
+                }
+            }).done(function (result) {
+                return false;
+            });
+        }
+    }
+
+    function ConvertToHtml(jsonString) {
+        debugger;
+        var stages = JSON.parse(jsonString.replace(/\##/g, "\""));
+        var mainRouteStages = "";
+        mainRouteStages = mainRouteStages + "<table class='table table-striped' id='tblMainRouteStages'><thead class='thead-inverse'><tr style='padding:0px;' ><th style='padding: 4px;'>Order</th><th style='padding: 4px;'>Stage</th><th style='padding: 4px;'>Stage Name</th><th style='padding: 4px;border-right: 2px solid;'></th><th style='padding: 4px;'>Order</th><th style='padding: 4px;'>Stage</th><th style='padding: 4px;'>Stage Name</th></tr></thead><tbody>";
+        var half = 0;
+        if ((stages.length) % 2 == 0) {
+            half = stages.length / 2;
+        }
+        else { half = (stages.length + 1) / 2; }
+        var tempHalf = half;
+        for (var i = 0; i < tempHalf; i++) {
+            var CurrentStageItem = stages[i];
+            if (half < stages.length && stages[half] != undefined) {
+                var nextItem = stages[half];
+                mainRouteStages = mainRouteStages + "<tr>";
+                mainRouteStages = mainRouteStages + "<td style='padding: 4px;'>" + CurrentStageItem.Order + "</td>";
+                mainRouteStages = mainRouteStages + "<td style='padding: 4px;'>" + CurrentStageItem.Stage + "</td>";
+                mainRouteStages = mainRouteStages + "<td style='padding: 4px;'>" + CurrentStageItem.StageName + "</td>";
+                mainRouteStages = mainRouteStages + "<td style='padding: 4px;border-right: 2px solid;'></td>";
+                mainRouteStages = mainRouteStages + "<td style='padding: 4px;'>" + nextItem.Order + "</td>";
+                mainRouteStages = mainRouteStages + "<td style='padding: 4px;'>" + nextItem.Stage + "</td>";
+                mainRouteStages = mainRouteStages + "<td style='padding: 4px;'>" + nextItem.StageName + "</td>";
+                mainRouteStages = mainRouteStages + "</tr>";
+            } else {
+                mainRouteStages = mainRouteStages + "<tr>";
+                mainRouteStages = mainRouteStages + "<td style='padding: 4px;'>" + CurrentStageItem.Order + "</td>";
+                mainRouteStages = mainRouteStages + "<td style='padding: 4px;'>" + CurrentStageItem.Stage + "</td>";
+                mainRouteStages = mainRouteStages + "<td style='padding: 4px;'>" + CurrentStageItem.StageName + "</td>";
+                mainRouteStages = mainRouteStages + "<td style='padding: 4px;border-right: 2px solid;'></td>";
+                mainRouteStages = mainRouteStages + "<td style='padding: 4px;'></td><td style='padding: 4px;'></td><td style='padding: 4px;'></td>";
+                mainRouteStages = mainRouteStages + "</tr>";
+                break;
+            }
+            half = half + 1;
+            if (half > stages.length) break;
+        }
+        mainRouteStages = mainRouteStages + "</tbody></table>";
+        return mainRouteStages;
+    }
+
+    function SearchMainRoutes() {
+        $("button#btnSearch").click(function () {
+            BindMainRoutes(false);
+        });
+    }
+
+    // Functions to open popup
+    $(document).on("click", "a#lnkRouteView", function () {
+        GetSubRoutesForRoutes($(this).attr("value"));
+        divSubRoute.find("input#hdnRouteNumber").attr("value", $(this).attr("value"));
+        divSubRoute.find("input#hdnMainRoutesStages").attr("value", $(this).parent().parent().find("input#hdnMainRoute").attr("value"));
+        $("input#hdnIndexModelTitle").attr("value", $(this).parent().parent().find("span#lblRouteNumber").html() + " - " + $(this).parent().parent().find("span#lblRouteDetail").html());
+        SetPopupTitle(divSubRoute, "Sub Routes For Main Route - ", $("input#hdnIndexModelTitle").attr("value"));
+        divSubRoute.modal('show');
+    });
+
+    function GetSubRoutesForRoutes(routeNumber) {
+        var table = divSubRoute.find("table#tblSubRouteResults");
+        var tableBody = table.find("tbody");
+        var rows = "";
+        $.ajax({
+            async: false,
+            url: '@Url.Action("GetSubRoutesForRoutes", "RouteMaster")',
+            type: 'Post',
+            data: JSON.stringify({ routeNumber: routeNumber }),
+            dataType: 'json',
+            contentType: 'application/json',
+            error: function (xhr) {
+                alert('Error: ' + xhr.statusText);
+            },
+            success: function (result) {
+                //Now Process the data
+                tableBody.html();
+                if (result.length == 0) {
+                    alert("No records found!!");
+                    table.hide();
+                }
+                else {
+                    table.show();
+                    $(result).each(function (index) {
+                        var CurrentItem = this;
+                        rows = rows + "<tr><td><span id='lblSubRouteNumber'>" + CurrentItem.SubRouteNumber + "</span></td><td><span id='lblSubRouteDetail'>" + CurrentItem.SubRouteDetail + "</span><input type='hidden' id='hdnStartStage' value='" + CurrentItem.StartStage + "'/><input type='hidden' id='hdnEndStage' value='" + CurrentItem.EndStage + "'/><input type='hidden' id='hdnMainRouteNumber' value='" + CurrentItem.MainRouteNumber + "'/><input type='hidden' id='hdnSubRouteNumber' value='" + CurrentItem.SubRouteNumber + "'/></td>";
+                        rows = rows + "<td><a id='lnkSubRouteEdit' class='linkEdit' value='" + CurrentItem.SubRouteNumber + "'><span class='fa-stack fa-sm '><i class='fa fa-edit fa-stack-1x '></i></span></a><input type='hidden' id='hdnSubRouteName' value='" + CurrentItem.SubRouteName + "'/><input type='hidden' id='hdnDirection' value='" + CurrentItem.Direction + "'/><input type='hidden' id='hdnScheduledDistance' value='" + CurrentItem.ScheduledDistance + "'/><input type='hidden' id='hdnDOTDistance' value='" + CurrentItem.DOTDistance + "'/></td>"
+                        rows = rows + "<td><a id='lnkSubRouteDelete' class='linkDelete' value='" + CurrentItem.SubRouteNumber + "'><span class='fa-stack fa-sm '><i class='fa fa-shopping-basket fa-stack-1x '></i></span></a><input type='hidden' id='hdnDOTNumber' value='" + CurrentItem.DOTNumber + "'/><input type='hidden' id='hdnIsPosition' value='" + CurrentItem.IsPosition + "'/><input type='hidden' id='hdnContract' value='" + CurrentItem.Contract + "'/><input type='hidden' id='hdnDestinationBlind' value='" + CurrentItem.DestinationBlind + "'/></td></tr>"
+                    });
+                    tableBody.html("").html(rows);
+                }
+            }
+        }).done(function (result) {
+            return false;
+        });
+    }
+
+    function SetPopupTitle(popup, title, nav) {
+        popup.find("div.modal-title").html("<span style='font-weight: bolder;text-align: right;font-size: larger;'>" + title + "</span>" + nav);
+    }
+
+    function ClearSearchControls() {
+        $("button#btnClearSearch").click(function () {
+            $("select#ddlRouteNumber").val($("select#ddlRouteNumber option:first").attr("value")).change();
+            $("button#btnSearch").trigger("click");
+        });
+    }
+</script>

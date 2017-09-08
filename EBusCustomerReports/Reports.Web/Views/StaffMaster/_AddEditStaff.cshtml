@@ -1,0 +1,191 @@
+﻿@model Reports.Services.Models.StaffMaster.StaffMaster
+<!-- Modal Contents -->
+<div id="divAddEditStaff" class="modal fade ">
+    <!-- class modal and fade -->
+
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header modal-header-info">
+                <!-- modal header -->
+                <button type="button" class="close"
+                        data-dismiss="modal" aria-hidden="true">
+                    ×
+                </button>
+                <div class="modal-title">Add Edit Staff</div>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm" style="width: 82%;">
+                                        <div class="input-group-addon">Staff Number<font style="color:red">*</font></div>
+                                        @Html.TextBoxFor(m => m.StaffNumber, new { id = "txtStaffNumber", @class = "form-control", placeholder = "Staff Number", required = "true", maxlength = "6",style= "width: 74%;" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">Staff Name<font style="color:red">*</font></div>
+                                        @Html.TextBoxFor(m => m.StaffName, new { id = "txtStaffName", @class = "form-control", placeholder = "Staff Name", required = "true", maxlength = "50", style = "width: 59%;" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm" style="width: 82%;">
+                                        <div class="input-group-addon">Staff Type<font style="color:red">*</font></div>
+                                        @Html.DropDownList("Staff Type", Model.StaffTypes, new { id = "ddlStaffTypes", @class = "form-control select2", placeholder = "Staff Type", required = "true", style = "width:100%;" })
+                                        <a id="lnkStaffTypeEditor" class="linkEdit"><span class="fa-stack fa-sm"><i class="fa fa-edit fa-stack-1x"></i></span>Edit</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">Location<font style="color:red">*</font></div>
+                                        @Html.DropDownList("Location", Model.Locations, new { id = "ddlLocation", @class = "form-control select2", placeholder = "Location", required = "true", style = "width:100%;" })
+                                        <a id="lnkLocationEditor" class="linkEdit"><span class="fa-stack fa-sm"><i class="fa fa-edit fa-stack-1x"></i></span>Edit</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-1">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm" style="width: 82%;">
+                                        <div class="input-group-addon">Serial Number</div>
+                                        @Html.TextBoxFor(m => m.SerialNumber, new { id = "txtSerialNumber", @class = "form-control", placeholder = "Serial Number", maxlength = "10", style = "width: 74%;" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="funkyradio">
+                                    <div class="col-md-6">
+                                        <div class="funkyradio-info" style="margin-left: -15px;"> 
+                                            <input type="checkbox" name="radio" id="chkStaffActive" value="Active" />
+                                            <label for="chkStaffActive">Active</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="funkyradio-info" style="margin-left: -15px;">
+                                            <input type="checkbox" name="radio" id="chkSpecialStaff" value="Active" />
+                                            <label for="chkSpecialStaff">Special Staff</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" id="divPIN">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm" style="width: 65%;">
+                                        <div class="input-group-addon">PIN Seed<font style="color:red">*</font></div>
+                                        @Html.LabelFor(m => m.PINSeed, new { id = "lblPINSeed", @class = "form-control" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm" style="width: 65%;">
+                                        <div class="input-group-addon">PIN<font style="color:red">*</font></div>
+                                        @Html.LabelFor(m => m.PIN, new { id = "lblPIN", @class = "form-control" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="row text-center">
+                            <div class="col-md-12">
+                                <input type="hidden" id="hdnStaffNumber" value="0" />
+                                <input type="hidden" id="hdnModelTitle" value="" />
+                                <button type="submit" class="btn btn-info" id="btnSaveStaff"><i class="fa fa-1x fa-save"></i>&nbsp;Save</button>&nbsp;&nbsp;&nbsp;&nbsp;
+                                <button type="button" class="btn btn-danger" id="btnClear"><i class="fa fa-1x fa-close"></i>&nbsp;Clear</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <!-- modal footer -->
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+
+        </div> <!-- / .modal-content -->
+
+    </div> <!-- / .modal-dialog -->
+
+</div>
+<!-- / .modal -->
+<script>
+
+    $(document).ready(function () {
+        SaveStaff();
+    });
+
+    $(document).on("click", "a#lnkStaffTypeEditor", function () {
+        BindStaffTypes(true);
+        SetPopupTitle(divStaffTypeEditor, "Staff Type Editor","");
+        divStaffTypeEditor.modal('show');
+    });
+
+    $(document).on("click", "a#lnkLocationEditor", function () {
+        BindLocations(true);
+        SetPopupTitle(divLocationEditor, "Location Editor", "");
+        divLocationEditor.modal('show');
+    });
+
+    function SaveStaff() {
+        $("button#btnSaveStaff").click(function () {
+            if (CheckMandatoryFieldsInBlock(divAddEditStaff, "") && CheckNumericFields(divAddEditStaff, "")) {
+                var StaffName = divAddEditStaff.find("input#txtStaffName").val();
+                var StaffNumber = divAddEditStaff.find("input#txtStaffNumber").val();
+                var StaffType = divAddEditStaff.find("select#ddlStaffTypes").val();
+                var LocationCode = divAddEditStaff.find("select#ddlLocation").val();
+                var SerialNumber = divAddEditStaff.find("#txtSerialNumber").val();
+                var Status = divAddEditStaff.find("#chkStaffActive").is(":checked");
+                var SpecialStaff = divAddEditStaff.find("#chkSpecialStaff").is(":checked");
+                var isAdd = false;
+                if (divAddEditStaff.find("input#hdnStaffNumber").attr("value") == "0") { isAdd = true; }
+
+                //TODO: start from here concatenation
+                $.ajax({
+                    async: false,
+                    url: '@Url.Action("InsertOrUpdateStaff", "StaffMaster")',
+                    type: 'Post',
+                    data: JSON.stringify({
+                        StaffName: StaffName, StaffNumber: StaffNumber, StaffType: StaffType, LocationCode: LocationCode, SerialNumber: SerialNumber,
+                        Status: Status, isAdd: isAdd, IsSpecialStaff: SpecialStaff}),
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    error: function (xhr) {
+                        alert('Error: ' + xhr.statusText);
+                    },
+                    success: function (result) {
+                        //Now Process the data
+                        if (result == 1) {
+                            divAddEditStaff.modal("hide");
+                            alert("Staff Saved Successfully!!");
+                            BindStaffs(true, GetSelectedCheckBoxValue());
+                        }
+                        else if (result == -1) {
+                            alert("There is already a staff with same staff number!!");
+                        }
+                    }
+                }).done(function (result) {
+                    return false;
+                });
+            }
+        });
+    }
+</script>

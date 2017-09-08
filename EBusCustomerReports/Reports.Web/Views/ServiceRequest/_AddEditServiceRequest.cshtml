@@ -1,0 +1,174 @@
+﻿@model Reports.Services.Models.ServiceRequest.ServiceRequest
+<!-- Modal Contents -->
+<div id="divAddEditServiceRequest" class="modal fade ">
+    <!-- class modal and fade -->
+
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header modal-header-info">
+                <!-- modal header -->
+                <button type="button" class="close"
+                        data-dismiss="modal" aria-hidden="true">
+                    ×
+                </button>
+                <div class="modal-title">Add Edit Service Request</div>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm" style="width: 100%;">
+                                        <div class="input-group-addon">Request Type:<font style="color:red">*</font></div>
+                                        @Html.DropDownList("Request Type", Model.RequestTypes, new { id = "ddlRequestTypes", @class = "form-control select2", placeholder = "Request Type", required = "true", style = "width:100%;" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm" style="width: 100%;">
+                                        <div class="input-group-addon">Email:</div>
+                                        @Html.TextBoxFor(m => m.Email, new { id = "txtEmail", @class = "form-control", placeholder = "Email", maxlength = "100", style = "width: 100%;", required = "true" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group" id="divRequestStatus">
+                                    <div class="input-group input-group-sm" style="width: 100%;">
+                                        <div class="input-group-addon">Request Status:<font style="color:red">*</font></div>
+                                        @Html.DropDownList("Request Status", Model.RequestStatuss, new { id = "ddlRequestStatus", @class = "form-control select2", placeholder = "Request Status", required = "true", style = "width:100%;" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="funkyradio">
+                                    <div class="col-md-3">
+                                        <div class="input-group-addon">Priority:<font style="color:red">*</font></div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="funkyradio-info">
+                                            <input type="radio" name="radio" id="chkHigh" value="High" class="InputCheckBox" />
+                                            <label for="chkHigh">High</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="funkyradio-info">
+                                            <input type="radio" name="radio" id="chkMedium" value="Medium" class="InputCheckBox" />
+                                            <label for="chkMedium">Medium</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="funkyradio-info">
+                                            <input type="radio" name="radio" id="chkLow" value="Low" class="InputCheckBox" />
+                                            <label for="chkLow">Low</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm" style="width: 100%;">
+                                        <div class="input-group-addon">Comments:</div>
+                                        @Html.TextAreaFor(m => m.Comments, new { id = "txtComments", @class = "form-control", placeholder = "Comments", style = "width: 94%;", required = "true" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" id="divAdminComments">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm" style="width: 100%;">
+                                        <div class="input-group-addon">Admin Comments:</div>
+                                        @Html.TextAreaFor(m => m.AdminComments, new { id = "txtAdminComments", @class = "form-control", placeholder = "Admin Comments", style = "width: 94%;", required = "true" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="row text-center">
+                            <div class="col-md-12">
+                                <input type="hidden" id="hdnServiceRequestID" value="0" />
+                                <input type="hidden" id="hdnModelTitle" value="" />
+                                <button type="submit" class="btn btn-info" id="btnSaveServiceRequest"><i class="fa fa-1x fa-save"></i>&nbsp;Save</button>&nbsp;&nbsp;&nbsp;&nbsp;
+                                <button type="button" class="btn btn-danger" id="btnClear"><i class="fa fa-1x fa-close"></i>&nbsp;Clear</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="pull-left" style="text-align:left;">
+                    <p><b>Note:</b></p>
+                    <p><b>High</b> – Response Time < 24 Hours</p>
+                    <p><b>Medium</b> – Response Time < 2 Working Day (Exclude Saturday and Sunday, Public Holiday)</p>
+                    <p><b>Low</b> – Response Time < 4 Working Days</p>
+                </div>
+                <!-- modal footer -->
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+
+        </div> <!-- / .modal-content -->
+
+    </div> <!-- / .modal-dialog -->
+
+</div>
+<!-- / .modal -->
+<script>
+
+    $(document).ready(function () {
+        SaveServiceRequest();
+    });
+
+    function SaveServiceRequest() {
+        $("button#btnSaveServiceRequest").click(function () {
+            debugger;
+            if (CheckMandatoryFieldsInBlock(divAddEditServiceRequest, "") && CheckNumericFields(divAddEditServiceRequest, "")) {
+
+                var email = divAddEditServiceRequest.find("input#txtEmail").val();
+                if (!isValidEmailAddress(email)) { alert("Please enter the valid email address."); return false; }
+                var comments = divAddEditServiceRequest.find("#txtComments").val();
+                var adminComments = divAddEditServiceRequest.find("#txtAdminComments").val();
+                var requestTypeID = divAddEditServiceRequest.find("select#ddlRequestTypes").val();
+                var requestStatusID = divAddEditServiceRequest.find("select#ddlRequestStatus").val();
+                var requestType = divAddEditServiceRequest.find("select#ddlRequestTypes").find("option:selected").text();
+                var requestStatus = divAddEditServiceRequest.find("select#ddlRequestStatus").find("option:selected").text();
+                var priority = GetSelectedCheckBoxValue("InputCheckBox");
+                var id = divAddEditServiceRequest.find("input#hdnServiceRequestID").attr("value");
+                //if (divAddEditServiceRequest.find("input#hdnStaffNumber").attr("value") == "0") { isAdd = true; }
+
+                //TODO: start from here concatenation
+                $.ajax({
+                    async: false,
+                    url: '@Url.Action("InsertOrUpdateServiceRequest", "ServiceRequest")',
+                    type: 'Post',
+                    data: JSON.stringify({
+                        ID: id, RequestTypeID: requestTypeID, Priority: priority, Email: email,
+                        Comments: comments, AdminComments: adminComments, RequestStatusID: requestStatusID, RequestStatus: requestStatus, RequestType: requestType
+                    }),
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    error: function (xhr) {
+                        alert('Error: ' + xhr.statusText);
+                    },
+                    success: function (result) {
+                        //Now Process the data
+                        divAddEditServiceRequest.modal("hide");
+                        alert("Service Request Saved Successfully!!");
+                        BindServiceRequests(true, GetSelectedCheckBoxValue());
+                    }
+                }).done(function (result) {
+                    return false;
+                });
+            }
+        });
+    }
+</script>

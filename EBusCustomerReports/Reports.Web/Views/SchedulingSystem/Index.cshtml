@@ -1,0 +1,345 @@
+﻿@model Reports.Services.Models.DutyWizard
+@{
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+    ViewBag.Title = "Scheduling System";
+}
+<style>
+    .form-group input[type="checkbox"] {
+        display: none;
+    }
+
+        .form-group input[type="checkbox"] + .btn-group > label span {
+            width: 20px;
+        }
+
+            .form-group input[type="checkbox"] + .btn-group > label span:first-child {
+                display: none;
+            }
+
+            .form-group input[type="checkbox"] + .btn-group > label span:last-child {
+                display: inline-block;
+            }
+
+        .form-group input[type="checkbox"]:checked + .btn-group > label span:first-child {
+            display: inline-block;
+        }
+
+        .form-group input[type="checkbox"]:checked + .btn-group > label span:last-child {
+            display: none;
+        }
+
+    .thead-inverse th {
+        color: #fff;
+        background-color: #373a3c;
+        text-align: center;
+    }
+
+    .table-striped td {
+        text-align: center;
+    }
+
+    .modal-lg {
+        min-width: 1250px;
+    }
+
+    .transaction {
+        min-width: 900px;
+    }
+
+    .linkEdit {
+        text-decoration: none;
+        cursor: pointer;
+        color: green;
+    }
+
+    .linkDelete {
+        text-decoration: none;
+        cursor: pointer;
+        color: red;
+    }
+
+    .linkView {
+        text-decoration: none;
+        cursor: pointer;
+        color: blue;
+    }
+
+    .tick {
+        text-decoration: none;
+        color: darkgreen;
+    }
+
+    .cross {
+        text-decoration: none;
+        color: darkred;
+    }
+
+    .modal-title {
+        margin: 0;
+        line-height: 1.428571;
+        font-size: medium;
+    }
+</style>
+<script>
+    $(document).ready(function () {
+        $("select.select2").select2({ width: "80%" });
+        $("select.select2Mini").select2({ width: "35%" });
+        $("select.select2Line").select2({ tags: true, width: "80%" });
+    });
+</script>
+<div class="container-fluid">
+    <div id="page-wrapper">
+        <div class="row">
+            <div class="col-lg-12">
+                <h2 class="page-header" style="margin: 10px; color: #337ab7 !important">Scheduling System</h2>
+            </div>
+        </div>
+        <div class="row" id="divDutyWizard">
+            <div class="panel panel-info">
+                <div class="panel-heading" style="background-color: #337ab7 !important;background-image: none;">
+                    <a data-toggle="collapse" href="#pnlSearch" style="color:white;text-decoration:none;">Search Duty</a>
+                </div>
+                <div id="pnlSearch" class="panel-collapse collapse in">
+                    <div class="panel-body">
+                        <div class="row text-center">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon" style="min-width: 90px;">WorkSpace</div>
+                                        @Html.DropDownListFor(m => m.WorkSpaces, null, new { id = "ddlSearchWorkSpace", @class = "form-control select2", placeholder = "WorkSpace" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon" style="min-width: 90px;">Locations</div>
+                                        @Html.DropDownListFor(m => m.Locations, null, new { id = "ddlSearchLocation", @class = "form-control select2", placeholder = "Locations" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">Duty ID </div>
+                                        <input type="text" class="form-control" placeholder="Duty ID" id="txtSearchDutyID" maxlength="4" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <button type="button" class="btn btn-info" id="btnSearch">Search&nbsp;<i class="fa fa-1x fa-search"></i></button> &nbsp; &nbsp; &nbsp; &nbsp;
+                                <button type="button" class="btn btn-danger" id="btnClearSearch">Clear</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <div class="panel" id="divSearchResults">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="container pull-right" style="text-align: right;">
+                                <button type="button" class="btn btn-success" id="btnAddDuty">Add Duty&nbsp;<i class="fa fa-1x fa-plus"></i></button> &nbsp; &nbsp; &nbsp; &nbsp;
+                                <button type="button" class="btn btn-success" id="btnUpdateDutyScheduleInfo">Update Duty Schedule Info&nbsp;<i class="fa fa-1x fa-plus"></i></button> &nbsp; &nbsp; &nbsp; &nbsp;
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table-responsive">
+                                <table class="table table-striped" id="tblDutyResults">
+                                    <thead class="thead-inverse">
+                                        <tr>
+                                            <th>DutyID</th>
+                                            <th>Description</th>
+                                            <th>Location</th>
+                                            <th>Edit</th>
+                                            <th>Delete</th>
+                                            <th>View</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @Html.Partial("_DutyOperatedDays")
+            @Html.Partial("_DutyBookings")
+            @Html.Partial("_DutyTripEvent")
+            @Html.Partial("_AddEditDuty", Model.Duty)
+            @Html.Partial("_AddEditDutyBooking", Model.DutyBooking)
+            @Html.Partial("_AddEditDutyEvent", Model.DutyEvent)
+            @Html.Partial("_AddEditDutyOperatedDay", Model.DutyOperatedDay)
+            @Html.Partial("_AddEditDutyTrip", Model.DutyTrip)
+        </div>
+    </div>
+</div>
+<input type="hidden" id="hdnIndexModelTitle" value="" />
+<script>
+    var divAddEditDuty = $('div#divAddEditDuty');
+    var divDutyOperatedDays = $('div#divDutyOperatedDays');
+    var divAddEditDutyOperatedDays = $('div#divAddEditDutyOperatedDays');
+    var divDutyBookings = $('div#divDutyBookings');
+    var divAddEditDutyBookings = $('div#divAddEditDutyBookings');
+    var divDutyTripsEvents = $('div#divDutyTripsEvents');
+    var divAddEditDutyTrips = $('div#divAddEditDutyTrips');
+    var divAddEditDutyEvents = $('div#divAddEditDutyEvents');
+
+    $(document).ready(function () {
+        SearchDuties();
+        AddDuty();
+        UpdateDutyScheduleInfo();
+        RemoveHighlightedCssOnFocus();
+        ClearSearchControls();
+        $("button#btnSearch").trigger("click");
+        $("button#btnClear").click(function () {
+            ClearControlValues($("div#divDutyWizard"));
+        });
+    });
+
+    // Functions to open popup
+    $(document).on("click", "a#lnkDutyView", function () {
+        GetOperatedDaysForDuty($(this).attr("value"));
+        divDutyOperatedDays.find("input#hdnDutyID").attr("value", $(this).attr("value"));
+        $("input#hdnIndexModelTitle").attr("value", "Duty: " + $(this).parent().parent().find("span#lblReferenceDutyID").html());
+        SetPopupTitle(divDutyOperatedDays, "View Operating Days - ", $("input#hdnIndexModelTitle").attr("value"));
+        divDutyOperatedDays.modal('show');
+    });
+
+    // Functions to open edit window
+    $(document).on("click", "a#lnkDutyEdit", function () {
+        ClearFormValuesInBlock(divAddEditDuty);
+        $("input#hdnIndexModelTitle").attr("value", "Duty: " + $(this).parent().parent().find("span#lblReferenceDutyID").html());
+        BindDutyDetails($(this).parent().parent(), $(this).attr("value"), $("select#ddlSearchWorkSpace").val());
+        SetPopupTitle(divAddEditDuty, "Edit Duty - ", $("input#hdnIndexModelTitle").attr("value"));
+        divAddEditDuty.modal('show');
+    });
+
+    //Funcions to delete
+    $(document).on("click", "a#lnkDutyDelete", function () {
+        debugger;
+        var status = confirm("You are about to delete this Duty!");
+        if (status) {
+            DeleteDuty($(this).attr("value"));
+        }
+    });
+
+    function SetPopupTitle(popup, title, nav) {
+        popup.find("div.modal-title").html("<span style='font-weight: bolder;text-align: right;font-size: larger;'>" + title + "</span>" + nav);
+    }
+
+    function ClearSearchControls() {
+        $("button#btnClearSearch").click(function () {
+            $("select#ddlSearchWorkSpace").val($("select#ddlSearchWorkSpace option:first").attr("value"));
+            $("input#txtSearchDutyID").val("");
+            $("select#ddlSearchLocation").val("0").change();
+            $("button#btnSearch").trigger("click");
+        });
+    }
+
+    function AddDuty() {
+        $("button#btnAddDuty").click(function () {
+            ClearFormValuesInBlock(divAddEditDuty);
+            divAddEditDuty.find("input#hdnWorkspaceID").val($("#ddlSearchWorkSpace").val());
+            SetPopupTitle(divAddEditDuty, "Add Duty", "");
+            divAddEditDuty.modal('show');
+        });
+    }
+
+    function UpdateDutyScheduleInfo() {
+        $("button#btnUpdateDutyScheduleInfo").click(function () {
+            $.ajax({
+                async: false,
+                url: '@Url.Action("UpdateDutyScheduleInfo", "SchedulingSystem")',
+                type: 'Post',
+                //data: JSON.stringify({ WorkSpaceID: workSpaceID, DutyID: dutyID, locationID: locationID }),
+                dataType: 'json',
+                contentType: 'application/json',
+                error: function (xhr) {
+                    alert('Error: ' + xhr.statusText);
+                },
+                success: function (result) {
+                    //Now Process the data
+                    alert("Request Submitted Successfully!!");
+                }
+            }).done(function (result) {
+                return false;
+            });
+        });
+    }
+    function setDropDownValueByText(dropdownID, value) {
+        var set = "0";
+        $("select#" + dropdownID + " option").each(function () {
+            if ($(this).text() == value) {
+                set = $(this).val();
+            }
+        });
+        $("select#" + dropdownID).val(set).change();
+    }
+
+    function BindDutyDetails(row, dutyID, workspaceID) {
+        debugger;
+        ClearFormValuesInBlock(divAddEditDuty);
+        var locationID = row.find("input#hdnLocationID").attr("value").split(',');
+        divAddEditDuty.find("input#txtReferenceDutyID").val(row.find("span#lblReferenceDutyID").html());
+        divAddEditDuty.find("input#txtDescription").val(row.find("span#lblDescription").html());
+        divAddEditDuty.find("select#ddlLocation").val(locationID).change();
+        divAddEditDuty.find("input#hdnDutyID").attr("value", dutyID);
+        $("input#hdnReferenceDutyID").attr("value", row.find("span#lblReferenceDutyID").html());
+        divAddEditDuty.find("input#hdnWorkspaceID").attr("value", workspaceID);
+    }
+
+    function SearchDuties() {
+        $("button#btnSearch").click(function () {
+            var workSpaceID = $("select#ddlSearchWorkSpace").val();
+            var dutyID = $("input#txtSearchDutyID").val();
+            var locationID = $("select#ddlSearchLocation").val();
+            var tableBody = $("table#tblDutyResults").find("tbody");
+            var rows = "";
+            if (workSpaceID == "" && dutyID == "" && locationID == "") {
+                alert("Please enter search criteria!!");
+                $("#ddlSearchWorkSpace").focus();
+                return false;
+            }
+            else {
+                $.ajax({
+                    async: false,
+                    url: '@Url.Action("SearchDuties", "SchedulingSystem")',
+                    type: 'Post',
+                    data: JSON.stringify({ WorkSpaceID: workSpaceID, DutyID: dutyID, locationID: locationID }),
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    error: function (xhr) {
+                        alert('Error: ' + xhr.statusText);
+                    },
+                    success: function (result) {
+                        //Now Process the data
+                        tableBody.html();
+                        if (result.length == 0) {
+                            alert("No records found for the selected criteria!!");
+                            tableBody.html("");
+                        }
+                        else {
+                            $(result).each(function (index) {
+                                var CurrentItem = this;
+                                rows = rows + "<tr><td><span id='lblReferenceDutyID'>" + CurrentItem.ReferenceDutyID + "</span></td>";
+                                rows = rows + "<td><span id='lblDescription'>" + CurrentItem.Description + "</span></td>";
+                                rows = rows + "<td><span id='lblLocation'>" + CurrentItem.Location + "</span><input type='hidden' value='" + CurrentItem.LocationID + "' id='hdnLocationID'/></td>";
+                                rows = rows + "<td><a id='lnkDutyEdit' class='linkEdit' value='" + CurrentItem.ID + "'><span class='fa-stack fa-sm '><i class='fa fa-edit fa-stack-1x '></i></span></a>";
+                                rows = rows + "<td><a id='lnkDutyDelete' class='linkDelete' value='" + CurrentItem.ID + "'><span class='fa-stack fa-sm '><i class='fa fa-shopping-basket fa-stack-1x '></i></span></a></td>";
+                                rows = rows + "<td><a id='lnkDutyView' class='linkView' value='" + CurrentItem.ID + "'><span class='fa-stack fa-sm '><i class='fa fa-plus fa-stack-1x '></i></span></a></td>";
+                            });
+
+                            tableBody.html("").html(rows);
+                        }
+                    }
+                }).done(function (result) {
+                    return false;
+                });
+            }
+        });
+    }
+</script>

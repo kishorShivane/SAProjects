@@ -1,0 +1,109 @@
+﻿<!-- Modal Contents -->
+<div id="divAddEditStaffType" class="modal fade ">
+    <!-- class modal and fade -->
+
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+
+            <div class="modal-header modal-header-info">
+                <!-- modal header -->
+                <button type="button" class="close"
+                        data-dismiss="modal" aria-hidden="true">
+                    ×
+                </button>
+                <div class="modal-title">Add Edit StaffType</div>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-2"></div>
+                            <div class="col-md-10">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">Staff Type ID<font style="color:red">*</font></div>
+                                        <input type="text" class="form-control" id="txtStaffTypeID" placeholder="Staff Type ID" required="true" numeric="true"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-2"></div>
+                            <div class="col-md-10">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">Staff Type<font style="color:red">*</font></div>
+                                        <input type="text" class="form-control" id="txtStaffType" placeholder="Staff Type" required="true" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="row text-center">
+                            <div class="col-md-12">
+                                <input type="hidden" id="hdnStaffTypeID" value="0" />
+                                <input type="hidden" id="hdnModelTitle" value="" />
+                                <button type="submit" class="btn btn-info" id="btnSaveStaffType"><i class="fa fa-1x fa-save"></i>&nbsp;Save</button>&nbsp;&nbsp;&nbsp;&nbsp;
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <!-- modal footer -->
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+
+        </div> <!-- / .modal-content -->
+
+    </div> <!-- / .modal-dialog -->
+
+</div>
+<!-- / .modal -->
+<script>
+
+    $(document).ready(function () {
+        SaveStaffType();
+    });
+
+
+    function SaveStaffType() {
+        $("button#btnSaveStaffType").click(function () {
+            if (CheckMandatoryFieldsInBlock(divAddEditStaffType, "") && CheckNumericFields(divAddEditStaffType, "")) {
+                var staffType = divAddEditStaffType.find("input#txtStaffType").val();
+                var staffTypeID = divAddEditStaffType.find("input#txtStaffTypeID").val();
+                var staffTypeID = divAddEditStaffType.find("input#hdnStaffTypeID").val();
+                //TODO: start from here concatenation
+                $.ajax({
+                    async: false,
+                    url: '@Url.Action("InsertOrUpdateStaffType", "StaffMaster")',
+                    type: 'Post',
+                    data: JSON.stringify({
+                        staffType: staffType, staffTypeID: staffTypeID
+                    }),
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    error: function (xhr) {
+                        alert('Error: ' + xhr.statusText);
+                    },
+                    success: function (result) {
+                        //Now Process the data
+                        if (result == 1) {
+                            divAddEditStaffType.modal("hide");
+                            alert("Stafftype Saved Successfully!!");
+                            BindStaffTypes(false);
+                        }
+                        else if (result == -1) {
+                            alert("There is already a Stafftype with same ID and Name!!");
+                        }
+                    }
+                }).done(function (result) {
+                    return false;
+                });
+            }
+        });
+    }
+</script>

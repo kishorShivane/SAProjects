@@ -1,0 +1,328 @@
+﻿@model Reports.Services.Models.DutyTrip
+<style>
+    .funkyradio div {
+        /*clear: both;*/
+        overflow: hidden;
+    }
+
+    .funkyradio label {
+        width: 100%;
+        border-radius: 3px;
+        border: 1px solid #D1D3D4;
+        font-weight: normal;
+    }
+
+    .funkyradio input[type="radio"]:empty,
+    .funkyradio input[type="checkbox"]:empty {
+        display: none;
+    }
+
+        .funkyradio input[type="radio"]:empty ~ label,
+        .funkyradio input[type="checkbox"]:empty ~ label {
+            position: relative;
+            line-height: 2.5em;
+            text-indent: 3.25em;
+            /*margin-top: 2em;*/
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+            .funkyradio input[type="radio"]:empty ~ label:before,
+            .funkyradio input[type="checkbox"]:empty ~ label:before {
+                position: absolute;
+                display: block;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                content: '';
+                width: 2.5em;
+                background: #D1D3D4;
+                border-radius: 3px 0 0 3px;
+            }
+
+    .funkyradio input[type="radio"]:hover:not(:checked) ~ label,
+    .funkyradio input[type="checkbox"]:hover:not(:checked) ~ label {
+        color: #888;
+    }
+
+        .funkyradio input[type="radio"]:hover:not(:checked) ~ label:before,
+        .funkyradio input[type="checkbox"]:hover:not(:checked) ~ label:before {
+            content: '\2714';
+            text-indent: .9em;
+            color: #C2C2C2;
+        }
+
+    .funkyradio input[type="radio"]:checked ~ label,
+    .funkyradio input[type="checkbox"]:checked ~ label {
+        color: #777;
+    }
+
+        .funkyradio input[type="radio"]:checked ~ label:before,
+        .funkyradio input[type="checkbox"]:checked ~ label:before {
+            content: '\2714';
+            text-indent: .9em;
+            color: #333;
+            background-color: #ccc;
+        }
+
+    .funkyradio input[type="radio"]:focus ~ label:before,
+    .funkyradio input[type="checkbox"]:focus ~ label:before {
+        box-shadow: 0 0 0 3px #999;
+    }
+
+    .funkyradio-info input[type="radio"]:checked ~ label:before,
+    .funkyradio-info input[type="checkbox"]:checked ~ label:before {
+        color: #fff;
+        background-color: #5bc0de;
+    }
+</style>
+<!-- Modal Contents -->
+<div id="divAddEditDutyTrips" class="modal fade ">
+    <!-- class modal and fade -->
+
+    <div class="modal-dialog modal-lg transaction">
+        <div class="modal-content">
+
+            <div class="modal-header modal-header-info">
+                <!-- modal header -->
+                <button type="button" class="close"
+                        data-dismiss="modal" aria-hidden="true">
+                    ×
+                </button>
+                <div class="modal-title">Duty Trips</div>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="funkyradio">
+                            <div class="col-md-2"></div>
+                            @*<div class="col-md-3">
+                                    <div class="form-group">
+                                        <div class="input-group input-group-sm">
+                                            <div class="input-group-addon" style="height:37px;">Trip Type<font style="color:red">*</font></div>
+                                        </div>
+                                    </div>
+                                </div>*@
+                            <div class="col-md-4">
+                                <div class="funkyradio-info">
+                                    <input type="radio" name="radio" id="chkPosition" value="1" />
+                                    <label for="chkPosition">Trip Type: Position</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="funkyradio-info">
+                                    <input type="radio" name="radio" id="chkRevenue" value="0" />
+                                    <label for="chkRevenue">Trip Type: Revenue</label>
+                                </div>
+                            </div>
+                            <div class="col-md-2"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div>
+                            <div class="row">
+                                <div class="col-md-2"></div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <div class="input-group input-group-sm">
+                                            <div class="input-group-addon">Start Time<font style="color:red">*</font></div>
+                                            @Html.DropDownList("Hours", Model.Hours, new { id = "ddlStartTimeHours", @class = "form-control select2Mini", placeholder = "Start Time : Hours", required = "true", style = "width:30%" })<span style="font-weight: bolder;font-size: 18.5px;">:</span>
+                                            @Html.DropDownList("Minutes", Model.Minutes, new { id = "ddlStartTimeMinutes", @class = "form-control select2Mini", placeholder = "Start Time : Minutes", required = "true", style = "width:30%" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <div class="input-group input-group-sm">
+                                            <div class="input-group-addon">End Time<font style="color:red">*</font></div>
+                                            @Html.DropDownList("Hours", Model.Hours, new { id = "ddlEndTimeHours", @class = "form-control select2Mini", placeholder = "End Time : Hours", required = "true", style = "width:30%" })<span style="font-weight: bolder;font-size: 18.5px;">:</span>
+                                            @Html.DropDownList("Minutes", Model.Minutes, new { id = "ddlEndTimeMinutes", @class = "form-control select2Mini", placeholder = "End Time : Minutes", required = "true", style = "width:30%" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2"></div>
+                                <div class="col-md-8">
+                                    <div class="form-group">
+                                        <div class="input-group input-group-sm">
+                                            <div class="input-group-addon">Route<font style="color:red">*</font></div>
+                                            @Html.DropDownList("Routes", Model.Routes, new { id = "ddlRoutes", @class = "form-control select2", placeholder = "Routes", required = "true" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2"></div>
+                                <div class="col-md-8">
+                                    <div class="form-group">
+                                        <div class="input-group input-group-sm">
+                                            <div class="input-group-addon">Contract<font style="color:red">*</font></div>
+                                            @Html.DropDownList("Contract", Model.Contract, new { id = "ddlContract", @class = "form-control select2", placeholder = "Contract", required = "true" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2"></div>
+                            </div>
+                            <div class="row" id="divShowOnEdit" style="display:none">
+                                <div class="col-md-2"></div>
+                                <div class="col-md-5">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">Default Contract</div>
+                                        @Html.Label("Default Contract", Model.DefaultContract, new { id = "lblDefaultContract", @class = "form-control select2" })
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">Distance</div>
+                                        @Html.Label("Distance", Model.Distance.ToString(), new { id = "lblDistance", @class = "form-control select2" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2"></div>
+                            </div>
+                            <br />
+                            <div class="row text-center">
+                                <div class="col-md-12">
+                                    <input type="hidden" id="hdnDutyTripID" value="0" />
+                                    <input type="hidden" id="hdnDutyBookingID" value="0" />
+                                    <input type="hidden" id="hdnIsSlot" value="0" />
+                                    <input type="hidden" id="hdnNextStartTimeHourCarried" value="" />
+                                    <input type="hidden" id="hdnNextStartTimeMinuteCarried" value="" />
+                                    <input type="hidden" id="hdnPrevEndTimeHourCarried" value="" />
+                                    <input type="hidden" id="hdnPrevEndTimeMinuteCarried" value="" />
+                                    <button type="submit" class="btn btn-info" id="btnSaveTrip"><i class="fa fa-1x fa-save"></i>&nbsp;Save</button>&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <button type="button" class="btn btn-danger" id="btnClear"><i class="fa fa-1x fa-close"></i>&nbsp;Clear</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+                <!-- modal footer -->
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+
+        </div> <!-- / .modal-content -->
+
+    </div> <!-- / .modal-dialog -->
+
+</div>
+<!-- / .modal -->
+<script>
+    $(document).ready(function () {
+        divAddEditDutyTrips.find("input[type=radio]").change(
+            function () {
+                if ($(this).attr("value") == "1")
+                    GetRoutesForPosition(true);
+                else
+                    GetRoutesForPosition(false);
+            });
+
+        SaveTrip();
+        BindDefaultContractAndDistance();
+    });
+
+    function BindDefaultContractAndDistance() {
+        divAddEditDutyTrips.find("select#ddlRoutes").change(function () {
+            debugger;
+            if ($(this).val() != "0" && $(this).val() != undefined && $(this).val() != null) {
+                var splitStr = $(this).val().split("-");
+                var defaultContract = splitStr[4];
+                var distance = splitStr[5];
+                divAddEditDutyTrips.find("div#divShowOnEdit").show();
+                divAddEditDutyTrips.find("div#divShowOnEdit").find("label#lblDistance").html(distance);
+                divAddEditDutyTrips.find("div#divShowOnEdit").find("label#lblDefaultContract").html(GetDropDownOptionValueForText(divAddEditDutyTrips.find("select#ddlContract"), defaultContract));
+            }
+            else {
+                divAddEditDutyTrips.find("div#divShowOnEdit").hide();
+                divAddEditDutyTrips.find("div#divShowOnEdit").find("label#lblDistance").html("");
+                divAddEditDutyTrips.find("div#divShowOnEdit").find("label#lblDefaultContract").html("");
+            }
+        });
+    }
+
+    function DeleteDutyTrip(tripID) {
+        $.ajax({
+            async: false,
+            url: '@Url.Action("DeleteDutyTrip", "SchedulingSystem")',
+            type: 'Post',
+            data: JSON.stringify({ DutyTripID: tripID }),
+            dataType: 'json',
+            contentType: 'application/json',
+            error: function (xhr) {
+                alert('Error: ' + xhr.statusText);
+            },
+            success: function (result) {
+                //Now Process the data
+                GetTripsForBooking(divDutyTripsEvents.find("input#hdnDutyBookingID").attr("value"));
+                alert(result);
+            }
+        }).done(function (result) {
+            return false;
+        });
+    }
+
+    function SaveTrip() {
+        $("button#btnSaveTrip").click(function () {
+            debugger;
+            if (CheckMandatoryFieldsInBlock(divAddEditDutyTrips, "") && CheckNumericFields(divAddEditDutyTrips, "") && ValidateTripEventTime(divAddEditDutyTrips, "Trip")) {
+                var tripID = divAddEditDutyTrips.find("input#hdnDutyTripID").attr("value");
+                var bookingID = divAddEditDutyTrips.find("input#hdnDutyBookingID").attr("value");
+
+                var StartTimeHours = divAddEditDutyTrips.find("select#ddlStartTimeHours").val();
+                var StartTimeMinutes = divAddEditDutyTrips.find("select#ddlStartTimeMinutes").val();
+                var EndTimeHours = divAddEditDutyTrips.find("select#ddlEndTimeHours").val();
+                var EndTimeMinutes = divAddEditDutyTrips.find("select#ddlEndTimeMinutes").val();
+                var Route = divAddEditDutyTrips.find("select#ddlRoutes").val();
+                var Contract = divAddEditDutyTrips.find("select#ddlContract").val();
+                var isSlot = divAddEditDutyTrips.find("input#hdnIsSlot").attr("value");
+
+                var splitStr = Route.split("-");
+                var MainToureNumber = splitStr[0];
+                var SubRouteNumber = splitStr[1];
+
+                $.ajax({
+                    async: false,
+                    url: '@Url.Action("InsertOrUpdateDutyTrip", "SchedulingSystem")',
+                    type: 'Post',
+                    data: JSON.stringify({
+                        ID: tripID, DutyBookingID: bookingID, StartTimeHour: StartTimeHours, StartTimeMinute: StartTimeMinutes,
+                        EndTimeHour: EndTimeHours, EndTimeMinute: EndTimeMinutes, ContractID: Contract, MainRouteNumber: MainToureNumber, SubRouteNumber: SubRouteNumber, isSlot: isSlot
+                    }),
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    error: function (xhr) {
+                        alert('Error: ' + xhr.statusText);
+                    },
+                    success: function (result) {
+                        //Now Process the data
+                        if (result == 1) {
+                            alert("Trip Inserted Successfully!!");
+                            divAddEditDutyTrips.modal("hide");
+                            divDutyTripsEvents.focus();
+                            GetTripsForBooking(divDutyTripsEvents.find("input#hdnDutyBookingID").attr("value"));
+                        }
+                        else if (result == 0) {
+                            alert("Trip time should be between booking time!!");
+                        }
+                        else if (result == -1) {
+                            alert("Trip time should be between then last trip endtime  and booking end time!!");
+                        }
+                    }
+                }).done(function (result) {
+                    return false;
+                });
+            }
+        });
+    }
+</script>

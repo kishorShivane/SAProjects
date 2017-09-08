@@ -1,0 +1,207 @@
+﻿<!-- Modal Contents -->
+<div id="divDutyBookings" class="modal fade ">
+    <!-- class modal and fade -->
+
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header modal-header-info">
+                <!-- modal header -->
+                <button type="button" class="close"
+                        data-dismiss="modal" aria-hidden="true">
+                    ×
+                </button>
+                <div class="modal-title">Duty Bookings</div>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="container pull-right" style="text-align: right;">
+                            <button type="button" class="btn btn-success" id="btnAddBooking">Add Booking&nbsp;<i class="fa fa-1x fa-plus"></i></button> &nbsp; &nbsp; &nbsp; &nbsp;
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="table-responsive">
+                            <table class="table table-striped" id="tblDutyBookingResults">
+                                <thead class="thead-inverse">
+                                    <tr>
+                                        <th>BookOnTime</th>
+                                        <th>BookOffTime</th>
+                                        <th>PlaceOn</th>
+                                        <th>PlaceOff</th>
+                                        <th>Add Booking</th>
+                                        <th>Edit</th>
+                                        <th>Delete</th>
+                                        <th>View</th>                                        
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <!-- modal footer -->
+                <input type="hidden" id="hdnDutyOperatedDayID" value="0" />
+                <input type="hidden" id="hdnModelTitle" value="" />
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+
+        </div> <!-- / .modal-content -->
+
+    </div> <!-- / .modal-dialog -->
+
+</div><!-- / .modal -->
+<script>
+    $(document).ready(function () {
+        AddBooking();
+    });
+
+    $(document).on("click", "a#lnkDutyBookingView", function () {
+        var row = $(this).parent().parent();
+        BookingPopupTitleText(row);
+        divDutyTripsEvents.find("input#hdnDutyBookingID").attr("value", $(this).attr("value"));
+        divDutyTripsEvents.find("input#hdnBookOnTimeHourCarried").attr("value", row.find("span#lblBookOnTimeHour").html());
+        divDutyTripsEvents.find("input#hdnBookOnTimeMinuteCarried").attr("value", row.find("span#lblBookOnTimeMinute").html());
+        divDutyTripsEvents.find("input#hdnBookOffTimeHourCarried").attr("value", row.find("span#lblBookOffTimeHour").html());
+        divDutyTripsEvents.find("input#hdnBookOffTimeMinuteCarried").attr("value", row.find("span#lblBookOffTimeMinute").html());
+        SetPopupTitle(divDutyTripsEvents, "View Trip & Events - ", divDutyBookings.find("input#hdnModelTitle").attr("value"));
+        GetEventsTripsForBooking($(this).attr("value"));
+        divDutyTripsEvents.modal('show');
+    });
+
+    $(document).on("click", "button#btnAddBookingToBelow", function () {
+        var row = $(this).parent().parent();
+        ClearFormValuesInBlock(divAddEditDutyBookings);
+        divAddEditDutyBookings.find("input#hdnDutyOperatedDayID").val(divDutyBookings.find("input#hdnDutyOperatedDayID").attr("value"));
+        divAddEditDutyBookings.find("input#hdnIsSlot").attr("value", "1");
+        divAddEditDutyBookings.find("input#hdnNextBookOnTimeHourCarried").attr("value", row.find("input#hdnNextBookOnTimeHour").attr("value"));
+        divAddEditDutyBookings.find("input#hdnNextBookOnTimeMinuteCarried").attr("value", row.find("input#hdnNextBookOnTimeMinute").attr("value"));
+        divAddEditDutyBookings.find("input#hdnPrevBookOffTimeHourCarried").attr("value", row.find("span#lblBookOffTimeHour").html());
+        divAddEditDutyBookings.find("input#hdnPrevBookOffTimeMinuteCarried").attr("value", row.find("span#lblBookOffTimeMinute").html());
+        SetPopupTitle(divAddEditDutyBookings, "Add Booking - ", divDutyOperatedDays.find("input#hdnModelTitle").attr("value"));
+        divAddEditDutyBookings.modal('show');
+    });
+
+    $(document).on("click", "a#lnkDutyBookingEdit", function () {
+        ClearFormValuesInBlock(divAddEditDutyBookings);
+        var row = $(this).parent().parent();
+        BookingPopupTitleText(row);
+        BindBookingDetails(row, $(this).attr("value"));
+        SetPopupTitle(divAddEditDutyBookings, "Edit Booking - ", divDutyBookings.find("input#hdnModelTitle").attr("value"));
+        divAddEditDutyBookings.modal('show');
+    });
+
+    $(document).on("click", "a#lnkDutyBookingDelete", function () {
+        var status = confirm("Are you sure you want to delete this Booking!");
+        if (status) {
+            DeleteDutyBooking($(this).attr("value"));
+        }
+    });
+
+    function BookingPopupTitleText(row) {
+        debugger;
+        var booking = "BookOnTime: " + row.find("span#lblBookOnTimeHour").html() + ":" + row.find("span#lblBookOnTimeMinute").html() +
+           " BookOffTime: " + row.find("span#lblBookOffTimeHour").html() + ":" + row.find("span#lblBookOffTimeMinute").html();
+        divDutyBookings.find("input#hdnModelTitle").attr("value", divDutyOperatedDays.find("input#hdnModelTitle").attr("value") + ", Booking: " + booking);
+    }
+
+    function AddBooking() {
+        $("button#btnAddBooking").click(function () {
+            ClearFormValuesInBlock(divAddEditDutyBookings);
+            divAddEditDutyBookings.find("input#hdnDutyOperatedDayID").val(divDutyBookings.find("input#hdnDutyOperatedDayID").attr("value"));
+            SetPopupTitle(divAddEditDutyBookings, "Add Booking - ", divDutyOperatedDays.find("input#hdnModelTitle").attr("value"));
+            divAddEditDutyBookings.modal('show');
+        });
+    }
+
+    function BindBookingDetails(row, bookingID) {
+        divAddEditDutyBookings.find("select#ddlBookOnTimeHours").val(row.find("span#lblBookOnTimeHour").html()).change();
+        divAddEditDutyBookings.find("select#ddlBookOnTimeMinutes").val(row.find("span#lblBookOnTimeMinute").html()).change();
+        divAddEditDutyBookings.find("select#ddlBookOnTimeSubRoutes").val(row.find("span#lblPlaceOn").attr("value")).change();
+        divAddEditDutyBookings.find("select#ddlBookOffTimeHours").val(row.find("span#lblBookOffTimeHour").html()).change();
+        divAddEditDutyBookings.find("select#ddlBookOffTimeMinutes").val(row.find("span#lblBookOffTimeMinute").html()).change();
+        divAddEditDutyBookings.find("select#ddlBookOffTimeSubRoutes").val(row.find("span#lblPlaceOff").attr("value")).change();
+
+        divAddEditDutyBookings.find("input#hdnDutyBookingID").attr("value", bookingID);
+        divAddEditDutyBookings.find("input#hdnDutyOperatedDayID").attr("value", divDutyBookings.find("input#hdnDutyOperatedDayID").attr("value"));
+        divAddEditDutyBookings.find("input#hdnNextBookOnTimeHourCarried").attr("value", row.find("input#hdnNextBookOnTimeHour").attr("value"));
+        divAddEditDutyBookings.find("input#hdnNextBookOnTimeMinuteCarried").attr("value", row.find("input#hdnNextBookOnTimeMinute").attr("value"));
+        divAddEditDutyBookings.find("input#hdnPrevBookOffTimeHourCarried").attr("value", row.find("input#hdnPrevBookOffTimeHour").attr("value"));
+        divAddEditDutyBookings.find("input#hdnPrevBookOffTimeMinuteCarried").attr("value", row.find("input#hdnPrevBookOffTimeMinute").attr("value"));
+    }
+
+    function GetBookingsForOperatedDay(operatedDaysID) {
+        debugger;
+        var result = true;
+        var table = divDutyBookings.find("table#tblDutyBookingResults");
+        var tableBody = table.find("tbody");
+        var rows = "";
+        tableBody.html("");
+        $.ajax({
+            async: false,
+            url: '@Url.Action("GetBookingsForOperatedDay", "SchedulingSystem")',
+            type: 'Post',
+            data: JSON.stringify({ OperatedDayID: operatedDaysID }),
+            dataType: 'json',
+            contentType: 'application/json',
+            error: function (xhr) {
+                alert('Error: ' + xhr.statusText);
+            },
+            success: function (result) {
+                //Now Process the data
+                tableBody.html();
+                if (result.length == 0) {
+                    alert("No Bookings found!!");
+                    table.hide();
+                    result = false;
+                }
+                else {
+                    table.show();
+                    $(result).each(function (index) {
+                        var CurrentItem = this;
+                        rows = rows + "<tr>";
+                        if (index == 0) {
+                            if (result.length > 1) {
+                                var NextItem = result[index + 1];
+                                rows = rows + "<td><span id='lblBookOnTimeHour'>" + CurrentItem.BookOnTimeHour + "</span>:<span id='lblBookOnTimeMinute'>" + CurrentItem.BookOnTimeMinute + "</span><input type='hidden' id='hdnNextBookOnTimeHour' value='" + NextItem.BookOnTimeHour + "'/><input type='hidden' id='hdnNextBookOnTimeMinute' value='" + NextItem.BookOnTimeMinute + "'/></td>";
+                                rows = rows + "<td><span id='lblBookOffTimeHour'>" + CurrentItem.BookOffTimeHour + "</span>:<span id='lblBookOffTimeMinute'>" + CurrentItem.BookOffTimeMinute + "</span><input type='hidden' id='hdnPrevBookOffTimeHour' value=''/><input type='hidden' id='hdnPrevBookOffTimeMinute' value=''/></td>";
+                            }
+                            else {
+                                rows = rows + "<td><span id='lblBookOnTimeHour'>" + CurrentItem.BookOnTimeHour + "</span>:<span id='lblBookOnTimeMinute'>" + CurrentItem.BookOnTimeMinute + "</span><input type='hidden' id='hdnNextBookOnTimeHour' value=''/><input type='hidden' id='hdnNextBookOnTimeMinute' value=''/></td>";
+                                rows = rows + "<td><span id='lblBookOffTimeHour'>" + CurrentItem.BookOffTimeHour + "</span>:<span id='lblBookOffTimeMinute'>" + CurrentItem.BookOffTimeMinute + "</span><input type='hidden' id='hdnPrevBookOffTimeHour' value=''/><input type='hidden' id='hdnPrevBookOffTimeMinute' value=''/></td>";
+                            }
+                        }
+                        else if (index == result.length - 1) {
+                            var PreviousItem = result[index - 1];
+                            rows = rows + "<td><span id='lblBookOnTimeHour'>" + CurrentItem.BookOnTimeHour + "</span>:<span id='lblBookOnTimeMinute'>" + CurrentItem.BookOnTimeMinute + "</span><input type='hidden' id='hdnNextBookOnTimeHour' value=''/><input type='hidden' id='hdnNextBookOnTimeMinute' value=''/></td>";
+                            rows = rows + "<td><span id='lblBookOffTimeHour'>" + CurrentItem.BookOffTimeHour + "</span>:<span id='lblBookOffTimeMinute'>" + CurrentItem.BookOffTimeMinute + "</span><input type='hidden' id='hdnPrevBookOffTimeHour' value='" + PreviousItem.BookOffTimeHour + "'/><input type='hidden' id='hdnPrevBookOffTimeMinute' value='" + PreviousItem.BookOffTimeMinute + "'/></td>";
+                        }
+                        else {
+                            var NextItem = result[index + 1]; var PreviousItem = result[index - 1];
+                            rows = rows + "<td><span id='lblBookOnTimeHour'>" + CurrentItem.BookOnTimeHour + "</span>:<span id='lblBookOnTimeMinute'>" + CurrentItem.BookOnTimeMinute + "</span><input type='hidden' id='hdnNextBookOnTimeHour' value='" + NextItem.BookOnTimeHour + "'/><input type='hidden' id='hdnNextBookOnTimeMinute' value='" + NextItem.BookOnTimeMinute + "'/></td>";
+                            rows = rows + "<td><span id='lblBookOffTimeHour'>" + CurrentItem.BookOffTimeHour + "</span>:<span id='lblBookOffTimeMinute'>" + CurrentItem.BookOffTimeMinute + "</span><input type='hidden' id='hdnPrevBookOffTimeHour' value='" + PreviousItem.BookOffTimeHour + "'/><input type='hidden' id='hdnPrevBookOffTimeMinute' value='" + PreviousItem.BookOffTimeMinute + "'/></td>";
+                        }
+                        rows = rows + "<td><span id='lblPlaceOn' value='" + CurrentItem.PlaceOnID + "'>" + CurrentItem.PlaceOn + "</span></td>";
+                        rows = rows + "<td><span id='lblPlaceOff' value='" + CurrentItem.PlaceOffID + "'>" + CurrentItem.PlaceOff + "</span></td>";
+                        rows = rows + "<td><button type='button' class='btn btn-info' style='padding: 0px 10px;height: 25px !important;' id='btnAddBookingToBelow' value=''><i class='fa fa-arrow-down' aria-hidden='true'></i>&nbsp;Add Booking</button></td>";
+                        rows = rows + " <td><a id='lnkDutyBookingEdit' class='linkEdit' value='" + CurrentItem.ID + "'><span class='fa-stack fa-sm '><i class='fa fa-edit fa-stack-1x '></i></span></a></td>"
+                        rows = rows + " <td><a id='lnkDutyBookingDelete' class='linkDelete' value='" + CurrentItem.ID + "'><span class='fa-stack fa-sm '><i class='fa fa-shopping-basket fa-stack-1x '></i></span></a></td>"
+                        rows = rows + " <td><a id='lnkDutyBookingView' class='linkView' value='" + CurrentItem.ID + "'><span class='fa-stack fa-sm '><i class='fa fa-plus fa-stack-1x '></i></span></a></td>"
+                    });
+
+                    tableBody.html(rows);
+                }
+            }
+        }).done(function (result) {
+            return false;
+        }); result
+        return result;
+    }
+</script>

@@ -1,0 +1,265 @@
+﻿@model Reports.Services.Models.DutyBooking
+<!-- Modal Contents -->
+<div id="divAddEditDutyBookings" class="modal fade ">
+    <!-- class modal and fade -->
+
+    <div class="modal-dialog modal-lg transaction">
+        <div class="modal-content">
+
+            <div class="modal-header modal-header-info">
+                <!-- modal header -->
+                <button type="button" class="close"
+                        data-dismiss="modal" aria-hidden="true">
+                    ×
+                </button>
+                <div class="modal-title">Duty Trips</div>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div>
+                            <div class="row">
+                                <div class="col-md-1"></div>
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <div class="input-group input-group-sm">
+                                            <div class="input-group-addon">Book On Time<font style="color:red">*</font></div>
+                                            @Html.DropDownList("Hours", Model.Hours, new { id = "ddlBookOnTimeHours", @class = "form-control select2Mini", placeholder = "Book On Time: Hours", required = "true", style = "width:30%" })
+                                            <span style="font-weight: bolder;font-size: 18.5px;">:</span>
+                                            @Html.DropDownList("Minutes", Model.Minutes, new { id = "ddlBookOnTimeMinutes", @class = "form-control select2Mini", placeholder = "Book On Time: Minutes", required = "true", style = "width:30%" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <div class="input-group input-group-sm">
+                                            <div class="input-group-addon">Book On Place<font style="color:red">*</font></div>
+                                            @Html.DropDownList("SubRoutes", Model.Stages, new { id = "ddlBookOnTimeSubRoutes", @class = "form-control select2", placeholder = "Book On Place", required = "true" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-1"></div>
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <div class="input-group input-group-sm">
+                                            <div class="input-group-addon">Book Off Time<font style="color:red">*</font></div>
+                                            @Html.DropDownList("Hours", Model.Hours, new { id = "ddlBookOffTimeHours", @class = "form-control select2Mini", placeholder = "Book Off Time: Hours", required = "true", style = "width:30%" })<span style="font-weight: bolder;font-size: 18.5px;">:</span>
+                                            @Html.DropDownList("Minutes", Model.Minutes, new { id = "ddlBookOffTimeMinutes", @class = "form-control select2Mini", placeholder = "Book Off Time: Minutes", required = "true", style = "width:30%" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <div class="input-group input-group-sm">
+                                            <div class="input-group-addon">Book Off Place<font style="color:red">*</font></div>
+                                            @Html.DropDownList("SubRoutes", Model.Stages, new { id = "ddlBookOffTimeSubRoutes", @class = "form-control select2", placeholder = "Book Off Place", required = "true" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row text-center">
+                                <div class="col-md-12">
+                                    <input type="hidden" id="hdnDutyBookingID" value="0" />
+                                    <input type="hidden" id="hdnDutyOperatedDayID" value="0" />
+                                    <input type="hidden" id="hdnIsSlot" value="0" />
+                                    <input type="hidden" id="hdnNextBookOnTimeHourCarried" value="" />
+                                    <input type="hidden" id="hdnNextBookOnTimeMinuteCarried" value="" />
+                                    <input type="hidden" id="hdnPrevBookOffTimeHourCarried" value="" />
+                                    <input type="hidden" id="hdnPrevBookOffTimeMinuteCarried" value="" />
+
+                                    <button type="submit" class="btn btn-info" id="btnSaveBooking"><i class="fa fa-1x fa-save"></i>&nbsp;Save</button>&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <button type="button" class="btn btn-danger" id="btnClear"><i class="fa fa-1x fa-close"></i>&nbsp;Clear</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+                <!-- modal footer -->
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+
+        </div> <!-- / .modal-content -->
+
+    </div> <!-- / .modal-dialog -->
+
+</div>
+<!-- / .modal -->
+<script>
+    $(document).ready(function () {
+        SaveBooking();
+    });
+
+    function ValidateBookingTime(divAddEdit) {
+        var status = true;
+        var BookOnTimeHour = divAddEdit.find("select#ddlBookOnTimeHours").val();
+        var BookOnTimeMinute = divAddEdit.find("select#ddlBookOnTimeMinutes").val();
+        var BookOffTimeHour = divAddEdit.find("select#ddlBookOffTimeHours").val();
+        var BookOffTimeMinute = divAddEdit.find("select#ddlBookOffTimeMinutes").val();
+
+        var NextBookOnTimeHour = divAddEdit.find("input#hdnNextBookOnTimeHourCarried").attr("value");
+        var NextBookOnTimeMinute = divAddEdit.find("input#hdnNextBookOnTimeMinuteCarried").attr("value");
+        var PrevBookOffTimeHour = divAddEdit.find("input#hdnPrevBookOffTimeHourCarried").attr("value");
+        var PrevBookOffTimeMinute = divAddEdit.find("input#hdnPrevBookOffTimeMinuteCarried").attr("value");
+
+        status = CompareTimings(BookOnTimeHour, BookOnTimeMinute, BookOffTimeHour, BookOffTimeMinute);
+
+        if (!status) {
+            alert("Book Off Time should be greater then Book on Time!!");
+            return status;
+        }
+        
+        if (PrevBookOffTimeHour == "" && PrevBookOffTimeMinute == "" && NextBookOnTimeHour == "" && NextBookOnTimeMinute == "") {
+            //Only one record
+            return status;
+        }
+        else if (PrevBookOffTimeHour == "" && PrevBookOffTimeMinute == "") {
+            //First Record
+            status = CompareTimings(BookOffTimeHour, BookOffTimeMinute,NextBookOnTimeHour, NextBookOnTimeMinute);
+            if (!status) {
+                alert("Book Off Time should be Less then or equal to Next Booking Book on Time!!");
+                return status;
+            }
+        }
+        else if (NextBookOnTimeHour == "" && NextBookOnTimeMinute == "") {
+            //Last Record
+            status = CompareTimings(PrevBookOffTimeHour, PrevBookOffTimeMinute,BookOnTimeHour, BookOnTimeMinute);
+            if (!status) {
+                alert("Book On Time should be greater then or equal to previous Booking Book off Time!!");
+                return status;
+            }
+        }
+        else {
+            //In between Records
+            status = CompareTimings(BookOffTimeHour, BookOffTimeMinute, NextBookOnTimeHour, NextBookOnTimeMinute);
+            if (!status) {
+                alert("Book Off Time should be Less then or equal to Next Booking Book on Time!!");
+                return status;
+            }
+
+            status = CompareTimings(PrevBookOffTimeHour, PrevBookOffTimeMinute, BookOnTimeHour, BookOnTimeMinute);
+            if (!status) {
+                alert("Book On Time should be greater then or equal to previous Booking Book off Time!!");
+                return status;
+            }            
+        }
+
+        return true;
+    }
+
+    function CompareTimings(StartTimeHour, StartTimeMinute, EndTimeHour, EndTimeMinute) {
+        var status = true;
+        if (parseInt(EndTimeHour) < parseInt(StartTimeHour)) {
+            status = false;
+        }
+        else if (parseInt(EndTimeHour) == parseInt(StartTimeHour)) {
+            if (parseInt(EndTimeMinute) < parseInt(StartTimeMinute)) {
+                status = false;
+            }
+        }
+        return status;
+    }
+
+    function CheckBookingDependency(bookingID) {
+        debugger;
+        var ret = false;
+        $.ajax({
+            async: false,
+            url: '@Url.Action("CheckBookingDependency", "SchedulingSystem")',
+            type: 'Post',
+            data: JSON.stringify({ DutyBookingID: bookingID }),
+            dataType: 'json',
+            contentType: 'application/json',
+            error: function (xhr) {
+                alert('Error: ' + xhr.statusText);
+            },
+            success: function (result) {
+                ret = result;
+            }
+        }).done(function (result) {
+            return false;
+        });
+
+        return ret;
+    }
+
+    function DeleteDutyBooking(bookingID) {
+        debugger;
+        if (!CheckBookingDependency(bookingID)) {
+            $.ajax({
+                async: false,
+                url: '@Url.Action("DeleteDutyBooking", "SchedulingSystem")',
+                type: 'Post',
+                data: JSON.stringify({ DutyBookingID: bookingID }),
+                dataType: 'json',
+                contentType: 'application/json',
+                error: function (xhr) {
+                    alert('Error: ' + xhr.statusText);
+                },
+                success: function (result) {
+                    //Now Process the data
+                    GetBookingsForOperatedDay(divDutyBookings.find("input#hdnDutyOperatedDayID").attr("value"));
+                    alert(result);
+                }
+            }).done(function (result) {
+                return false;
+            });
+        }
+        else {
+            alert("Booking cannot be deleted, as there trips and Events associated!!");
+        }
+    }
+
+    function SaveBooking() {
+        $("button#btnSaveBooking").click(function () {
+            debugger;
+            if (CheckMandatoryFieldsInBlock(divAddEditDutyBookings, "") && CheckNumericFields(divAddEditDutyBookings, "") && ValidateBookingTime(divAddEditDutyBookings)) {
+                var BookOnTimeHour = divAddEditDutyBookings.find("select#ddlBookOnTimeHours").val();
+                var BookOnTimeMinute = divAddEditDutyBookings.find("select#ddlBookOnTimeMinutes").val();
+                var BookOffTimeHour = divAddEditDutyBookings.find("select#ddlBookOffTimeHours").val();
+                var BookOffTimeMinute = divAddEditDutyBookings.find("select#ddlBookOffTimeMinutes").val();
+                var PlaceOnID = divAddEditDutyBookings.find("select#ddlBookOnTimeSubRoutes").val();
+                var PlaceOffID = divAddEditDutyBookings.find("select#ddlBookOffTimeSubRoutes").val();
+                var PlaceOn = divAddEditDutyBookings.find("select#ddlBookOnTimeSubRoutes option:selected").text();
+                var PlaceOff = divAddEditDutyBookings.find("select#ddlBookOffTimeSubRoutes option:selected").text();
+                var bookingID = divAddEditDutyBookings.find("input#hdnDutyBookingID").attr("value");
+                var operatedDayID = divAddEditDutyBookings.find("input#hdnDutyOperatedDayID").attr("value");
+                var isSlot = divAddEditDutyBookings.find("input#hdnIsSlot").attr("value");
+
+                $.ajax({
+                    async: false,
+                    url: '@Url.Action("InsertOrUpdateDutyBooking", "SchedulingSystem")',
+                    type: 'Post',
+                    data: JSON.stringify({
+                        BookOnTimeHour: BookOnTimeHour, BookOnTimeMinute: BookOnTimeMinute, BookOffTimeHour: BookOffTimeHour, ID: bookingID,
+                        BookOffTimeMinute: BookOffTimeMinute, PlaceOnID: PlaceOnID, PlaceOffID: PlaceOffID, PlaceOn: PlaceOn, PlaceOff: PlaceOff, DutyOperatedDayID: operatedDayID, isSlot: isSlot
+                    }),
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    error: function (xhr) {
+                        alert('Error: ' + xhr.statusText);
+                    },
+                    success: function (result) {
+                        //Now Process the data
+                        if (result == 1) {
+
+                            alert("Booking Inserted Successfully!!");
+                            divAddEditDutyBookings.modal("hide");
+                            GetBookingsForOperatedDay(divDutyBookings.find("input#hdnDutyOperatedDayID").attr("value"));
+                        }
+                        else if (result == -1) {
+                            alert("Booking time should be between last booking endtime and day end!!");
+                        }
+                    }
+                }).done(function (result) {
+                    return false;
+                });
+            }
+        });
+    }
+</script>

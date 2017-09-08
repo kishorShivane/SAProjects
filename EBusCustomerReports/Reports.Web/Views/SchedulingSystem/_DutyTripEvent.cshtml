@@ -1,0 +1,449 @@
+﻿<!-- Modal Contents -->
+<div id="divDutyTripsEvents" class="modal fade ">
+    <!-- class modal and fade -->
+
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header modal-header-info">
+                <!-- modal header -->
+                <button type="button" class="close"
+                        data-dismiss="modal" aria-hidden="true">
+                    ×
+                </button>
+                <div class="modal-title">Duty Trips & Events</div>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="container pull-right" style="text-align: right;">
+                            <button type="button" class="btn btn-success" id="btnAddTrip">Add Trip&nbsp;<i class="fa fa-1x fa-plus"></i></button> &nbsp; &nbsp; &nbsp; &nbsp;
+                            <button type="button" class="btn btn-success" id="btnAddEvent">Add Event&nbsp;<i class="fa fa-1x fa-plus"></i></button> &nbsp; &nbsp; &nbsp; &nbsp;
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="table-responsive" style="height:500px;overflow:auto;">
+                            <table class="table table-striped" id="tblDutyTripsResults">
+                                <thead class="thead-inverse">
+                                    <tr>
+                                        <th>Start Time</th>
+                                        <th>End Time</th>
+                                        <th>Trip Type</th>
+                                        <th>MainRoute</th>
+                                        <th>SubRoute</th>
+                                        <th>Route</th>
+                                        <th>Distance</th>
+                                        <th>Add Trip</th>
+                                        <th>Edit</th>
+                                        <th>Delete</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="table-responsive">
+                            <table class="table table-striped" id="tblDutyEventsResults">
+                                <thead class="thead-inverse">
+                                    <tr>
+                                        <th>StartTime</th>
+                                        <th>EndTime</th>
+                                        <th>Description</th>
+                                        <th>Add Event</th>
+                                        <th>Edit</th>
+                                        <th>Delete</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+                <!-- modal footer -->
+                <input type="hidden" id="hdnDutyBookingID" value="0" />
+                <input type="hidden" id="hdnModelTitle" value="" />
+                <input type="hidden" id="hdnBookOnTimeHourCarried" value="" />
+                <input type="hidden" id="hdnBookOnTimeMinuteCarried" value="" />
+                <input type="hidden" id="hdnBookOffTimeHourCarried" value="" />
+                <input type="hidden" id="hdnBookOffTimeMinuteCarried" value="" />
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+
+        </div> <!-- / .modal-content -->
+
+    </div> <!-- / .modal-dialog -->
+
+</div>
+<!-- / .modal -->
+<script>
+    $(document).ready(function () { AddTrip(); AddEvent(); });
+
+    $(document).on("click", "a#lnkDutyTripEdit", function () {
+        ClearFormValuesInBlock(divAddEditDutyTrips);
+        BindTripDetails($(this).parent().parent(), $(this).attr("value"));
+        SetPopupTitle(divAddEditDutyTrips, "Edit Trip - ", divDutyBookings.find("input#hdnModelTitle").attr("value"));
+        divAddEditDutyTrips.modal('show');
+    });
+
+    $(document).on("click", "button#btnAddTripToBelow", function () {
+        var row = $(this).parent().parent();
+        ClearFormValuesInBlock(divAddEditDutyTrips);
+        divAddEditDutyTrips.find("input#chkPosition").prop("checked", true);
+        divAddEditDutyTrips.find("input#hdnDutyBookingID").attr("value", divDutyTripsEvents.find("input#hdnDutyBookingID").attr("value"));
+        divAddEditDutyTrips.find("input#hdnIsSlot").attr("value", "1");
+        divAddEditDutyTrips.find("input#hdnNextStartTimeHourCarried").attr("value", row.find("input#hdnNextStartTimeHour").attr("value"));
+        divAddEditDutyTrips.find("input#hdnNextStartTimeMinuteCarried").attr("value", row.find("input#hdnNextStartTimeMinute").attr("value"));
+        divAddEditDutyTrips.find("input#hdnPrevEndTimeHourCarried").attr("value", row.find("span#lblEndTimeHour").html());
+        divAddEditDutyTrips.find("input#hdnPrevEndTimeMinuteCarried").attr("value", row.find("span#lblEndTimeMinute").html());
+        SetPopupTitle(divAddEditDutyTrips, "Add Trip - ", divDutyBookings.find("input#hdnModelTitle").attr("value"));
+        divAddEditDutyTrips.modal('show');
+    });
+
+    $(document).on("click", "button#btnAddEventToBelow", function () {
+        var row = $(this).parent().parent();
+        ClearFormValuesInBlock(divAddEditDutyEvents);
+        GetEvents();
+        divAddEditDutyEvents.find("input#hdnDutyBookingID").attr("value", divDutyTripsEvents.find("input#hdnDutyBookingID").attr("value"));
+        divAddEditDutyEvents.find("input#hdnIsSlot").attr("value", "1");
+        divAddEditDutyEvents.find("input#hdnNextStartTimeHourCarried").attr("value", row.find("input#hdnNextStartTimeHour").attr("value"));
+        divAddEditDutyEvents.find("input#hdnNextStartTimeMinuteCarried").attr("value", row.find("input#hdnNextStartTimeMinute").attr("value"));
+        divAddEditDutyEvents.find("input#hdnPrevEndTimeHourCarried").attr("value", row.find("span#lblEndTimeHour").html());
+        divAddEditDutyEvents.find("input#hdnPrevEndTimeMinuteCarried").attr("value", row.find("span#lblEndTimeMinute").html());
+        SetPopupTitle(divAddEditDutyEvents, "Add Event - ", divDutyBookings.find("input#hdnModelTitle").attr("value"));
+        divAddEditDutyEvents.modal('show');
+    });
+
+    $(document).on("click", "a#lnkDutyTripDelete", function () {
+        var status = confirm("Are you sure you want to delete this Trip!");
+        if (status) {
+            DeleteDutyTrip($(this).attr("value"));
+        }
+    });
+
+    $(document).on("click", "a#lnkDutyEventEdit", function () {
+        ClearFormValuesInBlock(divAddEditDutyEvents);
+        BindEventDetails($(this).parent().parent(), $(this).attr("value"));
+        SetPopupTitle(divAddEditDutyEvents, "Edit Event - ", divDutyBookings.find("input#hdnModelTitle").attr("value"));
+        divAddEditDutyEvents.modal('show');
+    });
+
+    $(document).on("click", "a#lnkDutyEventDelete", function () {
+        var status = confirm("Are you sure you want to delete this Event!");
+        if (status) {
+            DeleteDutyEvent($(this).attr("value"));
+        }
+    });
+
+    function AddTrip() {
+        $("button#btnAddTrip").click(function () {
+            ClearFormValuesInBlock(divAddEditDutyTrips);
+            divAddEditDutyTrips.find("input#chkPosition").prop("checked", true);
+            divAddEditDutyTrips.find("input#hdnDutyBookingID").attr("value", divDutyTripsEvents.find("input#hdnDutyBookingID").attr("value"));
+            //Start from here
+            divAddEditDutyTrips.find("input#hdnNextStartTimeHourCarried").attr("value", divDutyTripsEvents.find("input#hdnBookOffTimeHourCarried").attr("value"));
+            divAddEditDutyTrips.find("input#hdnNextStartTimeMinuteCarried").attr("value", divDutyTripsEvents.find("input#hdnBookOffTimeMinuteCarried").attr("value"));
+            divAddEditDutyTrips.find("input#hdnPrevEndTimeHourCarried").attr("value", divDutyTripsEvents.find("input#hdnBookOnTimeHourCarried").attr("value"));
+            divAddEditDutyTrips.find("input#hdnPrevEndTimeMinuteCarried").attr("value", divDutyTripsEvents.find("input#hdnBookOnTimeMinuteCarried").attr("value"));
+            SetPopupTitle(divAddEditDutyTrips, "Add Trip - ", divDutyBookings.find("input#hdnModelTitle").attr("value"));
+            divAddEditDutyTrips.modal('show');
+        });
+    }
+
+    function AddEvent() {
+        $("button#btnAddEvent").click(function () {
+            ClearFormValuesInBlock(divAddEditDutyEvents);
+            GetEvents();
+            divAddEditDutyEvents.find("input#hdnDutyBookingID").attr("value", divDutyTripsEvents.find("input#hdnDutyBookingID").attr("value"));
+            divAddEditDutyEvents.find("input#hdnNextStartTimeHourCarried").attr("value", divDutyTripsEvents.find("input#hdnBookOffTimeHourCarried").attr("value"));
+            divAddEditDutyEvents.find("input#hdnNextStartTimeMinuteCarried").attr("value", divDutyTripsEvents.find("input#hdnBookOffTimeMinuteCarried").attr("value"));
+            divAddEditDutyEvents.find("input#hdnPrevEndTimeHourCarried").attr("value", divDutyTripsEvents.find("input#hdnBookOnTimeHourCarried").attr("value"));
+            divAddEditDutyEvents.find("input#hdnPrevEndTimeMinuteCarried").attr("value", divDutyTripsEvents.find("input#hdnBookOnTimeMinuteCarried").attr("value"));
+            SetPopupTitle(divAddEditDutyEvents, "Add Event - ", divDutyBookings.find("input#hdnModelTitle").attr("value"));
+            divAddEditDutyEvents.modal('show');
+        });
+    }
+
+
+    function GetTripsForBooking(bookingID) {
+        debugger;
+        var tripState = true;
+        var tableTrip = divDutyTripsEvents.find("table#tblDutyTripsResults");
+        var tableTripBody = tableTrip.find("tbody");
+        var rows = "";
+        tableTripBody.html("");
+        $.ajax({
+            async: false,
+            url: '@Url.Action("GetTripsForBooking", "SchedulingSystem")',
+            type: 'Post',
+            data: JSON.stringify({ BookingID: bookingID }),
+            dataType: 'json',
+            contentType: 'application/json',
+            error: function (xhr) {
+                alert('Error: ' + xhr.statusText);
+            },
+            success: function (result) {
+                //Now Process the data
+                tableTripBody.html();
+                if (result.length == 0) {
+                    tableTrip.hide();
+                    tripState = false;
+                }
+                else {
+                    $(result).each(function (index) {
+                        var CurrentItem = this;
+                        debugger;
+                        rows = rows + "<tr>";
+                        if (index == 0) {
+                            if (result.length > 1) {
+                                var NextItem = result[index + 1];
+                                rows = rows + "<td><span id='lblStartTimeHour'>" + CurrentItem.StartTimeHour + "</span>:<span id='lblStartTimeMinute'>" + CurrentItem.StartTimeMinute + "</span><input type='hidden' id='hdnNextStartTimeHour' value='" + NextItem.StartTimeHour + "'/><input type='hidden' id='hdnNextStartTimeMinute' value='" + NextItem.StartTimeMinute + "'/></td>";
+                                rows = rows + "<td><span id='lblEndTimeHour'>" + CurrentItem.EndTimeHour + "</span>:<span id='lblEndTimeMinute'>" + CurrentItem.EndTimeMinute + "</span></span><input type='hidden' id='hdnPrevEndTimeHour' value='" + divDutyTripsEvents.find("input#hdnBookOnTimeHourCarried").attr("value") + "'/><input type='hidden' id='hdnPrevEndTimeMinute' value='" + divDutyTripsEvents.find("input#hdnBookOnTimeMinuteCarried").attr("value") + "'/></td>";
+                            }
+                            else {
+                                rows = rows + "<td><span id='lblStartTimeHour'>" + CurrentItem.StartTimeHour + "</span>:<span id='lblStartTimeMinute'>" + CurrentItem.StartTimeMinute + "</span><input type='hidden' id='hdnNextStartTimeHour' value='" + divDutyTripsEvents.find("input#hdnBookOffTimeHourCarried").attr("value") + "'/><input type='hidden' id='hdnNextStartTimeMinute' value='" + divDutyTripsEvents.find("input#hdnBookOffTimeMinuteCarried").attr("value") + "'/></td>";
+                                rows = rows + "<td><span id='lblEndTimeHour'>" + CurrentItem.EndTimeHour + "</span>:<span id='lblEndTimeMinute'>" + CurrentItem.EndTimeMinute + "</span></span><input type='hidden' id='hdnPrevEndTimeHour' value='" + divDutyTripsEvents.find("input#hdnBookOnTimeHourCarried").attr("value") + "'/><input type='hidden' id='hdnPrevEndTimeMinute' value='" + divDutyTripsEvents.find("input#hdnBookOnTimeMinuteCarried").attr("value") + "'/></td>";
+                            }
+                        }
+                        else if (index == result.length - 1) {
+                            var PreviousItem = result[index - 1];
+                            rows = rows + "<td><span id='lblStartTimeHour'>" + CurrentItem.StartTimeHour + "</span>:<span id='lblStartTimeMinute'>" + CurrentItem.StartTimeMinute + "</span><input type='hidden' id='hdnNextStartTimeHour' value='" + divDutyTripsEvents.find("input#hdnBookOffTimeHourCarried").attr("value") + "'/><input type='hidden' id='hdnNextStartTimeMinute' value='" + divDutyTripsEvents.find("input#hdnBookOffTimeMinuteCarried").attr("value") + "'/></td>";
+                            rows = rows + "<td><span id='lblEndTimeHour'>" + CurrentItem.EndTimeHour + "</span>:<span id='lblEndTimeMinute'>" + CurrentItem.EndTimeMinute + "</span></span><input type='hidden' id='hdnPrevEndTimeHour' value='" + PreviousItem.EndTimeHour + "'/><input type='hidden' id='hdnPrevEndTimeMinute' value='" + PreviousItem.EndTimeMinute + "'/></td>";
+                        }
+                        else {
+                            var NextItem = result[index + 1]; var PreviousItem = result[index - 1];
+                            rows = rows + "<td><span id='lblStartTimeHour'>" + CurrentItem.StartTimeHour + "</span>:<span id='lblStartTimeMinute'>" + CurrentItem.StartTimeMinute + "</span><input type='hidden' id='hdnNextStartTimeHour' value='" + NextItem.StartTimeHour + "'/><input type='hidden' id='hdnNextStartTimeMinute' value='" + NextItem.StartTimeMinute + "'/></td>";
+                            rows = rows + "<td><span id='lblEndTimeHour'>" + CurrentItem.EndTimeHour + "</span>:<span id='lblEndTimeMinute'>" + CurrentItem.EndTimeMinute + "</span></span><input type='hidden' id='hdnPrevEndTimeHour' value='" + PreviousItem.EndTimeHour + "'/><input type='hidden' id='hdnPrevEndTimeMinute' value='" + PreviousItem.EndTimeMinute + "'/></td>";
+                        }
+                        debugger;
+                        if (CurrentItem.Position)
+                        { rows = rows + "<td><span id='lblTripType'>Dead</span></td>"; }
+                        else
+                        { rows = rows + "<td><span id='lblTripType'>Revenue</span></td>"; }
+                        rows = rows + "<td><span id='lblMainRoute'>" + CurrentItem.MainRouteNumber + "</span><input type='hidden' value='" + CurrentItem.ContractID + "' id='hdnContractID'/></td>";
+                        rows = rows + "<td><span id='lblSubRoute'>" + CurrentItem.SubRouteNumber + "</span><input type='hidden' value='" + CurrentItem.Position + "' id='hdnPosition'/></td>";
+                        rows = rows + "<td><span id='lblRoute'>" + CurrentItem.RouteName + "</span><input type='hidden' value='" + CurrentItem.DefaultContract + "' id='hdnDefaultContract'/></td>";
+                        rows = rows + "<td><span id='lblDistance'>" + CurrentItem.Distance + "</span></td>";
+                        rows = rows + "<td><button type='button' class='btn btn-info' style='padding: 0px 10px;height: 25px !important;' id='btnAddTripToBelow' value=''><i class='fa fa-arrow-down' aria-hidden='true'></i>&nbsp;Add Trip</button></td>";
+                        rows = rows + " <td><a id='lnkDutyTripEdit' class='linkEdit' value='" + CurrentItem.ID + "'><span class='fa-stack fa-sm '><i class='fa fa-edit fa-stack-1x '></i></span></a></td>";
+                        rows = rows + " <td><a id='lnkDutyTripDelete' class='linkDelete' value='" + CurrentItem.ID + "'><span class='fa-stack fa-sm '><i class='fa fa-shopping-basket fa-stack-1x '></i></span></a></td>";
+                        rows = rows + " </tr>";
+
+                    });
+                    tableTrip.show();
+                    tableTripBody.html(rows);
+                }
+            }
+        }).done(function (result) {
+            return false;
+        });
+        return tripState;
+    }
+
+    function GetEventsForBooking(bookingID) {
+        var eventState = true;
+        var tableEvent = divDutyTripsEvents.find("table#tblDutyEventsResults");
+        var tableEventBody = tableEvent.find("tbody");
+        var rows = "";
+        tableEventBody.html("");
+
+        $.ajax({
+            async: false,
+            url: '@Url.Action("GetEventsForBooking", "SchedulingSystem")',
+            type: 'Post',
+            data: JSON.stringify({ BookingID: bookingID }),
+            dataType: 'json',
+            contentType: 'application/json',
+            error: function (xhr) {
+                alert('Error: ' + xhr.statusText);
+            },
+            success: function (result) {
+                //Now Process the data
+                tableEventBody.html();
+                if (result.length == 0) {
+                    tableEvent.hide();
+                    eventState = false;
+                }
+                else {
+                    $(result).each(function (index) {
+                        var CurrentItem = this;
+                        rows = rows + "<tr>";
+                        if (index == 0) {
+                            if (result.length > 1) {
+                                var NextItem = result[index + 1];
+                                rows = rows + "<td><span id='lblStartTimeHour'>" + CurrentItem.StartTimeHour + "</span>:<span id='lblStartTimeMinute'>" + CurrentItem.StartTimeMinute + "</span><input type='hidden' id='hdnNextStartTimeHour' value='" + NextItem.StartTimeHour + "'/><input type='hidden' id='hdnNextStartTimeMinute' value='" + NextItem.StartTimeMinute + "'/></td>";
+                                rows = rows + "<td><span id='lblEndTimeHour'>" + CurrentItem.EndTimeHour + "</span>:<span id='lblEndTimeMinute'>" + CurrentItem.EndTimeMinute + "</span></span><input type='hidden' id='hdnPrevEndTimeHour' value='" + divDutyTripsEvents.find("input#hdnBookOnTimeHourCarried").attr("value") + "'/><input type='hidden' id='hdnPrevEndTimeMinute' value='" + divDutyTripsEvents.find("input#hdnBookOnTimeMinuteCarried").attr("value") + "'/></td>";
+                            }
+                            else {
+                                rows = rows + "<td><span id='lblStartTimeHour'>" + CurrentItem.StartTimeHour + "</span>:<span id='lblStartTimeMinute'>" + CurrentItem.StartTimeMinute + "</span><input type='hidden' id='hdnNextStartTimeHour' value='" + divDutyTripsEvents.find("input#hdnBookOffTimeHourCarried").attr("value") + "'/><input type='hidden' id='hdnNextStartTimeMinute' value='" + divDutyTripsEvents.find("input#hdnBookOffTimeMinuteCarried").attr("value") + "'/></td>";
+                                rows = rows + "<td><span id='lblEndTimeHour'>" + CurrentItem.EndTimeHour + "</span>:<span id='lblEndTimeMinute'>" + CurrentItem.EndTimeMinute + "</span></span><input type='hidden' id='hdnPrevEndTimeHour' value='" + divDutyTripsEvents.find("input#hdnBookOnTimeHourCarried").attr("value") + "'/><input type='hidden' id='hdnPrevEndTimeMinute' value='" + divDutyTripsEvents.find("input#hdnBookOnTimeMinuteCarried").attr("value") + "'/></td>";
+                            }
+                        }
+                        else if (index == result.length - 1) {
+                            var PreviousItem = result[index - 1];
+                            rows = rows + "<td><span id='lblStartTimeHour'>" + CurrentItem.StartTimeHour + "</span>:<span id='lblStartTimeMinute'>" + CurrentItem.StartTimeMinute + "</span><input type='hidden' id='hdnNextStartTimeHour' value='" + divDutyTripsEvents.find("input#hdnBookOffTimeHourCarried").attr("value") + "'/><input type='hidden' id='hdnNextStartTimeMinute' value='" + divDutyTripsEvents.find("input#hdnBookOffTimeMinuteCarried").attr("value") + "'/></td>";
+                            rows = rows + "<td><span id='lblEndTimeHour'>" + CurrentItem.EndTimeHour + "</span>:<span id='lblEndTimeMinute'>" + CurrentItem.EndTimeMinute + "</span></span><input type='hidden' id='hdnPrevEndTimeHour' value='" + PreviousItem.EndTimeHour + "'/><input type='hidden' id='hdnPrevEndTimeMinute' value='" + PreviousItem.EndTimeMinute + "'/></td>";
+                        }
+                        else {
+                            var NextItem = result[index + 1]; var PreviousItem = result[index - 1];
+                            rows = rows + "<td><span id='lblStartTimeHour'>" + CurrentItem.StartTimeHour + "</span>:<span id='lblStartTimeMinute'>" + CurrentItem.StartTimeMinute + "</span><input type='hidden' id='hdnNextStartTimeHour' value='" + NextItem.StartTimeHour + "'/><input type='hidden' id='hdnNextStartTimeMinute' value='" + NextItem.StartTimeMinute + "'/></td>";
+                            rows = rows + "<td><span id='lblEndTimeHour'>" + CurrentItem.EndTimeHour + "</span>:<span id='lblEndTimeMinute'>" + CurrentItem.EndTimeMinute + "</span></span><input type='hidden' id='hdnPrevEndTimeHour' value='" + PreviousItem.EndTimeHour + "'/><input type='hidden' id='hdnPrevEndTimeMinute' value='" + PreviousItem.EndTimeMinute + "'/></td>";
+                        }
+
+                        rows = rows + "<td><span id='lblDescription'>" + CurrentItem.Description + "</span></td>";
+                        rows = rows + "<td><button type='button' class='btn btn-info' style='padding: 0px 10px;height: 25px !important;' id='btnAddEventToBelow' value=''><i class='fa fa-arrow-down' aria-hidden='true'></i>&nbsp;Add Event</button></td>";
+                        rows = rows + " <td><a id='lnkDutyEventEdit' class='linkEdit' value='" + CurrentItem.DutyEventID + "'><span class='fa-stack fa-sm '><i class='fa fa-edit fa-stack-1x '></i></span></a></td>";
+                        rows = rows + " <td><a id='lnkDutyEventDelete' class='linkDelete' value='" + CurrentItem.DutyEventID + "'><span class='fa-stack fa-sm '><i class='fa fa-shopping-basket fa-stack-1x '></i></span></a></td>";
+                        rows = rows + " </tr>";
+                    });
+                    tableEvent.show();
+                    tableEventBody.html(rows);
+                }
+            }
+        }).done(function (result) {
+            return false;
+        });
+        return eventState;
+    }
+
+    function GetEventsTripsForBooking(bookingID) {
+        var tripState = GetTripsForBooking(bookingID);
+        var eventState = GetEventsForBooking(bookingID);
+        if (tripState == false && eventState == false) {
+            alert("No data found!!");
+            return false;
+        }
+
+        return true;
+    }
+
+    function BindTripDetails(row, tripID) {
+        debugger;
+        var route = "";
+        var position = true;
+        if (row.find("input#hdnPosition").attr("value") == "true") {
+            divAddEditDutyTrips.find("input#chkPosition").prop("checked", true);
+            divAddEditDutyTrips.find("input#chkRevenue").prop("checked", false);
+        }
+        else {
+            divAddEditDutyTrips.find("input#chkPosition").prop("checked", false);
+            divAddEditDutyTrips.find("input#chkRevenue").prop("checked", true);
+        }
+        if (row.find("input#hdnPosition").attr("value") == "true") {
+            position = true;
+            route = row.find("span#lblMainRoute").html() + "-" + row.find("span#lblSubRoute").html() + "-" + row.find("span#lblRoute").html() + "-" + "1" + '-' + row.find("input#hdnDefaultContract").attr("value") + '-' + row.find("span#lblDistance").html();
+        }
+        else {
+            position = false;
+            route = row.find("span#lblMainRoute").html() + "-" + row.find("span#lblSubRoute").html() + "-" + row.find("span#lblRoute").html() + "-" + "0" + '-' + row.find("input#hdnDefaultContract").attr("value") + '-' + row.find("span#lblDistance").html();
+        }
+        route = route.replace(/\ /g, "");
+        GetRoutesForPosition(position);
+        divAddEditDutyTrips.find("select#ddlContract").val(row.find("input#hdnContractID").attr("value")).change();
+        divAddEditDutyTrips.find("select#ddlStartTimeHours").val(row.find("span#lblStartTimeHour").html()).change();
+        divAddEditDutyTrips.find("select#ddlStartTimeMinutes").val(row.find("span#lblStartTimeMinute").html()).change();
+        divAddEditDutyTrips.find("select#ddlEndTimeHours").val(row.find("span#lblEndTimeHour").html()).change();
+        divAddEditDutyTrips.find("select#ddlEndTimeMinutes").val(row.find("span#lblEndTimeMinute").html()).change();
+        divAddEditDutyTrips.find("select#ddlRoutes").val(route).change();
+        divAddEditDutyTrips.find("input#hdnDutyTripID").attr("value", tripID);
+        divAddEditDutyTrips.find("input#hdnDutyBookingID").attr("value", divDutyTripsEvents.find("input#hdnDutyBookingID").attr("value"));
+        divAddEditDutyTrips.find("input#hdnNextStartTimeHourCarried").attr("value", row.find("input#hdnNextStartTimeHour").attr("value"));
+        divAddEditDutyTrips.find("input#hdnNextStartTimeMinuteCarried").attr("value", row.find("input#hdnNextStartTimeMinute").attr("value"));
+        divAddEditDutyTrips.find("input#hdnPrevEndTimeHourCarried").attr("value", row.find("input#hdnPrevEndTimeHour").attr("value"));
+        divAddEditDutyTrips.find("input#hdnPrevEndTimeMinuteCarried").attr("value", row.find("input#hdnPrevEndTimeMinute").attr("value"));
+
+    }
+
+    function GetDropDownOptionValueForText(dropDown, value) {
+        var result = "";
+        dropDown.find("option").each(function (index) {
+            if ($(this).attr("value") == value) {
+                result = $(this).html();
+            }
+        });
+        return result;
+    }
+
+    function BindEventDetails(row, eventID) {
+        GetEvents();
+        divAddEditDutyEvents.find("select#ddlStartTimeHours").val(row.find("span#lblStartTimeHour").html()).change();
+        divAddEditDutyEvents.find("select#ddlStartTimeMinutes").val(row.find("span#lblStartTimeMinute").html()).change();
+        divAddEditDutyEvents.find("select#ddlEndTimeHours").val(row.find("span#lblEndTimeHour").html()).change();
+        divAddEditDutyEvents.find("select#ddlEndTimeMinutes").val(row.find("span#lblEndTimeMinute").html()).change();
+        setDropDownValueByText("ddlDescription", row.find("span#lblDescription").html());
+        //divAddEditDutyEvents.find("input#txtDescription").attr("value", row.find("span#lblDescription").html());
+        divAddEditDutyEvents.find("input#hdnDutyEventID").attr("value", eventID);
+        divAddEditDutyEvents.find("input#hdnDutyBookingID").attr("value", divDutyTripsEvents.find("input#hdnDutyBookingID").attr("value"));
+        divAddEditDutyEvents.find("input#hdnNextStartTimeHourCarried").attr("value", row.find("input#hdnNextStartTimeHour").attr("value"));
+        divAddEditDutyEvents.find("input#hdnNextStartTimeMinuteCarried").attr("value", row.find("input#hdnNextStartTimeMinute").attr("value"));
+        divAddEditDutyEvents.find("input#hdnPrevEndTimeHourCarried").attr("value", row.find("input#hdnPrevEndTimeHour").attr("value"));
+        divAddEditDutyEvents.find("input#hdnPrevEndTimeMinuteCarried").attr("value", row.find("input#hdnPrevEndTimeMinute").attr("value"));
+    }
+
+
+
+    function GetRoutesForPosition(position) {
+        $.ajax({
+            async: false,
+            url: '@Url.Action("GetRoutesForPosition", "SchedulingSystem")',
+            type: 'Post',
+            data: JSON.stringify({ isPosition: position }),
+            dataType: 'json',
+            contentType: 'application/json',
+            error: function (xhr) {
+                alert('Error: ' + xhr.statusText);
+            },
+            success: function (result) {
+                //Now Process the data
+                if (result.length != 0)
+                    divAddEditDutyTrips.find("select#ddlRoutes").find('option').remove().end();
+                $(result).each(function (index) {
+                    var CurrentItem = this;
+                    divAddEditDutyTrips.find("select#ddlRoutes").append($("<option></option>").val(CurrentItem.Value).html(CurrentItem.Text));
+                    divAddEditDutyTrips.find("select#ddlRoutes").val("0").change();
+                });
+            }
+        }).done(function (result) {
+            return false;
+        });
+    }
+
+
+    function GetEvents() {
+        $.ajax({
+            async: false,
+            url: '@Url.Action("GetEvents", "SchedulingSystem")',
+            type: 'Post',
+            dataType: 'json',
+            contentType: 'application/json',
+            error: function (xhr) {
+                alert('Error: ' + xhr.statusText);
+            },
+            success: function (result) {
+                //Now Process the data
+                if (result.length != 0)
+                    divAddEditDutyEvents.find("select#ddlDescription").find('option').remove().end();
+                $(result).each(function (index) {
+                    var CurrentItem = this;
+                    divAddEditDutyEvents.find("select#ddlDescription").append($("<option></option>").val(CurrentItem.Value).html(CurrentItem.Text));
+                    divAddEditDutyEvents.find("select#ddlDescription").val("0").change();
+                });
+            }
+        }).done(function (result) {
+            return false;
+        });
+    }
+</script>

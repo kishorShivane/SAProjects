@@ -1,0 +1,237 @@
+﻿@model Reports.Services.Models.CashVsSmartCardUsageByRouteFilter
+@{
+    ViewBag.Title = "Cash Vs SmartCard UsageByRoute";
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+    var date = DateTime.Now.Date;
+}
+@section scripts
+{
+
+    <link href="~/Styles/Jquery/jquery.ui.theme.css" rel="stylesheet" />
+    <link href="~/Styles/Jquery/jquery.ui.dialog.css" rel="stylesheet" />
+    <link href="~/Styles/Jquery/jquery.ui.button.css" rel="stylesheet" />
+    <link href="~/Styles/Jquery/jquery.ui.core.css" rel="stylesheet" />
+    <link href="~/Styles/Jquery/jquery.ui.base.css" rel="stylesheet" />
+    <link href="~/Styles/Jquery/jquery.ui.all.css" rel="stylesheet" />
+    <link href="~/Styles/Jquery/jquery-ui.css" rel="stylesheet" />
+    <link href="~/Styles/table/jquery.dataTables.min.css" rel="stylesheet" />
+    <script src="~/Scripts/JqueryVal/jquery.validate-vsdoc.js"></script>
+    <script src="~/Scripts/JqueryVal/jquery.validate.js"></script>
+    <script src="~/Scripts/JqueryVal/jquery.validate.min.js"></script>
+    <script src="~/Scripts/JqueryVal/jquery.validate.unobtrusive.js"></script>
+    <script src="~/Scripts/JqueryVal/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/Scripts/table/jquery.dataTables.min.js"></script>
+    <script src="~/Scripts/Multiselect/bootstrap-multiselect.js"></script>
+    <link href="~/Styles/Multiselect/bootstrap-multiselect.css" rel="stylesheet" />
+
+    <style>
+        #report1 {
+            border-color: black;
+        }
+
+        div.ui-datepicker {
+            font-size: 15px;
+        }
+
+        .input-validation-error {
+            border-color: red;
+        }
+
+        .field-validation-error {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+
+            $("#report1").dataTable({
+                "paging": true,
+                "info": false
+            });
+
+            function getData() {
+                var routes = $("#RoutesSelected").val();
+                if (routes != null) {
+                    routes = routes.toString();
+                }
+                else {
+                    routes = "";
+                }
+                $("#loading").show();
+                $.ajax({
+                    type: "GET",
+                    url: $("#ajaxUrl").val(),
+                    data: { routes: routes, fromdate: $("#StartDate").val(), todate: $("#EndDate").val() },
+                    dataType: "html",
+                    cache: false,
+                    async: true,
+                    success: function (result) {
+                        $('#report1').DataTable().destroy();
+                        $("#reportBody").html(result);
+                        $("#loading").hide();
+                        $("#report1").dataTable({
+                            "paging": true,
+                            "info": false
+                        });
+                    },
+                    error: function () {
+                        $("#loading").hide();
+                    }
+                });
+            }
+
+            $("#dnPdf").click(function () {
+                var routes = $("#RoutesSelected").val();
+                if (routes != null) {
+                    routes = routes.toString();
+                }
+                else {
+                    routes = "";
+                }
+                var qs = "/?routes=" + routes + "&fromdate=" + $("#StartDate").val() + "&todate=" + $("#EndDate").val();
+                window.location.href = $("#downloadUrl").val() + qs;
+            });
+
+            $("#display").click(function () {
+                getData();
+            });
+
+            $("#StartDate").datepicker({
+                dateFormat: "dd-mm-yy",
+                maxDate: new Date,
+                beforeShow: function () {
+                    setTimeout(function () {
+                        $('.ui-datepicker').css('z-index', 99999999999999);
+                    }, 0);
+                }
+            });
+
+            $("#EndDate").datepicker({
+                dateFormat: "dd-mm-yy",
+                maxDate: new Date,
+                beforeShow: function () {
+                    setTimeout(function () {
+                        $('.ui-datepicker').css('z-index', 99999999999999);
+                    }, 0);
+                }
+            });
+
+            $("#RoutesSelected").multiselect({
+                buttonWidth: '100%',
+                enableFiltering: true,
+                includeSelectAllOption: true,
+                nonSelectedText: 'Select Routes'
+            });
+
+            getData();
+        })
+
+
+
+    </script>
+    <style>
+        .lblFont {
+            font-weight: bold;
+            color: brown;
+        }
+
+        .zindex {
+            z-index: 99999;
+        }
+
+        .page-header {
+            padding-bottom: 0px !important;
+            border-bottom: 0px !important;
+        }
+    </style>
+}
+<div id="page-wrapper">
+    <div class="row">
+        <div class="col-lg-12" style="border-bottom: 1px solid #eee; padding-bottom: 9px;">
+            <h2 class="page-header" style="margin: 10px; color: #5e5e5e !important">Cash Vs SmartCard Usage By Route</h2>
+            <p style="margin-left: 15px">
+                Last 30 days data is shown by default.
+            </p>
+        </div>
+    </div>
+    <div class="row">
+        @Html.ValidationSummary(true)
+        @*@Html.Partial("_Shortcut2")*@
+        <div style="height: 5px;"></div>
+        <div class="row" style="padding-left: 20px;">
+            <div align="left" class="col-md-3 col-sm-12 pad0px">
+                <label class="lblFont" for="Website">Routes</label>
+                @Html.DropDownListFor(s => s.RoutesSelected, Model.Routes, new { @class = "multiselect form-control", multiple = "multiple" })
+            </div>
+            <div class="col-md-1 hidden-xs hidden-sm">
+            </div>
+            <div align="left" class="col-md-3 col-sm-12 pad0px">
+                <label class="lblFont" for="Location">From Date</label>
+                @Html.TextBoxFor(s => s.StartDate, new { @class = "form-control zindex", @placeholder = "From Date" })
+                @Html.ValidationMessageFor(m => m.StartDate)
+            </div>
+            <div class="col-md-1 hidden-xs hidden-sm">
+            </div>
+            <div align="left" class="col-md-3 col-sm-12 pad0px">
+                <label class="lblFont" for="Pincode">Till Date</label>
+                @Html.TextBoxFor(s => s.EndDate, new { @class = "form-control zindex", @placeholder = "Till Date" })
+                @Html.ValidationMessageFor(m => m.EndDate)
+            </div>
+        </div>
+        <div style="height: 10px;"></div>
+        <div class="row" style="padding-left: 20px;">
+            <div class="form-group width80">
+                <div align="left" class="col-md-3 col-sm-12" style="margin-top: 20px;">
+                    @Html.HiddenFor(s => s.ExcelOrPDF)
+                    <button id="dnPdf" style="width: 100%;" type="submit" class="btn btn-success">
+                        Download
+                    </button>
+                </div>
+                <div class="col-md-1 hidden-xs hidden-sm">
+                </div>
+                <div align="left" class="col-md-3 col-sm-12" style="margin-top: 20px;">
+                    @Html.HiddenFor(s => s.ExcelOrPDF)
+                    <button id="display" style="width: 100%;" type="submit" class="btn btn-info">
+                        Display
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div style="height: 10px;"></div>
+
+    </div>
+    <div class="row" id="loading" style="display: block;">
+        <img style="padding-left: 40%; top: 50%; position: relative; height: 32px;" src="~/Images/ajax-loader.gif" alt="Loading.." />
+    </div>
+    <div class="row">
+        <table style="border-color: black;" class="table table-bordered table-hover table-striped" id="report1">
+            <thead>
+                <tr>
+                    <th style="width:10%;">Route
+                    </th>
+                    <th style="min-width:20%;" >Route Name
+                    </th>
+                    <th style="width:10%;" >Total Passengers
+                    </th>
+                    <th style="width:10%;">Cash Passengers Count
+                    </th>
+                    <th style="width:10%;">Cash Passengers %
+                    </th>
+                    <th style="width:10%;">Smart Card Passengers Count
+                    </th>
+                    <th style="width:10%;">Smart Card Passengers %
+                    </th>
+                    <th style="width:10%;">Transfer Passengers Count
+                    </th>
+                    <th style="width:10%;">Transfer Passengers %
+                    </th>
+                </tr>
+            </thead>
+            <tbody id="reportBody">
+            </tbody>
+        </table>
+    </div>
+    <input type="hidden" id="ajaxUrl" value='@Url.Action("GetCashVsSmartCardUsageByRouteData")' />
+    <input type="hidden" id="downloadUrl" value='@Url.Action("DownloadCashVsSmartCardUsageByRoute")' />
+</div>

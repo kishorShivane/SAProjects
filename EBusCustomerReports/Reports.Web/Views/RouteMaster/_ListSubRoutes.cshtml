@@ -1,0 +1,208 @@
+﻿<!-- Modal Contents -->
+<div id="divSubRoute" class="modal fade ">
+    <!-- class modal and fade -->
+
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header modal-header-info">
+                <!-- modal header -->
+                <button type="button" class="close"
+                        data-dismiss="modal" aria-hidden="true">
+                    ×
+                </button>
+                <div class="modal-title">Sub Route</div>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="container pull-right">
+                            <button type="button" class="btn btn-success" id="btnAddSubRoute">Add Sub Route&nbsp;<i class="fa fa-1x fa-plus"></i></button> &nbsp; &nbsp; &nbsp; &nbsp;
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="table-responsive" style="max-height: 500px;">
+                            <table class="table table-striped" id="tblSubRouteResults">
+                                <thead class="thead-inverse">
+                                    <tr>
+                                        <th>Sub Route Number</th>
+                                        <th>Sub Route Name</th>
+                                        <th>Edit</th>
+                                        <th>Delete</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <!-- modal footer -->
+                <input type="hidden" id="hdnRouteNumber" value="0" />
+                <input type="hidden" id="hdnModelTitle" value="" />
+                <input type="hidden" id="hdnMainRoutesStages" value="" />
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+
+        </div> <!-- / .modal-content -->
+
+    </div> <!-- / .modal-dialog -->
+
+</div><!-- / .modal -->
+<script>
+    $(document).ready(function () {
+        AddSubRoute();
+    });
+
+    $(document).on("click", "a#lnkSubRouteEdit", function () {
+        ClearFormValuesInBlock(divAddEditSubRoute);
+        var row = $(this).parent().parent();
+        SubRoutePopupTitleText(row);
+        GetStages(divSubRoute.find("input#hdnRouteNumber").attr("value"));
+        BindSubRouteDetails(row, $(this).attr("value"));
+        SetPopupTitle(divAddEditSubRoute, "Edit SubRoute - ", divAddEditSubRoute.find("input#hdnModelTitle").attr("value"));
+        divAddEditSubRoute.modal('show');
+    });
+
+    $(document).on("click", "a#lnkSubRouteDelete", function () {
+        var status = confirm("Are you sure you want to delete this Sub Route!");
+        if (status) {
+            DeleteSubRoute($(this).attr("value"), divSubRoute.find("input#hdnRouteNumber").attr("value"));
+        }
+    });
+
+    function SubRoutePopupTitleText(row) {
+        var booking = row.find("span#lblSubRouteDetail").html() + " for the Main Route: " + divRouteEditor.find("input#hdnIndexModelTitle").attr("value");
+        divAddEditSubRoute.find("input#hdnModelTitle").attr("value", booking);
+    }
+
+    function AddSubRoute() {
+        $("button#btnAddSubRoute").click(function () {
+            ClearFormValuesInBlock(divAddEditSubRoute);
+            divAddEditSubRoute.find("#lblMainRouteNumber").html(divSubRoute.find("input#hdnRouteNumber").attr("value"));
+            var nextSubRouteNumber = GetLastSubRouteNumber(divSubRoute.find("input#hdnRouteNumber").attr("value"));
+            divAddEditSubRoute.find("input#txtSubRouteNumber").val(nextSubRouteNumber);
+            GetStages(divSubRoute.find("input#hdnRouteNumber").attr("value"));
+            divAddEditSubRoute.find("input#hdnRouteNumber").val(divSubRoute.find("input#hdnRouteNumber").attr("value"));
+            SetPopupTitle(divAddEditSubRoute, "Add Sub Route - ", "Main Route: " + divRouteEditor.find("input#hdnIndexModelTitle").attr("value"));
+            divAddEditSubRoute.find("input#txtSubRouteName").val("").attr("readOnly", true);
+            divAddEditSubRoute.find("input#txtSubRouteNumber").attr("readOnly", true);
+            divAddEditSubRoute.find("input#chkRevenue").prop("checked", true);
+            divAddEditSubRoute.find("input#hdnMainRoute").attr("value", divSubRoute.find("input#hdnMainRoutesStages").attr("value"));
+            LoadMainRouteStages();
+            divAddEditSubRoute.modal('show');
+        });
+    }
+
+    function ConvertToHtmlForAddEdit(jsonData, startStage, endStage) {
+        var stages = JSON.parse(jsonData.replace(/\##/g, "\""));
+        var mainRouteStages = "";
+        mainRouteStages = mainRouteStages + "<table class='table table-striped' id='tblMainRouteStages'><thead class='thead-inverse'><tr style='padding:0px;' ><th style='padding: 2px;'>Order</th><th style='padding: 2px;'>Stage</th><th style='padding: 2px;'>Stage Name</th></tr></thead><tbody>";
+        for (var i = 0; i < stages.length; i++) {
+            var CurrentStageItem = stages[i];
+            if (startStage == CurrentStageItem.Stage)
+            { mainRouteStages = mainRouteStages + "<tr style = 'background: greenyellow;'>"; } else
+                if (endStage == CurrentStageItem.Stage)
+                { mainRouteStages = mainRouteStages + "<tr style = 'background: pink;'>"; } else
+                { mainRouteStages = mainRouteStages + "<tr>"; }
+            mainRouteStages = mainRouteStages + "<td style='padding: 2px;'>" + CurrentStageItem.Order + "</td>";
+            mainRouteStages = mainRouteStages + "<td style='padding: 2px;'>" + CurrentStageItem.Stage + "</td>";
+            mainRouteStages = mainRouteStages + "<td style='padding: 2px;'>" + CurrentStageItem.StageName + "</td>";
+            mainRouteStages = mainRouteStages + "</tr>";
+        }
+        mainRouteStages = mainRouteStages + "</tbody></table>";
+        return mainRouteStages;
+    }
+
+    function BindSubRouteDetails(row, routeID) {
+        divAddEditSubRoute.find("#lblMainRouteNumber").html(row.find("input#hdnMainRouteNumber").attr("value"));
+        divAddEditSubRoute.find("input#txtSubRouteNumber").val(row.find("input#hdnSubRouteNumber").attr("value"));
+        divAddEditSubRoute.find("select#ddlFromStage").val(row.find("input#hdnStartStage").attr("value")).change();
+        divAddEditSubRoute.find("select#ddlToStage").val(row.find("input#hdnEndStage").attr("value")).change();
+        divAddEditSubRoute.find("input#txtSubRouteName").val(row.find("input#hdnSubRouteName").attr("value"));
+        divAddEditSubRoute.find("#lblDirection").html(row.find("input#hdnDirection").attr("value"));
+        divAddEditSubRoute.find("input#txtScheduledDistance").val(row.find("input#hdnScheduledDistance").attr("value"));
+        divAddEditSubRoute.find("input#txtDOTDistance").val(row.find("input#hdnDOTDistance").attr("value"));
+        divAddEditSubRoute.find("input#txtDOTNumber").val(row.find("input#hdnDOTNumber").attr("value"));
+        divAddEditSubRoute.find("input#txtDestinationBlind").val(row.find("input#hdnDestinationBlind").attr("value"));
+        divAddEditSubRoute.find("input#hdnRouteNumber").attr("value", routeID);
+        setDropDownValueByText("ddlContract", row.find("input#hdnContract").attr("value"));
+        if (row.find("input#hdnIsPosition").attr("value") == "true") {
+            divAddEditSubRoute.find("input#chkPosition").prop("checked", true);
+            divAddEditSubRoute.find("input#chkRevenue").prop("checked", false);
+        }
+        else {
+            divAddEditSubRoute.find("input#chkPosition").prop("checked", false);
+            divAddEditSubRoute.find("input#chkRevenue").prop("checked", true);
+        }
+        divAddEditSubRoute.find("input#txtSubRouteNumber").attr("readOnly", true);
+        divAddEditSubRoute.find("input#txtSubRouteName").attr("readOnly", true);
+        divAddEditSubRoute.find("input#hdnMainRoute").attr("value", divSubRoute.find("input#hdnMainRoutesStages").attr("value"));
+        LoadMainRouteStages(divSubRoute.find("input#hdnMainRoutesStages").attr("value"), row.find("input#hdnStartStage").attr("value"), row.find("input#hdnEndStage").attr("value"));
+    }
+
+    function LoadMainRouteStages() {
+        var jsonData = divSubRoute.find("input#hdnMainRoutesStages").attr("value");
+        var startStage = divAddEditSubRoute.find("select#ddlFromStage").val();
+        var endStage = divAddEditSubRoute.find("select#ddlToStage").val();
+        divAddEditSubRoute.find("div#divMainRouteStages").html("").html(ConvertToHtmlForAddEdit(jsonData, startStage, endStage));
+    }
+
+    function GetStages(routeNumber) {
+        $.ajax({
+            async: false,
+            url: '@Url.Action("GetStages", "RouteMaster")',
+            type: 'Post',
+            data: JSON.stringify({ routeNumber: routeNumber }),
+            dataType: 'json',
+            contentType: 'application/json',
+            error: function (xhr) {
+                alert('Error: ' + xhr.statusText);
+            },
+            success: function (result) {
+                //Now Process the data
+                if (result.length != 0)
+                    divAddEditSubRoute.find("select#ddlFromStage").find('option').remove().end();
+                divAddEditSubRoute.find("select#ddlToStage").find('option').remove().end();
+                $(result).each(function (index) {
+                    var CurrentItem = this;
+                    divAddEditSubRoute.find("select#ddlFromStage").append($("<option></option>").val(CurrentItem.Value).html(CurrentItem.Text));
+                    divAddEditSubRoute.find("select#ddlFromStage").val("0").change();
+                    divAddEditSubRoute.find("select#ddlToStage").append($("<option></option>").val(CurrentItem.Value).html(CurrentItem.Text));
+                    divAddEditSubRoute.find("select#ddlToStage").val("0").change();
+                });
+            }
+        }).done(function (result) {
+            return false;
+        });
+    }
+
+
+    function GetLastSubRouteNumber(routeNumber) {
+        var nextSubRoute = "";
+        $.ajax({
+            async: false,
+            url: '@Url.Action("GetLastSubRouteNumber", "RouteMaster")',
+            type: 'Post',
+            data: JSON.stringify({ routeNumber: routeNumber }),
+            dataType: 'json',
+            contentType: 'application/json',
+            error: function (xhr) {
+                alert('Error: ' + xhr.statusText);
+            },
+            success: function (result) {
+                //Now Process the data
+                nextSubRoute = result;
+            }
+        }).done(function (result) {
+            return false;
+        });
+        return nextSubRoute;
+    }
+</script>

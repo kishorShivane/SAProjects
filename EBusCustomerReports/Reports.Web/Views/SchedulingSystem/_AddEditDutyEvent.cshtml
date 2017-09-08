@@ -1,0 +1,227 @@
+﻿@model Reports.Services.Models.DutyEvent
+<style>
+    .eventDes {
+        width: 440px;
+    }
+</style>
+<!-- Modal Contents -->
+<div id="divAddEditDutyEvents" class="modal fade ">
+    <!-- class modal and fade -->
+
+    <div class="modal-dialog modal-lg transaction">
+        <div class="modal-content">
+
+            <div class="modal-header modal-header-info">
+                <!-- modal header -->
+                <button type="button" class="close"
+                        data-dismiss="modal" aria-hidden="true">
+                    ×
+                </button>
+                <div class="modal-title">Duty Trips</div>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div>
+                            <div class="row">
+                                <div class="col-md-2"></div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <div class="input-group input-group-sm">
+                                            <div class="input-group-addon">Start Time<font style="color:red">*</font></div>
+                                            @Html.DropDownList("Hours", Model.Hours, new { id = "ddlStartTimeHours", @class = "form-control select2Mini", placeholder = "Start Time : Hours", required = "true", style = "width:30%" })<span style="font-weight: bolder;font-size: 18.5px;">:</span>
+                                            @Html.DropDownList("Minutes", Model.Minutes, new { id = "ddlStartTimeMinutes", @class = "form-control select2Mini", placeholder = "Start Time : Minutes", required = "true", style = "width:30%" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <div class="input-group input-group-sm">
+                                            <div class="input-group-addon">End Time<font style="color:red">*</font></div>
+                                            @Html.DropDownList("Hours", Model.Hours, new { id = "ddlEndTimeHours", @class = "form-control select2Mini", placeholder = "End Time : Hours", required = "true", style = "width:30%" })<span style="font-weight: bolder;font-size: 18.5px;">:</span>
+                                            @Html.DropDownList("Minutes", Model.Minutes, new { id = "ddlEndTimeMinutes", @class = "form-control select2Mini", placeholder = "End Time : Minutes", required = "true", style = "width:30%" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2"></div>
+                                <div class="col-md-8">
+                                    <div class="form-group">
+                                        <div class="input-group input-group-sm">
+                                            <div class="input-group-addon">Description<font style="color:red">*</font></div>
+                                            @Html.DropDownList("Description", Model.Events, new { id = "ddlDescription", @class = "form-control select2Line", placeholder = "Description", required = "true" })
+                                            @*@Html.EditorFor(model => model.Description, new { htmlAttributes = new { id = "txtDescription", @class = "form-control", placeholder = "Description", required = "true" } })*@
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2"></div>
+                            </div>
+                            <div class="row text-center">
+                                <div class="col-md-12">
+                                    <input type="hidden" id="hdnDutyEventID" value="0" />
+                                    <input type="hidden" id="hdnDutyBookingID" value="0" />
+                                    <input type="hidden" id="hdnIsSlot" value="0" />
+                                    <input type="hidden" id="hdnNextStartTimeHourCarried" value="" />
+                                    <input type="hidden" id="hdnNextStartTimeMinuteCarried" value="" />
+                                    <input type="hidden" id="hdnPrevEndTimeHourCarried" value="" />
+                                    <input type="hidden" id="hdnPrevEndTimeMinuteCarried" value="" />
+                                    <button type="submit" class="btn btn-info" id="btnSaveEvent"><i class="fa fa-1x fa-save"></i>&nbsp;Save</button>&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <button type="button" class="btn btn-danger" id="btnClear"><i class="fa fa-1x fa-close"></i>&nbsp;Clear</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+                <!-- modal footer -->
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+
+        </div> <!-- / .modal-content -->
+
+    </div> <!-- / .modal-dialog -->
+
+</div>
+<!-- / .modal -->
+<script>
+    $(document).ready(function () {
+        SaveEvent();
+    });
+
+
+    function ValidateTripEventTime(divAddEdit, item) {
+        var status = true;
+        var StartTimeHours = divAddEdit.find("select#ddlStartTimeHours").val();
+        var StartTimeMinutes = divAddEdit.find("select#ddlStartTimeMinutes").val();
+        var EndTimeHours = divAddEdit.find("select#ddlEndTimeHours").val();
+        var EndTimeMinutes = divAddEdit.find("select#ddlEndTimeMinutes").val();
+
+        var NextStartTimeHours = divAddEdit.find("input#hdnNextStartTimeHourCarried").attr("value");
+        var NextStartTimeMinutes = divAddEdit.find("input#hdnNextStartTimeMinuteCarried").attr("value");
+        var PrevEndTimeHours = divAddEdit.find("input#hdnPrevEndTimeHourCarried").attr("value");
+        var PrevEndTimeMinutes = divAddEdit.find("input#hdnPrevEndTimeMinuteCarried").attr("value");
+
+        if (parseInt(EndTimeHours) < parseInt(StartTimeHours)) {
+            status = false;
+        }
+        else if (parseInt(EndTimeHours) == parseInt(StartTimeHours)) {
+            if (parseInt(EndTimeMinutes) < parseInt(StartTimeMinutes)) {
+                status = false;
+            }
+        }
+        if (!status) {
+            alert("Start Time should be greater then End Time!!");
+            return status;
+        }
+
+        if (PrevEndTimeHours == "" && PrevEndTimeMinutes == "" && NextStartTimeHours == "" && NextStartTimeMinutes == "") {
+            //Only one record
+            return status;
+        }
+        else if (PrevEndTimeHours == "" && PrevEndTimeMinutes == "") {
+            //First Record
+            status = CompareTimings(EndTimeHours, EndTimeMinutes, NextStartTimeHours, NextStartTimeMinutes);
+            if (!status) {
+                alert(item + " End Time should be Less then or equal to Next " + item + " Start Time and Booking off Time!!");
+                return status;
+            }
+        }
+        else if (NextStartTimeHours == "" && NextStartTimeMinutes == "") {
+            //Last Record
+            status = CompareTimings(PrevEndTimeHours, PrevEndTimeMinutes, StartTimeHours, StartTimeMinutes);
+            if (status) {
+                alert(item + " Start Time should be greater then or equal to previous " + item +" End Time and Booking on Time!!");
+                return !status;
+            }
+        }
+        else {
+            //In between Records
+            status = CompareTimings(EndTimeHours, EndTimeMinutes, NextStartTimeHours, NextStartTimeMinutes);
+            if (!status) {
+                alert(item + " End Time should be Less then or equal to Next " + item + " Start Time and Booking off Time!!");
+                return status;
+            }
+
+            status = CompareTimings(PrevEndTimeHours, PrevEndTimeMinutes, StartTimeHours, StartTimeMinutes);
+            if (!status) {
+                alert(item + " Start Time should be greater then or equal to previous " + item + " End Time and Booking on Time!!");
+                return status;
+            }
+        }
+        return true;
+    }
+
+    function DeleteDutyEvent(eventID) {
+        $.ajax({
+            async: false,
+            url: '@Url.Action("DeleteDutyEvent", "SchedulingSystem")',
+            type: 'Post',
+            data: JSON.stringify({ DutyEventID: eventID }),
+            dataType: 'json',
+            contentType: 'application/json',
+            error: function (xhr) {
+                alert('Error: ' + xhr.statusText);
+            },
+            success: function (result) {
+                //Now Process the data
+                GetEventsForBooking(divDutyTripsEvents.find("input#hdnDutyBookingID").attr("value"));
+                alert(result);
+            }
+        }).done(function (result) {
+            return false;
+        });
+    }
+
+    function SaveEvent() {
+        $("button#btnSaveEvent").click(function () {
+            debugger;
+            if (CheckMandatoryFieldsInBlock(divAddEditDutyEvents, "") && CheckNumericFields(divAddEditDutyEvents,"") && ValidateTripEventTime(divAddEditDutyEvents,"Event")) {
+                var eventID = divAddEditDutyEvents.find("input#hdnDutyEventID").attr("value");
+                var bookingID = divAddEditDutyEvents.find("input#hdnDutyBookingID").attr("value");
+
+                var StartTimeHours = divAddEditDutyEvents.find("select#ddlStartTimeHours").val();
+                var StartTimeMinutes = divAddEditDutyEvents.find("select#ddlStartTimeMinutes").val();
+                var EndTimeHours = divAddEditDutyEvents.find("select#ddlEndTimeHours").val();
+                var EndTimeMinutes = divAddEditDutyEvents.find("select#ddlEndTimeMinutes").val();
+                var Description = divAddEditDutyEvents.find("select#ddlDescription").val();
+                var isSlot = divAddEditDutyEvents.find("input#hdnIsSlot").attr("value");
+
+                $.ajax({
+                    async: false,
+                    url: '@Url.Action("InsertOrUpdateDutyEvent", "SchedulingSystem")',
+                    type: 'Post',
+                    data: JSON.stringify({
+                        DutyEventID: eventID, DutyBookingID: bookingID, StartTimeHour: StartTimeHours, StartTimeMinute: StartTimeMinutes, EndTimeHour: EndTimeHours, EndTimeMinute: EndTimeMinutes,
+                        Description: Description, isSlot: isSlot
+                    }),
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    error: function (xhr) {
+                        alert('Error: ' + xhr.statusText);
+                    },
+                    success: function (result) {
+                        //Now Process the data
+                        if (result == 1) {
+                            alert("Event Inserted Successfully!!");
+                            divAddEditDutyEvents.modal("hide");
+                            GetEventsForBooking(divDutyTripsEvents.find("input#hdnDutyBookingID").attr("value"));
+                        }
+                        else if (result == 0) {
+                            alert("Event time should be between booking time!!");
+                        }
+                        else if (result == -1) {
+                            alert("Event time should be between then last event endtime and booking end time!!");
+                        }
+                    }
+                }).done(function (result) {
+                    return false;
+                });
+            }
+        });
+    }
+</script>

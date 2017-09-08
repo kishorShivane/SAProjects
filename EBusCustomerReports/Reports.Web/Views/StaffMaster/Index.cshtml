@@ -1,0 +1,517 @@
+﻿@model Reports.Services.Models.StaffMaster.StaffMaster
+@{
+    ViewBag.Title = "Staff Master";
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+}
+<style>
+    .funkyradio div {
+        /*clear: both;*/
+        overflow: hidden;
+    }
+
+    .funkyradio label {
+        width: 82%;
+        border-radius: 3px;
+        border: 1px solid #D1D3D4;
+        font-weight: normal;
+    }
+
+    .funkyradio input[type="radio"]:empty,
+    .funkyradio input[type="checkbox"]:empty {
+        display: none;
+    }
+
+        .funkyradio input[type="radio"]:empty ~ label,
+        .funkyradio input[type="checkbox"]:empty ~ label {
+            position: relative;
+            line-height: 2.0em;
+            text-indent: 3.25em;
+            /*margin-top: 2em;*/
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+            .funkyradio input[type="radio"]:empty ~ label:before,
+            .funkyradio input[type="checkbox"]:empty ~ label:before {
+                position: absolute;
+                display: block;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                content: '';
+                width: 2.5em;
+                background: #D1D3D4;
+                border-radius: 3px 0 0 3px;
+            }
+
+    .funkyradio input[type="radio"]:hover:not(:checked) ~ label,
+    .funkyradio input[type="checkbox"]:hover:not(:checked) ~ label {
+        color: #888;
+    }
+
+        .funkyradio input[type="radio"]:hover:not(:checked) ~ label:before,
+        .funkyradio input[type="checkbox"]:hover:not(:checked) ~ label:before {
+            content: '\2714';
+            text-indent: .9em;
+            color: #C2C2C2;
+        }
+
+    .funkyradio input[type="radio"]:checked ~ label,
+    .funkyradio input[type="checkbox"]:checked ~ label {
+        color: #777;
+    }
+
+        .funkyradio input[type="radio"]:checked ~ label:before,
+        .funkyradio input[type="checkbox"]:checked ~ label:before {
+            content: '\2714';
+            text-indent: .9em;
+            color: #333;
+            background-color: #ccc;
+        }
+
+    .funkyradio input[type="radio"]:focus ~ label:before,
+    .funkyradio input[type="checkbox"]:focus ~ label:before {
+        box-shadow: 0 0 0 3px #999;
+    }
+
+    .funkyradio-info input[type="radio"]:checked ~ label:before,
+    .funkyradio-info input[type="checkbox"]:checked ~ label:before {
+        color: #fff;
+        background-color: #5bc0de;
+    }
+
+    .form-group input[type="checkbox"] {
+        display: none;
+    }
+
+        .form-group input[type="checkbox"] + .btn-group > label span {
+            width: 20px;
+        }
+
+            .form-group input[type="checkbox"] + .btn-group > label span:first-child {
+                display: none;
+            }
+
+            .form-group input[type="checkbox"] + .btn-group > label span:last-child {
+                display: inline-block;
+            }
+
+        .form-group input[type="checkbox"]:checked + .btn-group > label span:first-child {
+            display: inline-block;
+        }
+
+        .form-group input[type="checkbox"]:checked + .btn-group > label span:last-child {
+            display: none;
+        }
+
+    .thead-inverse th {
+        color: #fff;
+        background-color: #373a3c;
+        text-align: center;
+    }
+
+    .table-striped td {
+        text-align: center;
+    }
+
+    .modal-lg {
+        min-width: 1250px;
+    }
+
+    .transaction {
+        min-width: 900px;
+    }
+
+    .linkEdit {
+        text-decoration: none;
+        cursor: pointer;
+        color: green;
+    }
+
+    .linkDelete {
+        text-decoration: none;
+        cursor: pointer;
+        color: red;
+    }
+
+    .linkView {
+        text-decoration: none;
+        cursor: pointer;
+        color: blue;
+    }
+
+    .tick {
+        text-decoration: none;
+        color: darkgreen;
+    }
+
+    .cross {
+        text-decoration: none;
+        color: darkred;
+    }
+
+    .modal-title {
+        margin: 0;
+        line-height: 1.428571;
+        font-size: medium;
+    }
+
+    .select2 {
+        float: left;
+    }
+
+    .btn {
+        padding: 0px 12px;
+        max-height: 30px;
+    }
+</style>
+<script>
+    $(document).ready(function () {
+        $("select.select2").select2({ width: "75%" });
+        $("select.select2Mini").select2({ width: "35%" });
+        $("select.select2Line").select2({ tags: true, width: "75%" });
+    });
+</script>
+<div class="container-fluid">
+    <div id="page-wrapper">
+        <div class="row">
+            <div class="col-lg-12">
+                <h2 class="page-header" style="margin: 10px; color: #337ab7 !important">Staff Master</h2>
+            </div>
+        </div>
+        <div class="row" id="divStaffEditor">
+            <div class="panel panel-info">
+                <div class="panel-heading" style="background-color: #337ab7 !important;background-image: none;">
+                    <a data-toggle="collapse" href="#pnlSearch" style="color:white;text-decoration:none;">Search Staff</a>
+                </div>
+                <div id="pnlSearch" class="panel-collapse collapse in">
+                    <div class="panel-body">
+                        <div class="row text-center">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon" style="min-width: 90px;">Staff Number</div>
+                                        @Html.TextBoxFor(m => m.StaffNumber, new { id = "txtStaffNumber", @class = "form-control", placeholder = "Staff Number", maxlength = "30" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon" style="min-width: 90px;">Staff Name</div>
+                                        @Html.TextBoxFor(m => m.StaffName, new { id = "txtStaffName", @class = "form-control", placeholder = "Staff Name", maxlength = "30" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <button type="button" class="btn btn-info" id="btnSearch">Search&nbsp;<i class="fa fa-1x fa-search"></i></button> &nbsp; &nbsp; &nbsp; &nbsp;
+                                <button type="button" class="btn btn-danger" id="btnClearSearch">Clear</button>
+                            </div>
+                        </div>
+                        <div class="row text-center">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm" style="width: 127%;">
+                                        <div class="input-group-addon">Staff Type<font style="color:red">*</font></div>
+                                        @Html.DropDownList("Staff Type", Model.StaffTypes, new { id = "ddlSearchStaffTypes", @class = "form-control select2", placeholder = "Staff Type", style = "width:100%;" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm" style="width: 127%;">
+                                        <div class="input-group-addon">Location<font style="color:red">*</font></div>
+                                        @Html.DropDownList("Location", Model.Locations, new { id = "ddlSearchLocation", @class = "form-control select2", placeholder = "Location",  style = "width:100%;" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                               
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="funkyradio">
+                            <div class="col-md-2">
+                                <div class="funkyradio-info">
+                                    <input type="radio" name="radio" id="chkActive" value="Active" class="SearchFilter" />
+                                    <label for="chkActive">Active</label>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="funkyradio-info">
+                                    <input type="radio" name="radio" id="chkInActive" value="InActive" class="SearchFilter" />
+                                    <label for="chkInActive">InActive</label>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="funkyradio-info">
+                                    <input type="radio" name="radio" id="chkBoth" value="Both" class="SearchFilter" />
+                                    <label for="chkBoth">Both</label>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">PIN Seed</div>
+                                        @Html.TextBoxFor(m => m.PINSeed, new { id = "txtPINSeed", @class = "form-control", placeholder = "PIN Seed", maxlength = "30" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <button type="button" class="btn btn-info" id="btnGeneratePIN">Show PIN&nbsp;<i class="fa fa-1x fa-cogs"></i></button> &nbsp; &nbsp;
+                                <button type="button" class="btn btn-success" id="btnAddStaff">Add Staff&nbsp;<i class="fa fa-1x fa-plus"></i></button> &nbsp; &nbsp;
+                                <a target="_blank" class="btn btn-danger" style="padding: 4px 12px;" id="lnkPrintStaffs" href="../StaffMaster/PrintStaffs">Download&nbsp;<i class="fa fa-1x fa-plus"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel" id="divSearchResults">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table-responsive">
+                                <table class="table table-striped" id="tblStaffResults">
+                                    <thead class="thead-inverse">
+                                        <tr>
+                                            <th>Staff Name</th>
+                                            <th>Staff Number</th>
+                                            <th>Serial Number</th>
+                                            <th>Location</th>
+                                            <th class='StyleShowPIN' @*style="display:none"*@>PIN</th>
+                                            <th>Type</th>
+                                            <th>Special Staff</th>
+                                            <th>Edit</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @Html.Partial("_AddEditStaff", Model)
+            @Html.Partial("_ListStaffTypes")
+            @Html.Partial("_AddEditStaffType")
+            @Html.Partial("_ListLocations")
+            @Html.Partial("_AddEditLocation")
+            <input type="hidden" id="hdnIndexModelTitle" value="" />
+        </div>
+    </div>
+</div>
+<script>
+    var divStaffEditor = $("div#divStaffEditor");
+    var divAddEditStaff = $("div#divAddEditStaff");
+    var divStaffTypeEditor = $("div#divStaffTypeEditor");
+    var divAddEditStaffType = $("div#divAddEditStaffType");
+    var divLocationEditor = $("div#divLocationEditor");
+    var divAddEditLocation = $("div#divAddEditLocation");
+
+    $(document).ready(function () {
+        SearchStaff();
+        BindStaffs(true);
+        RemoveHighlightedCssOnFocus();
+        ClearSearchControls();
+        AddStaff();
+        //$("button#btnSearch").trigger("click");
+        $("button#btnClear").click(function () {
+            ClearControlValues($("div#divStaffEditor"));
+        });
+        $("input#chkActive").prop("checked", true);
+        $("input.SearchFilter").change(function () {
+            if ($(this).attr("value") == "InActive")
+            { $("a#lnkPrintStaffs").hide(); }
+            else { $("a#lnkPrintStaffs").show(); }
+            BindStaffs(true, $(this).attr("value"));
+        });
+        $("button#btnGeneratePIN").click(function () {
+            BindStaffs(true, GetSelectedCheckBoxValue());
+            //$(".StyleShowPIN").toggle();
+        });
+    });
+
+
+    $(document).on("click", "a#lnkStaffEdit", function () {
+        ClearFormValuesInBlock(divAddEditStaff);
+        var row = $(this).parent().parent();
+        SubRoutePopupTitleText(row);
+        BindStaffDetails(row, $(this).attr("value"));
+        SetPopupTitle(divAddEditStaff, "Edit Staff - ", divAddEditStaff.find("input#hdnModelTitle").attr("value"));
+        divAddEditStaff.modal('show');
+    });
+
+    function SubRoutePopupTitleText(row) {
+        var booking = "Staff Number: " + row.find("span#lblStaffNumber").html() + " - Staff Name:" + row.find("span#lblStaffName").html();
+        divAddEditStaff.find("input#hdnModelTitle").attr("value", booking);
+    }
+
+    function BindStaffDetails(row, staffID) {
+        debugger;
+        divAddEditStaff.find("div#divPIN").show();
+        divAddEditStaff.find("input#txtStaffNumber").val(row.find("span#lblStaffNumber").html());
+        divAddEditStaff.find("input#txtStaffName").val(row.find("span#lblStaffName").html());
+        setDropDownValueByText("ddlStaffTypes", row.find("span#lblStaffType").html());
+        setDropDownValueByText("ddlLocation", row.find("span#lblLocationCode").html());
+        //divAddEditStaff.find("select#ddlLocation").val(row.find("span#lblLocationCode").html()).change();
+        divAddEditStaff.find("#lblPINSeed").html(divStaffEditor.find("input#txtPINSeed").val());
+        divAddEditStaff.find("#lblPIN").html(row.find("span#lblPIN").html());
+        divAddEditStaff.find("input#txtSerialNumber").val(row.find("input#hdnSerialNumber").attr("value"));
+        divAddEditStaff.find("input#hdnStaffNumber").attr("value", staffID);
+        divAddEditStaff.find("input#txtStaffNumber").attr("readOnly", true);
+        if (row.find("input#hdnStatus").attr("value") == "true")
+            divAddEditStaff.find("input#chkStaffActive").prop("checked", true);
+        else
+            divAddEditStaff.find("input#chkStaffActive").removeProp("checked");
+        if(row.find("span#lblSpecialStaff").html() == "Yes")
+            divAddEditStaff.find("input#chkSpecialStaff").prop("checked", true);
+        else
+            divAddEditStaff.find("input#chkSpecialStaff").removeProp("checked");
+    }
+
+    function AddStaff() {
+        $("button#btnAddStaff").click(function () {
+            ClearFormValuesInBlock(divAddEditStaff);
+            SetPopupTitle(divAddEditStaff, "Add Staff", "");
+            divAddEditStaff.find("input#txtStaffNumber").removeAttr("readOnly");
+            divAddEditStaff.find("#lblPINSeed").html(divStaffEditor.find("input#txtPINSeed").val());
+            divAddEditStaff.find("#lblPIN").html("");
+            divAddEditStaff.find("div#divPIN").hide();
+            divAddEditStaff.find("input#chkStaffActive").prop("checked", true);
+            divAddEditStaff.find("input#chkSpecialStaff").removeProp("checked");
+            divAddEditStaff.modal('show');
+        });
+    }
+
+    function GetSelectedCheckBoxValue() {
+        var result = "Active";
+        divStaffEditor.find("input.SearchFilter").each(function () {
+            if ($(this).is(":checked")) {
+                result = $(this).attr("value");
+            }
+        });
+        return result;
+    }
+
+    @*function DownloadStaff() {
+        $.ajax({
+            async: false,
+            url: '@Url.Action("SearchStaff", "StaffMaster")',
+            type: 'Post',
+            data: JSON.stringify({ staffNumber: staffNumber, staffName: staffName, status: status, pinSeed: pinSeed }),
+            dataType: 'json',
+            contentType: 'application/json',
+            error: function (xhr) {
+                alert('Error: ' + xhr.statusText);
+            },
+            success: function (result) {
+                //Now Process the data
+                tableBody.html();
+                if (result.length == 0) {
+                    alert("No records found for the selected criteria!!");
+                    tableBody.html("");
+                }
+                else {
+                    $(result).each(function (index) {
+                        var CurrentItem = this;
+                        rows = rows + "<tr><td><span id='lblStaffName'>" + CurrentItem.StaffName + "</span></td>";
+                        rows = rows + "<td><span id='lblStaffNumber'>" + CurrentItem.StaffNumber + "</span></td>";
+                        rows = rows + "<td><span id='lblLocationCode'>" + CurrentItem.LocationCode + "</span></td>";
+                        rows = rows + "<td class='StyleShowPIN'><span id='lblPIN'>" + CurrentItem.PIN + "</span></td>";
+                        rows = rows + "<td><span id='lblStaffType'>" + CurrentItem.StaffType + "</span><input type='hidden' value=" + CurrentItem.SerialNumber + " id='hdnSerialNumber'/></td>";
+                        rows = rows + "<td><a id='lnkStaffEdit' class='linkEdit' value='" + CurrentItem.StaffNumber + "'><span class='fa-stack fa-sm '><i class='fa fa-edit fa-stack-1x '></i></span></a><input type='hidden' value=" + CurrentItem.Status + " id='hdnStatus'/>";
+                        rows = rows + "</tr>";
+                    });
+                    tableBody.html("").html(rows);
+                }
+            }
+        }).done(function (result) {
+            return false;
+        });
+    }*@
+
+    function BindStaffs(isFromPageLoad, status) {
+        var staffNumber = $("input#txtStaffNumber").val();
+        var staffName = $("input#txtStaffName").val();
+        var staffType = $("select#ddlSearchStaffTypes").val();
+        var location = $("select#ddlSearchLocation").val();
+        var pinSeed = $("input#txtPINSeed").val();
+        var tableBody = $("table#tblStaffResults").find("tbody");
+        var rows = "";
+        if (!isFromPageLoad && staffNumber == "" && staffName == "" && staffType == '0' && location == '0') {
+            alert("Please enter search criteria!!");
+            $("#txtStaffNumber").focus();
+            return false;
+        }
+        else {
+            if (status == "") { status = "Active"; } if (pinSeed == "") pinSeed = "4089";
+            $.ajax({
+                async: false,
+                url: '@Url.Action("SearchStaff", "StaffMaster")',
+                type: 'Post',
+                data: JSON.stringify({ staffNumber: staffNumber, staffName: staffName, status: status, pinSeed: pinSeed, staffType: staffType ,location:location}),
+                dataType: 'json',
+                contentType: 'application/json',
+                error: function (xhr) {
+                    alert('Error: ' + xhr.statusText);
+                },
+                success: function (result) {
+                    //Now Process the data
+                    tableBody.html();
+                    if (result.length == 0) {
+                        alert("No records found for the selected criteria!!");
+                        tableBody.html("");
+                    }
+                    else {
+                        $(result).each(function (index) {
+                            var CurrentItem = this;
+                            debugger;
+                            if (CurrentItem.StaffName.indexOf("New Driver") >= 0) { rows = rows + "<tr style='background-color:bisque'>"; }
+                            else { rows = rows + "<tr>"; }
+                            rows = rows + "<td><span id='lblStaffName'>" + CurrentItem.StaffName + "</span></td>";
+                            rows = rows + "<td><span id='lblStaffNumber'>" + CurrentItem.StaffNumber + "</span></td>";
+                            rows = rows + "<td><span id='lblSerialNumber'>" + CurrentItem.SerialNumber + "</span></td>";
+                            rows = rows + "<td><span id='lblLocationCode'>" + CurrentItem.LocationCode + "</span></td>";
+                            rows = rows + "<td class='StyleShowPIN'><span id='lblPIN'>" + CurrentItem.PIN + "</span></td>";
+                            rows = rows + "<td><span id='lblStaffType'>" + CurrentItem.StaffType + "</span><input type='hidden' value=" + CurrentItem.SerialNumber + " id='hdnSerialNumber'/></td>";
+                            if (CurrentItem.IsSpecialStaff)
+                            { rows = rows + "<td><span id='lblSpecialStaff'>Yes</span></td>"; }
+                            else { rows = rows + "<td><span id='lblSpecialStaff'>No</span></td>"; }
+                            rows = rows + "<td><a id='lnkStaffEdit' class='linkEdit' value='" + CurrentItem.StaffNumber + "'><span class='fa-stack fa-sm '><i class='fa fa-edit fa-stack-1x '></i></span></a><input type='hidden' value=" + CurrentItem.Status + " id='hdnStatus'/>";
+                            rows = rows + "</tr>";
+                        });
+                        tableBody.html("").html(rows);
+                    }
+                }
+            }).done(function (result) {
+                return false;
+            });
+        }
+    }
+
+    function SearchStaff() {
+        $("button#btnSearch").click(function () {
+            BindStaffs(false);
+        });
+    }
+
+    function SetPopupTitle(popup, title, nav) {
+        popup.find("div.modal-title").html("<span style='font-weight: bolder;text-align: right;font-size: larger;'>" + title + "</span>" + nav);
+    }
+
+    function ClearSearchControls() {
+        $("button#btnClearSearch").click(function () {
+            $("input#txtStaffNumber").val("");
+            $("input#txtStaffName").val("");
+            $("select#ddlSearchStaffTypes").val("0").change();
+            $("select#ddlSearchLocation").val("0").change();
+            BindStaffs(true, GetSelectedCheckBoxValue());
+        });
+    }
+</script>

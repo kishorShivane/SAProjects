@@ -1,0 +1,57 @@
+﻿@model List<Reports.Services.Models.ServiceRequest.ServiceRequest>
+@{
+    Layout = null;
+    ViewBag.Title = "Service Request";
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>PrintStaffs</title>
+    <link href="~/Styles/Bootstrap/bootstrap.min.css" rel="stylesheet" />
+    <script src="~/Scripts/Jquery/jquery-2.1.1.js"></script>
+    <style>
+        .thead-inverse th {
+            color: #fff;
+            background-color: #373a3c;
+            text-align: center;
+        }
+
+        .table-striped td {
+            text-align: center;
+        }
+    </style>
+    <script>
+        $(document).ready(function () { alert("Press Ctrl + P for printing the page"); });
+    </script>
+</head>
+<body>
+    <div class="panel" id="divSearchResults">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-responsive">
+                    <table class="table table-striped" id="tblStaffResults">
+                        <thead class="thead-inverse">
+                            <tr>
+                                <th>Request ID</th>
+                                <th>Requested By</th>
+                                <th>Request Type</th>
+                                <th>Comments</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (var i = 0; i < Model.Count(); i++)
+                            {
+                                var current = Model[i];
+                                <tr><td>@current.ServiceRequestID</td><td>@current.LastModifiedBy</td><td>@current.RequestType</td><td>@current.Comments</td><td>@current.RequestStatus</td></tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

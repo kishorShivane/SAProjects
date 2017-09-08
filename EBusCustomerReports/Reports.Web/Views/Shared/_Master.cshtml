@@ -1,0 +1,39 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Login</title>
+    <link rel="shortcut icon" type="image/x-icon" href="~/favIcon.ico" />
+    <script src="~/Scripts/Jquery/jquery-2.1.1.js"></script>
+    <script src="~/Scripts/Jquery/jquery-migrate-1.2.1.js"></script>
+    <script src="~/Scripts/Jquery/jquery-ui-1.8.24.min.js"></script>
+    <script src="~/Scripts/Bootstrap/bootstrap.min.js"></script>
+    <link href="~/Styles/Bootstrap/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Styles/Bootstrap/bootstrap-theme.min.css" rel="stylesheet" />
+    <style>
+        .abc {
+            background-color: aliceblue;
+            color: red;
+        }
+        h1 {
+	        font-family: Impact, Haettenschweiler, 'Franklin Gothic Bold', Charcoal, 'Helvetica Inserat', 'Bitstream Vera Sans Bold', 'Arial Black', 'sans serif';
+	        font-size: 22px;
+	        font-style: normal;
+	        font-variant: normal;
+	        font-weight: 500;
+        }
+
+    </style>
+</head>
+<body>
+    <div style="width:100%;"  align="center"; >
+        <img style="height:100px;" src="~/Images/logo_comp1.png" />
+        <h1>Online Reporting System</h1>
+    </div>
+    <section>
+        @RenderBody()
+    </section>
+</body>
+</html>

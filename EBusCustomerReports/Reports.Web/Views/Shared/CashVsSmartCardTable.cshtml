@@ -1,0 +1,20 @@
+﻿@model IEnumerable<Reports.Services.Models.CashVsSmartCardUsageByRouteData>
+
+@foreach (var item in Model)
+{
+    <tr>
+        <td style="width:10%;">@item.str_RouteID</td>
+        <td style="min-width:20%;" >@item.str50_RouteName </td>
+        <td style="width:10%;">@item.TotalPassengers </td>
+
+        <td style="width:10%;">@item.int4_JourneyTickets </td>
+        <td style="width:10%;;background-color:@item.ColorCodeTickets" >@string.Format("{0} %", @item.int4_JourneyTicketsPercent.ToString())</td>
+
+        <td style="width:10%;">@item.int4_JourneyPasses </td>
+        <td style="width:10%;background-color:@item.ColorCodePasses">@string.Format("{0} %", @item.int4_JourneyPassesPercent.ToString())</td>
+
+        <td style="width:10%;">@item.int4_JourneyTransfer </td>
+        <td style="width:10%;">@string.Format("{0} %", @item.int4_JourneyTransferPercent.ToString())</td>
+    </tr>
+}
+

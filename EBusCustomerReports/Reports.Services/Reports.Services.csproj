@@ -1,0 +1,150 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{D8BC666F-223D-4620-88DA-50053BBECFFE}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Reports.Services</RootNamespace>
+    <AssemblyName>Reports.Services</AssemblyName>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.6.1.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\packages\EntityFramework.6.1.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Core">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.1\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.EntityFramework">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.EntityFramework.2.2.1\lib\net45\Microsoft.AspNet.Identity.EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.3.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.3.0.1\lib\net45\Microsoft.Owin.Security.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
+      <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AuditStatusService.cs" />
+    <Compile Include="BaseServices.cs" />
+    <Compile Include="CashierServices.cs" />
+    <Compile Include="Helpers\MasterHelper.cs" />
+    <Compile Include="AssetMasterService.cs" />
+    <Compile Include="Models\CashierReconciliationData.cs" />
+    <Compile Include="Models\Asset.cs" />
+    <Compile Include="Models\RevenueByDuty.cs" />
+    <Compile Include="Models\ServiceRequest\ServiceRequest.cs" />
+    <Compile Include="Models\StaffMaster\StaffMaster.cs" />
+    <Compile Include="RouteMasterService.cs" />
+    <Compile Include="DutyWizardService.cs" />
+    <Compile Include="Models\Copy of SalesAnalysisFilter.cs" />
+    <Compile Include="Models\Duty.cs" />
+    <Compile Include="Models\DutyBooking.cs" />
+    <Compile Include="Models\DutyDBF.cs" />
+    <Compile Include="Models\DutyEvent.cs" />
+    <Compile Include="Models\DutyOperationDay.cs" />
+    <Compile Include="Models\DutyTrip.cs" />
+    <Compile Include="Models\DutyWizard.cs" />
+    <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\RouteMaster\RouteMaster.cs" />
+    <Compile Include="Models\RouteMaster\RouteStage.cs" />
+    <Compile Include="Models\RouteMaster\SubRouteMaster.cs" />
+    <Compile Include="Models\Stage.cs" />
+    <Compile Include="Models\SubRoute.cs" />
+    <Compile Include="Models\WorkSpace.cs" />
+    <Compile Include="ServiceRequestService.cs" />
+    <Compile Include="StaffMasterService.cs" />
+    <Compile Include="UserService.cs" />
+    <Compile Include="DutySheetsService.cs" />
+    <Compile Include="Helpers\CustomDateTime.cs" />
+    <Compile Include="InspectorReportService.cs" />
+    <Compile Include="Models\AuditStatus.cs" />
+    <Compile Include="Models\ClassSummaryData.cs" />
+    <Compile Include="Models\CashierFilter.cs" />
+    <Compile Include="Models\CashierData.cs" />
+    <Compile Include="Models\ClassTypeGraph.cs" />
+    <Compile Include="Models\StaffEditor.cs" />
+    <Compile Include="Models\YearlyData.cs" />
+    <Compile Include="Models\YearlyBreakDownData.cs" />
+    <Compile Include="Models\YearlyBreakDownFilter.cs" />
+    <Compile Include="Models\SmartCardUsageFilter.cs" />
+    <Compile Include="Models\DutySheetsViewModel.cs" />
+    <Compile Include="Models\SmartCardHotList.cs" />
+    <Compile Include="Models\DriverDetailsFilter.cs" />
+    <Compile Include="Models\SalesAnalysisFilter.cs" />
+    <Compile Include="Models\InspectorReportData.cs" />
+    <Compile Include="Models\InspectorReportFilter.cs" />
+    <Compile Include="Models\Operator.cs" />
+    <Compile Include="Models\SalesAnalysisByRoute.cs" />
+    <Compile Include="Models\SmartCardTransData.cs" />
+    <Compile Include="Models\SmartCardTransFilter.cs" />
+    <Compile Include="Models\DayRevenue.cs" />
+    <Compile Include="Models\DailyAuditViewModel.cs" />
+    <Compile Include="Models\DailyAuditData.cs" />
+    <Compile Include="Models\DropDownDto.cs" />
+    <Compile Include="Models\FormEData.cs" />
+    <Compile Include="Models\HomeViewModel.cs" />
+    <Compile Include="Models\SchVsOprViewModel.cs" />
+    <Compile Include="Models\SchVsWorked.cs" />
+    <Compile Include="Models\UserSettings.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReportsService.cs" />
+    <Compile Include="SalesAnalysisService.cs" />
+    <Compile Include="SmartCardService.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,201 @@
+﻿@model List<Reports.Services.Models.Asset>
+@{
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+    ViewBag.Title = "Asset Master System";
+}
+<style>
+    .form-group input[type="checkbox"] {
+        display: none;
+    }
+
+        .form-group input[type="checkbox"] + .btn-group > label span {
+            width: 20px;
+        }
+
+            .form-group input[type="checkbox"] + .btn-group > label span:first-child {
+                display: none;
+            }
+
+            .form-group input[type="checkbox"] + .btn-group > label span:last-child {
+                display: inline-block;
+            }
+
+        .form-group input[type="checkbox"]:checked + .btn-group > label span:first-child {
+            display: inline-block;
+        }
+
+        .form-group input[type="checkbox"]:checked + .btn-group > label span:last-child {
+            display: none;
+        }
+
+    .thead-inverse th {
+        color: #fff;
+        background-color: #373a3c;
+        text-align: center;
+    }
+
+    .table-striped td {
+        text-align: center;
+    }
+
+    .modal-lg {
+        min-width: 1250px;
+    }
+
+    .transaction {
+        min-width: 900px;
+    }
+
+    .linkEdit {
+        text-decoration: none;
+        cursor: pointer;
+        color: green;
+    }
+
+    .linkDelete {
+        text-decoration: none;
+        cursor: pointer;
+        color: red;
+    }
+
+    .linkView {
+        text-decoration: none;
+        cursor: pointer;
+        color: blue;
+    }
+
+    .tick {
+        text-decoration: none;
+        color: darkgreen;
+    }
+
+    .cross {
+        text-decoration: none;
+        color: darkred;
+    }
+
+    .modal-title {
+        margin: 0;
+        line-height: 1.428571;
+        font-size: medium;
+    }
+</style>
+
+<div class="container-fluid">
+    <div id="page-wrapper">
+        <div class="row">
+            <div class="col-lg-12">
+                <h2 class="page-header" style="margin: 10px; color: #337ab7 !important">Asset Master</h2>
+            </div>
+        </div>
+        <div class="row" id="divDutyWizard">
+            <div class="container-fluid">
+                <div class="panel" id="divSearchResults">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="container pull-right" style="text-align: right;">
+                                <a href="#" onclick="location.href='@Url.Action("ExportAssetToExcel")'" class="btn btn-success">Export To Excel&nbsp;<i class="fa fa-1x fa-plus"></i></a>
+                                @*<button type="button" class="btn btn-success" id="btnExportToExcel">Export To Excel&nbsp;<i class="fa fa-1x fa-plus"></i></button> &nbsp; &nbsp; &nbsp; &nbsp;*@
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <table id="legend" style="text-align: left; margin-left: 20px;">
+                            <tr>
+                                <td style="width: 70px;"><b style="color: red;">Red : </b></td>
+                                <td>ETMs not communicated More than 10 days.</td>
+                            </tr>
+                            <tr>
+                                <td style="width: 70px;"><b style="color: yellow;">Yellow : </b></td>
+                                <td>ETM’s not communicated more than 3 days.</td>
+                            </tr>
+                            <tr>
+                                <td style="width: 70px;"><b style="color: green;">Green : </b></td>
+                                <td>ETM’s communicated in Last 48 Hours.</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table-responsive">
+                                <table class="table table-striped" id="tblDutyResults">
+                                    <thead class="thead-inverse">
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>ETMSerialNumber</th>
+                                            <th>ETMType</th>
+                                            <th>LastCommunicatedDate</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (Model.Any())
+                                        {
+                                            foreach (var x in Model)
+                                            {
+                                                var date = "";
+                                                if (x.LastCommunicatedDate.ToString("dd-MM-yyyy HH:mm:ss") != "01-01-1900 00:00:00")
+                                                { date = x.LastCommunicatedDate.ToString("dd-MM-yyyy HH:mm:ss"); }
+                                                var today = DateTime.Now;
+                                                TimeSpan diff = today - x.LastCommunicatedDate;
+                                                var hours = diff.TotalHours;
+                                                var customStyle = "";
+                                                if (hours >= (10 * 24))
+                                                {
+                                                    customStyle = "color:red";
+                                                }
+                                                else
+                                                if (hours >= (3 * 24))
+                                                {
+                                                    customStyle = "color:yellow";
+                                                }
+                                                else
+                                                {
+                                                    customStyle = "color:green";
+                                                }
+                                                <tr>
+                                                    <td> @x.ID </td>
+                                                    <td> @x.ETMSerialNumber </td>
+                                                    <td> @x.ETMType </td>
+                                                    <td style=@customStyle> @date </td>
+                                                </tr>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <tr><td colspan="4"> No Records Found</td></tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        ExportToExcel();
+    });
+    function ExportToExcel() {
+        $("button#btnExportToExcel").click(function () {
+            $.ajax({
+                async: false,
+                url: '@Url.Action("ExportAssetToExcel", "Asset")',
+                type: 'Post',
+                dataType: 'json',
+                contentType: 'application/json',
+                error: function (xhr) {
+                    alert('Error: ' + xhr.statusText);
+                },
+                success: function (result) {
+                }
+            }).done(function (result) {
+                return false;
+            });
+
+        });
+    }
+</script>

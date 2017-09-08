@@ -1,0 +1,109 @@
+﻿<!-- Modal Contents -->
+<div id="divAddEditLocation" class="modal fade ">
+    <!-- class modal and fade -->
+
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+
+            <div class="modal-header modal-header-info">
+                <!-- modal header -->
+                <button type="button" class="close"
+                        data-dismiss="modal" aria-hidden="true">
+                    ×
+                </button>
+                <div class="modal-title">Add Edit Location</div>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-2"></div>
+                            <div class="col-md-10">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">Location Code<font style="color:red">*</font></div>
+                                        <input type="text" class="form-control" id="txtLocationCode" placeholder="Location Code" required="true" numeric="true"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-2"></div>
+                            <div class="col-md-10">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">Location Name<font style="color:red">*</font></div>
+                                        <input type="text" class="form-control" id="txtLocationName" placeholder="Location Name" required="true" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="row text-center">
+                            <div class="col-md-12">
+                                <input type="hidden" id="hdnLocationCode" value="0" />
+                                <input type="hidden" id="hdnModelTitle" value="" />
+                                <button type="submit" class="btn btn-info" id="btnSaveLocation"><i class="fa fa-1x fa-save"></i>&nbsp;Save</button>&nbsp;&nbsp;&nbsp;&nbsp;
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <!-- modal footer -->
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+
+        </div> <!-- / .modal-content -->
+
+    </div> <!-- / .modal-dialog -->
+
+</div>
+<!-- / .modal -->
+<script>
+
+    $(document).ready(function () {
+        SaveLocation();
+    });
+
+
+    function SaveLocation() {
+        $("button#btnSaveLocation").click(function () {
+            if (CheckMandatoryFieldsInBlock(divAddEditLocation, "") && CheckNumericFields(divAddEditLocation, "")) {
+                var locationCode = divAddEditLocation.find("input#txtLocationCode").val();
+                var locationName = divAddEditLocation.find("input#txtLocationName").val();
+                var isAdd = divAddEditLocation.find("input#hdnLocationCode").attr("value");
+                //TODO: start from here concatenation
+                $.ajax({
+                    async: false,
+                    url: '@Url.Action("InsertOrUpdateLocation", "StaffMaster")',
+                    type: 'Post',
+                    data: JSON.stringify({
+                        locationCode: locationCode, locationName: locationName, isAdd: isAdd
+                    }),
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    error: function (xhr) {
+                        alert('Error: ' + xhr.statusText);
+                    },
+                    success: function (result) {
+                        //Now Process the data
+                        if (result == 1) {
+                            divAddEditLocation.modal("hide");
+                            alert("Location Saved Successfully!!");
+                            BindLocations(false);
+                        }
+                        else if (result == -1) {
+                            alert("There is already a Location with same Code!!");
+                        }
+                    }
+                }).done(function (result) {
+                    return false;
+                });
+            }
+        });
+    }
+</script>

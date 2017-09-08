@@ -1,0 +1,171 @@
+﻿<!-- Modal Contents -->
+<div id="divLocationEditor" class="modal fade ">
+    <!-- class modal and fade -->
+
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header modal-header-info">
+                <!-- modal header -->
+                <button type="button" class="close"
+                        data-dismiss="modal" aria-hidden="true">
+                    ×
+                </button>
+                <div class="modal-title">Location</div>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="container pull-right">
+                            <button type="button" class="btn btn-success" id="btnAddLocation">Add Location&nbsp;<i class="fa fa-1x fa-plus"></i></button> &nbsp; &nbsp; &nbsp; &nbsp;
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="table-responsive">
+                            <table class="table table-striped" id="tblLocationResults">
+                                <thead class="thead-inverse">
+                                    <tr>
+                                        <th>Location Code</th>
+                                        <th>Location Name</th>
+                                        <th>Edit</th>
+                                        <th>Delete</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <!-- modal footer -->
+                <input type="hidden" id="hdnModelTitle" value="" />
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+
+        </div> <!-- / .modal-content -->
+
+    </div> <!-- / .modal-dialog -->
+
+</div><!-- / .modal -->
+<script>
+    $(document).on("click", "a#lnkLocationEdit", function () {
+        ClearFormValuesInBlock(divAddEditLocation);
+        var row = $(this).parent().parent();
+        SubLocationPopupTitleText(row);
+        BindLocationDetails(row, $(this).attr("value"));
+        SetPopupTitle(divAddEditLocation, "Edit Location - ", divAddEditLocation.find("input#hdnModelTitle").attr("value"));
+        divAddEditLocation.modal('show');
+    });
+
+    $(document).on("click", "a#lnkLocationDelete", function () {
+        var status = confirm("Are you sure you want to delete this Location!");
+        if (status) {
+            DeleteLocation($(this).attr("value"));
+        }
+    });
+
+    function SubLocationPopupTitleText(row) {
+        var booking = "Location Name: " + row.find("span#lblLocationName").html();
+        divAddEditLocation.find("input#hdnModelTitle").attr("value", booking);
+    }
+
+    function BindLocationDetails(row, locationCode) {
+        divAddEditLocation.find("input#txtLocationName").val(row.find("span#lblLocationName").html());
+        divAddEditLocation.find("input#txtLocationCode").val(locationCode).attr("readonly", true);
+        divAddEditLocation.find("input#hdnLocationCode").attr("value", "0");
+    }
+
+    function AddLocation() {
+        $("button#btnAddLocation").click(function () {
+            ClearFormValuesInBlock(divAddEditLocation);
+            SetPopupTitle(divAddEditLocation, "Add Location", "");
+            divAddEditLocation.find("input#txtLocationCode").removeAttr("readonly");
+            divAddEditLocation.find("input#hdnLocationCode").attr("value", "1");
+            divAddEditLocation.modal('show');
+        });
+    }
+
+    function DeleteLocation(LocationCode) {
+        $.ajax({
+            async: false,
+            url: '@Url.Action("DeleteLocation", "StaffMaster")',
+            type: 'Post',
+            data: JSON.stringify({ LocationCode: LocationCode }),
+            dataType: 'json',
+            contentType: 'application/json',
+            error: function (xhr) {
+                alert('Error: ' + xhr.statusText);
+            },
+            success: function (result) {
+                //Now Process the data
+                alert(result);
+                BindLocations(false);
+            }
+        }).done(function (result) {
+            return false;
+        });
+    }
+
+
+    $(document).ready(function () {
+        RemoveHighlightedCssOnFocus();
+        ClearSearchControls();
+        AddLocation();
+    });
+
+    function BindLocations(isPageLoad) {
+        var tableBody = $("table#tblLocationResults").find("tbody");
+        var rows = "";
+        $.ajax({
+            async: false,
+            url: '@Url.Action("GetLocations", "StaffMaster")',
+            type: 'Post',
+            dataType: 'json',
+            contentType: 'application/json',
+            error: function (xhr) {
+                alert('Error: ' + xhr.statusText);
+            },
+            success: function (result) {
+                //Now Process the data
+                debugger;
+                tableBody.html();
+                if (result.length == 0) {
+                    alert("No records found !!");
+                    tableBody.html("");
+                }
+                else {
+                    var selectedValue = divAddEditStaff.find("select#ddlLocation").val();
+                    var searchSelectedValue = divStaffEditor.find("select#ddlSearchLocation").val();
+                    if (!isPageLoad) { divAddEditStaff.find("select#ddlLocation").find('option').remove().end(); divStaffEditor.find("select#ddlSearchLocation").find('option').remove().end(); }
+                    
+                    $(result).each(function (index) {
+                        var CurrentItem = this;
+                        if (!isPageLoad) {
+                            divAddEditStaff.find("select#ddlLocation").append($("<option></option>").val(CurrentItem.Value).html(CurrentItem.Text));
+                            divStaffEditor.find("select#ddlSearchLocation").append($("<option></option>").val(CurrentItem.Value).html(CurrentItem.Text));
+                        }
+                        
+                        if (CurrentItem.Value != '0') {
+                            rows = rows + "<tr><td><span id='lblLocationCode'>" + CurrentItem.Value + "</span></td>";
+                            rows = rows + "<td><span id='lblLocationName'>" + CurrentItem.Text + "</span></td>";
+                            rows = rows + "<td><a id='lnkLocationEdit' class='linkEdit' value='" + CurrentItem.Value + "'><span class='fa-stack fa-sm '><i class='fa fa-edit fa-stack-1x '></i></span></a>";
+                            rows = rows + "<td><a id='lnkLocationDelete' class='linkDelete' value='" + CurrentItem.Value + "'><span class='fa-stack fa-sm '><i class='fa fa-shopping-basket fa-stack-1x '></i></span></a><input type='hidden' id='hdnDOTNumber' value='" + CurrentItem.DOTNumber + "'/><input type='hidden' id='hdnIsPosition' value='" + CurrentItem.IsPosition + "'/><input type='hidden' id='hdnContract' value='" + CurrentItem.Contract + "'/><input type='hidden' id='hdnDestinationBlind' value='" + CurrentItem.DestinationBlind + "'/></td>";
+                            rows = rows + "</tr>";
+                        }
+                    });
+                    tableBody.html("").html(rows);
+                    divAddEditStaff.find("select#ddlLocation").val(selectedValue).change();
+                    divStaffEditor.find("select#ddlSearchLocation").val(searchSelectedValue).change();
+                }
+            }
+        }).done(function (result) {
+            return false;
+        });
+    }
+</script>

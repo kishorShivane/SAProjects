@@ -1,0 +1,135 @@
+﻿@model Reports.Services.Models.InspectorReportFilter
+@{
+    ViewBag.Title = "Daily Inspector Report";
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+    var date = DateTime.Now.Date;
+}
+@section scripts
+{
+    <script src="~/Scripts/Multiselect/bootstrap-multiselect.js"></script>
+    <link href="~/Styles/Multiselect/bootstrap-multiselect.css" rel="stylesheet" />
+    <link href="~/Styles/Jquery/jquery.ui.theme.css" rel="stylesheet" />
+    <link href="~/Styles/Jquery/jquery.ui.dialog.css" rel="stylesheet" />
+    <link href="~/Styles/Jquery/jquery.ui.button.css" rel="stylesheet" />
+    <link href="~/Styles/Jquery/jquery.ui.core.css" rel="stylesheet" />
+    <link href="~/Styles/Jquery/jquery.ui.base.css" rel="stylesheet" />
+    <link href="~/Styles/Jquery/jquery.ui.all.css" rel="stylesheet" />
+    <link href="~/Styles/Jquery/jquery-ui.css" rel="stylesheet" />
+    <script src="~/Scripts/JqueryVal/jquery.validate-vsdoc.js"></script>
+    <script src="~/Scripts/JqueryVal/jquery.validate.js"></script>
+    <script src="~/Scripts/JqueryVal/jquery.validate.min.js"></script>
+    <script src="~/Scripts/JqueryVal/jquery.validate.unobtrusive.js"></script>
+    <script src="~/Scripts/JqueryVal/jquery.validate.unobtrusive.min.js"></script>
+    <style>
+        div.ui-datepicker {
+            font-size: 15px;
+        }
+
+        .input-validation-error {
+            border-color: red;
+        }
+
+        .field-validation-error {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+            $("#InspectorsSelected").multiselect({
+                buttonWidth: '100%',
+                enableFiltering: true,
+                includeSelectAllOption: true,
+                nonSelectedText: 'Select Inspectors'
+            });
+
+            $("#DriversSelected").multiselect({
+                buttonWidth: '100%',
+                enableFiltering: true,
+                includeSelectAllOption: true,
+                nonSelectedText: 'Select Drivers'
+            });
+
+            $("#dnPdf").click(function () {
+                $("#ExcelOrPDF").val(true);
+            });
+
+            $("#dnExcel").click(function () {
+                $("#ExcelOrPDF").val(false);
+            });
+
+            $("#StartDate").datepicker({
+                dateFormat: "dd-mm-yy",
+                maxDate: new Date,
+                beforeShow: function () {
+                    setTimeout(function () {
+                        $('.ui-datepicker').css('z-index', 99999999999999);
+                    }, 0);
+                }
+            });
+
+            $("#EndDate").datepicker({
+                dateFormat: "dd-mm-yy",
+                maxDate: new Date,
+                beforeShow: function () {
+                    setTimeout(function () {
+                        $('.ui-datepicker').css('z-index', 99999999999999);
+                    }, 0);
+                }
+            });
+        })
+    </script>
+    <style>
+        .lblFont {
+            font-weight: bold;
+            color: brown;
+        }
+
+        .zindex {
+            z-index: 99999;
+        }
+    </style>
+}
+<div id="page-wrapper">
+    <div class="row">
+        <div class="col-lg-12">
+            <h2 class="page-header" style="margin: 10px; color: #5e5e5e !important">Daily Inspector Report</h2>
+        </div>
+    </div>
+    <div class="row">
+        @using (Html.BeginForm("DailyInspectorReportDownload", "Report", FormMethod.Post, new { autocomplete = "off" }))
+        {
+            @Html.ValidationSummary(true)
+            @Html.Partial("_Shortcut")
+            <div class="form-group col-md-12 col-sm-12">
+                <div align="left" style="width: 48%;">
+                    <label class="lblFont" for="Website">Drivers</label>
+                    @Html.DropDownListFor(s => s.DriversSelected, Model.Drivers, new { @class = "multiselect form-control", multiple = "multiple" })
+                </div>
+            </div>
+            <div class="form-group">
+                <div align="left" class="col-md-6 col-sm-12 pad0px">
+                    <label class="lblFont" for="Location">From Date</label>
+                    @Html.TextBoxFor(s => s.StartDate, new { @class = "form-control zindex", @placeholder = "From Date" })
+                    @Html.ValidationMessageFor(m => m.StartDate)
+                </div>
+                <div class="col-md-1 hidden-xs hidden-sm">
+                </div>
+                <div align="left" class="col-md-5 col-sm-12 pad0px">
+                    <label class="lblFont" for="Pincode">Till Date</label>
+                    @Html.TextBoxFor(s => s.EndDate, new { @class = "form-control zindex", @placeholder = "Till Date" })
+                    @Html.ValidationMessageFor(m => m.EndDate)
+                </div>
+            </div>
+            <div class="form-group width80">
+                <div align="left" class="col-md-6 col-sm-12" style="margin-top: 20px;">
+                    @Html.HiddenFor(s => s.ExcelOrPDF)
+                    <button id="dnPdf" type="submit" class="btn btn-success">Download PDF
+                        <img style="height: 20px;width: 20px;" src="~/Images/pdf.png"></button>
+                    <button id="dnExcel" type="submit" class="btn btn-info">Download Excel
+                        <img style="height: 20px; width: 20px;" src="~/Images/excel.png" /></button>
+                </div>
+            </div>
+        }
+    </div>
+</div>

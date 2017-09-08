@@ -1,0 +1,201 @@
+﻿<!-- Modal Contents -->
+<div id="divDutyOperatedDays" class="modal fade ">
+    <!-- class modal and fade -->
+
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header modal-header-info">
+                <!-- modal header -->
+                <button type="button" class="close"
+                        data-dismiss="modal" aria-hidden="true">
+                    ×
+                </button>
+                <div class="modal-title">Duty Operating Days</div>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="container pull-right"  style="text-align: right;">
+                            <button type="button" class="btn btn-success" id="btnAddOperatedDay">Add Operating Days&nbsp;<i class="fa fa-1x fa-plus"></i></button> &nbsp; &nbsp; &nbsp; &nbsp;
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="table-responsive">
+                            <table class="table table-striped" id="tblDutyOperatedDaysResults">
+                                <thead class="thead-inverse">
+                                    <tr>
+                                        <th>Sunday</th>
+                                        <th>Monday</th>
+                                        <th>Tuesday</th>
+                                        <th>Wednesday</th>
+                                        <th>Thursday</th>
+                                        <th>Friday</th>
+                                        <th>Saturday</th>
+                                        <th>Holiday</th>
+                                        <th>Edit</th>
+                                        <th>Delete</th>
+                                        <th>View</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <!-- modal footer -->
+                <input type="hidden" id="hdnDutyID" value="0" />
+                <input type="hidden" id="hdnModelTitle" value="" />
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+
+        </div> <!-- / .modal-content -->
+
+    </div> <!-- / .modal-dialog -->
+
+</div><!-- / .modal -->
+<script>
+    $(document).ready(function () {
+        AddOperatedDay();
+    });
+
+    $(document).on("click", "a#lnkDutyOperatedaysView", function () {
+        var row = $(this).parent().parent();
+        GetBookingsForOperatedDay($(this).attr("value"));
+        divDutyBookings.find("input#hdnDutyOperatedDayID").attr("value", $(this).attr("value"));
+        divDutyOperatedDays.find("input#hdnModelTitle").attr("value", $("input#hdnIndexModelTitle").attr("value") + ", Operating Days: " + row.find("input#hdnOperatedDay").attr("value"));
+        SetPopupTitle(divDutyBookings, "View Bookings - ", divDutyOperatedDays.find("input#hdnModelTitle").attr("value"));
+        divDutyBookings.modal('show');
+
+    });
+
+    $(document).on("click", "a#lnkDutyOperatedaysEdit", function () {
+        var row = $(this).parent().parent();
+        ClearFormValuesInBlock(divAddEditDutyOperatedDays);
+        divDutyOperatedDays.find("input#hdnModelTitle").attr("value", $("input#hdnIndexModelTitle").attr("value") + ", Operating Days: " + row.find("input#hdnOperatedDay").attr("value"));
+        BindOperatedDayDetails(row, $(this).attr("value"));
+        SetPopupTitle(divAddEditDutyOperatedDays, "Edit Operating Days - ", divDutyOperatedDays.find("input#hdnModelTitle").attr("value"));
+        divAddEditDutyOperatedDays.modal('show');
+    });
+
+    $(document).on("click", "a#lnkDutyOperatedaysDelete", function () {
+        var status = confirm("Are you sure you want to delete this Operating Days!");
+        if (status) {
+            DeleteOperatedDay($(this).attr("value"));
+        }
+    });
+
+    function AddOperatedDay() {
+        $("button#btnAddOperatedDay").click(function () {
+            ClearFormValuesInBlock(divAddEditDutyOperatedDays);
+            divAddEditDutyOperatedDays.find("input#hdnDutyID").attr("value", divDutyOperatedDays.find("input#hdnDutyID").attr("value"));
+            SetPopupTitle(divAddEditDutyOperatedDays, "Add Operating Days - ", $("input#hdnIndexModelTitle").attr("value"));
+            divAddEditDutyOperatedDays.modal('show');
+        });
+    }
+
+    function BindOperatedDayDetails(row, operatedDayID) {
+        debugger;
+        divAddEditDutyOperatedDays.find("input#hdnDutyID").attr("value", divDutyOperatedDays.find("input#hdnDutyID").attr("value"));
+        divAddEditDutyOperatedDays.find("input#hdnDutyOperatedDayID").attr("value", operatedDayID);
+
+        var tds = row.find('td');
+        for (var i = 0; i < 8; i++) {
+            var td = tds.eq(i);
+            var tdID = parseInt(td.attr("id"));
+            switch (tdID) {
+                case 0:
+                    if (td.find("span").attr("value") == "true") {
+                        divAddEditDutyOperatedDays.find("input#chkSunday").prop("checked", true);
+                    }
+                    break;
+                case 1:
+                    if (td.find("span").attr("value") == "true") {
+                        divAddEditDutyOperatedDays.find("input#chkMonday").prop("checked", true);
+                    }
+                    break;
+                case 2:
+                    if (td.find("span").attr("value") == "true") {
+                        divAddEditDutyOperatedDays.find("input#chkTuesday").prop("checked", true);
+                    }
+                    break;
+                case 3:
+                    if (td.find("span").attr("value") == "true") {
+                        divAddEditDutyOperatedDays.find("input#chkWednesday").prop("checked", true);
+                    }
+                    break;
+                case 4:
+                    if (td.find("span").attr("value") == "true") {
+                        divAddEditDutyOperatedDays.find("input#chkThursday").prop("checked", true);
+                    }
+                    break;
+                case 5:
+                    if (td.find("span").attr("value") == "true") {
+                        divAddEditDutyOperatedDays.find("input#chkFriday").prop("checked", true);
+                    }
+                    break;
+                case 6:
+                    if (td.find("span").attr("value") == "true") {
+                        divAddEditDutyOperatedDays.find("input#chkSaturday").prop("checked", true);
+                    }
+                    break;
+                case 7:
+                    if (td.find("span").attr("value") == "true") {
+                        divAddEditDutyOperatedDays.find("input#chkPublicHolday").prop("checked", true);
+                    }
+                    break;
+            }
+        }
+    }
+
+    function GetOperatedDaysForDuty(dutyID) {
+        debugger;
+        var table = divDutyOperatedDays.find("table#tblDutyOperatedDaysResults");
+        var tableBody = table.find("tbody");
+        var rows = "";
+        $.ajax({
+            async: false,
+            url: '@Url.Action("GetOperatedDaysForDuty", "SchedulingSystem")',
+            type: 'Post',
+            data: JSON.stringify({ DutyID: dutyID }),
+            dataType: 'json',
+            contentType: 'application/json',
+            error: function (xhr) {
+                alert('Error: ' + xhr.statusText);
+            },
+            success: function (result) {
+                //Now Process the data
+                tableBody.html();
+                if (result.length == 0) {
+                    alert("No records found!!");
+                    table.hide();
+                }
+                else {
+                    table.show();
+                    $(result).each(function (index) {
+                        var CurrentItem = this;
+                        rows = rows + "<tr>";
+                        for (var i = 0; i < 8; i++) {
+                            if (CurrentItem.OperatedDayString[i] == '_')
+                            { rows = rows + "<td id=" + i + "><span class='fa-stack fa-sm cross' value='false'><i class='fa fa-remove fa-stack-1x '></i></span></td>" }
+                            else { rows = rows + "<td id=" + i + "><span class='fa-stack fa-sm tick' value='true'><i class='fa fa-check fa-stack-1x '></i></span></td>" }
+                        }
+                        rows = rows + " <td><a id='lnkDutyOperatedaysEdit' class='linkEdit' value='" + CurrentItem.ID + "'><span class='fa-stack fa-sm '><i class='fa fa-edit fa-stack-1x '></i></span></a></td>"
+                        rows = rows + " <td><a id='lnkDutyOperatedaysDelete' class='linkDelete' value='" + CurrentItem.ID + "'><span class='fa-stack fa-sm '><i class='fa fa-shopping-basket fa-stack-1x '></i></span></a></td>"
+                        rows = rows + " <td><input type='hidden' id='hdnOperatedDay' value='" + CurrentItem.OperatedDayString + "'/><a id='lnkDutyOperatedaysView' class='linkView' value='" + CurrentItem.ID + "'><span class='fa-stack fa-sm '><i class='fa fa-plus fa-stack-1x '></i></span></a></td>"
+                    });
+                    tableBody.html("").html(rows);
+                }
+            }
+        }).done(function (result) {
+            return false;
+        });
+    }
+</script>

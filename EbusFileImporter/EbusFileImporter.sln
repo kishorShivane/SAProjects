@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2010
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EbusFileImporter.Core", "EbusFileImporter.Core\EbusFileImporter.Core.csproj", "{BD0F8A1A-34CC-4CD9-A7E5-7E3168C74DC9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EbusFileImporter.DataProvider", "EbusFileImporter.DataProvider\EbusFileImporter.DataProvider.csproj", "{D568D89F-68FA-4534-975B-0D3857A68097}"

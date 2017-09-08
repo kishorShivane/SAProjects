@@ -1,0 +1,293 @@
+﻿@model Reports.Services.Models.DutyOperatedDay
+<!-- Modal Contents -->
+<div id="divAddEditDutyOperatedDays" class="modal fade ">
+    <!-- class modal and fade -->
+
+    <div class="modal-dialog modal-lg transaction">
+        <div class="modal-content">
+
+            <div class="modal-header modal-header-info">
+                <!-- modal header -->
+                <button type="button" class="close"
+                        data-dismiss="modal" aria-hidden="true">
+                    ×
+                </button>
+                <div class="modal-title">Duty Operating Days</div>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-3"></div>
+                    <div class="col-md-3">
+                        <div class="[ form-group ]">
+                            <input type="checkbox" name="fancy-checkbox-default" id="chkSunday" autocomplete="off" />
+                            <div class="[ btn-group ]">
+                                <label for="chkSunday" class="[ btn btn-success ]">
+                                    <span class="[ glyphicon glyphicon-ok ]"></span>
+                                    <span> </span>
+                                </label>
+                                <label for="chkSunday" class="[ btn btn-default active ]">
+                                    Sunday
+                                </label>
+                            </div>
+                        </div>
+                        <div class="[ form-group ]">
+                            <input type="checkbox" name="fancy-checkbox-primary" id="chkMonday" autocomplete="off" />
+                            <div class="[ btn-group ]">
+                                <label for="chkMonday" class="[ btn btn-info ]">
+                                    <span class="[ glyphicon glyphicon-ok ]"></span>
+                                    <span> </span>
+                                </label>
+                                <label for="chkMonday" class="[ btn btn-default active ]">
+                                    Monday
+                                </label>
+                            </div>
+                        </div>
+                        <div class="[ form-group ]">
+                            <input type="checkbox" name="fancy-checkbox-success" id="chkTuesday" autocomplete="off" />
+                            <div class="[ btn-group ]">
+                                <label for="chkTuesday" class="[ btn btn-info ]">
+                                    <span class="[ glyphicon glyphicon-ok ]"></span>
+                                    <span> </span>
+                                </label>
+                                <label for="chkTuesday" class="[ btn btn-default active ]">
+                                    Tuesday
+                                </label>
+                            </div>
+                        </div>
+                        <div class="[ form-group ]">
+                            <input type="checkbox" name="fancy-checkbox-info" id="chkWednesday" autocomplete="off" />
+                            <div class="[ btn-group ]">
+                                <label for="chkWednesday" class="[ btn btn-info ]">
+                                    <span class="[ glyphicon glyphicon-ok ]"></span>
+                                    <span> </span>
+                                </label>
+                                <label for="chkWednesday" class="[ btn btn-default active ]">
+                                    Wednesday
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="[ form-group ]">
+                            <input type="checkbox" name="fancy-checkbox-warning" id="chkThursday" autocomplete="off" />
+                            <div class="[ btn-group ]">
+                                <label for="chkThursday" class="[ btn btn-info ]">
+                                    <span class="[ glyphicon glyphicon-ok ]"></span>
+                                    <span> </span>
+                                </label>
+                                <label for="chkThursday" class="[ btn btn-default active ]">
+                                    Thursday
+                                </label>
+                            </div>
+                        </div>
+                        <div class="[ form-group ]">
+                            <input type="checkbox" name="fancy-checkbox-danger" id="chkFriday" autocomplete="off" />
+                            <div class="[ btn-group ]">
+                                <label for="chkFriday" class="[ btn btn-info ]">
+                                    <span class="[ glyphicon glyphicon-ok ]"></span>
+                                    <span> </span>
+                                </label>
+                                <label for="chkFriday" class="[ btn btn-default active ]">
+                                    Friday
+                                </label>
+                            </div>
+                        </div>
+                        <div class="[ form-group ]">
+                            <input type="checkbox" name="fancy-checkbox-danger" id="chkSaturday" autocomplete="off" />
+                            <div class="[ btn-group ]">
+                                <label for="chkSaturday" class="[ btn btn-success ]">
+                                    <span class="[ glyphicon glyphicon-ok ]"></span>
+                                    <span> </span>
+                                </label>
+                                <label for="chkSaturday" class="[ btn btn-default active ]">
+                                    Saturday
+                                </label>
+                            </div>
+                        </div>
+                        <div class="[ form-group ]">
+                            <input type="checkbox" name="fancy-checkbox-danger" id="chkPublicHolday" autocomplete="off" />
+                            <div class="[ btn-group ]">
+                                <label for="chkPublicHolday" class="[ btn btn-danger ]">
+                                    <span class="[ glyphicon glyphicon-ok ]"></span>
+                                    <span> </span>
+                                </label>
+                                <label for="chkPublicHolday" class="[ btn btn-default active ]">
+                                    Public Holiday
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="row text-center">
+                            <div class="col-md-12">
+                                <input type="hidden" id="hdnDutyOperatedDayID" value="0" />
+                                <input type="hidden" id="hdnDutyID" value="0" />
+                                <button type="submit" class="btn btn-info" id="btnSaveOperatedDay"><i class="fa fa-1x fa-save"></i>&nbsp;Save</button>&nbsp;&nbsp;&nbsp;&nbsp;
+                                <button type="button" class="btn btn-danger" id="btnClear"><i class="fa fa-1x fa-close"></i>&nbsp;Clear</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <!-- modal footer -->
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+
+        </div> <!-- / .modal-content -->
+
+    </div> <!-- / .modal-dialog -->
+
+</div>
+<!-- / .modal -->
+<script>
+    $(document).ready(function () {
+        SaveOperatedDay();
+    });
+
+    var operatedDayString = "";
+    var operatedDayBitMask = 0;
+
+    function LoadOperatedDayBitMaskAndString() {
+        operatedDayString = "";
+        operatedDayBitMask = 0;
+        var checkboxs = divAddEditDutyOperatedDays.find("input[type='checkbox']");
+        for (var i = 0; i < 8; i++) {
+            var control = checkboxs.eq(i);
+            var controlID = control.attr("id");
+            switch (controlID) {
+                case "chkSunday":
+                    if (control.is(":checked")) {
+                        operatedDayString = operatedDayString + "S";
+                        operatedDayBitMask = operatedDayBitMask + 2;
+                    } else { operatedDayString = operatedDayString + "_"; }
+                    break;
+                case "chkMonday":
+                    if (control.is(":checked")) {
+                        operatedDayString = operatedDayString + "M";
+                        operatedDayBitMask = operatedDayBitMask + 4;
+                    } else { operatedDayString = operatedDayString + "_"; }
+                    break;
+                case "chkTuesday":
+                    if (control.is(":checked")) {
+                        operatedDayString = operatedDayString + "T";
+                        operatedDayBitMask = operatedDayBitMask + 8;
+                    } else { operatedDayString = operatedDayString + "_"; }
+                    break;
+                case "chkWednesday":
+                    if (control.is(":checked")) {
+                        operatedDayString = operatedDayString + "W";
+                        operatedDayBitMask = operatedDayBitMask + 16;
+                    } else { operatedDayString = operatedDayString + "_"; }
+                    break;
+                case "chkThursday":
+                    if (control.is(":checked")) {
+                        operatedDayString = operatedDayString + "T";
+                        operatedDayBitMask = operatedDayBitMask + 32;
+                    } else { operatedDayString = operatedDayString + "_"; }
+                    break;
+                case "chkFriday":
+                    if (control.is(":checked")) {
+                        operatedDayString = operatedDayString + "F";
+                        operatedDayBitMask = operatedDayBitMask + 64;
+                    } else { operatedDayString = operatedDayString + "_"; }
+                    break;
+                case "chkSaturday":
+                    if (control.is(":checked")) {
+                        operatedDayString = operatedDayString + "S";
+                        operatedDayBitMask = operatedDayBitMask + 128;
+                    } else { operatedDayString = operatedDayString + "_"; }
+                    break;
+                case "chkPublicHolday":
+                    if (control.is(":checked")) {
+                        operatedDayString = operatedDayString + "H";
+                        operatedDayBitMask = operatedDayBitMask + 1;
+                    } else { operatedDayString = operatedDayString + "_"; }
+                    break;
+            }
+        }
+        return operatedDayString;
+    }
+
+    function CheckOperatedDayDependency(operatedDayID) {
+        debugger;
+        var ret = false;
+        $.ajax({
+            async: false,
+            url: '@Url.Action("CheckOperatedDayDependency", "SchedulingSystem")',
+            type: 'Post',
+            data: JSON.stringify({ DutyOperatedDayID: operatedDayID }),
+            dataType: 'json',
+            contentType: 'application/json',
+            error: function (xhr) {
+                alert('Error: ' + xhr.statusText);
+            },
+            success: function (result) {
+                ret = result;
+            }
+        }).done(function (result) {
+            return false;
+        });
+
+        return ret;
+    }
+
+    function DeleteOperatedDay(operatedDayID) {
+        if (!CheckOperatedDayDependency(operatedDayID)) {
+            $.ajax({
+                async: false,
+                url: '@Url.Action("DeleteDutyOperatedDay", "SchedulingSystem")',
+                type: 'Post',
+                data: JSON.stringify({ DutyOperatedDayID: operatedDayID }),
+                dataType: 'json',
+                contentType: 'application/json',
+                error: function (xhr) {
+                    alert('Error: ' + xhr.statusText);
+                },
+                success: function (result) {
+                    //Now Process the data
+                    alert(result);
+                    GetOperatedDaysForDuty(divDutyOperatedDays.find("input#hdnDutyID").attr("value"))
+                }
+            }).done(function (result) {
+                return false;
+            });
+        }
+        else {
+            alert("Operating Days cannot be deleted, as there is Bookings associated!!");
+        }
+    }
+
+    function SaveOperatedDay() {
+        $("button#btnSaveOperatedDay").click(function () {
+            debugger;
+            if (CheckMandatoryFieldsInBlock(divAddEditDutyOperatedDays, "") && CheckNumericFields(divAddEditDutyOperatedDays,"")) {
+                LoadOperatedDayBitMaskAndString();
+                var dutyID = divAddEditDutyOperatedDays.find("input#hdnDutyID").attr("value");
+                var operatedDayID = divAddEditDutyOperatedDays.find("input#hdnDutyOperatedDayID").attr("value");
+                $.ajax({
+                    async: false,
+                    url: '@Url.Action("InsertOrUpdateDutyOperatedDays", "SchedulingSystem")',
+                    type: 'Post',
+                    data: JSON.stringify({ DutyID: dutyID, ID: operatedDayID, OperatedDayBitmask: operatedDayBitMask, OperatedDayString: operatedDayString }),
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    error: function (xhr) {
+                        alert('Error: ' + xhr.statusText);
+                    },
+                    success: function (result) {
+                        //Now Process the data
+                        GetOperatedDaysForDuty(divDutyOperatedDays.find("input#hdnDutyID").attr("value"))
+                        alert(result);
+                        divAddEditDutyOperatedDays.modal("hide");
+                    }
+                }).done(function (result) {
+                    return false;
+                });
+            }
+        });
+    }
+</script>

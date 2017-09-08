@@ -1,0 +1,178 @@
+﻿@model Reports.Services.Models.Duty
+<!-- Modal Contents -->
+<div id="divAddEditDuty" class="modal fade ">
+    <!-- class modal and fade -->
+
+    <div class="modal-dialog modal-lg transaction">
+        <div class="modal-content">
+
+            <div class="modal-header modal-header-info">
+                <!-- modal header -->
+                <button type="button" class="close"
+                        data-dismiss="modal" aria-hidden="true">
+                    ×
+                </button>
+                <div class="modal-title">Duty</div>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-8">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">Duty ID<font style="color:red">*</font></div>
+                                        @Html.TextBoxFor(m => m.ReferenceDutyID, new { id = "txtReferenceDutyID", @class = "form-control", placeholder = "Duty ID", required = "true", maxlength = "4", Numeric = "true" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">Description<font style="color:red">*</font></div>
+                                        @Html.TextBoxFor(m => m.Description, new { id = "txtDescription", @class = "form-control", required = "true", placeholder = "Description", maxlength = "30"})
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">Location<font style="color:red">*</font></div>
+                                        @Html.DropDownList("Location", Model.Locations, new { id = "ddlLocation", @class = "form-control select2", multiple = "multiple", placeholder = "Location", required = "true", style = "100%;" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="row text-center">
+                            <div class="col-md-12">
+                                <input type="hidden" id="hdnDutyID" value="0" />
+                                <input type="hidden" id="hdnWorkspaceID" value="0" />
+                                <button type="submit" class="btn btn-info" id="btnSaveDuty"><i class="fa fa-1x fa-save"></i>&nbsp;Save</button>&nbsp;&nbsp;&nbsp;&nbsp;
+                                <button type="button" class="btn btn-danger" id="btnClear"><i class="fa fa-1x fa-close"></i>&nbsp;Clear</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <!-- modal footer -->
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+
+        </div> <!-- / .modal-content -->
+
+    </div> <!-- / .modal-dialog -->
+
+</div>
+<!-- / .modal -->
+<script>
+
+    $(document).ready(function () {
+        SaveDuty();
+    });
+
+    function CheckDutyDependency(dutyID) {
+        debugger;
+        var ret = false;
+        $.ajax({
+            async: false,
+            url: '@Url.Action("CheckDutyDependency", "SchedulingSystem")',
+            type: 'Post',
+            data: JSON.stringify({ DutyID: dutyID }),
+            dataType: 'json',
+            contentType: 'application/json',
+            error: function (xhr) {
+                alert('Error: ' + xhr.statusText);
+            },
+            success: function (result) {
+                ret = result;
+            }
+        }).done(function (result) {
+            return false;
+        });
+
+        return ret;
+    }
+
+    function DeleteDuty(dutyID) {
+        debugger;
+        if (!CheckDutyDependency(dutyID)) {
+            $.ajax({
+                async: false,
+                url: '@Url.Action("DeleteDuty", "SchedulingSystem")',
+                type: 'Post',
+                data: JSON.stringify({ DutyID: dutyID }),
+                dataType: 'json',
+                contentType: 'application/json',
+                error: function (xhr) {
+                    alert('Error: ' + xhr.statusText);
+                },
+                success: function (result) {
+                    //Now Process the data
+                    alert(result);
+                    $("button#btnSearch").trigger("click");
+                }
+            }).done(function (result) {
+                return false;
+            });
+        }
+        else {
+            alert("Duty cannot be deleted, as there is operating days associated!!");
+        }
+    }
+
+    function SaveDuty() {
+        $("button#btnSaveDuty").click(function () {
+            debugger;
+            if (CheckMandatoryFieldsInBlock(divAddEditDuty, "") && CheckNumericFields(divAddEditDuty, "")) {
+                var referenceDutyID = divAddEditDuty.find("input#txtReferenceDutyID").val();
+                var description = divAddEditDuty.find("input#txtDescription").val();
+                var dutyID = divAddEditDuty.find("input#hdnDutyID").attr("value");
+                var workspaceID = divAddEditDuty.find("input#hdnWorkspaceID").attr("value");
+                var locationArr = divAddEditDuty.find("select#ddlLocation").val();
+                var locationID = '';
+                if (locationArr != null && locationArr.length > 0) {
+                    for (var i = 0; i < locationArr.length; i++) {
+                        if (i == 0) { locationID = locationArr[i]; } else
+                        { locationID = locationID + ',' + locationArr[i]; }
+                    }
+                }
+                //TODO: start from here concatenation
+                $.ajax({
+                    async: false,
+                    url: '@Url.Action("InsertOrUpdateDuty", "SchedulingSystem")',
+                    type: 'Post',
+                    data: JSON.stringify({ ReferenceDutyID: referenceDutyID, Description: description, ID: dutyID, WorkSpaceID: workspaceID, Location: locationID }),
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    error: function (xhr) {
+                        alert('Error: ' + xhr.statusText);
+                    },
+                    success: function (result) {
+                        //Now Process the data
+                        if (result == 1) {
+                            divAddEditDuty.modal("hide");
+                            alert("Duty Saved Successfully!!");
+                            $("button#btnSearch").trigger("click");
+                        }
+                        else if (result == -1) {
+                            alert("There is already a duty with the same ID!!");
+                        }
+                    }
+                }).done(function (result) {
+                    return false;
+                });
+            }
+        });
+    }
+</script>

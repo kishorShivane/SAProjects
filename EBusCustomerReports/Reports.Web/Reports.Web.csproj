@@ -1,0 +1,795 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{F9764470-2F97-4D1F-868F-1A8F4A6AD520}</ProjectGuid>
+    <ProjectTypeGuids>{E3E379DF-F4C6-4180-9B81-6769533ABE47};{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Reports.Web</RootNamespace>
+    <AssemblyName>Reports.Web</AssemblyName>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <MvcBuildViews>false</MvcBuildViews>
+    <UseIISExpress>true</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="CrystalDecisions.CrystalReports.Design, Version=13.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
+    <Reference Include="CrystalDecisions.CrystalReports.Engine, Version=13.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
+    <Reference Include="CrystalDecisions.ReportSource, Version=13.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
+    <Reference Include="CrystalDecisions.Shared, Version=13.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
+    <Reference Include="CrystalDecisions.VSDesigner, Version=13.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
+    <Reference Include="CrystalDecisions.Web, Version=13.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="NPOI, Version=2.1.3.1, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\NPOI.2.1.3.1\lib\net40\NPOI.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NPOI.OOXML, Version=2.1.3.1, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\NPOI.2.1.3.1\lib\net40\NPOI.OOXML.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NPOI.OpenXml4Net, Version=2.1.3.1, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\NPOI.2.1.3.1\lib\net40\NPOI.OpenXml4Net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NPOI.OpenXmlFormats, Version=2.1.3.1, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\NPOI.2.1.3.1\lib\net40\NPOI.OpenXmlFormats.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Routing" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.Mvc.FixedDisplayModes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.FixedDisplayModes.1.0.0\lib\net40\Microsoft.Web.Mvc.FixedDisplayModes.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.4.5.11\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http">
+    </Reference>
+    <Reference Include="System.Net.Http.Formatting, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.4.0.20710.0\lib\net40\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.WebRequest">
+    </Reference>
+    <Reference Include="System.Web.Helpers, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.20710.0\lib\net40\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.4.0.20710.0\lib\net40\System.Web.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http.WebHost, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.4.0.20710.0\lib\net40\System.Web.Http.WebHost.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.4.0.20710.0\lib\net40\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.Razor.2.0.20715.0\lib\net40\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.20710.0\lib\net40\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.20710.0\lib\net40\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.20710.0\lib\net40\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Controllers\AssetController.cs" />
+    <Compile Include="Controllers\RouteMasterController.cs" />
+    <Compile Include="Controllers\SchedulingSystemController.cs" />
+    <Compile Include="Controllers\ServiceRequestController.cs" />
+    <Compile Include="Controllers\StaffMasterController.cs" />
+    <Compile Include="Controllers\UserController.cs" />
+    <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Controllers\ReportController.cs" />
+    <Compile Include="CrystalReports\Datasets\ReportDatasets.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ReportDatasets.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="CrystalReports\Rpt\Cashier\CashierReconciliationSummay.cs">
+      <DependentUpon>CashierReconciliationSummay.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="CrystalReports\Rpt\ClassSummary\NewCashierSummary.cs">
+      <DependentUpon>NewCashierSummary.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="CrystalReports\Rpt\Cashier\DailyAuditByCashierTerminalAtamelangTGX.cs">
+      <DependentUpon>DailyAuditByCashierTerminalAtamelangTGX.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="CrystalReports\Rpt\Cashier\DailyAuditByCashierTerminalSummary.cs">
+      <DependentUpon>DailyAuditByCashierTerminalSummary.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="CrystalReports\Rpt\Cashier\DailyAuditByCashierTerminal.cs">
+      <DependentUpon>DailyAuditByCashierTerminal.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="CrystalReports\Rpt\Cashier\CashierSummary.cs">
+      <DependentUpon>CashierSummary.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="CrystalReports\Rpt\ClassSummary\ClassSummaryByClassType.cs">
+      <DependentUpon>ClassSummaryByClassType.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="CrystalReports\Rpt\Cashier\CashierReport.cs">
+      <DependentUpon>CashierReport.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="CrystalReports\Rpt\ClassSummary\SalesAnalysisByClass.cs">
+      <DependentUpon>SalesAnalysisByClass.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="CrystalReports\Rpt\DailyAudit\DailyAnalysis.cs">
+      <DependentUpon>DailyAnalysis.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="CrystalReports\Rpt\DailyAudit\DailyAuditAtamelang.cs">
+      <DependentUpon>DailyAuditAtamelang.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="CrystalReports\Rpt\EarlyLateRunning.cs">
+      <DependentUpon>EarlyLateRunning.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="CrystalReports\Rpt\DailyAudit\SellersDailyAudit.cs">
+      <DependentUpon>SellersDailyAudit.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="CrystalReports\Rpt\DriverTrans\TimeTable.cs">
+      <DependentUpon>TimeTable.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="CrystalReports\Rpt\DriverTrans\DriverTransDetails.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DriverTransDetails.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CrystalReports\Rpt\DriverTrans\DutySheets.cs">
+      <DependentUpon>DutySheets.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="CrystalReports\Rpt\FormE\FormEAtamelangTGX.cs">
+      <DependentUpon>FormEAtamelangTGX.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="CrystalReports\Rpt\FormE\FormEDetailedAtamelangTGX.cs">
+      <DependentUpon>FormEDetailedAtamelangTGX.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="CrystalReports\Rpt\FormE\FormEDetailed.cs">
+      <DependentUpon>FormEDetailed.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="CrystalReports\Rpt\FormE\FullDutySummaryAtamelangTGX.cs">
+      <DependentUpon>FullDutySummaryAtamelangTGX.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="CrystalReports\Rpt\NotScheduledButOperatedAtamelangTGX.cs">
+      <DependentUpon>NotScheduledButOperatedAtamelangTGX.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="CrystalReports\Rpt\SalesAnalysis\CashVsSmartCardUsageByRoute.cs">
+      <DependentUpon>CashVsSmartCardUsageByRoute.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="CrystalReports\Rpt\SalesAnalysis\OriginAnalysisByRouteAtamelangTGX.cs">
+      <DependentUpon>OriginAnalysisByRouteAtamelangTGX.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="CrystalReports\Rpt\SalesAnalysis\YearlyBreakDownByRoute.cs">
+      <DependentUpon>YearlyBreakDownByRoute.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="CrystalReports\Rpt\SalesAnalysis\YearlyBreakDown.cs">
+      <DependentUpon>YearlyBreakDown.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="CrystalReports\Rpt\RevenueByDuty.cs">
+      <DependentUpon>RevenueByDuty.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="CrystalReports\Rpt\ScheduledVsOperatedOkAtamelangTGX.cs">
+      <DependentUpon>ScheduledVsOperatedOkAtamelangTGX.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="CrystalReports\Rpt\test.cs">
+      <DependentUpon>test.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="CrystalReports\Rpt\SalesAnalysis\OriginAnalysisByRoute.cs">
+      <DependentUpon>OriginAnalysisByRoute.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="CrystalReports\Rpt\SmartCardTransaction\SmartCardUsage.cs">
+      <DependentUpon>SmartCardUsage.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="CrystalReports\Rpt\SalesAnalysis\SalesAnalysisByRoute.cs">
+      <DependentUpon>SalesAnalysisByRoute.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="CrystalReports\Rpt\DailyInspector\DailyInspector.cs">
+      <DependentUpon>DailyInspector.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="CrystalReports\Rpt\FormE\FullDutySummary.cs">
+      <DependentUpon>FullDutySummary.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="CrystalReports\Rpt\FormE\FormE.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>FormE.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CrystalReports\Rpt\NotScheduledButOperated.cs">
+      <DependentUpon>NotScheduledButOperated.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="CrystalReports\Rpt\ScheduledNotOperated.cs">
+      <DependentUpon>ScheduledNotOperated.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="CrystalReports\Rpt\DailyAudit\DailyAudit.cs">
+      <DependentUpon>DailyAudit.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="CrystalReports\Rpt\ScheduledVsOperatedOk.cs">
+      <DependentUpon>ScheduledVsOperatedOk.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="CrystalReports\Rpt\SmartCardTransaction\SmartCardAudit.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SmartCardAudit.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Helpers\DownloadResult.cs" />
+    <Compile Include="Helpers\MailHelper.cs" />
+    <Compile Include="Helpers\MasterHelper.cs" />
+    <Compile Include="LoginHelper\AuthenticateUser.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Security\EBusIdentity.cs" />
+    <Compile Include="Security\EBusPrinciple.cs" />
+    <Compile Include="Security\LoginViewModel.cs" />
+    <Compile Include="Security\PrincipleProperties.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="App_Start\WebApiConfig.cs" />
+    <Content Include="EmailTemplete\ServiceRequestMailTemplate.html" />
+    <Content Include="favIcon.ico" />
+    <Content Include="Global.asax" />
+    <Content Include="Images\ajax-loader.gif" />
+    <Content Include="Images\blue.PNG" />
+    <Content Include="Images\excel.png" />
+    <Content Include="Images\logo_comp1.png" />
+    <Content Include="Images\login.jpg" />
+    <Content Include="Images\pdf.png" />
+    <Content Include="Images\shortcuts.png" />
+    <Content Include="Images\yellow.PNG" />
+    <Content Include="Scripts\Bootstrap\bootstrap.min.js" />
+    <Content Include="Scripts\Charts\Chart.js" />
+    <Content Include="Scripts\common.js" />
+    <Content Include="Scripts\Dashboard\metisMenu.min.js" />
+    <Content Include="Scripts\Dashboard\sb-admin-2.js" />
+    <None Include="Properties\PublishProfiles\EbusDuty.pubxml" />
+    <None Include="Scripts\JqueryVal\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\dateHelper.js" />
+    <Content Include="Scripts\DateTimePicker\bootstrap-datetimepicker.min.js" />
+    <Content Include="Scripts\JqueryVal\jquery.unobtrusive-ajax.js" />
+    <Content Include="Scripts\JqueryVal\jquery.unobtrusive-ajax.min.js" />
+    <Content Include="Scripts\JqueryVal\jquery.validate.js" />
+    <Content Include="Scripts\JqueryVal\jquery.validate.min.js" />
+    <Content Include="Scripts\JqueryVal\jquery.validate.unobtrusive.js" />
+    <Content Include="Scripts\JqueryVal\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\Jquery\jquery-2.1.1.js" />
+    <Content Include="Scripts\Jquery\jquery-migrate-1.2.1.js" />
+    <Content Include="Scripts\Jquery\jquery-ui-1.8.24.min.js" />
+    <Content Include="Scripts\Multiselect\bootstrap-multiselect.js" />
+    <Content Include="Scripts\Select2\select2.js" />
+    <Content Include="Scripts\Select2\select2.min.js" />
+    <Content Include="Scripts\table\jquery.dataTables.min.js" />
+    <Content Include="Styles\Bootstrap\bootstrap-theme.min.css" />
+    <Content Include="Styles\Bootstrap\bootstrap.min.css" />
+    <Content Include="Styles\Dashboard\font-awesome.min.css" />
+    <Content Include="Styles\Dashboard\metisMenu.min.css" />
+    <Content Include="Styles\Dashboard\sb-admin-2.css" />
+    <Content Include="Styles\Dashboard\timeline.css" />
+    <Content Include="Styles\DateTimePicker\bootstrap-datetimepicker-standalone.css" />
+    <Content Include="Styles\DateTimePicker\bootstrap-datetimepicker.css" />
+    <Content Include="Styles\DateTimePicker\bootstrap-datetimepicker.min.css" />
+    <Content Include="Styles\FontAwesome\font-awesome.css" />
+    <Content Include="Styles\FontAwesome\font-awesome.min.css" />
+    <Content Include="Styles\fonts\fontawesome-webfont.svg" />
+    <Content Include="Styles\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Styles\Jquery\images\ui-bg_flat_0_aaaaaa_40x100.png" />
+    <Content Include="Styles\Jquery\images\ui-bg_flat_75_ffffff_40x100.png" />
+    <Content Include="Styles\Jquery\images\ui-bg_glass_55_fbf9ee_1x400.png" />
+    <Content Include="Styles\Jquery\images\ui-bg_glass_65_ffffff_1x400.png" />
+    <Content Include="Styles\Jquery\images\ui-bg_glass_75_dadada_1x400.png" />
+    <Content Include="Styles\Jquery\images\ui-bg_glass_75_e6e6e6_1x400.png" />
+    <Content Include="Styles\Jquery\images\ui-bg_glass_95_fef1ec_1x400.png" />
+    <Content Include="Styles\Jquery\images\ui-bg_highlight-soft_75_cccccc_1x100.png" />
+    <Content Include="Styles\Jquery\images\ui-icons_222222_256x240.png" />
+    <Content Include="Styles\Jquery\images\ui-icons_2e83ff_256x240.png" />
+    <Content Include="Styles\Jquery\images\ui-icons_454545_256x240.png" />
+    <Content Include="Styles\Jquery\images\ui-icons_888888_256x240.png" />
+    <Content Include="Styles\Jquery\images\ui-icons_cd0a0a_256x240.png" />
+    <Content Include="Styles\Jquery\jquery-ui.css" />
+    <Content Include="Styles\Jquery\jquery.ui.all.css" />
+    <Content Include="Styles\Jquery\jquery.ui.base.css" />
+    <Content Include="Styles\Jquery\jquery.ui.button.css" />
+    <Content Include="Styles\Jquery\jquery.ui.core.css" />
+    <Content Include="Styles\Jquery\jquery.ui.dialog.css" />
+    <Content Include="Styles\Jquery\jquery.ui.theme.css" />
+    <Content Include="Styles\Multiselect\bootstrap-multiselect.css" />
+    <Content Include="Styles\Select2\select2-bootstrap.css" />
+    <Content Include="Styles\Select2\select2.css" />
+    <Content Include="Styles\Select2\select2.min.css" />
+    <Content Include="Styles\table\jquery.dataTables.min.css" />
+    <Content Include="XML_Files\ApplicationsUsersList.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Views\Web.config" />
+    <Content Include="Views\Report\DailyAudit.cshtml" />
+    <Content Include="Views\Report\NotScheduledButOperated.cshtml" />
+    <Content Include="Views\Report\ScheduledNotOperated.cshtml" />
+    <Content Include="Views\Report\FormE.cshtml" />
+    <Content Include="Views\Report\SmartCardTransactions.cshtml" />
+    <Content Include="Views\Report\DailyInspectorReport.cshtml" />
+    <Content Include="Views\Report\FullDutySummary.cshtml" />
+    <Content Include="Views\Report\SalesAnalysisByRoute.cshtml" />
+    <Content Include="Views\Report\ClassSummaryByClassType.cshtml" />
+    <Content Include="Views\Report\SalesAnalysisByClass.cshtml" />
+    <Content Include="Views\Report\CashierReport.cshtml" />
+    <Content Include="Views\Shared\_Shortcut.cshtml" />
+    <Content Include="Views\Shared\_Shortcut2.cshtml" />
+    <Content Include="Views\Report\ClassSummaryByClassTypeGraph.cshtml" />
+    <Content Include="Views\Report\AuditStatus.cshtml" />
+    <Content Include="Views\Report\DriverDetails.cshtml" />
+    <Content Include="Views\Report\SmartCardHotlisting.cshtml" />
+    <Content Include="Views\Report\DutySheets.cshtml" />
+    <Content Include="Views\Report\TimeTable.cshtml" />
+    <Content Include="Views\Report\SmartCardUsage.cshtml" />
+    <Content Include="Views\Report\FormEDetailed.cshtml" />
+    <Content Include="Views\Report\OriginAnalysisByRoute.cshtml" />
+    <Content Include="Views\Report\YearlyBreakDown.cshtml" />
+    <Content Include="Views\User\StaffEditor.cshtml" />
+    <Content Include="Views\User\UserAccess.cshtml" />
+    <Content Include="Views\User\Users.cshtml" />
+    <Content Include="Views\Report\SellersAudit.cshtml" />
+    <Content Include="Views\Report\CashVsSmartCardUsageByRoute.cshtml" />
+    <Content Include="Views\Shared\CashVsSmartCardTable.cshtml" />
+    <Content Include="Views\Report\EarlyLateRunning.cshtml" />
+    <Content Include="Views\Report\CashierSummaryReport.cshtml" />
+    <Content Include="Views\Report\MonthRevenueGraph.cshtml" />
+    <Content Include="Views\Report\YearlyBreakDownByRoute.cshtml" />
+    <Content Include="Views\Report\DailyAuditByCashierTerminal.cshtml" />
+    <Content Include="Views\SchedulingSystem\Index.cshtml" />
+    <Content Include="Views\SchedulingSystem\_AddEditDuty.cshtml" />
+    <Content Include="Views\SchedulingSystem\_AddEditDutyBooking.cshtml" />
+    <Content Include="Views\SchedulingSystem\_AddEditDutyEvent.cshtml" />
+    <Content Include="Views\SchedulingSystem\_AddEditDutyOperatedDay.cshtml" />
+    <Content Include="Views\SchedulingSystem\_AddEditDutyTrip.cshtml" />
+    <Content Include="Views\SchedulingSystem\_DutyBookings.cshtml" />
+    <Content Include="Views\SchedulingSystem\_DutyOperatedDays.cshtml" />
+    <Content Include="Views\SchedulingSystem\_DutyTripEvent.cshtml" />
+    <Content Include="Styles\fonts\fontawesome-webfont.eot" />
+    <Content Include="Styles\fonts\fontawesome-webfont.ttf" />
+    <Content Include="Styles\fonts\fontawesome-webfont.woff" />
+    <Content Include="Styles\fonts\fontawesome-webfont.woff2" />
+    <Content Include="Styles\fonts\FontAwesome.otf" />
+    <Content Include="Views\Report\DailyAuditByCashierTerminalSummary.cshtml" />
+    <Content Include="Views\Report\DailyAuditAtamelang.cshtml" />
+    <Content Include="Views\Report\DailyAnalysis.cshtml" />
+    <Content Include="Views\RouteMaster\Index.cshtml" />
+    <Content Include="Views\RouteMaster\_AddEditSubRoute.cshtml" />
+    <Content Include="Views\RouteMaster\_ListSubRoutes.cshtml" />
+    <Content Include="Views\Report\CashierReconciliationReport.cshtml" />
+    <Content Include="Views\StaffMaster\Index.cshtml" />
+    <Content Include="Views\StaffMaster\PrintStaffs.cshtml" />
+    <Content Include="Views\StaffMaster\_AddEditStaff.cshtml" />
+    <Content Include="Views\StaffMaster\_AddEditStaffType.cshtml" />
+    <Content Include="Views\StaffMaster\_ListStaffTypes.cshtml" />
+    <Content Include="Views\StaffMaster\_ListLocations.cshtml" />
+    <Content Include="Views\StaffMaster\_AddEditLocation.cshtml" />
+    <Content Include="Views\Asset\Index.cshtml" />
+    <Content Include="Views\Report\NewCashierSummaryReport.cshtml" />
+    <Content Include="Views\Report\RevenueByDuty.cshtml" />
+    <Content Include="Views\ServiceRequest\Index.cshtml" />
+    <Content Include="Views\ServiceRequest\_AddEditServiceRequest.cshtml" />
+    <Content Include="Views\ServiceRequest\PrintStaffs.cshtml" />
+    <Content Include="Views\ServiceRequest\_ListServiceRquestAudit.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Login\Login.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Styles\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Styles\fonts\glyphicons-halflings-regular.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Report\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\_Master.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\_ViewStart.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Reports.Services\Reports.Services.csproj">
+      <Project>{d8bc666f-223d-4620-88da-50053bbecffe}</Project>
+      <Name>Reports.Services</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="CrystalReports\Rpt\Cashier\CashierReconciliationSummay.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CashierReconciliationSummay.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CrystalReports\Rpt\ClassSummary\NewCashierSummary.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>NewCashierSummary.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CrystalReports\Rpt\Cashier\DailyAuditByCashierTerminalAtamelangTGX.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>DailyAuditByCashierTerminalAtamelangTGX.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CrystalReports\Rpt\Cashier\DailyAuditByCashierTerminalSummary.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>DailyAuditByCashierTerminalSummary.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CrystalReports\Rpt\Cashier\DailyAuditByCashierTerminal.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>DailyAuditByCashierTerminal.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CrystalReports\Rpt\Cashier\CashierSummary.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CashierSummary.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CrystalReports\Rpt\ClassSummary\ClassSummaryByClassType.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>ClassSummaryByClassType.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CrystalReports\Rpt\Cashier\CashierReport.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CashierReport.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CrystalReports\Rpt\ClassSummary\SalesAnalysisByClass.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>SalesAnalysisByClass.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CrystalReports\Rpt\DailyAudit\DailyAnalysis.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>DailyAnalysis.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CrystalReports\Rpt\DailyAudit\DailyAuditAtamelang.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>DailyAuditAtamelang.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CrystalReports\Rpt\EarlyLateRunning.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>EarlyLateRunning.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CrystalReports\Rpt\DailyAudit\SellersDailyAudit.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>SellersDailyAudit.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CrystalReports\Rpt\DriverTrans\TimeTable.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>TimeTable.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CrystalReports\Rpt\DriverTrans\DriverTransDetails.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>DriverTransDetails.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CrystalReports\Rpt\DriverTrans\DutySheets.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>DutySheets.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CrystalReports\Rpt\FormE\FormEAtamelangTGX.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>FormEAtamelangTGX.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CrystalReports\Rpt\FormE\FormEDetailedAtamelangTGX.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>FormEDetailedAtamelangTGX.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CrystalReports\Rpt\FormE\FormEDetailed.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>FormEDetailed.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CrystalReports\Rpt\FormE\FullDutySummaryAtamelangTGX.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>FullDutySummaryAtamelangTGX.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CrystalReports\Rpt\NotScheduledButOperatedAtamelangTGX.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>NotScheduledButOperatedAtamelangTGX.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CrystalReports\Rpt\SalesAnalysis\CashVsSmartCardUsageByRoute.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CashVsSmartCardUsageByRoute.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CrystalReports\Rpt\SalesAnalysis\OriginAnalysisByRouteAtamelangTGX.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>OriginAnalysisByRouteAtamelangTGX.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CrystalReports\Rpt\SalesAnalysis\YearlyBreakDownByRoute.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>YearlyBreakDownByRoute.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CrystalReports\Rpt\SalesAnalysis\YearlyBreakDown.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>YearlyBreakDown.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CrystalReports\Rpt\RevenueByDuty.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>RevenueByDuty.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CrystalReports\Rpt\ScheduledVsOperatedOkAtamelangTGX.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>ScheduledVsOperatedOkAtamelangTGX.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CrystalReports\Rpt\test.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>test.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CrystalReports\Rpt\SalesAnalysis\OriginAnalysisByRoute.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>OriginAnalysisByRoute.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CrystalReports\Rpt\SmartCardTransaction\SmartCardUsage.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>SmartCardUsage.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CrystalReports\Rpt\SalesAnalysis\SalesAnalysisByRoute.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>SalesAnalysisByRoute.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CrystalReports\Rpt\DailyInspector\DailyInspector.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>DailyInspector.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CrystalReports\Rpt\FormE\FullDutySummary.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>FullDutySummary.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CrystalReports\Rpt\FormE\FormE.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>FormE.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CrystalReports\Rpt\NotScheduledButOperated.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>NotScheduledButOperated.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CrystalReports\Rpt\ScheduledNotOperated.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>ScheduledNotOperated.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CrystalReports\Rpt\DailyAudit\DailyAudit.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>DailyAudit.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CrystalReports\Rpt\ScheduledVsOperatedOk.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>ScheduledVsOperatedOk.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CrystalReports\Rpt\SmartCardTransaction\SmartCardAudit.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>SmartCardAudit.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="CrystalReports\Datasets\ReportDatasets.xsc">
+      <DependentUpon>ReportDatasets.xsd</DependentUpon>
+    </Content>
+    <None Include="CrystalReports\Datasets\ReportDatasets.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>ReportDatasets.Designer.cs</LastGenOutput>
+    </None>
+    <Content Include="CrystalReports\Datasets\ReportDatasets.xss">
+      <DependentUpon>ReportDatasets.xsd</DependentUpon>
+    </Content>
+    <Content Include="Views\Shared\_HomeLayout.cshtml" />
+    <Content Include="Views\Report\ScheduledVsOperated.cshtml" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
+    <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
+  </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>0</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:16975/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target> -->
+</Project>

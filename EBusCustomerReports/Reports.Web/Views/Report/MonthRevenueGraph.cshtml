@@ -1,0 +1,289 @@
+﻿@model Reports.Services.Models.MonthyRevenueFilter
+@{
+    ViewBag.Title = "Monthly Revenue Summary";
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+    var date = DateTime.Now.Date;
+}
+@section scripts
+{
+    <script src="~/Scripts/Multiselect/bootstrap-multiselect.js"></script>
+    <link href="~/Styles/Multiselect/bootstrap-multiselect.css" rel="stylesheet" />
+    <link href="~/Styles/Jquery/jquery.ui.theme.css" rel="stylesheet" />
+    <link href="~/Styles/Jquery/jquery.ui.dialog.css" rel="stylesheet" />
+    <link href="~/Styles/Jquery/jquery.ui.button.css" rel="stylesheet" />
+    <link href="~/Styles/Jquery/jquery.ui.core.css" rel="stylesheet" />
+    <link href="~/Styles/Jquery/jquery.ui.base.css" rel="stylesheet" />
+    <link href="~/Styles/Jquery/jquery.ui.all.css" rel="stylesheet" />
+    <link href="~/Styles/Jquery/jquery-ui.css" rel="stylesheet" />
+    <script src="~/Scripts/JqueryVal/jquery.validate-vsdoc.js"></script>
+    <script src="~/Scripts/JqueryVal/jquery.validate.js"></script>
+    <script src="~/Scripts/JqueryVal/jquery.validate.min.js"></script>
+    <script src="~/Scripts/JqueryVal/jquery.validate.unobtrusive.js"></script>
+    <script src="~/Scripts/JqueryVal/jquery.validate.unobtrusive.min.js"></script>
+    <style>
+        div.ui-datepicker {
+            font-size: 15px;
+        }
+
+        .input-validation-error {
+            border-color: red;
+        }
+
+        .field-validation-error {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+    <script src="~/Scripts/Charts/Chart.js"></script>
+    <script>
+        var ajaxData = [];
+        v = 2;
+        function createGraphData() {
+            var sellers = [];
+            var drivers = [];
+            var xLabels = [];
+
+
+            $.each(ajaxData.DriverRevMonth, function (index, value) {
+                xLabels.push(value.MonthName);
+                drivers.push(value.int4_DutyRevenue);
+                var isExist = false;
+                $.each(ajaxData.SellerRevMonth, function (index, valueSeller) {
+                    if (value.MonthName == valueSeller.MonthName) {
+                        isExist = true;
+                        sellers.push(valueSeller.int4_DutyRevenue);
+                    }
+                });
+                //if (!isExist) { xLabels.push(value.MonthName); sellers.push(0); }
+            });
+
+
+
+            data = {
+                labels: xLabels,
+
+                datasets: [{
+                    label: "DiverRevenue",
+                    fillColor: "#FF2A55",
+                    strokeColor: "#337ab7",
+                    pointColor: "#337ab7",
+                    pointStrokeColor: "#fff",
+                    pointHighlightFill: "#fff",
+                    pointHighlightStroke: "rgba(151,187,205,1)",
+                    data: drivers
+                },
+                {
+                    label: "SellersRevenue",
+                    fillColor: "#557FFF",
+                    strokeColor: "#f0ad4e",
+                    pointColor: "#f0ad4e",
+                    pointStrokeColor: "#fff",
+                    pointHighlightFill: "#fff",
+                    pointHighlightStroke: "green",
+                    data: sellers
+                }]
+            };
+        }
+
+        function updatePie() {
+            var pieData = [
+                       {
+                           value: ajaxData.DriverRevMonthYear,
+                           label: 'Drivers',
+                           color: '#FF2A55',
+                           labelColor: 'white',
+                           labelFontSize: '8'
+                       },
+                       {
+                           value: ajaxData.SellerRevMonthYear,
+                           label: 'Sellers',
+                           color: '#557FFF',
+                           labelColor: 'white',
+                           labelFontSize: '8'
+                       }
+            ];
+
+            var myPie = new Chart(document.getElementById("canvasp").getContext("2d")).Pie(pieData, {
+                animationSteps: 100,
+                animationEasing: 'easeInOutQuart'
+            });
+        }
+
+        function updateGraph() {
+            updatePie();
+            var ctx = document.getElementById("canvas").getContext("2d");
+            new Chart(ctx).Bar(data, {
+                barShowStroke: false,
+                responsive: true,
+                showTooltips: false,
+                barValueSpacing: 10,
+                barDatasetSpacing: 2,
+                onAnimationComplete: function () {
+                    var ctx = this.chart.ctx;
+                    ctx.font = this.scale.font;
+                    ctx.fillStyle = "#000";
+                    ctx.textAlign = "center";
+                    ctx.textBaseline = "top";
+
+                    this.datasets.forEach(function (dataset) {
+                        v++;
+                        dataset.bars.forEach(function (bar) {
+                            var barval;
+                            if (bar.value == "0") {
+                                barval = bar.y - 20;
+                            }
+                            else if (v % 2 == 0) {
+                                barval = bar.y - 10;
+                            }
+                            else {
+                                barval = bar.y - 20;
+                            }
+                            ctx.fillText("R " + bar.value.format(), bar.x, barval);
+                        });
+                    })
+                }
+            });
+        }
+
+        Number.prototype.format = function (n, x) {
+            var re = '\\d(?=(\\d{' + (x || 3) + '})+' + (n > 0 ? '\\.' : '$') + ')';
+            return this.toFixed(Math.max(0, ~~n)).replace(new RegExp(re, 'g'), '$&,');
+        };
+
+        $(document).ready(function () {
+
+            $("#YearsSelected").multiselect({
+                buttonWidth: '100%',
+                enableFiltering: true,
+                includeSelectAllOption: true,
+                nonSelectedText: 'Select Year'
+            });
+            $("#MonthsSelected").multiselect({
+                buttonWidth: '100%',
+                enableFiltering: true,
+                includeSelectAllOption: true,
+                nonSelectedText: 'Select Months'
+            });
+
+            $(document).ajaxStart(function () {
+            });
+
+            $(document).ajaxStop(function () {
+            });
+
+            $("#showGraph").click(function () {
+                getData();
+            });
+
+            $("#Print").click(function () {
+
+                $("#buttonsSection").hide();
+                $("#titleP").text("Monthly Revenue");
+                window.print();
+                $("#titleP").text("Class Summary By ClassType Graph");
+                $("#buttonsSection").show();
+            });
+
+            getData();
+        });
+
+        function getData() {
+            $("#loading").show();
+
+            var months = $("#MonthsSelected").val();
+
+            if (months == null) {
+                months = ""
+            }
+            else {
+                months = months.toString();
+            }
+
+            $.ajax({
+                type: "GET",
+                url: $("#ajaxUrl").val(),
+                data: { months: months, years: $("#YearsSelected").val().toString() },
+                dataType: "Json",
+                cache: false,
+                async: true,
+                success: function (result) {
+                    if (result.Data != null) {
+                        ajaxData = result.Data;
+                        createGraphData();
+                        updateGraph();
+                    }
+
+                    $("#loading").hide();
+                }
+            });
+        }
+
+    </script>
+    <style>
+        .lblFont {
+            font-weight: bold;
+            color: brown;
+        }
+
+        .zindex {
+            z-index: 99999;
+        }
+
+        .multiselect {
+            margin-left: 20px !important;
+            margin-top: 3px !important;
+        }
+    </style>
+}
+
+
+<div id="page-wrapper">
+    <div class="row">
+        <div class="col-lg-12">
+            <h2 id="titleP" class="page-header" style="margin: 10px; color: #5e5e5e !important">Monthly Revenue Summary</h2>
+        </div>
+    </div>
+    <div class="row" id="buttonsSection">
+        @Html.ValidationSummary(true)
+        <div class="form-group ">
+            <div align="left" style="text-align: center;" class="col-md-2 col-sm-12 ">
+                <label class="lblFont" for="Website">Years</label>
+                @Html.DropDownListFor(s => s.YearsSelected, Model.Years, new { @class = "form-control multiselect" })
+            </div>
+            <div align="left" style="text-align: center;" class="col-md-2 col-sm-12 ">
+                <label class="lblFont" for="Website">Months</label>
+                @Html.DropDownListFor(s => s.MonthsSelected, Model.Months, new { @class = "multiselect form-control", multiple = "multiple" })
+            </div>
+            <div align="left" class="col-md-2 col-sm-12">
+                <label class="lblFont" for="Website"></label>
+                <button id="showGraph" type="button" style="width: 100%; margin-left: 20px; margin-top: 8px;" class="btn btn-success">
+                    Refresh
+                </button>
+            </div>
+            <div align="left" class="col-md-2 col-sm-12">
+                <label class="lblFont" for="Website"></label>
+                <button id="Print" type="submit" style="width: 100%; margin-left: 20px; margin-top: 8px;" class="btn btn-info">
+                    Print
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="row" style="min-height: 15px;">
+    </div>
+    <div class="row" id="loading" style="display: block;">
+        <img style="padding-left: 40%; top: 50%; position: relative; height: 32px;" src="~/Images/ajax-loader.gif" alt="Loading.." />
+    </div>
+    <div class="row">
+        <div style="margin-left: 5px;">
+            <canvas id="canvas" height="250" width="600"></canvas>
+        </div>
+        <div align="center" class="row" style="min-height: 25px;">
+            <span style="color: #FF2A55; font-weight: bold;">Drivers</span>
+            <span style="color: #557FFF; font-weight: bold;">Sellers</span>
+        </div>
+        <div align="center" style="margin-left: 5px;">
+            <canvas id="canvasp" height="250" width="250"></canvas>
+        </div>
+    </div>
+    <input type="hidden" id="ajaxUrl" value='@Url.Action("GetMonthRevenueGraphData")' />
+</div>

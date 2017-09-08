@@ -1,0 +1,170 @@
+﻿<!-- Modal Contents -->
+<div id="divStaffTypeEditor" class="modal fade ">
+    <!-- class modal and fade -->
+
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header modal-header-info">
+                <!-- modal header -->
+                <button type="button" class="close"
+                        data-dismiss="modal" aria-hidden="true">
+                    ×
+                </button>
+                <div class="modal-title">Staff Type</div>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="container pull-right">
+                            <button type="button" class="btn btn-success" id="btnAddStaffType">Add Staff Type&nbsp;<i class="fa fa-1x fa-plus"></i></button> &nbsp; &nbsp; &nbsp; &nbsp;
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="table-responsive">
+                            <table class="table table-striped" id="tblStaffTypeResults">
+                                <thead class="thead-inverse">
+                                    <tr>
+                                        <th>StaffType ID</th>
+                                        <th>Description</th>
+                                        <th>Edit</th>
+                                        <th>Delete</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <!-- modal footer -->
+                <input type="hidden" id="hdnModelTitle" value="" />
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+
+        </div> <!-- / .modal-content -->
+
+    </div> <!-- / .modal-dialog -->
+
+</div><!-- / .modal -->
+<script>
+    $(document).on("click", "a#lnkStaffTypeEdit", function () {
+        ClearFormValuesInBlock(divAddEditStaffType);
+        var row = $(this).parent().parent();
+        SubStaffTypePopupTitleText(row);
+        BindStaffTypeDetails(row, $(this).attr("value"));
+        SetPopupTitle(divAddEditStaffType, "Edit StaffType - ", divAddEditStaffType.find("input#hdnModelTitle").attr("value"));
+        divAddEditStaffType.modal('show');
+    });
+
+    $(document).on("click", "a#lnkStaffTypeDelete", function () {
+        var status = confirm("Are you sure you want to delete this StaffType!");
+        if (status) {
+            DeleteStaffType($(this).attr("value"));
+        }
+    });
+
+    function SubStaffTypePopupTitleText(row) {
+        var booking = "Staff Type: " + row.find("span#lblDescription").html();
+        divAddEditStaffType.find("input#hdnModelTitle").attr("value", booking);
+    }
+
+    function BindStaffTypeDetails(row, staffTypeID) {
+        divAddEditStaffType.find("input#txtStaffType").val(row.find("span#lblDescription").html());
+        divAddEditStaffType.find("input#txtStaffTypeID").val(staffTypeID).attr("readonly", true);
+        divAddEditStaffType.find("input#hdnStaffTypeID").attr("value", "0");
+    }
+
+    function AddStaffType() {
+        $("button#btnAddStaffType").click(function () {
+            ClearFormValuesInBlock(divAddEditStaffType);
+            SetPopupTitle(divAddEditStaffType, "Add Staff Type", "");
+            divAddEditStaffType.find("input#txtStaffTypeID").removeAttr("readonly");
+            divAddEditStaffType.find("input#hdnStaffTypeID").attr("value", "1");
+            divAddEditStaffType.modal('show');
+        });
+    }
+
+    function DeleteStaffType(StaffTypeID) {
+        $.ajax({
+            async: false,
+            url: '@Url.Action("DeleteStaffType", "StaffMaster")',
+            type: 'Post',
+            data: JSON.stringify({ StaffTypeID: StaffTypeID }),
+            dataType: 'json',
+            contentType: 'application/json',
+            error: function (xhr) {
+                alert('Error: ' + xhr.statusText);
+            },
+            success: function (result) {
+                //Now Process the data
+                alert(result);
+                BindStaffTypes(false);
+            }
+        }).done(function (result) {
+            return false;
+        });
+    }
+
+
+    $(document).ready(function () {
+        RemoveHighlightedCssOnFocus();
+        ClearSearchControls();
+        AddStaffType();
+    });
+
+    function BindStaffTypes(isPageLoad) {
+        var tableBody = $("table#tblStaffTypeResults").find("tbody");
+        var rows = "";
+        $.ajax({
+            async: false,
+            url: '@Url.Action("GetStaffType", "StaffMaster")',
+            type: 'Post',
+            dataType: 'json',
+            contentType: 'application/json',
+            error: function (xhr) {
+                alert('Error: ' + xhr.statusText);
+            },
+            success: function (result) {
+                //Now Process the data
+                debugger;
+                tableBody.html();
+                if (result.length == 0) {
+                    alert("No records found !!");
+                    tableBody.html("");
+                }
+                else {
+                    var selectedValue = divAddEditStaff.find("select#ddlStaffTypes").val();
+                    var searchSelectedValue = divStaffEditor.find("select#ddlSearchStaffTypes").val();
+                    if (!isPageLoad) { divAddEditStaff.find("select#ddlStaffTypes").find('option').remove().end(); divStaffEditor.find("select#ddlSearchStaffTypes").find('option').remove().end(); }
+                    $(result).each(function (index) {
+                        var CurrentItem = this;
+                        if (!isPageLoad) {
+                            divAddEditStaff.find("select#ddlStaffTypes").append($("<option></option>").val(CurrentItem.Value).html(CurrentItem.Text));
+                            divStaffEditor.find("select#ddlSearchStaffTypes").append($("<option></option>").val(CurrentItem.Value).html(CurrentItem.Text));
+                        }
+                        if (CurrentItem.Value != '0') {
+                            rows = rows + "<tr><td><span id='lblStaffTypeID'>" + CurrentItem.Value + "</span></td>";
+                            rows = rows + "<td><span id='lblDescription'>" + CurrentItem.Text + "</span></td>";
+                            rows = rows + "<td><a id='lnkStaffTypeEdit' class='linkEdit' value='" + CurrentItem.Value + "'><span class='fa-stack fa-sm '><i class='fa fa-edit fa-stack-1x '></i></span></a>";
+                            rows = rows + "<td><a id='lnkStaffTypeDelete' class='linkDelete' value='" + CurrentItem.Value + "'><span class='fa-stack fa-sm '><i class='fa fa-shopping-basket fa-stack-1x '></i></span></a><input type='hidden' id='hdnDOTNumber' value='" + CurrentItem.DOTNumber + "'/><input type='hidden' id='hdnIsPosition' value='" + CurrentItem.IsPosition + "'/><input type='hidden' id='hdnContract' value='" + CurrentItem.Contract + "'/><input type='hidden' id='hdnDestinationBlind' value='" + CurrentItem.DestinationBlind + "'/></td>";
+                            rows = rows + "</tr>";
+                        }
+                    });
+                    tableBody.html("").html(rows);
+                    divAddEditStaff.find("select#ddlStaffTypes").val(selectedValue).change();
+                    divStaffEditor.find("select#ddlSearchStaffTypes").val(searchSelectedValue).change();
+                }
+            }
+        }).done(function (result) {
+            return false;
+        });
+    }
+
+</script>

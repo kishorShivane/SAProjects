@@ -1,0 +1,438 @@
+﻿@model Reports.Services.Models.ServiceRequest.ServiceRequest
+@{
+    ViewBag.Title = "Service Request";
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+}
+<style>
+    .funkyradio div {
+        /*clear: both;*/
+        overflow: hidden;
+    }
+
+    .funkyradio label {
+        width: 82%;
+        border-radius: 3px;
+        border: 1px solid #D1D3D4;
+        font-weight: normal;
+    }
+
+    .funkyradio input[type="radio"]:empty,
+    .funkyradio input[type="checkbox"]:empty {
+        display: none;
+    }
+
+        .funkyradio input[type="radio"]:empty ~ label,
+        .funkyradio input[type="checkbox"]:empty ~ label {
+            position: relative;
+            line-height: 2.0em;
+            text-indent: 3.25em;
+            /*margin-top: 2em;*/
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+            .funkyradio input[type="radio"]:empty ~ label:before,
+            .funkyradio input[type="checkbox"]:empty ~ label:before {
+                position: absolute;
+                display: block;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                content: '';
+                width: 2.5em;
+                background: #D1D3D4;
+                border-radius: 3px 0 0 3px;
+            }
+
+    .funkyradio input[type="radio"]:hover:not(:checked) ~ label,
+    .funkyradio input[type="checkbox"]:hover:not(:checked) ~ label {
+        color: #888;
+    }
+
+        .funkyradio input[type="radio"]:hover:not(:checked) ~ label:before,
+        .funkyradio input[type="checkbox"]:hover:not(:checked) ~ label:before {
+            content: '\2714';
+            text-indent: .9em;
+            color: #C2C2C2;
+        }
+
+    .funkyradio input[type="radio"]:checked ~ label,
+    .funkyradio input[type="checkbox"]:checked ~ label {
+        color: #777;
+    }
+
+        .funkyradio input[type="radio"]:checked ~ label:before,
+        .funkyradio input[type="checkbox"]:checked ~ label:before {
+            content: '\2714';
+            text-indent: .9em;
+            color: #333;
+            background-color: #ccc;
+        }
+
+    .funkyradio input[type="radio"]:focus ~ label:before,
+    .funkyradio input[type="checkbox"]:focus ~ label:before {
+        box-shadow: 0 0 0 3px #999;
+    }
+
+    .funkyradio-info input[type="radio"]:checked ~ label:before,
+    .funkyradio-info input[type="checkbox"]:checked ~ label:before {
+        color: #fff;
+        background-color: #5bc0de;
+    }
+
+    .form-group input[type="checkbox"] {
+        display: none;
+    }
+
+        .form-group input[type="checkbox"] + .btn-group > label span {
+            width: 20px;
+        }
+
+            .form-group input[type="checkbox"] + .btn-group > label span:first-child {
+                display: none;
+            }
+
+            .form-group input[type="checkbox"] + .btn-group > label span:last-child {
+                display: inline-block;
+            }
+
+        .form-group input[type="checkbox"]:checked + .btn-group > label span:first-child {
+            display: inline-block;
+        }
+
+        .form-group input[type="checkbox"]:checked + .btn-group > label span:last-child {
+            display: none;
+        }
+
+    .thead-inverse th {
+        color: #fff;
+        background-color: #373a3c;
+        text-align: center;
+    }
+
+    .table-striped td {
+        text-align: center;
+    }
+
+    .modal-lg {
+        min-width: 1250px;
+    }
+
+    .transaction {
+        min-width: 900px;
+    }
+
+    .linkEdit {
+        text-decoration: none;
+        cursor: pointer;
+        color: green;
+    }
+
+    .linkDelete {
+        text-decoration: none;
+        cursor: pointer;
+        color: red;
+    }
+
+    .linkView {
+        text-decoration: none;
+        cursor: pointer;
+        color: blue;
+    }
+
+    .tick {
+        text-decoration: none;
+        color: darkgreen;
+    }
+
+    .cross {
+        text-decoration: none;
+        color: darkred;
+    }
+
+    .modal-title {
+        margin: 0;
+        line-height: 1.428571;
+        font-size: medium;
+    }
+
+    .select2 {
+        float: left;
+    }
+
+    .btn {
+        padding: 0px 12px;
+        max-height: 30px;
+    }
+</style>
+<script>
+    $(document).ready(function () {
+        $("select.select2").select2({ width: "75%" });
+        $("select.select2Mini").select2({ width: "35%" });
+        $("select.select2Line").select2({ tags: true, width: "75%" });
+    });
+</script>
+<div class="container-fluid">
+    <div id="page-wrapper">
+        <div class="row">
+            <div class="col-lg-12">
+                <h2 class="page-header" style="margin: 10px; color: #337ab7 !important">Service Request</h2>
+            </div>
+        </div>
+        <div class="row" id="divServiceRequest">
+            <div class="panel panel-info">
+                <div class="panel-heading" style="background-color: #337ab7 !important;background-image: none;">
+                    <a data-toggle="collapse" href="#pnlSearch" style="color:white;text-decoration:none;">Search Service Request</a>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="funkyradio">
+                            <div class="col-md-2">
+                                <div class="funkyradio-info">
+                                    <input type="radio" name="radio" id="chkCreated" value="1" class="SearchFilter" />
+                                    <label for="chkCreated">Created</label>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="funkyradio-info">
+                                    <input type="radio" name="radio" id="chkInProgress" value="2" class="SearchFilter" />
+                                    <label for="chkInProgress">In Progress</label>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="funkyradio-info">
+                                    <input type="radio" name="radio" id="chkClosed" value="3" class="SearchFilter" />
+                                    <label for="chkClosed">Closed</label>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="funkyradio-info">
+                                    <input type="radio" name="radio" id="chkAll" value="-1" class="SearchFilter" />
+                                    <label for="chkAll">All</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <button type="button" class="btn btn-success" id="btnCreateServiceRequest">Create Service Request&nbsp;<i class="fa fa-1x fa-plus"></i></button> &nbsp; &nbsp;
+                                <a target="_blank" class="btn btn-danger" style="padding: 4px 12px;" id="lnkPrintStaffs" href="../ServiceRequest/PrintStaffs">Download&nbsp;<i class="fa fa-1x fa-plus"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <div class="panel" id="divSearchResults">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table-responsive">
+                                <table class="table table-striped" id="tblServiceRequestResults">
+                                    <thead class="thead-inverse">
+                                        <tr>
+                                            <th>Request ID</th>
+                                            <th>Requested By</th>
+                                            <th>Request Type</th>
+                                            <th>Comments</th>
+                                            <th>Status</th>
+                                            <th>Edit</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @Html.Partial("_AddEditServiceRequest", Model);
+            @Html.Partial("_ListServiceRquestAudit");
+            <input type="hidden" id="hdnIndexModelTitle" value="" />
+            @{
+                var isSpecialUser = Model.IsSpecialUser ? "true" : "false";
+            }
+            <input type="hidden" id="hdnIsSpecialUser" value='@isSpecialUser' />
+        </div>
+    </div>
+</div>
+<script>
+    var divAddEditServiceRequest = $("div#divAddEditServiceRequest");
+    var divServiceRquestAudit = $("div#divServiceRquestAudit");
+    $(document).ready(function () {
+        BindServiceRequests(true, "0");
+        RemoveHighlightedCssOnFocus();
+        CreateServiceRequest();
+        GetServiceRequestAudit();
+        $("input.SearchFilter").change(function () {
+            BindServiceRequests(true, $(this).attr("value"));
+        });
+    });
+
+    function GetServiceRequestAudit() {
+        $("table#tblServiceRequestResults tr td.showAudit").click(
+            function () {
+                BindServiceRequestAudit($(this).parent().find("a#lnkServiceRequestEdit").attr("value"));
+            });
+    }
+
+    $(document).on("click", "a#lnkServiceRequestEdit", function () {
+        ClearFormValuesInBlock(divAddEditServiceRequest);
+        var row = $(this).parent().parent();
+        ServiceRequestPopupTitleText(row);
+        BindServiceRequestDetails(row, $(this).attr("value"));
+        SetPopupTitle(divAddEditServiceRequest, "Edit Service Request - ", divAddEditServiceRequest.find("input#hdnModelTitle").attr("value"));
+        divAddEditServiceRequest.modal('show');
+    });
+
+    function ServiceRequestPopupTitleText(row) {
+        var booking = "Service Request Number: " + row.find("span#lblRequestID").html() + " - Requested By:" + row.find("span#lblRequestedBy").html();
+        divAddEditServiceRequest.find("input#hdnModelTitle").attr("value", booking);
+    }
+
+    function BindServiceRequestDetails(row, ServiceRequestID) {
+        divAddEditServiceRequest.find("input#txtEmail").val(row.find("input#hdnEmail").attr("value"));
+        setDropDownValueByText("ddlRequestTypes", row.find("span#lblRequestType").html());
+        setDropDownValueByText("ddlRequestStatus", row.find("span#lblStatus").html());
+        //divAddEditStaff.find("select#ddlLocation").val(row.find("span#lblLocationCode").html()).change();
+        $("input.InputCheckBox").removeProp("checked");
+        $("input#chk" + row.find("input#hdnPriority").attr("value")).prop("checked", true);
+        divAddEditServiceRequest.find("#txtComments").val(row.find("span#lblComments").html());
+        divAddEditServiceRequest.find("#txtAdminComments").val(row.find("input#hdnAdminComments").attr("value"));
+        divAddEditServiceRequest.find("input#hdnServiceRequestID").attr("value", ServiceRequestID);
+        if ($("input#hdnIsSpecialUser").attr("value") == "true") {
+            divAddEditServiceRequest.find("div#divAdminComments").show();
+            divAddEditServiceRequest.find("#txtAdminComments").attr("required", "true");
+            divAddEditServiceRequest.find("div#divRequestStatus").show();
+            divAddEditServiceRequest.find("select#ddlRequestStatus").attr("required", "true");
+        }
+        else {
+            divAddEditServiceRequest.find("div#divAdminComments").hide();
+            divAddEditServiceRequest.find("#txtAdminComments").removeAttr("required");
+            divAddEditServiceRequest.find("div#divRequestStatus").hide();
+            divAddEditServiceRequest.find("select#ddlRequestStatus").removeAttr("required");
+        }
+    }
+
+    function CreateServiceRequest() {
+        $("button#btnCreateServiceRequest").click(function () {
+            debugger;
+            ClearFormValuesInBlock(divAddEditServiceRequest);
+            SetPopupTitle(divAddEditServiceRequest, "Add Service Request", "");
+            setDropDownValueByText("ddlRequestStatus", "Created");
+            $("input#chkHigh").prop("checked", true);
+            divAddEditServiceRequest.find("select#ddlRequestStatus").val("1").change();
+            divAddEditServiceRequest.find("div#divRequestStatus").hide();
+            divAddEditServiceRequest.find("select#ddlRequestStatus").removeAttr("required");
+            divAddEditServiceRequest.find("div#divAdminComments").hide();
+            divAddEditServiceRequest.find("#txtAdminComments").removeAttr("required");
+            divAddEditServiceRequest.modal('show');
+        });
+    }
+
+    function GetSelectedCheckBoxValue(className) {
+        var result = "0";
+        divAddEditServiceRequest.find("input." + className).each(function () {
+            if ($(this).is(":checked")) {
+                result = $(this).attr("value");
+            }
+        });
+        return result;
+    }
+
+
+
+    function BindServiceRequests(isFromPageLoad, status) {
+        var tableBody = $("table#tblServiceRequestResults").find("tbody");
+        var rows = "";
+        if (!isFromPageLoad && status == "") {
+            alert("Please enter search criteria!!");
+            return false;
+        }
+        else {
+            if (status == "") { status = "0"; }
+            $.ajax({
+                async: false,
+                url: '@Url.Action("SearchServiceRequest", "ServiceRequest")',
+                type: 'Post',
+                data: JSON.stringify({ status: status }),
+                dataType: 'json',
+                contentType: 'application/json',
+                error: function (xhr) {
+                    alert('Error: ' + xhr.statusText);
+                },
+                success: function (result) {
+                    //Now Process the data
+                    tableBody.html();
+                    if (result.length == 0) {
+                        alert("No records found for the selected criteria!!");
+                        tableBody.html("");
+                    }
+                    else {
+                        $(result).each(function (index) {
+                            var CurrentItem = this;
+                            debugger;
+                            rows = rows + "<tr>";
+                            rows = rows + "<td class='showAudit'><span id='lblRequestID'>" + CurrentItem.ServiceRequestID + "</span></td>";
+                            rows = rows + "<td class='showAudit'><span id='lblRequestedBy'>" + CurrentItem.LastModifiedBy + "</span><input type='hidden' value=" + CurrentItem.Priority + " id='hdnPriority'/></td>";
+                            rows = rows + "<td class='showAudit'><span id='lblRequestType'>" + CurrentItem.RequestType + "</span><input type='hidden' value=" + CurrentItem.Email + " id='hdnEmail'/></td>";
+                            rows = rows + "<td class='showAudit'><span id='lblComments'>" + CurrentItem.Comments + "</span><input type='hidden' value=" + CurrentItem.AdminComments + " id='hdnAdminComments'/></td>";
+                            rows = rows + "<td class='showAudit'><span id='lblStatus'>" + CurrentItem.RequestStatus + "</span></td>";
+                            rows = rows + "<td><a id='lnkServiceRequestEdit' class='linkEdit' value='" + CurrentItem.ID + "'><span class='fa-stack fa-sm '><i class='fa fa-edit fa-stack-1x '></i></span></a>";
+                            rows = rows + "</tr>";
+                        });
+                        tableBody.html("").html(rows);
+                    }
+                }
+            }).done(function (result) {
+                return false;
+            });
+        }
+    }
+
+    function BindServiceRequestAudit(requestID) {
+        var tableBody = $("table#tblServiceRquestAudit").find("tbody");
+        var rows = "";
+
+        $.ajax({
+            async: false,
+            url: '@Url.Action("GetServiceRequestAudit", "ServiceRequest")',
+            type: 'Post',
+            data: JSON.stringify({ serviceRequestID: requestID }),
+            dataType: 'json',
+            contentType: 'application/json',
+            error: function (xhr) {
+                alert('Error: ' + xhr.statusText);
+            },
+            success: function (result) {
+                //Now Process the data
+                tableBody.html();
+                if (result.length == 0) {
+                    alert("No records found for the selected criteria!!");
+                    tableBody.html("");
+                }
+                else {
+                    $(result).each(function (index) {
+                        var CurrentItem = this;
+                        debugger;
+                        rows = rows + "<tr>";
+                        rows = rows + "<td>" + CurrentItem.ServiceRequestID + "</td>";
+                        rows = rows + "<td>" + CurrentItem.Descrption + "</td>";
+                        rows = rows + "<td>" + getLocalDateFromJsonDate(CurrentItem.UpdatedDateTime) + "</td>";
+                        rows = rows + "<td>" + CurrentItem.UpdatedBy + "</td>";
+                        rows = rows + "</tr>";
+                    });
+                    tableBody.html("").html(rows);
+                    divServiceRquestAudit.modal('show');
+                }
+            }
+        }).done(function (result) {
+            return false;
+        });
+    }
+
+    function SetPopupTitle(popup, title, nav) {
+        popup.find("div.modal-title").html("<span style='font-weight: bolder;text-align: right;font-size: larger;'>" + title + "</span>" + nav);
+    }
+
+</script>

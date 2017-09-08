@@ -1,0 +1,381 @@
+﻿@model Reports.Services.Models.RouteMaster.SubRouteMaster
+<!-- Modal Contents -->
+<style>
+    .funkyradio div {
+        /*clear: both;*/
+        overflow: hidden;
+    }
+
+    .funkyradio label {
+        width: 82%;
+        border-radius: 3px;
+        border: 1px solid #D1D3D4;
+        font-weight: normal;
+    }
+
+    .funkyradio input[type="radio"]:empty,
+    .funkyradio input[type="checkbox"]:empty {
+        display: none;
+    }
+
+        .funkyradio input[type="radio"]:empty ~ label,
+        .funkyradio input[type="checkbox"]:empty ~ label {
+            position: relative;
+            line-height: 2.0em;
+            text-indent: 3.25em;
+            /*margin-top: 2em;*/
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+            .funkyradio input[type="radio"]:empty ~ label:before,
+            .funkyradio input[type="checkbox"]:empty ~ label:before {
+                position: absolute;
+                display: block;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                content: '';
+                width: 2.5em;
+                background: #D1D3D4;
+                border-radius: 3px 0 0 3px;
+            }
+
+    .funkyradio input[type="radio"]:hover:not(:checked) ~ label,
+    .funkyradio input[type="checkbox"]:hover:not(:checked) ~ label {
+        color: #888;
+    }
+
+        .funkyradio input[type="radio"]:hover:not(:checked) ~ label:before,
+        .funkyradio input[type="checkbox"]:hover:not(:checked) ~ label:before {
+            content: '\2714';
+            text-indent: .9em;
+            color: #C2C2C2;
+        }
+
+    .funkyradio input[type="radio"]:checked ~ label,
+    .funkyradio input[type="checkbox"]:checked ~ label {
+        color: #777;
+    }
+
+        .funkyradio input[type="radio"]:checked ~ label:before,
+        .funkyradio input[type="checkbox"]:checked ~ label:before {
+            content: '\2714';
+            text-indent: .9em;
+            color: #333;
+            background-color: #ccc;
+        }
+
+    .funkyradio input[type="radio"]:focus ~ label:before,
+    .funkyradio input[type="checkbox"]:focus ~ label:before {
+        box-shadow: 0 0 0 3px #999;
+    }
+
+    .funkyradio-info input[type="radio"]:checked ~ label:before,
+    .funkyradio-info input[type="checkbox"]:checked ~ label:before {
+        color: #fff;
+        background-color: #5bc0de;
+    }
+
+    #select2-ddlFromStage-container {
+        background: greenyellow;
+    }
+
+    #select2-ddlToStage-container {
+        background: pink;
+    }
+</style>
+<div id="divAddEditSubRoute" class="modal fade ">
+    <!-- class modal and fade -->
+
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header modal-header-info">
+                <!-- modal header -->
+                <button type="button" class="close"
+                        data-dismiss="modal" aria-hidden="true">
+                    ×
+                </button>
+                <div class="modal-title">AddEdit Sub Route</div>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group" style="margin-bottom: 5px;">
+                                    <div class="input-group input-group-sm" style="width: 82%;">
+                                        <div class="input-group-addon">Main Route Number</div>
+                                        @Html.LabelFor(m => m.MainRouteNumber, new { id = "lblMainRouteNumber", @class = "form-control" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group" style="margin-bottom: 5px;">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">Sub Route Number</div>
+                                        @Html.TextBoxFor(m => m.SubRouteNumber, new { id = "txtSubRouteNumber", @class = "form-control", placeholder = "SubRoute Number", maxlength = "4", style = "width: 77%;" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group" style="margin-bottom: 5px;">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">From Stage<font style="color:red">*</font></div>
+                                        @Html.DropDownList("From Stage", Model.Stages, new { id = "ddlFromStage", @class = "form-control select2", placeholder = "From Stage", required = "true", style = "width:100%;" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group" style="margin-bottom: 5px;">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">Via Stage</div>
+                                        @Html.TextBoxFor(m => m.ViaStage, new { id = "txtViaStage", @class = "form-control", placeholder = "Via Stage", maxlength = "50", style = "width: 77%;" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group" style="margin-bottom: 5px;">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">To Stage<font style="color:red">*</font></div>
+                                        @Html.DropDownList("To Stage", Model.Stages, new { id = "ddlToStage", @class = "form-control select2", placeholder = "To Stage", required = "true", style = "width:100%;" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group" style="margin-bottom: 5px;">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">Sub Route Name</div>
+                                        @Html.TextBoxFor(m => m.SubRouteName, new { id = "txtSubRouteName", @class = "form-control", placeholder = "Route Name", maxlength = "50", @readonly = "false", style = "width: 77%;" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group" style="margin-bottom: 5px;">
+                                    <div class="input-group input-group-sm" style="width: 82%;">
+                                        <div class="input-group-addon">Direction</div>
+                                        @Html.LabelFor(m => m.Direction, new { id = "lblDirection", @class = "form-control" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group" style="margin-bottom: 5px;">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">Scheduled Distance</div>
+                                        @Html.TextBoxFor(m => m.ScheduledDistance, new { id = "txtScheduledDistance", @class = "form-control", placeholder = "Scheduled Distance", maxlength = "50", Numeric = "true", style = "width: 77%;" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group" style="margin-bottom: 5px;">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">Dot Distance</div>
+                                        @Html.TextBoxFor(m => m.DOTDistance, new { id = "txtDOTDistance", @class = "form-control", placeholder = "DOT Distance", maxlength = "50", Numeric = "true", style = "width: 77%;" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group" style="margin-bottom: 5px;">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">DOT Number</div>
+                                        @Html.TextBoxFor(m => m.DOTNumber, new { id = "txtDOTNumber", @class = "form-control", placeholder = "DOT Number", maxlength = "50", style = "width: 77%;" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="padding-bottom: 10px;">
+                            <div class="col-md-12">
+                                <div class="funkyradio">
+                                    <div class="col-md-5" style="padding-left:0px;">
+                                        <div class="funkyradio-info">
+                                            <input type="radio" name="radio" id="chkPosition" value="1" />
+                                            <label for="chkPosition">Trip Type: Position</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="funkyradio-info">
+                                            <input type="radio" name="radio" id="chkRevenue" value="0" />
+                                            <label for="chkRevenue">Trip Type: Revenue</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group" style="margin-bottom: 5px;">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">Contract</div>
+                                        @Html.DropDownList("Contract", Model.Contracts, new { id = "ddlContract", @class = "form-control select2", placeholder = "Contract", style = "width:100%;" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group" style="margin-bottom: 5px;">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">Destination Blind</div>
+                                        @Html.TextBoxFor(m => m.DestinationBlind, new { id = "txtDestinationBlind", @class = "form-control", placeholder = "Destination Blind", maxlength = "50", style = "width: 77%;", disabled = true })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <input type='hidden' value='" + stages + "' id='hdnMainRoute' />
+                        <p style='text-align:center;'><b>Main Route Stages</b></p>
+                        <div id="divMainRouteStages" style="height:450px;overflow:auto">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="row text-center">
+                            <div class="col-md-12">
+                                <input type="hidden" id="hdnSubRouteNumber" value="0" />
+                                <input type="hidden" id="hdnRouteNumber" value="0" />
+                                <input type="hidden" id="hdnModelTitle" value="" />
+                                <button type="submit" class="btn btn-info" id="btnSaveSubRoute"><i class="fa fa-1x fa-save"></i>&nbsp;Save</button>&nbsp;&nbsp;&nbsp;&nbsp;
+                                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- / .modal-content -->
+    </div> <!-- / .modal-dialog -->
+</div>
+<!-- / .modal -->
+<script>
+
+    $(document).ready(function () {
+        SaveSubRoute();
+        BindDirection();
+        BindRouteName();
+    });
+
+    function BindDirection() {
+        $("select#ddlFromStage").change(function () { SetDirectionValue(); LoadMainRouteStages(); });
+        $("select#ddlToStage").change(function () { SetDirectionValue(); LoadMainRouteStages(); });
+    }
+
+    function BindRouteName() {
+        $("select#ddlFromStage").change(function () { SetRouteNameValue(); });
+        $("select#ddlToStage").change(function () { SetRouteNameValue(); });
+        $("input#txtViaStage").focusout(function () { SetRouteNameValue(); });
+    }
+
+    function SetDirectionValue() {
+        if (parseInt($("select#ddlFromStage").val()) > parseInt($("select#ddlToStage").val())) {
+            $("#lblDirection").html("IN");
+        }
+        else { $("#lblDirection").html("OUT"); }
+    }
+
+    function SetRouteNameValue() {
+        var startStageVal = $("select#ddlFromStage").find("option:selected").text();
+        var toStageVal = $("select#ddlToStage").find("option:selected").text()
+        var viaStage = $("input#txtViaStage").val();
+        var startStage = "";
+        var toStage = "";
+        startStage = startStageVal.substring(startStageVal.indexOf("(") + 1, startStageVal.length - 1);
+        toStage = toStageVal.substring(toStageVal.indexOf("(") + 1, toStageVal.length - 1);
+        var appendText = startStage + " to " + toStage;
+        if (viaStage != "") appendText = appendText + " Via " + viaStage;
+        $("input#txtSubRouteName").val(appendText);
+    }
+
+    function DeleteSubRoute(subRouteNumber, routeNumber) {
+        $.ajax({
+            async: false,
+            url: '@Url.Action("DeleteSubRoute", "RouteMaster")',
+            type: 'Post',
+            data: JSON.stringify({ routeNumber: routeNumber, subRouteNumber: subRouteNumber }),
+            dataType: 'json',
+            contentType: 'application/json',
+            error: function (xhr) {
+                alert('Error: ' + xhr.statusText);
+            },
+            success: function (result) {
+                //Now Process the data
+                alert(result);
+                $("button#btnSearch").trigger("click");
+            }
+        }).done(function (result) {
+            return false;
+        });
+    }
+
+    function SaveSubRoute() {
+        $("button#btnSaveSubRoute").click(function () {
+            if (CheckMandatoryFieldsInBlock(divAddEditSubRoute, "") && CheckNumericFields(divAddEditSubRoute, "")) {
+                var MainRouteNumber = divAddEditSubRoute.find("#lblMainRouteNumber").html();
+                var SubRouteNumber = divAddEditSubRoute.find("input#txtSubRouteNumber").val();
+                var StartStage = divAddEditSubRoute.find("select#ddlFromStage").val();
+                var EndStage = divAddEditSubRoute.find("select#ddlToStage").val();
+                var SubRouteName = divAddEditSubRoute.find("input#txtSubRouteName").val();
+                var Direction = divAddEditSubRoute.find("#lblDirection").html();
+                var ScheduledDistance = divAddEditSubRoute.find("input#txtScheduledDistance").val();
+                var DOTDistance = divAddEditSubRoute.find("input#txtDOTDistance").val();
+                var DOTNumber = divAddEditSubRoute.find("input#txtDOTNumber").val();
+                var DestinationBlind = divAddEditSubRoute.find("input#txtDestinationBlind").val();
+                var Contract = divAddEditSubRoute.find("select#ddlContract").find("option:selected").text();
+                var IsPosition = divAddEditSubRoute.find("input#chkPosition").prop("checked");
+
+                //TODO: start from here concatenation
+                $.ajax({
+                    async: false,
+                    url: '@Url.Action("InsertOrUpdateSubRoute", "RouteMaster")',
+                    type: 'Post',
+                    data: JSON.stringify({
+                        MainRouteNumber: MainRouteNumber, SubRouteNumber: SubRouteNumber, StartStage: StartStage, EndStage: EndStage, SubRouteName: SubRouteName,
+                        Direction: Direction, ScheduledDistance: ScheduledDistance, DOTDistance: DOTDistance, DOTNumber: DOTNumber, DestinationBlind: DestinationBlind,
+                        Contract: Contract, IsPosition: IsPosition
+                    }),
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    error: function (xhr) {
+                        alert('Error: ' + xhr.statusText);
+                    },
+                    success: function (result) {
+                        //Now Process the data
+                        if (result == 1) {
+                            divAddEditSubRoute.modal("hide");
+                            alert("Sub Route Saved Successfully!!");
+                            GetSubRoutesForRoutes(MainRouteNumber);
+                        }
+                        else if (result == -1) {
+                            alert("There is already a sub route with start and end stage!!");
+                        }
+                    }
+                }).done(function (result) {
+                    return false;
+                });
+            }
+        });
+    }
+</script>
