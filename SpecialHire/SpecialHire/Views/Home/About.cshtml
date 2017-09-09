@@ -1,0 +1,91 @@
+﻿
+@{
+    ViewBag.Title = "About";
+    ViewBag.IsNavigationEnabled = "Yes";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card card-default card-block">
+    <ul id="tabsJustified" class="nav nav-tabs nav-justified">
+        <li class="nav-item">
+            <a class="nav-link active" href="" data-target="#tab1" data-toggle="tab" aria-expanded="true">List</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="" data-target="#tab2" data-toggle="tab" aria-expanded="false">Profile</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="" data-target="#tab3" data-toggle="tab" aria-expanded="false">More</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active" href="" data-target="#tab4" data-toggle="tab" aria-expanded="true">List</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="" data-target="#tab5" data-toggle="tab" aria-expanded="false">Profile</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="" data-target="#tab6" data-toggle="tab" aria-expanded="false">More</a>
+        </li>
+    </ul>
+    <!--/tabs-->
+    <br>
+    <div id="tabsJustifiedContent" class="tab-content">
+        <div class="tab-pane fade active in" id="tab1" aria-expanded="true">
+            <div class="list-group">
+                <a href="" class="list-group-item"><span class="pull-right label label-success">51</span> Home Link</a>
+                <a href="" class="list-group-item"><span class="pull-right label label-success">8</span> Link 2</a>
+                <a href="" class="list-group-item"><span class="pull-right label label-success">23</span> Link 3</a>
+                <a href="" class="list-group-item text-muted">Link n..</a>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="tab2" aria-expanded="false">
+            <div class="row">
+                <div class="col-sm-7">
+                    <h4>Profile Section</h4>
+                    <p>Imagine creating this simple user profile inside a tab card.</p>
+                </div>
+                <div class="col-sm-5"><img src="//placehold.it/170" class="pull-right img-responsive img-rounded"></div>
+            </div>
+            <hr>
+            <a href="javascript:;" class="btn btn-info btn-block">Read More Profiles</a>
+            <div class="spacer5"></div>
+        </div>
+        <div class="tab-pane fade" id="tab3" aria-expanded="false">
+            <div class="list-group">
+                <a href="" class="list-group-item"><span class="pull-right label label-info label-pill">44</span> <code>.panel</code> is now <code>.card</code></a>
+                <a href="" class="list-group-item"><span class="pull-right label label-info label-pill">8</span> <code>.nav-justified</code> is deprecated</a>
+                <a href="" class="list-group-item"><span class="pull-right label label-info label-pill">23</span> <code>.badge</code> is now <code>.label-pill</code></a>
+                <a href="" class="list-group-item text-muted">Message n..</a>
+            </div>
+        </div>
+        <div class="tab-pane fade active in" id="tab4" aria-expanded="true">
+            <div class="list-group">
+                <a href="" class="list-group-item"><span class="pull-right label label-success">51</span> Home Link</a>
+                <a href="" class="list-group-item"><span class="pull-right label label-success">8</span> Link 2</a>
+                <a href="" class="list-group-item"><span class="pull-right label label-success">23</span> Link 3</a>
+                <a href="" class="list-group-item text-muted">Link n..</a>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="tab5" aria-expanded="false">
+            <div class="row">
+                <div class="col-sm-7">
+                    <h4>Profile Section</h4>
+                    <p>Imagine creating this simple user profile inside a tab card.</p>
+                </div>
+                <div class="col-sm-5"><img src="//placehold.it/170" class="pull-right img-responsive img-rounded"></div>
+            </div>
+            <hr>
+            <a href="javascript:;" class="btn btn-info btn-block">Read More Profiles</a>
+            <div class="spacer5"></div>
+        </div>
+        <div class="tab-pane fade" id="tab6" aria-expanded="false">
+            <div class="list-group">
+                <a href="" class="list-group-item"><span class="pull-right label label-info label-pill">44</span> <code>.panel</code> is now <code>.card</code></a>
+                <a href="" class="list-group-item"><span class="pull-right label label-info label-pill">8</span> <code>.nav-justified</code> is deprecated</a>
+                <a href="" class="list-group-item"><span class="pull-right label label-info label-pill">23</span> <code>.badge</code> is now <code>.label-pill</code></a>
+                <a href="" class="list-group-item text-muted">Message n..</a>
+            </div>
+        </div>
+    </div>
+    <!--/tabs content-->
+</div>
+

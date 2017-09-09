@@ -1,0 +1,1194 @@
+﻿@model SpecialHire.Models.BookingQuoteInfoModal
+@{
+    ViewBag.Title = "BookingQuote";
+    ViewBag.IsNavigationEnabled = "Yes";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .nav-tabs.nav-justified > .active > a, .nav-tabs.nav-justified > .active > a:hover, .nav-tabs.nav-justified > .active > a:focus {
+        border-bottom-color: #fff;
+        background-color: #5bc0de;
+        border-color: #269abc;
+        color: white;
+    }
+
+    .nav-tabs.nav-justified > li > a {
+        border: 1px solid #ddd;
+    }
+
+    /*.modal-header-info {
+        color: #fff;
+        padding: 9px 15px;
+        border-bottom: 1px solid #eee;
+        background-color: #5bc0de;
+        -webkit-border-top-left-radius: 5px;
+        -webkit-border-top-right-radius: 5px;
+        -moz-border-radius-topleft: 5px;
+        -moz-border-radius-topright: 5px;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+    }*/
+</style>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12">
+            <h2>
+                Quotation
+                <small> Create Quotation</small>
+            </h2>
+            @*<ol class="breadcrumb">
+                    <li>
+                        @Html.ActionLink("Home", "Index", "Home")
+                    </li>
+                    <li class="active">BookingQuote</li>
+                </ol>*@
+        </div>
+    </div>
+    @using (Html.BeginForm("Index", "BookingQuote", FormMethod.Post, new { id = "frmBookingQuote" }))
+    {
+        <div class="panel-group">
+            <div class="panel panel-info">
+                <div class="panel-heading" style="background-color: #5bc0de;">
+                    <a data-toggle="collapse" href="#pnlSearch" style="color:white;text-decoration:none;">Search Quotation</a>
+                </div>
+                <div id="pnlSearch" class="panel-collapse collapse in">
+                    <div class="panel-body">
+                        <div class="row text-center">
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon" style="min-width: 90px;">Quotation ID</div>
+                                        <input type="text" class="form-control" placeholder="Quotation ID" id="txtQuotationID" />
+                                        @*@Html.TextBoxFor(m => m.CompanyName, new { id = "txtCompanyName", @class = "form-control", maxlength = "200" })*@
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">Name </div>
+                                        <input type="text" class="form-control" placeholder="Name" id="txtName" />
+                                        @*@Html.TextBoxFor(m => m.CompanyName, new { id = "txtCompanyName", @class = "form-control", maxlength = "200" })*@
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">Mobile Number</div>
+                                        @*@Html.TextBoxFor(m => m.GlobalParent, new { id = "txtGlobalParent", rowid = "", @class = "form-control", maxlength = "200" })*@
+                                        <input type="text" class="form-control" placeholder="Mobile Number" id="txtPhoneNumber" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <button type="button" class="btn btn-info" id="btnSearch">Search&nbsp;<i class="fa fa-1x fa-search"></i></button> &nbsp; &nbsp; &nbsp; &nbsp;
+                                        <button type="button" class="btn btn-danger" id="btnClear">Clear</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card card-default card-block">
+            <ul id="tabsJustified" class="nav nav-tabs nav-justified">
+                <li class="nav-item active" id="liClientInformation">
+                    <a class="nav-link" href="" data-target="#tabClientInformation" data-toggle="tab" aria-expanded="true">Client Information</a>
+                </li>
+                <li class="nav-item" id="liTripInformation">
+                    <a class="nav-link" href="" data-target="#tabTripInformation" data-toggle="tab" aria-expanded="false">Trip Information</a>
+                </li>
+                <li class="nav-item" id="liEventInformation">
+                    <a class="nav-link" href="" data-target="#tabEventInformation" data-toggle="tab" aria-expanded="false">Event Information</a>
+                </li>
+                <li class="nav-item" id="liVehicleType">
+                    <a class="nav-link active" href="" data-target="#tabVehicleType" data-toggle="tab" aria-expanded="false">Vehicle Type</a>
+                </li>
+                <li class="nav-item" id="liQuotationSummary">
+                    <a class="nav-link" href="" data-target="#tabQuotationSummary" data-toggle="tab" aria-expanded="false">Quotation Summary</a>
+                </li>
+                <li class="nav-item" id="liBookingInformation" style="display:none">
+                    <a class="nav-link" href="" data-target="#tabBookingInformation" data-toggle="tab" aria-expanded="false">Booking Info</a>
+                </li>
+            </ul>
+            <!--/tabs-->
+            <br>
+            <div id="tabsJustifiedContent" class="tab-content">
+                <div class="tab-pane fade active in" id="tabClientInformation" aria-expanded="true">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">Title</div>
+                                        @Html.DropDownListFor(m => m.Title, Model.Titles, new { id = "ddlTitle", @class = "form-control select2", placeholder = "Title" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">Company Name</div>
+                                        @Html.TextBoxFor(m => m.CompanyName, new { id = "txtCompanyName", @class = "form-control", maxlength = "200", placeholder = "Company Name" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">First Name<font style="color:red">*</font></div>
+                                        @Html.TextBoxFor(m => m.FirstName, new { id = "txtFirstName", @class = "form-control", maxlength = "200", required = "true", placeholder = "First Name" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">Address</div>
+                                        @Html.TextBoxFor(m => m.Address, new { id = "txtAddress", @class = "form-control", maxlength = "200", placeholder = "Address" })
+                                    </div>
+                                </div>
+                            </div>   
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">Surname</div>
+                                        @Html.TextBoxFor(m => m.SurName, new { id = "txtSurName", @class = "form-control", maxlength = "200", placeholder = "Surname" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">Postal Code</div>
+                                        @Html.TextBoxFor(m => m.PostalCode, new { id = "txtPostalCode", @class = "form-control", maxlength = "200", placeholder = "Postal Code" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">Telephone Number</div>
+                                        @Html.TextBoxFor(m => m.TelephoneNumber, new { id = "txtTelephoneNumber", @class = "form-control", maxlength = "200", placeholder = "Telephone Number" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">Company Tel No.</div>
+                                        @Html.TextBoxFor(m => m.CompTelephoneNumber, new { id = "txtCompTelephoneNumber", @class = "form-control", maxlength = "200", placeholder = "Company Tel No." })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        @Html.TextBoxFor(m => m.CompTelephoneExtension, new { id = "txtCompTelephoneExtension", @class = "form-control", maxlength = "200", placeholder = "Ext-No" })
+                                    </div>
+                                </div>
+                            </div>              
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">Cell Number <font style="color:red">*</font></div>
+                                        @Html.TextBoxFor(m => m.CellNumber, new { id = "txtCellNumber", @class = "form-control", maxlength = "50", required = "true", placeholder = "Cell Number" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">Fax Number</div>
+                                        @Html.TextBoxFor(m => m.FaxNumber, new { id = "txtFaxNumber", @class = "form-control", maxlength = "200", placeholder = "Fax Number" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">Email</div>
+                                        @Html.TextBoxFor(m => m.EmailAddress, new { id = "txtEmailAddress", @class = "form-control", maxlength = "200",  placeholder = "Email" })
+                                    </div>
+                                </div>
+                            </div>                 
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        @Html.HiddenFor(m => m.ID, new { id = "hdnQuotationID" })
+                                        @Html.HiddenFor(m => m.ModifiedBy, new { id = "hdnModifiedBy" })
+                                        @Html.HiddenFor(m => m.ModifiedOn, new { id = "hdnModifiedOn" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row text-center">
+                            <div class="col-md-12">
+                                <button type="button" class="btn btn-info" id="btnNext" onclick="MoveNext('tabClientInformation', 'liClientInformation', 'tabTripInformation', 'liTripInformation');">Next&nbsp;<i class="fa fa-1x fa-hand-o-right"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <br /><br /><br /><br />
+                </div>
+                <div class="tab-pane fade" id="tabTripInformation" aria-expanded="false">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">Return Journey</div>
+                                        @*@Html.CheckBoxFor(m => m.IsReturnJourney, new { id = "chkReturnJourney", @class = "form-control" })*@
+                                        @Html.RadioButtonFor(m => m.IsReturnJourney, true, new { id = "chkReturnJourney", @class = "form-control" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">Single Journey</div>
+                                        @*@Html.CheckBoxFor(m => m.IsReturnJourney, new { id = "chkReturnJourney", @class = "form-control" })*@
+                                        @Html.RadioButtonFor(m => m.IsSingleJourney, true, new { id = "chkSingleJourney", @class = "form-control" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        @*<div class="input-group-addon">Single Journey</div>
+                                            @Html.CheckBoxFor(m => m.IsSingleJourney, new { id = "chkSingleJourney", @class = "form-control" })*@
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">Pick Up Date<font style="color:red">*</font></div>
+                                        @Html.TextBoxFor(m => m.PickUpDate, new { id = "txtPickUpDate", @class = "form-control date-control", required = "true",placeholder = "Pick Up Date" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">Pick Up Time<font style="color:red">*</font></div>
+                                        @Html.DropDownListFor(m => m.PickUpTime, Model.Time, new { id = "ddlPickUpTime", @class = "form-control select2", required = "true", placeholder = "Pick Up Time" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">Return Date<font style="color:red">*</font></div>
+                                        @Html.TextBoxFor(m => m.ReturnDate, new { id = "txtReturnDate", @class = "form-control date-control", required = "true", placeholder = "Return Date" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">Return Time<font style="color:red">*</font></div>
+                                        @Html.DropDownListFor(m => m.ReturnTime, Model.Time, new { id = "ddlReturnTime", @class = "form-control select2", required = "true", placeholder = "Return Time" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <div class="input-group input-group-sm">
+                                                <div class="input-group-addon">From Location<font style="color:red">*</font></div>
+                                                @Html.TextBoxFor(m => m.FromLocation, new { id = "txtFromLocation", @class = "form-control", required = "true", placeholder = "From Location" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <div class="input-group input-group-sm">
+                                                <div class="input-group-addon">To Location<font style="color:red">*</font></div>
+                                                @Html.TextBoxFor(m => m.ToLocation, new { id = "txtToLocation", @class = "form-control", required = "true", placeholder = "To Location" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-9">
+                                        <div class="form-group">
+                                            <div class="input-group input-group-sm">
+                                                <div class="input-group-addon">Distance<font style="color:red">*</font></div>
+                                                @Html.TextBoxFor(m => m.Distance, new { id = "txtDistance", @class = "form-control", required = "true", placeholder = "Distance", Numeric = "true" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <button type="button" class="btn btn-info" id="btnGetDistance"><i class="fa fa-road">&nbsp;Get Distance</i></button>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <div class="input-group input-group-sm">
+                                                <div class="input-group-addon">Passengers<font style="color:red">*</font></div>
+                                                @Html.TextBoxFor(m => m.Passengers, new { id = "txtPassengers", @class = "form-control", required = "true", placeholder = "Passengers", Numeric = "true" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <div id="divMap" style="height:160px;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row text-center">
+                            <div class="col-md-12">
+                                <button type="button" class="btn btn-danger" id="btnPrevious" onclick="MovePrevious('tabClientInformation', 'liClientInformation', 'tabTripInformation', 'liTripInformation');"><i class="fa fa-1x fa-hand-o-left"></i>&nbsp;Previous</button>&nbsp;&nbsp;&nbsp;&nbsp;
+                                <button type="button" class="btn btn-info" id="btnNext" onclick="MoveNext('tabTripInformation', 'liTripInformation', 'tabEventInformation', 'liEventInformation');">Next&nbsp;<i class="fa fa-1x fa-hand-o-right"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <br /><br /><br /><br />
+                </div>
+                <div class="tab-pane fade" id="tabEventInformation" aria-expanded="false">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">Client Name</div>
+                                        @Html.TextBoxFor(m => m.FirstName, new { id = "txtReadFirstName", @class = "form-control", maxlength = "200", placeholder = "First Name", disabled = "true" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">Pick Up Date</div>
+                                        @Html.TextBoxFor(m => m.PickUpDate, new { id = "txtReadPickUpDate", @class = "form-control", placeholder = "Pick Up Date", disabled = "true" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">Passengers</div>
+                                        @Html.TextBoxFor(m => m.Passengers, new { id = "txtReadPassengers", @class = "form-control", placeholder = "Passengers", disabled = "true" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">Return Date</div>
+                                        @Html.TextBoxFor(m => m.ReturnDate, new { id = "txtReadReturnDate", @class = "form-control", placeholder = "Return Date", disabled = "true" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">Event Description<font style="color:red">*</font></div>
+                                        @Html.DropDownListFor(m => m.EventID, Model.Events, new { id = "ddlEvent", @class = "form-control select2", required = "true", placeholder = "Event Description" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">Payment Terms<font style="color:red">*</font></div>
+                                        @Html.DropDownListFor(m => m.PaymentTermsID, Model.PaymentTerms, new { id = "ddlPaymentTerms", @class = "form-control select2", required = "true", placeholder = "Payment Terms" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">Extra Information<font style="color:red">*</font></div>
+                                        @Html.TextAreaFor(m => m.ExtraInformation, new { id = "txtExtraInformation", @class = "form-control", maxlength = "200", placeholder = "Extra Information" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">Quote Valid Till</div>
+                                        @Html.TextBoxFor(m => m.QuoteValidTill, new { id = "txtQuoteValidTill", @class = "form-control date-control", maxlength = "50", disabled = "true", placeholder = "Default 30 days" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon" style="min-width:65px;">Enable</div>
+                                        @Html.CheckBoxFor(m => m.IsQuoteValidTillAdded, new { id = "chkAddQuoteValidTill", @class = "form-control" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row text-center">
+                            <div class="col-md-12">
+                                <button type="button" class="btn btn-danger" id="btnPrevious" onclick="MovePrevious('tabTripInformation', 'liTripInformation', 'tabEventInformation', 'liEventInformation');"><i class="fa fa-1x fa-hand-o-left"></i>&nbsp;Previous</button>&nbsp;&nbsp;&nbsp;&nbsp;
+                                <button type="button" class="btn btn-info" id="btnNext" onclick="MoveNext('tabEventInformation', 'liEventInformation', 'tabVehicleType', 'liVehicleType');">Next&nbsp;<i class="fa fa-1x fa-hand-o-right"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <br /><br /><br /><br />
+                </div>
+                <div class="tab-pane fade" id="tabVehicleType" aria-expanded="false">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">Client Name</div>
+                                        @Html.TextBoxFor(m => m.FirstName, new { id = "txtReadFirstName", @class = "form-control", maxlength = "200", placeholder = "First Name", disabled = "true" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">Pick Up Date</div>
+                                        @Html.TextBoxFor(m => m.PickUpDate, new { id = "txtReadPickUpDate", @class = "form-control", placeholder = "Pick Up Date", disabled = "true" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">Passengers</div>
+                                        @Html.TextBoxFor(m => m.Passengers, new { id = "txtReadPassengers", @class = "form-control", placeholder = "Passengers", disabled = "true" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">Return Date</div>
+                                        @Html.TextBoxFor(m => m.ReturnDate, new { id = "txtReadReturnDate", @class = "form-control", placeholder = "Return Date", disabled = "true" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">Quotation Value<font style="color:red">*</font></div>
+                                        @Html.TextBoxFor(m => m.QuotationValue, new { id = "txtQuotationValue", @class = "form-control", placeholder = "Quotation Value", required = "true" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">Trailer Required<font style="color:red">*</font></div>
+                                        @Html.CheckBoxFor(m => m.IsTrailerRequired, new { id = "chkTrailerRequired", @class = "form-control" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            @Html.Partial("_VehicleDetails", Model.BusTypes)
+                        </div>
+                        <div class="row" id="divTrailerInformation" style="display:none">
+                            @Html.Partial("_TrailerDetails", Model.TrailerTypes)
+                        </div>
+                        <div class="row text-center">
+                            <div class="col-md-12">
+                                <button type="button" class="btn btn-danger" id="btnPrevious" onclick="MovePrevious('tabEventInformation', 'liEventInformation', 'tabVehicleType', 'liVehicleType');"><i class="fa fa-1x fa-hand-o-left"></i>&nbsp;Previous</button>&nbsp;&nbsp;&nbsp;&nbsp;
+                                <button type="button" class="btn btn-info" id="btnNext" onclick="MoveNext('tabVehicleType', 'liVehicleType', 'tabQuotationSummary', 'liQuotationSummary'); PreviewQuotation();">Next&nbsp;<i class="fa fa-1x fa-hand-o-right"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <br /><br /><br /><br />
+                </div>
+                <div class="tab-pane fade" id="tabQuotationSummary" aria-expanded="false">
+                    <div class="container">
+                        <div class="row" id="divQuotationSummary" style="display:none">
+                            @Html.Partial("_ViewQuotation")
+                        </div>
+                        <div class="row text-center">
+                            <div class="col-md-12">
+                                <button type="button" class="btn btn-danger" id="btnPrevious" onclick="MovePrevious('tabVehicleType', 'liVehicleType', 'tabQuotationSummary', 'liQuotationSummary');"><i class="fa fa-1x fa-hand-o-left"></i>&nbsp;Previous</button>&nbsp;&nbsp;&nbsp;&nbsp;
+                                <button type="button" class="btn btn-info" id="btnGenerateBookingQuote">Generate Quote</button>&nbsp;&nbsp;&nbsp;&nbsp;
+                                @if (Model.ID > 0)
+                                {
+                                    <button type="button" class="btn btn-info" id="btnNext" onclick="MoveNext('tabQuotationSummary', 'liQuotationSummary', 'tabBookingInformation', 'liBookingInformation');">Next&nbsp;<i class="fa fa-1x fa-hand-o-right"></i>Next</button>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <br /><br /><br /><br />
+                </div>
+                <div class="tab-pane fade" id="tabBookingInformation" aria-expanded="false" style="display:none">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">Order Number<font style="color:red">*</font></div>
+                                        @Html.TextBoxFor(m => m.BookingInfo.OrderNumber, new { id = "txtOrderNumber", @class = "form-control", maxlength = "200", placeholder = "Order Number" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">Payment Mode <font style="color:red">*</font></div>
+                                        @Html.DropDownListFor(m => m.BookingInfo.PaymentModeID, Model.PaymentModes, new { id = "ddlPaymentMode", @class = "form-control select2", required = "true", placeholder = "Payment Mode" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">Payment Ref No.</div>
+                                        @Html.TextBoxFor(m => m.BookingInfo.PaymentReferenceNumber, new { id = "txtPaymentReferenceNumber", @class = "form-control", maxlength = "200", placeholder = "Payment Reference Number" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">Amount Paid<font style="color:red">*</font></div>
+                                        @Html.TextBoxFor(m => m.BookingInfo.AmountPaid, new { id = "txtAmountPaid", @class = "form-control", maxlength = "200", placeholder = "Amount Paid", required = "true", Numeric = "true" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">Approved By Admin</div>
+                                        @Html.CheckBoxFor(m => m.BookingInfo.IsApprovedByAdmin, new { id = "chkApprovedByAdmin", @class = "form-control", required = "true", placeholder = "Approved By Admin" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">Comments</div>
+                                        @Html.TextAreaFor(m => m.BookingInfo.Comments, new { id = "txtComments", @class = "form-control", maxlength = "200", placeholder = "Comments" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">Send Email Confirmation</div>
+                                        @Html.CheckBoxFor(m => m.BookingInfo.IsConfirmationEnabled, new { id = "chkConfirmationEnabled", @class = "form-control" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                @Html.HiddenFor(m => m.BookingInfo.ID, new { id = "hdnBookingID" })
+                            </div>
+                        </div>
+                        <div class="row text-center">
+                            <div class="col-md-12">
+                                <button type="button" class="btn btn-danger" id="btnPrevious" onclick="MovePrevious('tabQuotationSummary', 'liQuotationSummary', 'tabBookingInformation', 'liBookingInformation');"><i class="fa fa-1x fa-hand-o-left"></i>&nbsp;Previous</button>&nbsp;&nbsp;&nbsp;&nbsp;
+                                <button type="button" class="btn btn-info" id="btnConfirmBooking">Confirm Booking</button>
+                            </div>
+                        </div>
+                    </div>
+                    <br /><br /><br /><br />
+                </div>
+            </div>
+            <!--/tabs content-->
+        </div>
+    }
+</div>
+@Html.Partial("_SearchResults")
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false&libraries=places"></script>
+@*<script type="text/javascript" src="~/js/BookingQuote.js"></script>*@
+<script type="text/javascript">
+
+    var frmQuotation = $("div#tabsJustifiedContent").children("div").not("div#tabBookingInformation");
+
+    $(document).ready(function () {
+        EnforceNumeric();
+        RemoveHighlightedCssOnFocus();
+        SearchBookingQuote();
+        GenerateBookingQuote();
+        GenerateBooking();
+        GetDistanceFromMaps();
+        CheckSingleOrReturnJourney();
+
+        $("input#chkTrailerRequired").change(function () {
+            EnableDisableTrailer($(this));
+        });
+
+        $(".nav-link").click(function () {
+            if ($(this).attr("data-target") == "#tabQuotationSummary")
+            { PreviewQuotation(); }
+            BindCopies();
+        });
+
+        $("input#chkAddQuoteValidTill").change(function () {
+            EnableDisableQuoteValidity($(this));
+        });
+
+        $("button#btnClear").click(function () { ClearUI(false);});
+    });
+
+
+    //Other function - Start
+    function EnableDisableQuoteValidity(checkBox)
+    {
+        if (checkBox.is(":checked")) {
+            $("input#txtQuoteValidTill").removeAttr("disabled");
+            $("input#txtQuoteValidTill").attr("required", "true");
+            $("input#txtQuoteValidTill").val("").attr("style", "");
+        } else {
+            $("input#txtQuoteValidTill").attr("disabled", "true");
+            $("input#txtQuoteValidTill").removeAttr("required");
+            $("input#txtQuoteValidTill").val("").attr("style", "");
+        }
+    }
+
+    function EnableDisableTrailer(checkBox) {
+        if (checkBox.is(":checked")) {
+            $("div#divTrailerInformation").css("display", "").find("select").attr("required", "true").attr("style", "");
+        } else {
+            $("div#divTrailerInformation").css("display", "none").find("select").removeAttr("required").attr("style", "");
+        }
+    }
+
+    function PreviewQuotation() {
+        var vehicleRow = "<tr><td style='border:1px solid grey'>##BusType##</td><td style='border:1px solid grey'>##Quantity##</td></tr>";
+        var trailerRow = "<tr><td style='border:1px solid grey'>##TrailerType##</td><td style='border:1px solid grey'>##Quantity##</td></tr>";
+        var bookingQuote = GetBookingQuoteFormValues();
+        $("#lblQuotationID").html(bookingQuote.ID);
+        $("#lblQuotationCreatedDate").html(bookingQuote.ModifiedOn);
+        $("#lblQuotationValidTill").html(bookingQuote.QuoteValidTill);
+        $("#lblFirstName").html(bookingQuote.FirstName);
+        $("#lblCompanyName").html(bookingQuote.CompanyName);
+        $("#lblTelephoneNumber").html(bookingQuote.TelephoneNumber);
+        $("#lblAddress").html(bookingQuote.Address);
+        $("#lblCellNumber").html(bookingQuote.CellNumber);
+        $("#lblPostalCode").html(bookingQuote.PostalCode);
+        $("#lblEmail").html(bookingQuote.EmailAddress);
+        $("#lblFaxNumber").html(bookingQuote.FaxNumber);
+        $("#lblCompTellPhoneNumber").html(bookingQuote.CompTelephoneNumber + "-" + bookingQuote.CompTelephoneExtension);
+        $("#lblDepartureDate").html(bookingQuote.PickUpDate);
+        $("#lblDepartureTime").html(bookingQuote.PickUpTime);
+        $("#lblFromLocation").html(bookingQuote.FromLocation);
+        $("#lblToLocation").html(bookingQuote.ToLocation);
+        $("#lblEventInformation").html(bookingQuote.ExtraInformation);
+        $("#lblNoOfPassengers").html(bookingQuote.Passengers);
+
+        var busTypes = $("table#tblVehicleDetails tr#trVehicleDetailsRow0").find("select#ddlBusType option");
+        var vehicles = bookingQuote.BookingVehicleInfo.sort();
+        var rows = "";
+        busTypes.each(function () {
+            var count = 0;
+            var item = $(this);
+            for (var j = 0; j < vehicles.length; j++) {
+                var itemInside = vehicles[j];
+                if (item.html() == itemInside.BusType) {
+                    count = count + 1;
+                }
+            }
+            if (count > 0) {
+                rows = rows + vehicleRow.replace("##BusType##", item.html()).replace("##Quantity##", count);
+            }
+        });
+
+        $("table#tblQuoteVehicleInformation tbody").html(rows);
+
+        if (bookingQuote.IsTrailerRequired) {
+            var trailerTypes = $("table#tblTrailerDetails tr#trTrailerDetailsRow0").find("select#ddlTrailerType option");
+            var trailers = bookingQuote.BookingTrailerInfo.sort();
+            var rows = "";
+            trailerTypes.each(function () {
+                var count = 0;
+                var item = $(this);
+                for (var i = 0; i < trailers.length; i++) {
+                    var itemInside = trailers[i];
+                    if (item.html() == itemInside.TrailerType) {
+                        count = count + 1;
+                    }
+                }
+                if (count > 0) {
+                    rows = rows + trailerRow.replace("##TrailerType##", item.html()).replace("##Quantity##", count);
+                }
+            });
+
+            $("table#tblQuoteTrailerInformation tbody").html(rows);
+        }
+        else {
+            $("#trQuoteTrailerInformationHeader").hide();
+            $("#trQuoteTrailerInformationData").hide();
+        }
+
+        $("#divQuotationSummary").css("display", "");
+    }
+
+
+    function GenerateBooking() {
+        $("button#btnConfirmBooking").click(function () {
+            if (CheckMandatoryFields("frmBookingQuote", "div")) {
+                if (parseInt($("#txtQuotationValue").val()) < 2500) {
+                    alert("Quotation value must be greater then 2500!!");
+                    return false;
+                }
+                $.ajax({
+                    async: false,
+                    url: '@Url.Action("GenerateBooking", "BookingQuote")',
+                    type: 'Post',
+                    data: JSON.stringify(GetBookingQuoteFormValues()),
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    error: function (xhr) {
+                        alert('Error: ' + xhr.statusText);
+                    },
+                    success: function (result) {
+                        //Now Process the data
+                        alert(result);
+                    }
+                }).done(function (result) {
+                    return false;
+                });
+            }
+        });
+    }
+
+    function SearchBookingQuote() {
+        $("button#btnSearch").click(function () {
+            var QuotationID = $("#txtQuotationID").val();
+            var PhoneNumber = $("#txtPhoneNumber").val();
+            var Name = $("#txtName").val();
+            var tableBody = $("table#tblSearchResults").find("tbody");
+            var rows = "";
+            if (QuotationID == "" && PhoneNumber == "" && Name == "") {
+                alert("Please enter search criteria!!");
+                $("#txtQuotationID").focus();
+                return false;
+            }
+            else {
+                $.ajax({
+                    async: false,
+                    url: '@Url.Action("SearchBookingQuotes", "BookingQuote")',
+                    type: 'Post',
+                    data: JSON.stringify({ QuotationID: QuotationID, PhoneNumber: PhoneNumber, Name: Name }),
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    error: function (xhr) {
+                        alert('Error: ' + xhr.statusText);
+                    },
+                    success: function (result) {
+                        //Now Process the data
+                        tableBody.html();
+                        if (result.length == 0) {
+                            alert("No records found for the selected criteria!!");
+                        }
+                        else {
+                            $(result).each(function (index) {
+                                var CurrentItem = this;
+                                rows = rows + "<tr><td><a id='lnkEditBookingQuote' href='javascript:void(0);' value=" + CurrentItem.ID + " style='text-decoration: none;cursor: pointer;'><span><i class='fa fa-pencil-square-o'></i> </span>Edit</a></td>";
+                                rows = rows + "<td>" + CurrentItem.CompanyName + "</td>"
+                                rows = rows + "<td>" + CurrentItem.FirstName + "</td>"
+                                rows = rows + "<td>" + CurrentItem.CellNumber + "</td>"
+                                rows = rows + "<td>" + CurrentItem.FromLocation + "</td>"
+                                rows = rows + "<td>" + CurrentItem.ToLocation + "</td>"
+                                rows = rows + "<td>" + CurrentItem.ID + "</td></tr>";
+                            });
+
+                            tableBody.html("").html(rows);
+
+                            $('div#searchResults').modal('show');
+                        }
+                    }
+                }).done(function (result) {
+                    return false;
+                });
+            }
+        });
+    }
+
+    function GenerateBookingQuote() {
+        $("button#btnGenerateBookingQuote").click(function () {
+            var resp = "";
+            if (CheckMandatoryFieldsInBlock(frmQuotation, "div")) {
+                if (parseInt($("#txtQuotationValue").val()) < 2500) {
+                    alert("Quotation value must be greater then 2500!!");
+                    return false;
+                }
+                $.ajax({
+                    async: false,
+                    url: '@Url.Action("GenerateBookingQuote", "BookingQuote")',
+                    type: 'Post',
+                    data: JSON.stringify(GetBookingQuoteFormValues()),
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    error: function (xhr) {
+                        alert('Error: ' + xhr.statusText);
+                    },
+                    success: function (result) {
+                        //Now Process the data
+                        resp = result;
+                        alert(result);
+                    }
+                }).done(function (result) {
+                    if (resp != "")
+                    { ClearUI(false); }
+                    return false;
+                });
+
+            }
+        });
+
+    }
+
+    function GetDistanceFromMaps()
+    { $("#btnGetDistance").click(function () { GetRoute(); }); }
+
+    function MoveToDefaultTab() {
+        $("ul#tabsJustified li").removeClass("active in").attr("aria-expanded", "false");
+        $("div#tabsJustifiedContent").find("div.tab-pane").removeClass("active");
+        $("#tabClientInformation").addClass("active in").attr("aria-expanded", "true");
+        $("#liClientInformation").addClass("active");
+    }
+
+    function MoveNext(curTab, curLi, nextTab, nextLi) {
+        $("#" + curTab).removeClass("active in").attr("aria-expanded", "false");
+        $("#" + curLi).removeClass("active");
+        $("#" + nextTab).addClass("active in").attr("aria-expanded", "true");
+        $("#" + nextLi).addClass("active");
+        BindCopies();
+    }
+
+    function MovePrevious(prevTab, prevLi, curTab, curLi) {
+        $("#" + curTab).removeClass("active in").attr("aria-expanded", "false");
+        $("#" + curLi).removeClass("active");
+        $("#" + prevTab).addClass("active in").attr("aria-expanded", "true");
+        $("#" + prevLi).addClass("active");
+    }
+
+    function BindCopies() {
+        var FirstName = $("#txtFirstName").val(); $("input[ID$='FirstName']").val(FirstName);
+        var Passengers = $("#txtPassengers").val(); $("input[ID$='Passengers']").val(Passengers);
+        var PickUpDate = $("#txtPickUpDate").val(); $("input[ID$='PickUpDate']").val(PickUpDate);
+        var ReturnDate = $("#txtReturnDate").val(); $("input[ID$='ReturnDate']").val(ReturnDate);
+    }
+
+    function CheckSingleOrReturnJourney() {
+        $("#chkReturnJourney").attr('checked', true);
+        $("div#tabTripInformation input[type='radio']").click(function () {
+            if ($(this).attr("id") == "chkReturnJourney") {
+                if ($(this).is(":checked")) {
+                    $("#chkSingleJourney").attr('checked', false);
+                }
+                else if ($(this).is(":not(:checked)")) {
+                    $("#chkSingleJourney").attr('checked', true);
+                }
+            }
+            if ($(this).attr("id") == "chkSingleJourney") {
+                if ($(this).is(":checked")) {
+                    $("#chkReturnJourney").attr('checked', false);
+                }
+                else if ($(this).is(":not(:checked)")) {
+                    $("#chkReturnJourney").attr('checked', true);
+                }
+            }
+        });
+    }
+
+    function CheckTrailerRequired() {
+        var divTrailerInformation = "";
+        $("div#tabTripInformation input[type='checkbox']").click(function () {
+            if ($(this).is(":checked")) {
+                $("#chkSingleJourney").attr('checked', false);
+            }
+            else if ($(this).is(":not(:checked)")) {
+                $("#chkSingleJourney").attr('checked', true);
+            }
+        });
+    }
+
+    function ClearUI(enableBookingInfo) {
+        ClearFormValues();
+        $("#chkReturnJourney").prop('checked', true);
+        EnableDisableQuoteValidity($("#chkAddQuoteValidTill"));
+        EnableDisableTrailer($("#chkTrailerRequired"));
+        ClearVehicleDetails();
+        ClearTrailerDetails();
+        EnableBookingInformation(enableBookingInfo);
+        MoveToDefaultTab();
+    }
+
+    function ClearVehicleDetails() {
+        var rowsVehicleDetails = $("table#tblVehicleDetails").find("tr[ID$='trVehicleDetailsRow']");
+        var btnDeleteVehicleRow = $("a#btnDeleteVehicleRow");
+        if (rowsVehicleDetails.length > 2) {
+            for (i = 2; i <= rowsVehicleDetails.length; i++) {
+                btnDeleteVehicleRow.trigger("click");
+            }
+        }
+    }
+
+    function ClearTrailerDetails() {
+        var rowsTrailerDetails = $("table#tblTrailerDetails").find("tr[ID$='trTrailerDetailsRow']");
+        var btnDeleteTrailerRow = $("a#btnDeleteTrailerRow");
+        if (rowsTrailerDetails.length > 2) {
+            for (i = 2; i <= rowsTrailerDetails.length; i++) {
+                btnDeleteTrailerRow.trigger("click");
+            }
+        }
+    }
+
+    function EnableBookingInformation(status) {
+        if (status) {
+            $("li#liBookingInformation").css("display", "");
+            $("div#tabBookingInformation").css("display", "");
+
+        } else {
+            $("li#liBookingInformation").css("display", "none");
+            $("div#tabBookingInformation").css("display", "none");
+        }
+    }
+    //Other function - End
+
+    //Google Maps Script - Start
+
+    var source, destination;
+    var directionsDisplay;
+    var directionsService = new google.maps.DirectionsService();
+    google.maps.event.addDomListener(window, 'load', function () {
+        new google.maps.places.SearchBox(document.getElementById('txtFromLocation'));
+        new google.maps.places.SearchBox(document.getElementById('txtToLocation'));
+        directionsDisplay = new google.maps.DirectionsRenderer({ 'draggable': true });
+    });
+
+    function GetRoute() {
+        var bangalore = new google.maps.LatLng(12.9716, 77.5946);
+        var mapOptions = {
+            zoom: 7,
+            center: bangalore
+        };
+        map = new google.maps.Map(document.getElementById('divMap'), mapOptions);
+        directionsDisplay.setMap(map);
+        //directionsDisplay.setPanel(document.getElementById('dvPanel'));
+
+        //*********DIRECTIONS AND ROUTE**********************//
+        source = document.getElementById("txtFromLocation").value;
+        destination = document.getElementById("txtToLocation").value;
+        totalDistance = document.getElementById("txtDistance");
+        var request = {
+            origin: source,
+            destination: destination,
+            travelMode: google.maps.TravelMode.DRIVING
+        };
+        directionsService.route(request, function (response, status) {
+            if (status == google.maps.DirectionsStatus.OK) {
+                directionsDisplay.setDirections(response);
+            }
+        });
+
+        //*********DISTANCE AND DURATION**********************//
+        var service = new google.maps.DistanceMatrixService();
+        service.getDistanceMatrix({
+            origins: [source],
+            destinations: [destination],
+            travelMode: google.maps.TravelMode.DRIVING,
+            unitSystem: google.maps.UnitSystem.METRIC,
+            avoidHighways: false,
+            avoidTolls: false
+        }, function (response, status) {
+            if (status == google.maps.DistanceMatrixStatus.OK && response.rows[0].elements[0].status != "ZERO_RESULTS") {
+                var distance = response.rows[0].elements[0].distance.text;
+                distance = distance.replace(" km", "");
+                totalDistance.value = (parseInt(distance) * 2);
+            } else {
+                alert("Unable to find the distance via road.");
+            }
+        });
+
+        //SetDistanceBasedOnJourneyType();
+    }
+    //Google Maps Script - End
+
+    //ddlTitle
+    //txtFirstName
+    //txtCompanyName
+    //txtSurName
+    //txtAddress
+    //txtTelephoneNumber
+    //txtPostalCode
+    //txtCellNumber
+    //txtCompTelephoneNumber
+    //txtCompTelephoneExtension
+    //txtEmailAddress
+    //txtFaxNumber
+    //hdnQuotationID
+    //chkReturnJourney
+    //chkSingleJourney
+    //txtPickUpDate
+    //ddlPickUpTime
+    //txtReturnDate
+    //ddlReturnTime
+    //txtFromLocation
+    //txtDistance
+    //txtPassengers
+    //ddlEvent
+    //ddlPaymentTerms
+    //txtExtraInformation
+    //txtQuoteValidTill
+    //txtAddress
+    //txtTelephoneNumber
+    //txtOrderNumber
+    //ddlPaymentMode
+    //txtPaymentReferenceNumber
+    //txtAmountPaid
+    //chkApprovedByAdmin
+    //txtComments
+    //chkConfirmationEnabled
+
+    //Getting form Values - Start
+    function GetBookingQuoteFormValues() {
+        var modifiedDate = $("#hdnModifiedOn").val();
+        if(modifiedDate == "")
+        {modifiedDate = getLocalDate(new Date());} else {getLocalDateFromJsonDate(modifiedDate);}
+        debugger;
+        var bookingQuote = {
+            ID: $("#hdnQuotationID").val(),
+            ModifiedBy: $("#hdnModifiedBy").val(),
+            ModifiedOn: modifiedDate,
+            Title: $("#ddlTitle").val(),
+            FirstName: $("#txtFirstName").val(),
+            SurName: $("#txtSurName").val(),
+            TelephoneNumber: $("#txtTelephoneNumber").val(),
+            CellNumber: $("#txtCellNumber").val(),
+            EmailAddress: $("#txtEmailAddress").val(),
+            CompanyName: $("#txtCompanyName").val(),
+            Address: $("#txtAddress").val(),
+            PostalCode: $("#txtPostalCode").val(),
+            CompTelephoneNumber: $("#txtCompTelephoneNumber").val(),
+            CompTelephoneExtension: $("#txtCompTelephoneExtension").val(),
+            FaxNumber: $("#txtFaxNumber").val(),
+            IsReturnJourney: $("#chkReturnJourney").is(":checked"),
+            IsSingleJourney: $("#chkSingleJourney").is(":checked"),
+            IsQuoteValidTillAdded: $("#chkAddQuoteValidTill").is(":checked"),
+            IsTrailerRequired: $("#chkTrailerRequired").is(":checked"),
+            PickUpDate: $("#txtPickUpDate").val(),
+            PickUpTime: $("#ddlPickUpTime").val(),
+            ReturnDate: $("#txtReturnDate").val(),
+            ReturnTime: $("#ddlReturnTime").val(),
+            FromLocation: $("#txtFromLocation").val(),
+            ToLocation: $("#txtToLocation").val(),
+            Distance: $("#txtDistance").val(),
+            Passengers: $("#txtPassengers").val(),
+            EventID: $("#ddlEvent").val(),
+            ExtraInformation: $("#txtExtraInformation").val(),
+            PaymentTermsID: $("#ddlPaymentTerms").val(),
+            QuoteValidTill: $("#txtQuoteValidTill").val(),
+            QuotationValue: $("#txtQuotationValue").val(),
+            QuotationFileName: $("#QuotationFileName").val(),
+            BookingInfo: GetBookingValues(),
+            BookingVehicleInfo: GetVehicleDetails(),
+            BookingTrailerInfo: GetTrailerDetails()
+        }
+        debugger;
+        return bookingQuote;
+    }
+
+    function GetBookingValues() {
+        var Booking = {
+            ID: $("#hdnBookingID").val(),
+            OrderNumber: $("#txtOrderNumber").val(),
+            PaymentModeID: $("#ddlPaymentMode").val(),
+            PaymentReferenceNumber: $("#txtPaymentReferenceNumber").val(),
+            AmountPaid: $("#txtAmountPaid").val(),
+            IsApprovedByAdmin: $("#chkApprovedByAdmin").is(":checked"),
+            IsConfirmationEnabled: $("#chkConfirmationEnabled").is(":checked"),
+            Comments: $("#txtComments").val()
+        }
+        return Booking;
+    }
+
+    function GetVehicleDetails() {
+        var tableRows = $("#tblVehicleDetails tbody tr");
+        var vehicleDetails = new Array();
+        if (tableRows.length > 0) {
+            tableRows.each(function (index) {
+                var curRow = $(this);
+                if (curRow.html() != "") {
+                    var VehicleDetail = {
+                        ID: curRow.find("#hdnVehicleID").val(),
+                        BusTypeID: curRow.find("#ddlBusType").val(),
+                        BusType: curRow.find("#ddlBusType option:selected").text()//,
+                        //Capacity: curRow.find("#txtCapacity").val(),
+                        //Standing: curRow.find("#txtStanding").val(),
+                        //Sitting: curRow.find("#txtSitting").val(),
+                        //Description: curRow.find("#txtDescription").val()
+                    }
+                    vehicleDetails.push(VehicleDetail);
+                }
+            });
+        }
+        return vehicleDetails;
+    }
+
+    function GetTrailerDetails() {
+        var tableRows = $("#tblTrailerDetails tbody tr");
+        var trailerDetails = new Array();
+        if ($("#chkTrailerRequired").is(":checked")) {
+            if (tableRows.length > 0) {
+                tableRows.each(function (index) {
+                    var curRow = $(this);
+                    if (curRow.html() != "") {
+                        var TrailerDetail = {
+                            ID: curRow.find("#hdnTrailerID").val(),
+                            TrailerTypeID: curRow.find("#ddlTrailerType").val(),
+                            TrailerType: curRow.find("#ddlTrailerType option:selected").text()//,
+                            //Capacity: curRow.find("#txtKG").val(),
+                            //Description: curRow.find("#txtDescription").val()
+                        }
+                        trailerDetails.push(TrailerDetail);
+                    }
+                });
+            }
+        }
+        return trailerDetails;
+    }
+    //Getting form Values - End
+</script>

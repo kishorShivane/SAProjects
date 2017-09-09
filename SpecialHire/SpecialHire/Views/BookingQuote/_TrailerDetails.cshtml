@@ -1,0 +1,99 @@
+﻿@model List<SelectListItem>
+<div class="panel-group">
+    <div class="panel panel-info">
+        <div class="panel-heading" style="background-color: #5bc0de;">
+            <a data-toggle="collapse" href="#pnlTrailerDetails" style="color:white;text-decoration:none;">Trailer Information</a>
+        </div>
+        <div id="pnlTrailerDetails" class="panel-collapse collapse in">
+            <div class="panel-body">
+                <div class="row clearfix">
+                    <div class="col-md-12 column">
+                        <table class="table table-bordered table-hover" id="tblTrailerDetails">
+                            <thead>
+                                <tr>
+                                    <th class="text-center col-md-1">
+                                        #
+                                    </th>
+                                    <th class="text-center col-md-4">
+                                        Trailer Type
+                                    </th>
+                                    <th class="text-center col-md-3">
+                                        KG
+                                    </th>
+                                    <th class="text-center col-md-4">
+                                        Description
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr id='trTrailerDetailsRow0'>
+                                    <td class="text-center">
+                                        <span><i class="fa fa-2x fa-suitcase"></i> </span>
+                                        <input type="hidden" id="hdnTrailerID" value="" />
+                                    </td>
+                                    <td>
+                                        @Html.DropDownList("Trailer Type", Model, new { id = "ddlTrailerType", @class = "form-control", placeholder = "Trailer Type" })
+                                    </td>
+                                    <td>
+                                        <input id="txtKG" type="text" name='KG' placeholder='KG' class="form-control" Numeric="true" disabled="disabled" />
+                                    </td>
+                                    <td>
+                                        <input id="txtDescription" type="text" name='Description' placeholder='Description' class="form-control" disabled="disabled" />
+                                    </td>
+                                </tr>
+                                <tr id='trTrailerDetailsRow1'></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <a id="btnAddTrailerRow" class="btn btn-info pull-left">Add Trailer</a>
+                <a id='btnDeleteTrailerRow' class="pull-right btn btn-danger">Delete Trailer</a>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        var trailerRowNumber = 1;
+        $("#btnAddTrailerRow").click(function () {
+            var row = $("#trTrailerDetailsRow0").html();
+            $('#trTrailerDetailsRow' + trailerRowNumber).html(row);
+            $('#tblTrailerDetails').append('<tr id="trTrailerDetailsRow' + (trailerRowNumber + 1) + '"></tr>');
+            trailerRowNumber++;
+        });
+        $("#btnDeleteTrailerRow").click(function () {
+            if (trailerRowNumber > 1) {
+                $("#trTrailerDetailsRow" + (trailerRowNumber - 1)).html('');
+                trailerRowNumber--;
+            }
+        });
+
+        LoadTrailerDetails();
+    });
+
+    function LoadTrailerDetails() {
+        $(document).on("change", "select#ddlTrailerType", function () {
+            var TrailerTypeID = $(this).val();
+            var tblRow = $(this).parent().parent();
+            $.ajax({
+                async: false,
+                url: '@Url.Action("GetTrailerTypeDetails", "BookingQuote")',
+                type: 'Post',
+                data: JSON.stringify({ TrailerTypeID: TrailerTypeID }),
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8',
+                error: function (xhr) {
+                    alert('Error: ' + xhr.statusText);
+                },
+                success: function (result) {
+                    if (result != undefined) {
+                        tblRow.find("#txtKG").val(result.KG);
+                        tblRow.find("#txtDescription").val(result.Description);
+                    }
+                }
+            }).done(function (result) {
+                return false;
+            });
+        });
+    }
+</script>

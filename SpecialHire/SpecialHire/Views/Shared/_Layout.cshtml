@@ -1,0 +1,173 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>eBus Special Hire - @ViewBag.Title</title>
+    <link rel="shortcut icon" type="image/x-icon" href="~/Images/favIcon.ico" />
+    <!-- Bootstrap -->
+    <link href="@Url.Content("~/css/bootstrap.css")" rel="stylesheet">
+    <link href="@Url.Content("~/css/simple-sidebar.css")" rel="stylesheet">
+    <link href="@Url.Content("~/css/font-awesome.css")" rel="stylesheet">
+    <link href="@Url.Content("~/css/select2.css")" rel="stylesheet">
+    <link href="@Url.Content("~/css/select2-bootstrap.css")" rel="stylesheet">
+    <link href="@Url.Content("~/css/jquery-ui.css")" rel="stylesheet">
+     <link href="@Url.Content("~/css/SpecialHire.css")" rel="stylesheet">
+    <style>
+        .input-group-addon:first-child {
+            border-right: 0;
+            min-width: 150px;
+        }
+
+        input[type="radio"], input[type="checkbox"] {
+            margin:0px;
+            line-height: normal;
+            height:30px;
+        }
+
+    </style>
+    <script src="@Url.Content("~/js/jquery-1.11.2.js")"></script>
+    <script src="@Url.Content("~/js/jquery-ui.min.js")"></script>
+    <script src="@Url.Content("~/js/bootstrap.min.js")"></script>
+    <script src="@Url.Content("~/js/select2.min.js")"></script>
+    <script src="@Url.Content("~/js/common.js")"></script>
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+    @if (ViewBag.IsNavigationEnabled != "No")
+    {
+        <nav class="navbar navbar-default no-margin">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header fixed-brand">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" id="menu-toggle">
+                    <span class="glyphicon glyphicon-th-large" aria-hidden="true"></span>
+                </button>
+                <a class="navbar-brand" style="padding: 10px 15px;" href="/Home/Index"><img style="height: 35px;width: 40px;" src="~/Images/logo_comp1.png"> EBus Special Hire</a>
+            </div><!-- navbar-header-->
+
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li class="active"><button class="navbar-toggle collapse in" data-toggle="collapse" id="menu-toggle-2"> <span class="glyphicon glyphicon-th-large" aria-hidden="true"></span></button></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" style="min-width: 160px;" data-toggle="dropdown" href="#">
+                            <span class="glyphicon glyphicon-user topIcons" style="font-size: 17px;" aria-hidden="true"> @ViewBag.UserName</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-user">
+                            <li>
+                                <a href="/EBusBackOffice/Login/Logout"><span class="glyphicon glyphicon-off" aria-hidden="true"> Logout</span></a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <!-- bs-example-navbar-collapse-1 -->
+        </nav>
+        <div id="wrapper">
+            <!-- Sidebar -->
+            <div id="sidebar-wrapper" style="overflow: hidden;max-height:650px">
+                <ul class="sidebar-nav nav-pills nav-stacked" id="menu">
+
+                    <li class="active">
+                        <a href="/BookingQuote/Index"><span class="fa-stack fa-lg pull-left"><i class="fa fa-dashboard fa-stack-1x "></i></span> Quotation</a>
+                    </li>
+                    <li>
+                        <a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa fa-cloud-download fa-stack-1x "></i></span>Availability</a>
+                    </li>
+                    <li>
+                        <a href="#"> <span class="fa-stack fa-lg pull-left"><i class="fa fa-cart-plus fa-stack-1x "></i></span>Update Booking</a>
+                    </li>
+                    <li>
+                        <a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa fa-youtube-play fa-stack-1x "></i></span>Dispatcher</a>
+                    </li>
+                    <li>
+                        <a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa fa-wrench fa-stack-1x "></i></span>Reports</a>
+                    </li>
+                    <li>
+                        <a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa fa-server fa-stack-1x "></i></span>Documents</a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x "></i></span> Other
+                            <span class="fa-stack fa-lg fa-pull-right" style="margin-right:20px;"><i id="childIcon" class="fa fa-angle-left"></i></span>
+                        </a>
+                        <ul class="nav-pills nav-stacked" style="list-style-type:none;">
+                            <li><a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x "></i></span>link1</a></li>
+                            <li><a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa fa-sign-out fa-stack-1x "></i></span>link2</a></li>
+
+                        </ul>
+                    </li>
+                    <li class="hidden-lg hidden-md hidden-sm" style="background-color: whitesmoke;">
+                        <a href="#" style="color: black;">
+                            <span class="fa-stack fa-lg pull-left"><i class="fa fa-user fa-stack-1x "></i></span> @ViewBag.UserName
+                            <span class="fa-stack fa-lg fa-pull-right" style="margin-right:20px;"><i id="childIcon" class="fa fa-angle-left"></i></span>
+                        </a>
+                        <ul class="nav-pills nav-stacked" style="list-style-type:none;">
+                            <li><a href="#" style="color: black;"><span class="fa-stack fa-lg pull-left"><i class="fa fa-sign-out fa-stack-1x "></i></span>Logout</a></li>
+
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <!-- Sidebar -->
+            <!-- Page Content -->
+            <div id="page-content-wrapper">
+                <div class="container-fluid xyz">
+                    @RenderBody()
+                </div>
+            </div>
+            <!-- Page Content -->
+        </div>
+    }
+    else
+    {
+        <nav class="navbar navbar-default no-margin">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header fixed-brand">
+                <a class="navbar-brand" style="padding: 10px 15px;" href="/Home/Index"><img style="height: 35px;width: 40px;" src="~/Images/logo_comp1.png"> EBus Special Hire</a>
+            </div><!-- navbar-header-->
+        </nav>
+        @RenderBody()
+
+    }
+
+    <!-- Footer -->
+    <div class="panel-footer navbar-fixed-bottom">
+        <div class="container-fluid">
+            <div class="row">
+
+                <div class="col-md-1">
+                    <a class="pull-left" href="#">Contact Us</a>
+                </div>
+                <div class="col-md-1">
+                    <a class="pull-left" href="#">Privacy Policy</a>
+                </div>
+                <div class="col-md-7">
+                    <a class="pull-left" href="#">Terms of Service</a>
+                </div>
+                <div class="col-md-3 pull-right">
+                    &copy; 2016 eBus Supplies. All rights reserved
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Footer -->
+
+    <script src="@Url.Content("~/js/sidebar_menu.js")"></script>
+    <script>
+        $(document).ready(function () {
+            $("#wrapper").toggleClass("toggled-2");
+            $('#menu ul').hide();
+            //Select 2 plugin for dropdowns add select2 class to it
+            $(".select2").select2();
+            //Datepicker plugin for textboxes add date-control class to it
+            $(".date-control").val("").datepicker({ dateFormat: "dd-MM-yy" });
+        });
+    </script>
+</body>
+</html>

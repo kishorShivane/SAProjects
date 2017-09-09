@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EBusReportsService", "EBusReportsService\EBusReportsService.csproj", "{1A83B2F4-F20E-466D-A3AF-705C20776FD6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestReportService", "TestReportService\TestReportService.csproj", "{FD40622D-9109-4CB6-8C37-8E9D6FBC9EB5}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "EBusReportServiceSetup", "EBusReportServiceSetup\EBusReportServiceSetup.vdproj", "{B8EFEA6B-C9FB-473F-93C8-EB21917B1995}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1A83B2F4-F20E-466D-A3AF-705C20776FD6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A83B2F4-F20E-466D-A3AF-705C20776FD6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A83B2F4-F20E-466D-A3AF-705C20776FD6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A83B2F4-F20E-466D-A3AF-705C20776FD6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD40622D-9109-4CB6-8C37-8E9D6FBC9EB5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD40622D-9109-4CB6-8C37-8E9D6FBC9EB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD40622D-9109-4CB6-8C37-8E9D6FBC9EB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD40622D-9109-4CB6-8C37-8E9D6FBC9EB5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8EFEA6B-C9FB-473F-93C8-EB21917B1995}.Debug|Any CPU.ActiveCfg = Debug
+		{B8EFEA6B-C9FB-473F-93C8-EB21917B1995}.Release|Any CPU.ActiveCfg = Release
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

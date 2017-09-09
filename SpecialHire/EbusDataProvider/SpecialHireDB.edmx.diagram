@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="aa9d46d0b078405dbb3f26fb2f3ddfd3" Name="Diagram1" ZoomLevel="40">
+        <EntityTypeShape EntityType="SpecialHireModel.ApplicationUser" Width="1.5" PointX="11.375" PointY="10" />
+        <EntityTypeShape EntityType="SpecialHireModel.BookingInfo" Width="1.5" PointX="8.625" PointY="4.375" />
+        <EntityTypeShape EntityType="SpecialHireModel.BookingQuoteInfo" Width="1.5" PointX="3.375" PointY="2.125" />
+        <EntityTypeShape EntityType="SpecialHireModel.BookingTrailerInfo" Width="1.5" PointX="5.625" PointY="1.125" />
+        <EntityTypeShape EntityType="SpecialHireModel.BookingVehicleInfo" Width="1.5" PointX="5.625" PointY="5.125" />
+        <EntityTypeShape EntityType="SpecialHireModel.Bus" Width="1.5" PointX="5.625" PointY="15.875" />
+        <EntityTypeShape EntityType="SpecialHireModel.BusType" Width="1.5" PointX="3.375" PointY="15.625" />
+        <EntityTypeShape EntityType="SpecialHireModel.Driver" Width="1.5" PointX="8.125" PointY="0.75" />
+        <EntityTypeShape EntityType="SpecialHireModel.Event" Width="1.5" PointX="1.125" PointY="5.125" />
+        <EntityTypeShape EntityType="SpecialHireModel.PaymentMode" Width="1.5" PointX="6.375" PointY="9.125" />
+        <EntityTypeShape EntityType="SpecialHireModel.PaymentTerm" Width="1.5" PointX="10.125" PointY="0.75" />
+        <EntityTypeShape EntityType="SpecialHireModel.Trailer" Width="1.5" PointX="11.125" PointY="3.75" />
+        <EntityTypeShape EntityType="SpecialHireModel.TrailerType" Width="1.5" PointX="3.375" PointY="11.875" />
+        <EntityTypeShape EntityType="SpecialHireModel.UserRole" Width="1.5" PointX="9.125" PointY="10.25" />
+        <AssociationConnector Association="SpecialHireModel.FK_ApplicationUsers_UserRoles" />
+        <AssociationConnector Association="SpecialHireModel.FK_Booking_PaymentMode" />
+        <AssociationConnector Association="SpecialHireModel.FK_Booking_Quotation" />
+        <AssociationConnector Association="SpecialHireModel.FK_BookingTrailerInfo_BookingQuote" />
+        <AssociationConnector Association="SpecialHireModel.FK_Quotation_Event" />
+        <AssociationConnector Association="SpecialHireModel.FK_VehicleDetails_Quotation" />
+        <AssociationConnector Association="SpecialHireModel.FK_BookingTrailerInfo_TrialerType" />
+        <AssociationConnector Association="SpecialHireModel.FK_VehicleDetails_BusType" />
+        <AssociationConnector Association="SpecialHireModel.FK_Bus_BusType" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

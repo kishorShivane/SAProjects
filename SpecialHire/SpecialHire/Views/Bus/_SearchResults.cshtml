@@ -1,0 +1,222 @@
+﻿
+<style>
+    .thead-inverse th {
+        color: #fff;
+        background-color: #373a3c;
+    }
+
+    .modal-lg {
+        width: 1050px;
+    }
+</style>
+<!-- Modal Contents -->
+<div id="searchResults" class="modal fade ">
+    <!-- class modal and fade -->
+
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header modal-header-info">
+                <!-- modal header -->
+                <button type="button" class="close"
+                        data-dismiss="modal" aria-hidden="true">
+                    ×
+                </button>
+                <h4 class="modal-title">Search Results</h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="table-responsive">
+                            <table class="table table-striped" id="tblSearchResults">
+                                <thead class="thead-inverse">
+                                    <tr>
+                                        <th>Pick</th>
+                                        <th>Bus Name</th>
+                                        <th>Bus Type</th>
+                                        <th>Bus Number</th>
+                                        <th>Number Plate</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <!-- modal footer -->
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+
+        </div> <!-- / .modal-content -->
+
+    </div> <!-- / .modal-dialog -->
+
+</div><!-- / .modal -->
+<script>
+
+    $(document).on("click", "a#lnkEditBookingQuote", function () {
+        var quotationID = $(this).attr("value");
+        ClearUI(true);
+        BindQuotationInformation(quotationID);
+        BindBookingInformation(quotationID);
+        BindVehicleInformation(quotationID);
+        BindTrailerInformation(quotationID);
+        MoveToDefaultTab();
+        GetRoute();
+        $('div#searchResults').modal('hide');
+    });
+
+    function BindBookingInformation(quotationID) {
+        $.ajax({
+            async: false,
+            url: '@Url.Action("GetBookingByQuotationID", "BookingQuote")',
+            type: 'Post',
+            data: JSON.stringify({ QuotationID: quotationID }),
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            error: function (xhr) {
+                alert('Error: ' + xhr.statusText);
+            },
+            success: function (result) {
+                if (result != undefined && result != "NoRecordsFound") {
+                    $("#hdnBookingID").val(result.ID);
+                    $("#txtOrderNumber").val(result.OrderNumber);
+                    BindSelectedValueToSelect2("ddlPaymentMode", result.PaymentModeID)
+                    $("#txtPaymentReferenceNumber").val(result.PaymentReferenceNumber);
+                    $("#txtAmountPaid").val(result.AmountPaid);
+                    if (result.IsApprovedByAdmin) { $("#chkApprovedByAdmin").attr("checked", "true"); } else { $("#chkApprovedByAdmin").removeAttr("checked"); }
+                    $("#txtComments").val(result.Comments);
+                    if (result.IsConfirmationEnabled) { $("#chkConfirmationEnabled").attr("checked", "true"); } else { $("#chkConfirmationEnabled").removeAttr("checked"); }
+                }
+            }
+        }).done(function (result) {
+            return false;
+        });
+    }
+
+    function BindVehicleInformation(quotationID) {
+        var tableVehicleDetails = $("table#tblVehicleDetails");
+        var btnAddVehicleRow = $("a#btnAddVehicleRow");
+        $.ajax({
+            async: false,
+            url: '@Url.Action("GetVehicleDetailsByQuotationID", "BookingQuote")',
+            type: 'Post',
+            data: JSON.stringify({ QuotationID: quotationID }),
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            error: function (xhr) {
+                alert('Error: ' + xhr.statusText);
+            },
+            success: function (result) {
+                if (result.length > 0) {
+                    $(result).each(function (index) {
+                        if (index > 0)
+                        { btnAddVehicleRow.trigger("click"); }
+
+                        var CurrentItem = this;
+                        var tblRow = tableVehicleDetails.find("tr#trVehicleDetailsRow" + index);
+                        tblRow.find("#hdnVehicleID").val(CurrentItem.ID);
+                        tblRow.find("#ddlBusType").val(CurrentItem.BusTypeID);
+                        tblRow.find("#txtCapacity").val(CurrentItem.Capacity);
+                        tblRow.find("#txtStanding").val(CurrentItem.Standing);
+                        tblRow.find("#txtSitting").val(CurrentItem.Sitting);
+                        tblRow.find("#txtDescription").val(CurrentItem.Description);
+                    });
+                }
+            }
+        }).done(function (result) {
+            return false;
+        });
+    }
+
+    function BindTrailerInformation(quotationID) {
+        var tableTrailerDetails = $("table#tblTrailerDetails");
+        var btnAddTrailerRow = $("a#btnAddTrailerRow");
+        $.ajax({
+            async: false,
+            url: '@Url.Action("GetTrailerDetailsByQuotationID", "BookingQuote")',
+            type: 'Post',
+            data: JSON.stringify({ QuotationID: quotationID }),
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            error: function (xhr) {
+                alert('Error: ' + xhr.statusText);
+            },
+            success: function (result) {
+                if (result.length > 0) {
+                    $(result).each(function (index) {
+                        if (index > 0)
+                        { btnAddTrailerRow.trigger("click"); }
+
+                        var CurrentItem = this;
+                        var tblRow = tableTrailerDetails.find("tr#trTrailerDetailsRow" + index);
+                        tblRow.find("#hdnTrailerID").val(CurrentItem.ID);
+                        tblRow.find("#ddlTrailerType").val(CurrentItem.TrailerTypeID);
+                        tblRow.find("#txtKG").val(CurrentItem.KG);
+                        tblRow.find("#txtDescription").val(CurrentItem.Description);
+                    });
+                }
+            }
+        }).done(function (result) {
+            return false;
+        });
+    }
+
+    function BindQuotationInformation(quotationID) {
+        $.ajax({
+            async: false,
+            url: '@Url.Action("GetQuotationByID", "BookingQuote")',
+            type: 'Post',
+            data: JSON.stringify({ QuotationID: quotationID }),
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            error: function (xhr) {
+                alert('Error: ' + xhr.statusText);
+            },
+            success: function (result) {
+                if (result != undefined) {
+                    $("#hdnQuotationID").val(result.ID);
+                    $("#hdnModifiedBy").val(result.ModifiedBy);
+                    $("#hdnModifiedOn").val(result.ModifiedOn);
+                    BindSelectedValueToSelect2("ddlTitle", result.Title)
+                    $("#txtFirstName").val(result.FirstName);
+                    $("#txtSurName").val(result.SurName);
+                    $("#txtTelephoneNumber").val(result.TelephoneNumber);
+                    $("#txtCellNumber").val(result.CellNumber);
+                    $("#txtEmailAddress").val(result.EmailAddress);
+                    $("#txtCompanyName").val(result.CompanyName);
+                    $("#txtAddress").val(result.Address);
+                    $("#txtPostalCode").val(result.PostalCode);
+                    $("#txtCompTelephoneNumber").val(result.CompTelephoneNumber);
+                    $("#txtCompTelephoneExtension").val(result.CompTelephoneExtension);
+                    $("#txtFaxNumber").val(result.FaxNumber);
+                    if (result.IsReturnJourney) { $("#chkReturnJourney").prop("checked", true); } else { $("#chkReturnJourney").prop("checked", false); }
+                    if (result.IsSingleJourney) { $("#chkSingleJourney").prop("checked", true); } else { $("#chkSingleJourney").prop("checked", false); }
+                    if (result.IsQuoteValidTill) { $("#chkAddQuoteValidTill").prop("checked", true); } else { $("#chkAddQuoteValidTill").prop("checked", false); } EnableDisableQuoteValidity($("#chkAddQuoteValidTill"));
+                    if (result.IsTrailerAdded) { $("#chkTrailerRequired").prop("checked", true); } else { $("#chkTrailerRequired").prop("checked", false); } EnableDisableTrailer($("#chkTrailerRequired"));
+                    $("#txtPickUpDate").val(getLocalDateFromJsonDate(result.PickUpDate));
+                    BindSelectedValueToSelect2("ddlPickUpTime", result.PickUpTime)
+                    $("#txtReturnDate").val(getLocalDateFromJsonDate(result.ReturnDate));
+                    BindSelectedValueToSelect2("ddlReturnTime", result.ReturnTime)
+                    $("#txtFromLocation").val(result.FromLocation);
+                    $("#txtToLocation").val(result.ToLocation);
+                    $("#txtDistance").val(result.Distance);
+                    $("#txtPassengers").val(result.Passengers);
+                    BindSelectedValueToSelect2("ddlEvent", result.EventID)
+                    $("#txtExtraInformation").val(result.ExtraInformation);
+                    BindSelectedValueToSelect2("ddlPaymentTerms", result.PaymentTermsID)
+                    $("#txtQuoteValidTill").val(getLocalDateFromJsonDate(result.QuoteValidTill));
+                    $("#txtQuotationValue").val(result.QuotationValue);
+                    $("#lnkQuotationFileName").val(result.QuotationFileName);
+                    EnableBookingInformation(true);
+                }
+            }
+        }).done(function (result) {
+            return false;
+        });
+    }
+</script>

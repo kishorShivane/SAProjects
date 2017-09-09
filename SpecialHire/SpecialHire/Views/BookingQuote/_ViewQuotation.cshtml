@@ -1,0 +1,208 @@
+﻿<div style="min-width:900px;max-width:930px;margin:10px auto;font-family:Calibri;font-weight:normal;">
+    <table border="0" cellspacing="0" cellpadding="0" style="width:100%">
+        <tbody>
+            <tr style="font-size:15px;">
+                <td colspan="2" align="right" style="vertical-align:middle;padding:20px;padding-left:0px;float:left;">
+                    <table>
+                        <tr>
+                            <td><img style="width:250px;" src="~/Images/EbusLogo.png" alt="AbhiBus" class="CToWUd"></td>
+                            <td>
+                                <b>
+                                    Ebus Supplies C C<br>
+                                    33 Judges Avenue,<br>
+                                    Tel: 011 476 5400<br>
+                                    Fax: 086 554 2482<br>
+                                </b>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+                <td colspan="2" style="padding:20px 25px;vertical-align:bottom;padding:20px 25px">
+                    <table cellpadding="3" cellspacing="5" style="float: right;">
+                        <tr><td>Number:</td><td>Quote Number: <span id="lblQuotationID"></span></td></tr>
+                        <tr><td>Date:</td><td><span id="lblQuotationCreatedDate"></span></td></tr>
+                        <tr><td>Expire:</td><td><span id="lblQuotationValidTill"></span>@*Monday,February 1, 2016*@</td></tr>
+                    </table>
+                </td>
+            </tr>
+            <tr><td colspan="4" style="font-size: 24px;text-align:center;"><b>Quotation</b></td></tr>
+            <tr>
+                <td colspan="4" style="padding:10px 25px;border-top:solid 5px black;border-bottom:solid 5px black;vertical-align:middle">
+                    <b>Contact Information:</b>
+                    <table>
+                        <tr>
+                            <td>Name:</td>
+                            <td><span id="lblFirstName"></span></td>
+                            <td style="width: 200px;"></td>
+                            <td>Company:</td>
+                            <td><span id="lblCompanyName"></span></td>
+                        </tr>
+                        <tr>
+                            <td>Tel:</td>
+                            <td><span id="lblTelephoneNumber"></span></td>
+                            <td style="width: 200px;"></td>
+                            <td>Address:</td>
+                            <td><span id="lblAddress"></span></td>
+                        </tr>
+                        <tr>
+                            <td>Cell:</td>
+                            <td><span id="lblCellNumber"></span></td>
+                            <td style="width: 200px;"></td>
+                            <td>Postal:</td>
+                            <td><span id="lblPostalCode"></span></td>
+                        </tr>
+                        <tr>
+                            <td>Email:</td>
+                            <td><span id="lblEmail"></span></td>
+                            <td style="width: 200px;"></td>
+                            <td>Fax:</td>
+                            <td><span id="lblFaxNumber"></span></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td style="width: 200px;"></td>
+                            <td>Company Tel:</td>
+                            <td><span id="lblCompTellPhoneNumber"></span></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table border="0" cellspacing="0" cellpadding="0" style="width:100%;padding:10px 25px;vertical-align:middle">
+        <tbody>
+            <tr>
+                <td colspan="4" style="padding:10px 25px;padding-bottom: 10px;"><b>Bus Hire:</b></td>
+            </tr>
+            <tr>
+                <td style="padding:10px 25px;border-bottom: thin solid;padding-bottom: 5px;padding-top:5px;"><b>Departure Date:</b></td>
+                <td style="padding:10px 25px;border-bottom: thin solid;padding-bottom: 5px;padding-top:5px;"><span id="lblDepartureDate"></span></td>
+                <td style="padding:10px 25px;border-bottom: thin solid;padding-bottom: 5px;padding-top:5px;"><b>Departure Time:</b></td>
+                <td style="padding:10px 25px;border-bottom: thin solid;padding-bottom: 5px;padding-top:5px;"><span id="lblDepartureTime"></span></td>
+            </tr>
+            <tr>
+                <td style="padding:10px 25px;border-bottom: thin solid;padding-bottom: 5px;padding-top:5px;"><b>From:</b></td>
+                <td style="padding:10px 25px;border-bottom: thin solid;padding-bottom: 5px;padding-top:5px;"><span id="lblFromLocation"></span></td>
+                <td style="padding:10px 25px;border-bottom: thin solid;padding-bottom: 5px;padding-top:5px;"></td>
+                <td style="padding:10px 25px;border-bottom: thin solid;padding-bottom: 5px;padding-top:5px;"></td>
+            </tr>
+            <tr>
+                <td style="padding:10px 25px;border-bottom: thin solid;padding-bottom: 5px;padding-top:5px;"><b>To:</b></td>
+                <td style="padding:10px 25px;border-bottom: thin solid;padding-bottom: 5px;padding-top:5px;"><span id="lblToLocation"></span></td>
+                <td style="padding:10px 25px;border-bottom: thin solid;padding-bottom: 5px;padding-top:5px;"></td>
+                <td style="padding:10px 25px;border-bottom: thin solid;padding-bottom: 5px;padding-top:5px;"></td>
+            </tr>
+            <tr>
+                <td style="padding:10px 25px;border-bottom: thin solid;padding-bottom: 5px;padding-top:5px;"><b>Event Information:</b></td>
+                <td style="padding:10px 25px;border-bottom: thin solid;padding-bottom: 5px;padding-top:5px;"><span id="lblEventInformation"></span></td>
+                <td style="padding:10px 25px;border-bottom: thin solid;padding-bottom: 5px;padding-top:5px;"></td>
+                <td style="padding:10px 25px;border-bottom: thin solid;padding-bottom: 5px;padding-top:5px;"></td>
+            </tr>
+            <tr>
+                <td style="padding:10px 25px;border-bottom: thin solid;padding-bottom: 5px;padding-top:5px;"><b>Number of Passengers: </b></td>
+                <td style="padding:10px 25px;border-bottom: thin solid;padding-bottom: 5px;padding-top:5px;"><span id="lblNoOfPassengers"></span></td>
+                <td style="padding:10px 25px;border-bottom: thin solid;padding-bottom: 5px;padding-top:5px;"></td>
+                <td style="padding:10px 25px;border-bottom: thin solid;padding-bottom: 5px;padding-top:5px;"></td>
+            </tr>
+            <tr>
+                <td colspan="4" style="padding:10px 25px;padding-bottom: 5px;padding-top:5px;"><b>Bus Information:</b></td>
+            </tr>
+            <tr>
+                <td colspan="4" align="center" style="padding:10px 25px;border-bottom: thin solid;padding-bottom: 5px;padding-top:5px;">
+                    <table border="0" cellpadding="0" cellspacing="0" style="padding:0px 25px;vertical-align:middle;text-align:center" id="tblQuoteVehicleInformation">
+                        <thead>
+                            <tr>
+                                <th style="border:1px solid grey;width: 200px;text-align:center;">BusType</th>
+                                <th style="border:1px solid grey;width: 200px;text-align:center;">Number of Busses</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                                <tr>
+                                    <td style="border:1px solid grey">##BusType##@*<span id="lblBusType"></span>*@</td>
+                                    <td style="border:1px solid grey">##Quantity##@*<span id="lblQuantity"></span>*@</td>
+                                </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            <tr id="trQuoteTrailerInformationHeader">
+                <td colspan="4" style="padding:10px 25px;padding-bottom: 5px;padding-top:5px;"><b>Trailer Information:</b></td>
+            </tr>
+            <tr id="trQuoteTrailerInformationData">
+                <td colspan="4" align="center" style="padding:10px 25px;border-bottom: thin solid;padding-bottom: 5px;padding-top:5px;padding-bottom: 5px;padding-top:5px;">
+                    <table border="0" cellpadding="0" cellspacing="0" style="padding:0px 25px;vertical-align:middle;text-align:center" id="tblQuoteTrailerInformation">
+                        <thead>
+                            <tr>
+                                <th style="border:1px solid grey;width: 200px;text-align:center;">TrailerType</th>
+                                <th style="border:1px solid grey;width: 200px;text-align:center;">Number of Trailer</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                                <tr>
+                                    <td style="border:1px solid grey">##TrailerType##@*<span id="lblTrailerType"></span>*@</td>
+                                    <td style="border:1px solid grey">##Quantity##@*<span id="lblQuantity"></span>*@</td>
+                                </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table border="0" cellspacing="0" cellpadding="0" style="width:100%">
+        <tbody>
+            <tr>
+                <td colspan="4" style="padding:10px 25px;border-top:solid 5px black;border-bottom:solid 5px black;vertical-align:top;height: 80px;">
+                    <b>Additional Information:</b>
+
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4" style="padding:10px 25px;border-bottom:solid 5px black;vertical-align:middle">
+                    <b>Banking Details:</b>
+                    <table>
+                        <tr>
+                            <td colspan="2">Standard Bank</td>
+                            <td style="width: 450px;"></td>
+                            <td>SubTotal:</td>
+                            <td>R3800</td>
+                        </tr>
+                        <tr>
+                            <td>Branch:</td>
+                            <td>5th Sreet Sandton</td>
+                            <td style="width: 450px;"></td>
+                            <td>Discount:</td>
+                            <td>No</td>
+                        </tr>
+                        <tr>
+                            <td>Branch Code:</td>
+                            <td>019205</td>
+                            <td style="width: 450px;"></td>
+                            <td>VAT:</td>
+                            <td>R72</td>
+                        </tr>
+                        <tr>
+                            <td>Account Number:</td>
+                            <td>043005632</td>
+                            <td style="width: 450px;"></td>
+                            <td>Total:</td>
+                            <td>R3872</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4" style="padding:10px 25px;border-bottom:solid 5px black;vertical-align:top;height:100px;">
+                    <b>Payment Terms:</b>Full payment
+
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4" style="padding:0px 25px;vertical-align:middle">
+                    <!--<b>Powered by Ebus Supplies</b>-->
+                    Powered by Ebus Supplies
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
