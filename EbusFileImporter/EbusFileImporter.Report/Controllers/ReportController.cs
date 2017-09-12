@@ -21,7 +21,7 @@ namespace EbusFileImporter.Report.Controllers
             var today = DateTime.Now;
             var thisYear = today.Year;
             var thisMonth = today.ToString("MMMM");
-            var todayDate = today.ToString("dd");
+            var todayDay = today.ToString("dd");
             var yesterdayDate = today.AddDays(-1).ToString("dd");
             var files = DirSearch(ConfigurationManager.AppSettings["DirectoryPath"]);
             var prevCust = "";
@@ -40,6 +40,8 @@ namespace EbusFileImporter.Report.Controllers
                     if (splitPath.Length >= 5)
                     {
                         gridModel.Customer = splitPath[3];
+                        prevCust = gridModel.Customer;
+                        gridModel.LastUpdated = today.ToString("dd/MM/yyyy HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
                         if (splitPath[5] == thisYear.ToString() && splitPath[6] == thisMonth)
                         {
                             switch (splitPath[4])
@@ -48,7 +50,7 @@ namespace EbusFileImporter.Report.Controllers
                                     gridModel.ErrorCount += 1;
                                     break;
                                 case "Out":
-                                    if (splitPath[7] == todayDate)
+                                    if (splitPath[7] == todayDay)
                                     {
                                         gridModel.ImportedToday += 1;
                                     }

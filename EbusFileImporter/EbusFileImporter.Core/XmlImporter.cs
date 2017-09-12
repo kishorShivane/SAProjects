@@ -122,6 +122,7 @@ namespace EbusFileImporter.Core
                 var latestPosTransID = 0;
                 var latestInspectorID = 0;
                 var latestAuditFileStatus = 0;
+                var latestdiagnosticRecord = 0;
                 #endregion
 
                 #region Process Module Information
@@ -279,6 +280,30 @@ namespace EbusFileImporter.Core
                     return false;
                 }
 
+                #endregion
+
+                #region Process Diagnostic Record
+                DiagnosticRecord diagnosticRecord = null;
+                List<DiagnosticRecord> diagnosticRecords = new List<DiagnosticRecord>();
+                var nodes50 = nodes.Where(x => x.Attribute("STXID").Value.Equals("50"));
+                if (nodes50 != null && nodes50.Any())
+                {
+                    diagnosticRecord = new DiagnosticRecord();
+
+                    nodes50.ToList().ForEach(x =>
+                    {
+                        var thisRecord = x;
+                        diagnosticRecord.Id_DiagnosticRecord = latestdiagnosticRecord;
+                        diagnosticRecord.Id_Status = latestAuditFileStatus;
+                        diagnosticRecord.TSN = (string)thisRecord.Element("TSN");
+                        diagnosticRecord.EquipmentType = (string)thisRecord.Element("EquipmentType");
+                        diagnosticRecord.DiagCode = (string)thisRecord.Element("DiagCode");
+                        diagnosticRecord.DiagInfo = (string)thisRecord.Element("DiagInfo");
+                        diagnosticRecord.Time = helper.ConvertToInsertTimeString((string)thisRecord.Element("Time"));
+                        diagnosticRecords.Add(diagnosticRecord);
+                        latestdiagnosticRecord++;
+                    });
+                }
                 #endregion
 
                 #region Process Journey Information
@@ -907,6 +932,7 @@ namespace EbusFileImporter.Core
                     latestPosTransID = dbService.GetLatestIDUsed("PosTrans", "id_PosTrans", dbName);
                     latestInspectorID = dbService.GetLatestIDUsed("Inspector", "id_Inspector", dbName);
                     latestAuditFileStatus = dbService.GetLatestIDUsed("AuditFileStatus", "Id_Status", dbName);
+                    latestdiagnosticRecord = dbService.GetLatestIDUsed("DiagnosticRecord", "Id_DiagnosticRecord", dbName);
 
                     #region Update Actual ID's
                     moduleDetail.id_Module = moduleDetail.id_Module + latestModuleID;
@@ -961,6 +987,11 @@ namespace EbusFileImporter.Core
                         x.id_duty = x.id_duty + latestDutyID;
                     });
 
+                    diagnosticRecords.ForEach(x =>
+                    {
+                        x.Id_Status = x.Id_Status + latestAuditFileStatus;
+                        x.Id_DiagnosticRecord = x.Id_DiagnosticRecord + latestdiagnosticRecord;
+                    });
                     #endregion
 
                     var xmlDataToImport = new XmlDataToImport()
@@ -974,14 +1005,14 @@ namespace EbusFileImporter.Core
                         PosTrans = posTransDetails,
                         Staffs = staffDetail != null ? new List<Staff>() { staffDetail } : new List<Staff>(),
                         Inspectors = inspectorDetails,
-                        AuditFileStatuss = auditFileDetails
+                        AuditFileStatuss = auditFileDetails,
+                        DiagnosticRecords = diagnosticRecords
                     };
 
                     result = dbService.InsertXmlFileData(xmlDataToImport, dbName);
                 }
 
                 helper.MoveSuccessFile(filePath, dbName);
-
                 #endregion
 
 

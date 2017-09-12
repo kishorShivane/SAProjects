@@ -207,6 +207,8 @@ namespace EbusFileImporter.DataProvider
                     Logger.Info("Inserted PosTrans");
                     if (xmlDataToImport.AuditFileStatuss.Any()) DbHelper.BulkCopyDataToTable<AuditFileStatus>("AuditFileStatus", xmlDataToImport.AuditFileStatuss, con, transaction);
                     Logger.Info("Inserted AuditFileStatus");
+                    if (xmlDataToImport.DiagnosticRecords.Any()) DbHelper.BulkCopyDataToTable<DiagnosticRecord>("DiagnosticRecord", xmlDataToImport.DiagnosticRecords, con, transaction);
+                    Logger.Info("Inserted DiagnosticRecords");
                     transaction.Commit();
 
                     if (Constants.DetailedLogging)
@@ -221,6 +223,7 @@ namespace EbusFileImporter.DataProvider
                         Logger.Info("PosTrans Inserted: " + xmlDataToImport.PosTrans.Count().ToString());
                         Logger.Info("Trans Inserted: " + xmlDataToImport.Trans.Count().ToString());
                         Logger.Info("AuditFileStatus Inserted: " + xmlDataToImport.AuditFileStatuss.Count().ToString());
+                        Logger.Info("DiagnosticRecords Inserted: " + xmlDataToImport.DiagnosticRecords.Count().ToString());
                         Logger.Info("Commited Changes");
                         Logger.Info("-------DB Transaction - End-------");
                     }
@@ -293,7 +296,7 @@ namespace EbusFileImporter.DataProvider
 
         public int GetNonRevenueFromPosTransTable(string serialNumber, string connectionKey)
         {
-            var result = 800;
+            var result = Constants.DefaultNonRevenueValue;
             SqlConnection con = null;
             SqlCommand cmd = null;
             var classIDs = @"10002,10004,10000,10022,10024,10001,731,732,733‬,741,742,743,744,745,746";

@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace EbusFileImporter.Core.Helpers
 {
@@ -84,6 +85,22 @@ namespace EbusFileImporter.Core.Helpers
             catch (Exception)
             {
                 Log.Info("Error: ConvertToInsertDateTimeString: Date-" + strDate + " Time-" + strTime);
+                throw;
+            }
+        }
+
+        public string ConvertToInsertTimeString(string strTime)
+        {
+            var time = "";
+            try
+            {
+                if (strTime.Length < 6) strTime = strTime.PadRight(6, '0');
+                time = DateTime.ParseExact(strTime, "HHmmss", null).ToString("HH:mm:ss");
+                return time;
+            }
+            catch (Exception)
+            {
+                Log.Info("Error: ConvertToInsertTimeString: Time-" + strTime);
                 throw;
             }
         }

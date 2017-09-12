@@ -1,7 +1,6 @@
 ﻿@model List<EbusFileImporter.Report.Models.GridModel>
 @{
     ViewBag.Title = "Report";
-    var today = DateTime.Now.ToString("dd/mm/yyyy hhmmss");
 }
 
 <center>
@@ -25,7 +24,7 @@
                 <td>@item.ErrorCount</td>
                 <td>@item.DateProblem</td>
                 <td>@item.DuplicateCount</td>
-                <td>@today</td>
+                <td>@item.LastUpdated</td>
             </tr>
         }
     </table>

@@ -23,5 +23,6 @@ namespace EbusFileImporter.DataProvider.Helpers
         public static string EmailUserName = ConfigurationManager.AppSettings["EmailUserName"];
         public static string EbusPassword = ConfigurationManager.AppSettings["EbusPassword"];
         public static bool DetailedLogging = ConfigurationManager.AppSettings["DetailedLogging"] == "true" ? true : false;
+        public static int DefaultNonRevenueValue = Convert.ToInt32(ConfigurationManager.AppSettings["DefaultNonRevenueValue"]);
     }
 }

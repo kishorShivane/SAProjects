@@ -16,6 +16,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -28,6 +29,8 @@ namespace EbusFileImporter.App
         IImporter importerEngine;
         BackgroundWorker worker;
         public static Object thisLock = new Object();
+        private ReaderWriterLockSlim fileLock = new ReaderWriterLockSlim();
+
         public EbusFileImporter()
         {
             InitializeComponent();
@@ -72,6 +75,8 @@ namespace EbusFileImporter.App
                                 case "In":
                                     if (!helper.IsFileLocked(x))
                                     {
+                                        //fileLock.EnterReadLock();
+
                                         if (AppHelper.IsXmlFile(x))
                                         {
                                             if (Constants.DetailedLogging) logger.Info("Processing: XML file found - Start - " + Path.GetFileName(x) + " - Database: " + splitPath[3]);
@@ -91,6 +96,8 @@ namespace EbusFileImporter.App
                                             importerEngine = new CsvImporter(logger);
                                         }
                                         importerEngine.ProcessFile(x);
+                                        //fileLock.ExitReadLock();
+
                                         if (Constants.DetailedLogging) logger.Info("Processing: file - End - " + Path.GetFileName(x) + " - Database: " + splitPath[3]);
                                         logger.Info("------------------------*********---------------------------");
                                     }
@@ -213,7 +220,7 @@ namespace EbusFileImporter.App
 
                 if (gridModel != null) gridModels.Add(gridModel);
             }
-            if(gridModels.Any()) gridModels.ForEach(x => x.LastUpdated = DateTime.Now.ToString("dd/mm/yyyy hhmmss"));
+            if (gridModels.Any()) gridModels.ForEach(x => x.LastUpdated = DateTime.Now.ToString("dd/mm/yyyy hhmmss"));
             // Initialize the DataGridView.
             grdReportView.AutoGenerateColumns = true;
             grdReportView.AutoSize = true;

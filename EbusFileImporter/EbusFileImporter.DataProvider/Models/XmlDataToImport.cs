@@ -18,5 +18,6 @@ namespace EbusFileImporter.DataProvider.Models
         public List<Trans> Trans { get; set; } = new List<Trans>();
         public List<PosTrans> PosTrans { get; set; } = new List<PosTrans>();
         public List<AuditFileStatus> AuditFileStatuss { get; set; } = new List<AuditFileStatus>();
+        public List<DiagnosticRecord> DiagnosticRecords { get; set; } = new List<DiagnosticRecord>();
     }
 }
