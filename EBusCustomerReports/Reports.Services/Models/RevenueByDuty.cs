@@ -14,11 +14,14 @@ namespace Reports.Services.Models
         public string companyName { get; set; }
         public double Revenue { get; set; }
         public double NonRevenue { get; set; }
-
+        public double Transfers { get; set; }
+        public double TotalTransfers { get; set; }
         public double AdultRevenue { get; set; }
         public double ChildRevenue { get; set; }
         public double AdultNonRevenue { get; set; }
         public double SchlorNonRevenue { get; set; }
+        public double AdultTransfer { get; set; }
+        public double ScholarTransfer { get; set; }
         public double Cash { get; set; }
         public double Value { get; set; }
         public double Total { get; set; }

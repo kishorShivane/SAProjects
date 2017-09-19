@@ -927,7 +927,7 @@ namespace Reports.Services
                                      AdultRevenue = grp.Where(s => s.NonRevenue.Equals(0)).Count(s => s.Class.Equals(17)),
                                      ChildRevenue = grp.Where(s => s.NonRevenue.Equals(0)).Count(s => s.Class.Equals(33)),
                                      AdultNonRevenue = grp.Where(s => s.Revenue.Equals(0)).Count(s => s.Class.Equals(999)),
-                                     SchlorNonRevenue = grp.Where(s => s.Revenue.Equals(0)).Count(s => s.Class.Equals(997))
+                                     SchlorNonRevenue = grp.Where(s => s.Revenue.Equals(0)).Count(s => s.Class.Equals(997)),
                                  };
                 result.AddRange(groupByDot);
             }
@@ -952,6 +952,93 @@ namespace Reports.Services
                             res.ChildRevenue,
                             res.AdultNonRevenue,
                             res.SchlorNonRevenue,
+                            res.AdultTransfer,
+                            res.ScholarTransfer,
+                            res.companyName,
+                            res.DateRangeFilter,
+                            res.DutyFilter,
+                            res.Total
+                        );
+                }
+            }
+            else
+            {
+                //Empty row for blank report.
+                DataRow dr = table1.NewRow();
+                dr["filterDuties"] = filterDuties;
+                dr["DateRangeFilter"] = filterDateRange;
+                table1.Rows.Add(dr);
+            }
+
+            ds.Tables.Add(table1);
+            return Tuple.Create(ds, ordered.ToList());
+        }
+
+        public Tuple<DataSet, List<RevenueByDuty>> RevenueByDutyAll(string connKey, SchVsOprViewModel filter, string spName, string companyName)
+        {
+            //filter details
+            var filterDateRange = string.Format(" {0}: {1} to {2}", "Date Range", filter.StartDate, filter.EndDate);
+            var filterDuties = " Duties: Filter Not Selected";
+
+            if (filter.DutiesSelected != null && filter.DutiesSelected.Length > 0)
+            {
+                filterDuties = " Duties: " + string.Join(", ", filter.DutiesSelected);
+            }
+
+            var ds = new DataSet();
+            var table1 = RevenueByDutyDataSet();
+            //filter.DutiesSelected = new string[1] { "702" };
+
+            var data = GetRevenueByDutyAllDetails(connKey, filter, spName);
+            //first group by Duty
+            var groupByDuty = (from a in data
+                               group a by a.DutyID into g
+                               select g).ToList();
+
+            var result = new List<RevenueByDuty>();
+            //then group by Journey
+            foreach (var contract in groupByDuty)
+            {
+                var groupByDot = from c in contract
+                                 group c by c.JourneyID into grp
+                                 select new RevenueByDuty
+                                 {
+                                     DutyID = grp.Any() ? grp.FirstOrDefault().DutyID : string.Empty,
+                                     JourneyID = grp.Any() ? grp.FirstOrDefault().JourneyID : string.Empty,
+                                     Cash = Math.Round(grp.Sum(s => Convert.ToDouble(s.Revenue) == 0 ? 0 : Convert.ToDouble(s.Revenue) / 100), 4),
+                                     Value = Math.Round(grp.Sum(s => Convert.ToDouble(s.NonRevenue) == 0 ? 0 : Convert.ToDouble(s.NonRevenue) / 100), 4),
+                                     AdultRevenue = grp.Where(s => s.NonRevenue.Equals(0)).Count(s => s.Class.Equals(17)),
+                                     ChildRevenue = grp.Where(s => s.NonRevenue.Equals(0)).Count(s => s.Class.Equals(33)),
+                                     AdultNonRevenue = grp.Where(s => s.Revenue.Equals(0)).Count(s => s.Class.Equals(999)),
+                                     SchlorNonRevenue = grp.Where(s => s.Revenue.Equals(0)).Count(s => s.Class.Equals(997)),
+                                     AdultTransfer = grp.Where(s => s.Transfers.Equals(1)).Count(s => s.Class.Equals(995)),
+                                     ScholarTransfer = grp.Where(s => s.Transfers.Equals(1)).Count(s => s.Class.Equals(996)),
+                                 };
+                result.AddRange(groupByDot);
+            }
+
+            result.ForEach(x => x.Total = Math.Round((Convert.ToDouble(result.Where(q => q.DutyID.Equals(x.DutyID)).Sum(e => (e.Cash)))) + (Convert.ToDouble(result.Where(q => q.DutyID.Equals(x.DutyID)).Sum(e => (e.Value)))), 4));
+
+            var ordered = result.OrderBy(s => s.DutyID);
+
+            if (ordered.Any())
+            {
+                foreach (var res in ordered)
+                {
+                    res.DateRangeFilter = filterDateRange;
+                    res.DutyFilter = filterDuties;
+                    res.companyName = companyName;
+                    table1.Rows.Add(
+                            res.DutyID,
+                            res.JourneyID,
+                            res.Cash,
+                            res.Value,
+                            res.AdultRevenue,
+                            res.ChildRevenue,
+                            res.AdultNonRevenue,
+                            res.SchlorNonRevenue,
+                            res.AdultTransfer,
+                            res.ScholarTransfer,
                             res.companyName,
                             res.DateRangeFilter,
                             res.DutyFilter,
@@ -1014,6 +1101,70 @@ namespace Reports.Services
                     if (dr["int4_NonRevenue"] != null && dr["int4_NonRevenue"].ToString() != string.Empty)
                     {
                         sch.NonRevenue = float.Parse(dr["int4_NonRevenue"].ToString(), CultureInfo.InvariantCulture.NumberFormat);
+                    }
+
+                    if (dr["int2_Class"] != null && dr["int2_Class"].ToString() != string.Empty)
+                    {
+                        sch.Class = Convert.ToInt32(dr["int2_Class"]);
+                    }
+
+                    schs.Add(sch);
+                }
+            }
+            finally
+            {
+                myConnection.Close();
+            }
+            return schs;
+        }
+
+        public List<RevenueByDuty> GetRevenueByDutyAllDetails(string connKey, SchVsOprViewModel filter, string spName)
+        {
+            var schs = new List<RevenueByDuty>();
+            var myConnection = new SqlConnection(GetConnectionString(connKey));
+
+            try
+            {
+                var cmd = new SqlCommand(spName, myConnection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+
+                cmd.Parameters.AddWithValue("@fromDate", CustomDateTime.ConvertStringToDateSaFormat(filter.StartDate).ToString("yyyy-MM-dd"));
+                cmd.Parameters.AddWithValue("@toDate", CustomDateTime.ConvertStringToDateSaFormat(filter.EndDate).ToString("yyyy-MM-dd"));
+                cmd.Parameters.AddWithValue("@dutyIds", filter.DutiesSelected != null ? string.Join(",", filter.DutiesSelected) : "");
+                cmd.CommandTimeout = 500000;
+
+                myConnection.Open();
+                SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+
+                while (dr.Read())
+                {
+                    var sch = new RevenueByDuty();
+
+                    if (dr["int4_DutyId"] != null && dr["int4_DutyId"].ToString() != string.Empty)
+                    {
+                        sch.DutyID = dr["int4_DutyId"].ToString();
+                    }
+
+                    if (dr["int2_JourneyID"] != null && dr["int2_JourneyID"].ToString() != string.Empty)
+                    {
+                        sch.JourneyID = dr["int2_JourneyID"].ToString();
+                    }
+
+                    if (dr["int4_Revenue"] != null && dr["int4_Revenue"].ToString() != string.Empty)
+                    {
+                        sch.Revenue = float.Parse(dr["int4_Revenue"].ToString(), CultureInfo.InvariantCulture.NumberFormat);
+                    }
+
+                    if (dr["int4_NonRevenue"] != null && dr["int4_NonRevenue"].ToString() != string.Empty)
+                    {
+                        sch.NonRevenue = float.Parse(dr["int4_NonRevenue"].ToString(), CultureInfo.InvariantCulture.NumberFormat);
+                    }
+
+                    if (dr["int2_Transfers"] != null && dr["int2_Transfers"].ToString() != string.Empty)
+                    {
+                        sch.Transfers = float.Parse(dr["int2_Transfers"].ToString(), CultureInfo.InvariantCulture.NumberFormat);
                     }
 
                     if (dr["int2_Class"] != null && dr["int2_Class"].ToString() != string.Empty)

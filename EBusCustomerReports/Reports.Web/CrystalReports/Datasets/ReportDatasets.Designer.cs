@@ -11684,6 +11684,10 @@ namespace Reports.Web.CrystalReports.Datasets {
             
             private global::System.Data.DataColumn columnScholorNonRevenue;
             
+            private global::System.Data.DataColumn columnAdultTransfer;
+            
+            private global::System.Data.DataColumn columnScholorTransfer;
+            
             private global::System.Data.DataColumn columncompanyName;
             
             private global::System.Data.DataColumn columnDateRangeFilter;
@@ -11799,6 +11803,22 @@ namespace Reports.Web.CrystalReports.Datasets {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn AdultTransferColumn {
+                get {
+                    return this.columnAdultTransfer;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn ScholorTransferColumn {
+                get {
+                    return this.columnScholorTransfer;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public global::System.Data.DataColumn companyNameColumn {
                 get {
                     return this.columncompanyName;
@@ -11866,7 +11886,7 @@ namespace Reports.Web.CrystalReports.Datasets {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public RevByDutyRow AddRevByDutyRow(string dateSelected, double int4_DutyId, string str4_JourneyNo, double Cash, double Value, double AdultRevenue, double ChildRevenue, double AdultNonRevenue, double ScholorNonRevenue, string companyName, string DateRangeFilter, string filterDuties, double Total) {
+            public RevByDutyRow AddRevByDutyRow(string dateSelected, double int4_DutyId, string str4_JourneyNo, double Cash, double Value, double AdultRevenue, double ChildRevenue, double AdultNonRevenue, double ScholorNonRevenue, int AdultTransfer, int ScholorTransfer, string companyName, string DateRangeFilter, string filterDuties, double Total) {
                 RevByDutyRow rowRevByDutyRow = ((RevByDutyRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         dateSelected,
@@ -11878,6 +11898,8 @@ namespace Reports.Web.CrystalReports.Datasets {
                         ChildRevenue,
                         AdultNonRevenue,
                         ScholorNonRevenue,
+                        AdultTransfer,
+                        ScholorTransfer,
                         companyName,
                         DateRangeFilter,
                         filterDuties,
@@ -11913,6 +11935,8 @@ namespace Reports.Web.CrystalReports.Datasets {
                 this.columnChildRevenue = base.Columns["ChildRevenue"];
                 this.columnAdultNonRevenue = base.Columns["AdultNonRevenue"];
                 this.columnScholorNonRevenue = base.Columns["ScholorNonRevenue"];
+                this.columnAdultTransfer = base.Columns["AdultTransfer"];
+                this.columnScholorTransfer = base.Columns["ScholorTransfer"];
                 this.columncompanyName = base.Columns["companyName"];
                 this.columnDateRangeFilter = base.Columns["DateRangeFilter"];
                 this.columnfilterDuties = base.Columns["filterDuties"];
@@ -11940,6 +11964,10 @@ namespace Reports.Web.CrystalReports.Datasets {
                 base.Columns.Add(this.columnAdultNonRevenue);
                 this.columnScholorNonRevenue = new global::System.Data.DataColumn("ScholorNonRevenue", typeof(double), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnScholorNonRevenue);
+                this.columnAdultTransfer = new global::System.Data.DataColumn("AdultTransfer", typeof(int), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnAdultTransfer);
+                this.columnScholorTransfer = new global::System.Data.DataColumn("ScholorTransfer", typeof(int), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnScholorTransfer);
                 this.columncompanyName = new global::System.Data.DataColumn("companyName", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columncompanyName);
                 this.columnDateRangeFilter = new global::System.Data.DataColumn("DateRangeFilter", typeof(string), null, global::System.Data.MappingType.Element);
@@ -24461,6 +24489,38 @@ namespace Reports.Web.CrystalReports.Datasets {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public int AdultTransfer {
+                get {
+                    try {
+                        return ((int)(this[this.tableRevByDuty.AdultTransferColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'AdultTransfer\' in table \'RevByDuty\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableRevByDuty.AdultTransferColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public int ScholorTransfer {
+                get {
+                    try {
+                        return ((int)(this[this.tableRevByDuty.ScholorTransferColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'ScholorTransfer\' in table \'RevByDuty\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableRevByDuty.ScholorTransferColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public string companyName {
                 get {
                     try {
@@ -24629,6 +24689,30 @@ namespace Reports.Web.CrystalReports.Datasets {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void SetScholorNonRevenueNull() {
                 this[this.tableRevByDuty.ScholorNonRevenueColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsAdultTransferNull() {
+                return this.IsNull(this.tableRevByDuty.AdultTransferColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetAdultTransferNull() {
+                this[this.tableRevByDuty.AdultTransferColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsScholorTransferNull() {
+                return this.IsNull(this.tableRevByDuty.ScholorTransferColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetScholorTransferNull() {
+                this[this.tableRevByDuty.ScholorTransferColumn] = global::System.Convert.DBNull;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]

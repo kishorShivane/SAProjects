@@ -144,10 +144,11 @@
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\ReportController.cs" />
-    <Compile Include="CrystalReports\Datasets\ReportDatasets.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
+    <Compile Include="CrystalReports\Datasets\ReportDatasets.cs">
       <DependentUpon>ReportDatasets.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="CrystalReports\Datasets\ReportDatasets.designer.cs">
+      <DependentUpon>ReportDatasets.cs</DependentUpon>
     </Compile>
     <Compile Include="CrystalReports\Rpt\Cashier\CashierReconciliationSummay.cs">
       <DependentUpon>CashierReconciliationSummay.rpt</DependentUpon>
@@ -271,6 +272,12 @@
     </Compile>
     <Compile Include="CrystalReports\Rpt\NotScheduledButOperatedAtamelangTGX.cs">
       <DependentUpon>NotScheduledButOperatedAtamelangTGX.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="CrystalReports\Rpt\RevenueByDutyAll.cs">
+      <DependentUpon>RevenueByDutyAll.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
       <SubType>Component</SubType>
       <DesignTime>True</DesignTime>
@@ -416,6 +423,17 @@
     <Content Include="Scripts\common.js" />
     <Content Include="Scripts\Dashboard\metisMenu.min.js" />
     <Content Include="Scripts\Dashboard\sb-admin-2.js" />
+    <Content Include="CrystalReports\Datasets\ReportDatasets.xsc">
+      <DependentUpon>ReportDatasets.xsd</DependentUpon>
+    </Content>
+    <None Include="CrystalReports\Datasets\ReportDatasets.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>ReportDatasets1.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <Content Include="CrystalReports\Datasets\ReportDatasets.xss">
+      <DependentUpon>ReportDatasets.xsd</DependentUpon>
+    </Content>
     <None Include="Properties\PublishProfiles\EbusDuty.pubxml" />
     <None Include="Scripts\JqueryVal\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\dateHelper.js" />
@@ -553,6 +571,7 @@
     <Content Include="Views\ServiceRequest\_AddEditServiceRequest.cshtml" />
     <Content Include="Views\ServiceRequest\PrintStaffs.cshtml" />
     <Content Include="Views\ServiceRequest\_ListServiceRquestAudit.cshtml" />
+    <Content Include="Views\Report\RevenueByDutyAll.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -667,6 +686,10 @@
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>NotScheduledButOperatedAtamelangTGX.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="CrystalReports\Rpt\RevenueByDutyAll.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>RevenueByDutyAll.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="CrystalReports\Rpt\SalesAnalysis\CashVsSmartCardUsageByRoute.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>CashVsSmartCardUsageByRoute.cs</LastGenOutput>
@@ -744,17 +767,6 @@
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="CrystalReports\Datasets\ReportDatasets.xsc">
-      <DependentUpon>ReportDatasets.xsd</DependentUpon>
-    </Content>
-    <None Include="CrystalReports\Datasets\ReportDatasets.xsd">
-      <SubType>Designer</SubType>
-      <Generator>MSDataSetGenerator</Generator>
-      <LastGenOutput>ReportDatasets.Designer.cs</LastGenOutput>
-    </None>
-    <Content Include="CrystalReports\Datasets\ReportDatasets.xss">
-      <DependentUpon>ReportDatasets.xsd</DependentUpon>
-    </Content>
     <Content Include="Views\Shared\_HomeLayout.cshtml" />
     <Content Include="Views\Report\ScheduledVsOperated.cshtml" />
   </ItemGroup>

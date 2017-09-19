@@ -80,27 +80,30 @@ namespace Reports.Services
         public DataTable RevenueByDutyDataSet()
         {
             var table1 = new DataTable("RevByDuty");
-            //table1.Columns.Add("dateSelected"); //0
-            table1.Columns.Add("int4_DutyId"); //1
+            table1.Columns.Add("int4_DutyId"); //0
             table1.Columns[0].DataType = typeof(double);
-            table1.Columns.Add("str4_JourneyNo");//2
-            table1.Columns.Add("Cash"); //3
+            table1.Columns.Add("str4_JourneyNo");//1
+            table1.Columns.Add("Cash"); //2
             table1.Columns[2].DataType = typeof(double);
-            table1.Columns.Add("Value"); //4
+            table1.Columns.Add("Value"); //3
             table1.Columns[3].DataType = typeof(double);
-            table1.Columns.Add("AdultRevenue"); //5
+            table1.Columns.Add("AdultRevenue"); //4
             table1.Columns[4].DataType = typeof(double);
-            table1.Columns.Add("ChildRevenue"); //6
+            table1.Columns.Add("ChildRevenue"); //5
             table1.Columns[5].DataType = typeof(double);
-            table1.Columns.Add("AdultNonRevenue"); //7
+            table1.Columns.Add("AdultNonRevenue"); //6
             table1.Columns[6].DataType = typeof(double);
-            table1.Columns.Add("ScholorNonRevenue"); //8
+            table1.Columns.Add("ScholorNonRevenue"); //7
             table1.Columns[7].DataType = typeof(double);
-            table1.Columns.Add("companyName");//9
-            table1.Columns.Add("DateRangeFilter");//10
-            table1.Columns.Add("filterDuties");//11
-            table1.Columns.Add("Total"); //12
-            table1.Columns[11].DataType = typeof(double);
+            table1.Columns.Add("AdultTransfer"); //8
+            table1.Columns[8].DataType = typeof(int);
+            table1.Columns.Add("ScholorTransfer"); //9
+            table1.Columns[9].DataType = typeof(int);
+            table1.Columns.Add("companyName");//10
+            table1.Columns.Add("DateRangeFilter");//11
+            table1.Columns.Add("filterDuties");//12
+            table1.Columns.Add("Total"); //13
+            table1.Columns[13].DataType = typeof(double);
             return table1;
         }
 

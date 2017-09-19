@@ -1,6 +1,8 @@
-﻿namespace Reports.Web.CrystalReports.Datasets {
-    
-    
-    public partial class ReportDatasets {
+﻿namespace Reports.Web.CrystalReports.Datasets
+{
+
+
+    public partial class ReportDatasets
+    {
     }
 }

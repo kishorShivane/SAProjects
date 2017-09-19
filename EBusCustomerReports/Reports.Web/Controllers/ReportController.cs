@@ -553,6 +553,17 @@ namespace Reports.Web.Controllers
             return DownloadRevenueByDutyReport(filters, Server.MapPath("~/CrystalReports/Rpt/RevenueByDuty.rpt"), "RevenueByDuty " + DateTime.Now.ToString("dd-MM-yyyy H:mm:ss"), sp8);
         }
 
+        public ActionResult RevenueByDutyAll()
+        {
+            var model = new ReportsService().GetFilter(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey);
+            return View("RevenueByDutyAll", model);
+        }
+        public ActionResult RevenueByDutyAllDownload(SchVsOprViewModel filters)
+        {
+            var key = ((EBusPrinciple)System.Threading.Thread.CurrentPrincipal).Properties.ConnKey.ToString().ToLower();
+            return DownloadRevenueByDutyAllReport(filters, Server.MapPath("~/CrystalReports/Rpt/RevenueByDutyAll.rpt"), "RevenueByDuty " + DateTime.Now.ToString("dd-MM-yyyy H:mm:ss"), sp8);
+        }
+
         //1
         public ActionResult ScheduledVsOperatedReport()
         {
@@ -691,6 +702,137 @@ namespace Reports.Web.Controllers
                 TempData["AlertMessage"] = "show";
                 return RedirectToAction("FullDutySummary", "Report");
             }
+        }
+
+        public void ExportRevenueByDutyAllToExcel(List<RevenueByDuty> collection, string fileName)
+        {
+            string duties = "No Filter Applied", filterdate = "", customer = "";
+            if (collection.Any())
+            {
+                duties = collection.FirstOrDefault().DutyFilter;
+                filterdate = collection.FirstOrDefault().DateRangeFilter;
+                customer = collection.FirstOrDefault().companyName;
+            }
+            StringBuilder htmlcontent = new StringBuilder();
+            System.Web.HttpContext.Current.Response.Clear();
+            System.Web.HttpContext.Current.Response.ClearContent();
+            System.Web.HttpContext.Current.Response.ClearHeaders();
+            System.Web.HttpContext.Current.Response.Buffer = true;
+            System.Web.HttpContext.Current.Response.ContentType = "application/ms-excel";
+            System.Web.HttpContext.Current.Response.AddHeader("Content-Disposition", "attachment;filename=" + fileName + ".xls");
+
+            System.Web.HttpContext.Current.Response.Charset = "utf-8";
+            System.Web.HttpContext.Current.Response.ContentEncoding = System.Text.Encoding.GetEncoding("windows-1250");
+            htmlcontent.Append(@"<!DOCTYPE HTML PUBLIC ""-//W3C//DTD HTML 4.0 Transitional//EN"">");
+            ////sets font
+            htmlcontent.Append("<font style='font-size:10.0pt; font-family:Calibri;'>");
+            htmlcontent.Append("<BR><BR><BR>");
+            //sets the table border, cell spacing, border color, font of the text, background, foreground, font height
+            htmlcontent.Append("<Table>");
+            htmlcontent.Append("<tr><td style='width:100px;'</td><td style='width:100px;'</td><td style='width:100px;'</td><td style='width:100px;'</td><td style='width:50px;'</td><td style='width:100px;'</td><td style='width:100px;'</td><td style='width:100px;'</td><td style='width:100px;'</td><td style='width:100px;'</td></tr>");
+            htmlcontent.Append("<tr><td colspan='8' align='center' style='width:750px;'><b> REVENUE BY DUTY</b></td><td rowspan='6' colspan='2' style='width:200px;' align='right'><img src='http://41.76.211.195/EBusBackOffice/Images/logo_comp1.png' /></td></tr>");
+            htmlcontent.Append("<tr><td colspan='8' align='center' style='width:750px;'><b>" + customer + "</b></td></tr>");
+            htmlcontent.Append("<tr><td colspan='8' style='width:750px;'><b>" + filterdate + "</b></td></tr>");
+            htmlcontent.Append("<tr><td colspan='8' style='width:750px;'><b>" + duties + "</b></td></tr>");
+            htmlcontent.Append("<tr><td colspan='8' style='width:750px;'></td></tr>");
+            collection.OrderBy(x => x.DutyID).ThenBy(x => x.Total);
+            //am getting my grid's column headers
+            int columnscount = collection.Count;
+            var prevDuty = ""; double prevTotal = 0;
+            double revTotal = 0, nonRevTotal = 0;
+            double adultRevTotal = 0, childRevTotal = 0, adultNonRevTotal = 0, schNonRevTotal = 0, adultTrnsferTotal = 0, scholarTransferTotal = 0;
+            for (var i = 0; i < columnscount; i++)
+            {
+                var curItem = collection[i];
+                if (prevDuty != curItem.DutyID && prevTotal != curItem.Total)
+                {
+                    if (i != 0)
+                    {
+                        //last sub total row
+                        htmlcontent.Append("<tr><td style='width:100px;border-left: thin solid black;border-bottom: thin solid black;'><b>Sub Totals:</b></td>");
+                        htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'><u>" + adultRevTotal + "</u></td>");
+                        htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'><u>" + childRevTotal + "</u></td>");
+                        htmlcontent.Append("<td align='right' style='width:100px;border-bottom: thin solid black;border-bottom: thin solid black;'><u>R " + revTotal + "</u></td>");
+                        htmlcontent.Append("<td style='width:50px;border-bottom: thin solid black;'></td>");
+                        htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'><u>" + adultNonRevTotal + "</u></td>");
+                        htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'><u>" + adultTrnsferTotal + "</u></td>");
+                        htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'><u>" + schNonRevTotal + "</u></td>");
+                        htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'><u>" + scholarTransferTotal + "</u></td>");
+                        htmlcontent.Append("<td align='right' style='width:100px;border-right: thin solid black;border-bottom: thin solid black;'><u>R " + nonRevTotal + "</u></td></tr>");
+                        revTotal = 0; nonRevTotal = 0; adultRevTotal = 0; childRevTotal = 0; adultNonRevTotal = 0; schNonRevTotal = 0; adultTrnsferTotal = 0; scholarTransferTotal = 0;
+                    }
+                    //New row started
+                    htmlcontent.Append("<tr><td colspan='10' style='width:750px;'></td></tr>");
+                    htmlcontent.Append("<tr><td colspan='2' style='width:200px;border-left: thin solid black;border-top: thin solid black;border-bottom: thin solid black;'><b>Duty Number:</b>" + curItem.DutyID + "</td>");
+                    htmlcontent.Append("<td align='left' style='width:100px;border-top: thin solid black;border-bottom: thin solid black;'></td>");
+                    htmlcontent.Append("<td style='width:100px;border-top: thin solid black;border-bottom: thin solid black;'></td>");
+                    htmlcontent.Append("<td style='width:50px;border-top: thin solid black;border-bottom: thin solid black'></td>");
+                    htmlcontent.Append("<td style='width:100px;border-top: thin solid black;border-bottom: thin solid black;'></td>");
+                    htmlcontent.Append("<td style='width:100px;border-top: thin solid black;border-bottom: thin solid black;'></td>");
+                    htmlcontent.Append("<td style='width:100px;border-top: thin solid black;border-bottom: thin solid black;'></td>");
+                    htmlcontent.Append("<td style='width:100px;border-top: thin solid black;border-bottom: thin solid black' align='right' ><b>Total:</b></td>");
+                    htmlcontent.Append("<td style='width:100px;border-top: thin solid black;border-bottom: thin solid black;border-right: thin solid black;'>R " + curItem.Total + "</td></tr>");
+
+                    //Next to header
+                    htmlcontent.Append("<tr><td style='width:100px;border-left: thin solid black;border-top: thin solid black;border-bottom: thin solid black;border-right: thin solid black;' align='right'><b>Journey</b></td>");
+                    htmlcontent.Append("<td colspan='3' align='center' style='width:100px;border-left: thin solid black;border-top: thin solid black;border-bottom: thin solid black;border-right: thin solid black;'><b>Revenue</b></td> ");
+                    htmlcontent.Append("<td style='width:50px;border-left: thin solid black;border-top: thin solid black;border-bottom: thin solid black;border-right: thin solid black;'></td> ");
+                    htmlcontent.Append("<td colspan='5' align='center' style='width:100px;border-left: thin solid black;border-top: thin solid black;border-bottom: thin solid black;border-right: thin solid black;'><b>Non Revenue</b></td></tr>");
+
+                    //Row next to sub header 
+                    htmlcontent.Append("<tr><td align='right' style='width:100px;border-left: thin solid black;border-top: thin solid black;border-bottom: thin solid black;border-right: thin solid black;'></td>");
+                    htmlcontent.Append("<td align='right' style='width:100px;border-left: thin solid black;border-top: thin solid black;border-bottom: thin solid black;border-right: thin solid black;'><b>Adult</b></td>");
+                    htmlcontent.Append("<td align='right' style='width:100px;border-left: thin solid black;border-top: thin solid black;border-bottom: thin solid black;border-right: thin solid black;'><b>Child</b></td>");
+                    htmlcontent.Append("<td align='right' style='width:100px;border-left: thin solid black;border-top: thin solid black;border-bottom: thin solid black;border-right: thin solid black;'><b>Cash</b></td>");
+                    htmlcontent.Append("<td align='right' style='width:50px;border-left: thin solid black;border-top: thin solid black;border-bottom: thin solid black;border-right: thin solid black;'></td>");
+                    htmlcontent.Append("<td align='right' style='width:100px;border-left: thin solid black;border-top: thin solid black;border-bottom: thin solid black;border-right: thin solid black;'><b>Adult</b></td>");
+                    htmlcontent.Append("<td align='right' style='width:100px;border-left: thin solid black;border-top: thin solid black;border-bottom: thin solid black;border-right: thin solid black;'><b>Adult Transfer</b></td>");
+                    htmlcontent.Append("<td align='right' style='width:100px;border-left: thin solid black;border-top: thin solid black;border-bottom: thin solid black;border-right: thin solid black;'><b>Scholar</b></td>");
+                    htmlcontent.Append("<td align='right' style='width:100px;border-left: thin solid black;border-top: thin solid black;border-bottom: thin solid black;border-right: thin solid black;'><b>Scholar Transfer</b></td>");
+                    htmlcontent.Append("<td align='right' style='width:100px;border-left: thin solid black;border-top: thin solid black;border-bottom: thin solid black;border-right: thin solid black;'><b>Value</b></td></tr>");
+                }
+                revTotal += curItem.Cash;
+                nonRevTotal += curItem.Value;
+                adultRevTotal += curItem.AdultRevenue;
+                childRevTotal += curItem.ChildRevenue;
+                adultNonRevTotal += curItem.AdultNonRevenue;
+                schNonRevTotal += curItem.SchlorNonRevenue;
+                adultTrnsferTotal += curItem.AdultTransfer;
+                scholarTransferTotal += curItem.ScholarTransfer;
+
+                htmlcontent.Append("<tr><td style='width:100px;border-left: thin solid black;border-bottom: thin solid black;'>" + curItem.JourneyID + "</td>");
+                htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'>" + curItem.AdultRevenue + "</td>");
+                htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'>" + curItem.ChildRevenue + "</td>");
+                htmlcontent.Append("<td align='right' style='width:100px;border-bottom: thin solid black;'>R " + curItem.Cash + "</td>");
+                htmlcontent.Append("<td style='width:50px;border-bottom: thin solid black;'></td>");
+                htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'>" + curItem.AdultNonRevenue + "</td>");
+                htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'>" + curItem.AdultTransfer + "</td>");
+                htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'>" + curItem.SchlorNonRevenue + "</td>");
+                htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'>" + curItem.ScholarTransfer + "</td>");
+                htmlcontent.Append("<td align='right' style='width:100px;border-right: thin solid black;border-bottom: thin solid black;'>R " + curItem.Value + "</td></tr>");
+                prevDuty = curItem.DutyID;
+                prevTotal = curItem.Total;
+
+                if (i == columnscount - 1)
+                {
+                    htmlcontent.Append("<tr><td style='width:100px;border-left: thin solid black;border-bottom: thin solid black;'><b>Sub Totals:</b></td>");
+                    htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'><u>" + adultRevTotal + "</u></td>");
+                    htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'><u>" + childRevTotal + "</u></td>");
+                    htmlcontent.Append("<td align='right' style='width:100px;border-bottom: thin solid black;border-bottom: thin solid black;'><u>R " + revTotal + "</u></td>");
+                    htmlcontent.Append("<td style='width:50px;border-bottom: thin solid black;'></td>");
+                    htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'><u>" + adultNonRevTotal + "</u></td>");
+                    htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'><u>" + adultTrnsferTotal + "</u></td>");
+                    htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'><u>" + schNonRevTotal + "</u></td>");
+                    htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'><u>" + scholarTransferTotal + "</u></td>");
+                    htmlcontent.Append("<td align='right' style='width:100px;border-right: thin solid black;border-bottom: thin solid black;'><u>R " + nonRevTotal + "</u></td></tr>");
+                    revTotal = 0; nonRevTotal = 0; adultRevTotal = 0; childRevTotal = 0; adultNonRevTotal = 0; schNonRevTotal = 0;adultTrnsferTotal = 0; scholarTransferTotal = 0;
+                }
+            }
+            htmlcontent.Append("</Table>");
+            htmlcontent.Append("</font>");
+            System.Web.HttpContext.Current.Response.Write(htmlcontent.ToString());
+            System.Web.HttpContext.Current.Response.Flush();
+            System.Web.HttpContext.Current.Response.End();
         }
 
         public void ExportRevenueByDutyToExcel(List<RevenueByDuty> collection, string fileName)
@@ -862,6 +1004,59 @@ namespace Reports.Web.Controllers
             {
                 TempData["AlertMessage"] = "show";
                 return RedirectToAction("RevenueByDuty", "Report");
+            }
+        }
+
+        public ActionResult DownloadRevenueByDutyAllReport(SchVsOprViewModel filters, string rptPath, string fileName, string spName)
+        {
+            var conKey = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey;
+            var comp = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.CompanyName;
+
+            var service = new ReportsService();
+
+            var result = service.RevenueByDutyAll(conKey, filters, spName, comp);//full duty report
+            var ds = result.Item1;
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                var fileType = filters.ExcelOrPDF ? CrystalDecisions.Shared.ExportFormatType.PortableDocFormat : CrystalDecisions.Shared.ExportFormatType.Excel;
+
+                if (fileType != CrystalDecisions.Shared.ExportFormatType.Excel)
+                {
+                    var rptH = new ReportClass
+                    {
+                        FileName = rptPath
+                    };
+
+                    try
+                    {
+                        rptH.Load();
+
+                        rptH.SetDataSource(ds.Tables[0]);
+
+                        rptH.ExportToHttpResponse(fileType, System.Web.HttpContext.Current.Response, true, fileName);
+
+                        return new DownloadPdfResult(rptH, fileName);
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
+                    finally
+                    {
+                        rptH.Close();
+                        rptH.Dispose();
+                    }
+                }
+                else
+                {
+                    ExportRevenueByDutyAllToExcel(result.Item2, fileName);
+                    return RedirectToAction("RevenueByDutyAll", "Report"); ;
+                }
+            }
+            else
+            {
+                TempData["AlertMessage"] = "show";
+                return RedirectToAction("RevenueByDutyAll", "Report");
             }
         }
 

@@ -86,7 +86,7 @@
                         </a>
                         <ul class="dropdown-menu dropdown-user">
                             <li>
-                                <a href="@Url.Action("Logout", "Login")"><span class="glyphicon glyphicon-off" aria-hidden="true"> Logout</span></a>
+                                <a href="@Url.Action("Logout", "Login" )"><span class="glyphicon glyphicon-off" aria-hidden="true"> Logout</span></a>
                             </li>
                         </ul>
                     </li>
@@ -160,37 +160,37 @@
                                     @if (key.ToString().ToLower().Equals("atamelang70"))
                                     {
                                         <li>
-                                            <a href="@Url.Action("CashierReportAt", "Report")">Cashier Report</a>
+                                            <a href="@Url.Action("CashierReportAt", "Report" )">Cashier Report</a>
                                         </li>
                                         <li>
-                                            <a href="@Url.Action("NewCashierReportAt", "Report")">New Cashier Report</a>
+                                            <a href="@Url.Action("NewCashierReportAt", "Report" )">New Cashier Report</a>
                                         </li>
                                         <li>
-                                            <a href="@Url.Action("DailyAuditByCashierTerminal", "Report")">Daily Audit By Cashier Terminal</a>
+                                            <a href="@Url.Action("DailyAuditByCashierTerminal", "Report" )">Daily Audit By Cashier Terminal</a>
                                         </li>
                                         <li>
-                                            <a href="@Url.Action("DailyAuditByCashierTerminalSummary", "Report")">Daily Audit By Cashier Terminal Summary</a>
+                                            <a href="@Url.Action("DailyAuditByCashierTerminalSummary", "Report" )">Daily Audit By Cashier Terminal Summary</a>
                                         </li>
                                         <li>
-                                            <a href="@Url.Action("DailyAuditAtamelangReport", "Report")">Daily Audit</a>
+                                            <a href="@Url.Action("DailyAuditAtamelangReport", "Report" )">Daily Audit</a>
                                         </li>
                                     }
                                     else if (key.ToString().ToLower().Equals("mthonjaneni95"))
                                     {
                                         <li>
-                                            <a href="@Url.Action("CashierReportAt", "Report")">Cashier Report</a>
+                                            <a href="@Url.Action("CashierReportAt", "Report" )">Cashier Report</a>
                                         </li>
                                         <li>
-                                            <a href="@Url.Action("NewCashierReportAt", "Report")">New Cashier Report</a>
+                                            <a href="@Url.Action("NewCashierReportAt", "Report" )">New Cashier Report</a>
                                         </li>
                                         <li>
-                                            <a href="@Url.Action("DailyAuditAtamelangReport", "Report")">Daily Audit</a>
+                                            <a href="@Url.Action("DailyAuditAtamelangReport", "Report" )">Daily Audit</a>
                                         </li>
                                     }
                                     else
                                     {
                                         <li>
-                                            <a href="@Url.Action("CashierReport", "Report")"> Cashier Report </a>
+                                            <a href="@Url.Action("CashierReport", "Report" )"> Cashier Report </a>
                                         </li>
                                     }
                                     <li>
@@ -229,18 +229,28 @@
                                     @if (!key.ToString().ToLower().Equals("atamelang70") && !key.ToString().ToLower().Equals("mthonjaneni95"))
                                     {
                                         <li>
-                                            <a href="@Url.Action("DailyAuditReport", "Report")">Daily Audit</a>
+                                            <a href="@Url.Action("DailyAuditReport", "Report" )">Daily Audit</a>
                                         </li>
                                     }
                                     else
                                     {
                                         <li>
-                                            <a href="@Url.Action("CashierReconciliation", "Report")">Cashier Reconciliation</a>
+                                            <a href="@Url.Action("CashierReconciliation", "Report" )">Cashier Reconciliation</a>
                                         </li>
                                     }
-                                    <li>
-                                        <a href="@Url.Action("RevenueByDuty", "Report" )">Revenue By Duty</a>
-                                    </li>
+                                    @if (key.ToString().ToLower().Equals("atamelang70") || key.ToString().ToLower().Equals("gautengcoaches40"))
+                                    {
+                                        <li>
+                                            <a href="@Url.Action("RevenueByDuty", "Report" )">Revenue By Duty</a>
+                                        </li>
+                                    }
+                                    else
+                                    {
+                                        <li>
+                                            <a href="@Url.Action("RevenueByDutyAll", "Report" )">Revenue By Duty</a>
+                                        </li>
+                                    }
+
                                     <li>
                                         <a href="@Url.Action("DailyInspectorReport", "Report" )">Daily Inspector Report</a>
                                     </li>
@@ -263,16 +273,16 @@
                                 <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i>Graphical Reports</a>
                                 <ul class="nav nav-second-level">
                                     <li>
-                                        <a href="@Url.Action("AuditStatus", "Report" )" ">Audit Communication Status</a>
+                                        <a href="@Url.Action("AuditStatus", "Report" )">Audit Communication Status</a>
                                     </li>
                                     <li>
-                                        <a href="@Url.Action("CashVsSmartCardUsageByRoute", "Report" )" ">Cash vs Smart Card Usage by Route</a>
+                                        <a href="@Url.Action("CashVsSmartCardUsageByRoute", "Report" )">Cash vs Smart Card Usage by Route</a>
                                     </li>
                                     <li>
-                                        <a href="@Url.Action("ClassSummaryByClassTypeGraph", "Report" )" ">Class Summary By Class Type</a>
+                                        <a href="@Url.Action("ClassSummaryByClassTypeGraph", "Report" )">Class Summary By Class Type</a>
                                     </li>
                                     <li>
-                                        <a href="@Url.Action("MonthRevenueGraph", "Report" )" ">Monthly Revenue Summary</a>
+                                        <a href="@Url.Action("MonthRevenueGraph", "Report" )">Monthly Revenue Summary</a>
                                     </li>
                                     <li>
                                         <a href="@Url.Action("Index", "Asset" )"><i class="><i class="fa fa-clock-o fa-fw"></i> Asset Master</a>
