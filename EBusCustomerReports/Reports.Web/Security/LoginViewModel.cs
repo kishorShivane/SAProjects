@@ -11,5 +11,7 @@ namespace ViewModels
         public string Role { get; set; }
         public string CompanyName { get; set; }
         public string ConnKey { get; set; }
+        public List<string> AccessCodes { get; set; }
+        public int RoleID { get; set; }
     }
 }

@@ -141,6 +141,7 @@
     <Compile Include="Controllers\SchedulingSystemController.cs" />
     <Compile Include="Controllers\ServiceRequestController.cs" />
     <Compile Include="Controllers\StaffMasterController.cs" />
+    <Compile Include="Controllers\UserAdministrationController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\ReportController.cs" />
@@ -572,6 +573,9 @@
     <Content Include="Views\ServiceRequest\PrintStaffs.cshtml" />
     <Content Include="Views\ServiceRequest\_ListServiceRquestAudit.cshtml" />
     <Content Include="Views\Report\RevenueByDutyAll.cshtml" />
+    <Content Include="Views\UserAdministration\ViewUsers.cshtml" />
+    <Content Include="Views\UserAdministration\_AddEditUser.cshtml" />
+    <Content Include="Views\UserAdministration\_ViewAccessRights.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

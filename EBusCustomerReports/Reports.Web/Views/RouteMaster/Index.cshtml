@@ -2,6 +2,8 @@
 @{
     Layout = "~/Views/Shared/_HomeLayout.cshtml";
     ViewBag.Title = "Route Master";
+    var accessCodes = ((Helpers.Security.EBusPrinciple)System.Threading.Thread.CurrentPrincipal).Properties.AccessCodes;
+}
 }
 <style>
     .popover {
@@ -171,7 +173,9 @@
                                             <th>Main Route Number</th>
                                             <th>Main Route Name</th>
                                             <th>Main Route Stages</th>
-                                            <th>View</th>
+                                            @if (accessCodes.Contains("RMVSB"))
+                                            {
+                                                <th>View</th> }
                                         </tr>
                                     </thead>
                                     <tbody></tbody>
@@ -194,6 +198,10 @@
     var divRouteEditor = $("div#divRouteEditor");
     var divSubRoute = $('div#divSubRoute');
     var divAddEditSubRoute = $("div#divAddEditSubRoute");
+
+    var viewSubRoutesAllowed = "@accessCodes.Contains("RMVSB")";
+    var editSubRoutesAllowed = "@accessCodes.Contains("RMESB")";
+    var deleteSubRoutesAllowed = "@accessCodes.Contains("RMDSB")";
 
     $(document).ready(function () {
         SearchMainRoutes();
@@ -256,7 +264,11 @@
                             var stages = JSON.stringify(CurrentItem.RouteStages).replace(/\"/g, "##");
                             rows = rows + "<tr><td><span id='lblRouteNumber'>" + CurrentItem.RouteNumber + "</span></td><td><span id='lblRouteDetail'>" + CurrentItem.RouteDetail + "</span></td>";
                             rows = rows + "<td><a data-placement='left' data-toggle='popover' data-container='body' data-placement='left' data-html='true' id='login'>Main Route Stages</a><input type='hidden' value='" + stages + "' id='hdnMainRoute' /></td>";
-                            rows = rows + "<td><a id='lnkRouteView' class='linkView' value='" + CurrentItem.RouteNumber + "'><span class='fa-stack fa-sm '><i class='fa fa-plus fa-stack-1x '></i></span></a></td><tr>";
+                            if(viewSubRoutesAllowed != "False")
+                            {
+                                rows = rows + "<td><a id='lnkRouteView' class='linkView' value='" + CurrentItem.RouteNumber + "'><span class='fa-stack fa-sm '><i class='fa fa-plus fa-stack-1x '></i></span></a></td>"
+                            }
+                            rows = rows + "<tr>";
                         });
 
                         tableBody.html("").html(rows);
@@ -351,9 +363,14 @@
                     table.show();
                     $(result).each(function (index) {
                         var CurrentItem = this;
-                        rows = rows + "<tr><td><span id='lblSubRouteNumber'>" + CurrentItem.SubRouteNumber + "</span></td><td><span id='lblSubRouteDetail'>" + CurrentItem.SubRouteDetail + "</span><input type='hidden' id='hdnStartStage' value='" + CurrentItem.StartStage + "'/><input type='hidden' id='hdnEndStage' value='" + CurrentItem.EndStage + "'/><input type='hidden' id='hdnMainRouteNumber' value='" + CurrentItem.MainRouteNumber + "'/><input type='hidden' id='hdnSubRouteNumber' value='" + CurrentItem.SubRouteNumber + "'/></td>";
-                        rows = rows + "<td><a id='lnkSubRouteEdit' class='linkEdit' value='" + CurrentItem.SubRouteNumber + "'><span class='fa-stack fa-sm '><i class='fa fa-edit fa-stack-1x '></i></span></a><input type='hidden' id='hdnSubRouteName' value='" + CurrentItem.SubRouteName + "'/><input type='hidden' id='hdnDirection' value='" + CurrentItem.Direction + "'/><input type='hidden' id='hdnScheduledDistance' value='" + CurrentItem.ScheduledDistance + "'/><input type='hidden' id='hdnDOTDistance' value='" + CurrentItem.DOTDistance + "'/></td>"
-                        rows = rows + "<td><a id='lnkSubRouteDelete' class='linkDelete' value='" + CurrentItem.SubRouteNumber + "'><span class='fa-stack fa-sm '><i class='fa fa-shopping-basket fa-stack-1x '></i></span></a><input type='hidden' id='hdnDOTNumber' value='" + CurrentItem.DOTNumber + "'/><input type='hidden' id='hdnIsPosition' value='" + CurrentItem.IsPosition + "'/><input type='hidden' id='hdnContract' value='" + CurrentItem.Contract + "'/><input type='hidden' id='hdnDestinationBlind' value='" + CurrentItem.DestinationBlind + "'/></td></tr>"
+                        rows = rows + "<tr><td><span id='lblSubRouteNumber'>" + CurrentItem.SubRouteNumber + "</span></td><td><span id='lblSubRouteDetail'>" + CurrentItem.SubRouteDetail + "</span><input type='hidden' id='hdnStartStage' value='" + CurrentItem.StartStage + "'/><input type='hidden' id='hdnEndStage' value='" + CurrentItem.EndStage + "'/><input type='hidden' id='hdnMainRouteNumber' value='" + CurrentItem.MainRouteNumber + "'/><input type='hidden' id='hdnSubRouteNumber' value='" + CurrentItem.SubRouteNumber + "'/><input type='hidden' id='hdnDOTNumber' value='" + CurrentItem.DOTNumber + "'/><input type='hidden' id='hdnIsPosition' value='" + CurrentItem.IsPosition + "'/><input type='hidden' id='hdnContract' value='" + CurrentItem.Contract + "'/><input type='hidden' id='hdnDestinationBlind' value='" + CurrentItem.DestinationBlind + "'/></td>";
+                        if(editSubRoutesAllowed != "False"){
+                            rows = rows + "<td><a id='lnkSubRouteEdit' class='linkEdit' value='" + CurrentItem.SubRouteNumber + "'><span class='fa-stack fa-sm '><i class='fa fa-edit fa-stack-1x '></i></span></a><input type='hidden' id='hdnSubRouteName' value='" + CurrentItem.SubRouteName + "'/><input type='hidden' id='hdnDirection' value='" + CurrentItem.Direction + "'/><input type='hidden' id='hdnScheduledDistance' value='" + CurrentItem.ScheduledDistance + "'/><input type='hidden' id='hdnDOTDistance' value='" + CurrentItem.DOTDistance + "'/></td>"
+                        }
+                        if(deleteSubRoutesAllowed != "False"){
+                            rows = rows + "<td><a id='lnkSubRouteDelete' class='linkDelete' value='" + CurrentItem.SubRouteNumber + "'><span class='fa-stack fa-sm '><i class='fa fa-shopping-basket fa-stack-1x '></i></span></a></td>";
+                        }
+                        rows = rows + "</tr>";
                     });
                     tableBody.html("").html(rows);
                 }

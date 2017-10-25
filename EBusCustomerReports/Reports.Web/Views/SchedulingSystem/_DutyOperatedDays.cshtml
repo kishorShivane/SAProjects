@@ -1,4 +1,6 @@
-﻿<!-- Modal Contents -->
+﻿@{   var accessCodes = ((Helpers.Security.EBusPrinciple)System.Threading.Thread.CurrentPrincipal).Properties.AccessCodes;
+}
+<!-- Modal Contents -->
 <div id="divDutyOperatedDays" class="modal fade ">
     <!-- class modal and fade -->
 
@@ -17,8 +19,11 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="container pull-right"  style="text-align: right;">
-                            <button type="button" class="btn btn-success" id="btnAddOperatedDay">Add Operating Days&nbsp;<i class="fa fa-1x fa-plus"></i></button> &nbsp; &nbsp; &nbsp; &nbsp;
+                        <div class="container pull-right" style="text-align: right;">
+                            @if (accessCodes.Contains("SSMAOD"))
+                            {
+                                <button type="button" class="btn btn-success" id="btnAddOperatedDay">Add Operating Days&nbsp;<i class="fa fa-1x fa-plus"></i></button>
+                            } &nbsp; &nbsp; &nbsp; &nbsp;
                         </div>
                     </div>
                 </div>

@@ -1,0 +1,316 @@
+﻿@model Reports.Services.Models.UserAdministration.UserAdministration
+@{
+    ViewBag.Title = "ViewUsers";
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+}
+
+<style>
+    .thead-inverse th {
+        color: #fff;
+        background-color: #373a3c;
+        text-align: center;
+    }
+
+    .table-striped td {
+        text-align: center;
+    }
+
+    .modal-lg {
+        min-width: 1250px;
+    }
+
+    .transaction {
+        min-width: 900px;
+    }
+
+    .linkEdit {
+        text-decoration: none;
+        cursor: pointer;
+        color: green;
+    }
+
+    .linkDelete {
+        text-decoration: none;
+        cursor: pointer;
+        color: red;
+    }
+
+    .linkView {
+        text-decoration: none;
+        cursor: pointer;
+        color: blue;
+    }
+
+    .tick {
+        text-decoration: none;
+        color: darkgreen;
+    }
+
+    .cross {
+        text-decoration: none;
+        color: darkred;
+    }
+
+    .modal-title {
+        margin: 0;
+        line-height: 1.428571;
+        font-size: medium;
+    }
+
+    .select2 {
+        float: left;
+    }
+
+    .btn {
+        padding: 0px 12px;
+        max-height: 30px;
+    }
+
+    li {
+        list-style-type: none;
+    }
+
+    ul li ul {
+        display: none;
+    }
+</style>
+<script>
+    $(document).ready(function () {
+        $("select.select2").select2({ width: "75%" });
+        $("select.select2Mini").select2({ width: "35%" });
+        $("select.select2Line").select2({ tags: true, width: "75%" });
+    });
+</script>
+<div class="container-fluid">
+    <div id="page-wrapper">
+        <div class="row">
+            <div class="col-lg-12">
+                <h2 class="page-header" style="margin: 10px; color: #337ab7 !important">EBus User Administration</h2>
+            </div>
+        </div>
+        <div class="row" id="divUserAdministration">
+            <div class="panel panel-info">
+                <div class="panel-heading" style="background-color: #337ab7 !important;background-image: none;">
+                    <a data-toggle="collapse" href="#pnlSearch" style="color:white;text-decoration:none;">Search Users</a>
+                </div>
+                <div id="pnlSearch" class="panel-collapse collapse in">
+                    <div class="panel-body">
+                        <div class="row text-center">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon" style="min-width: 90px;">Company</div>
+                                        @Html.DropDownListFor(m => m.Companies, null, new { id = "ddlSearchCompany", @class = "form-control select2", placeholder = "Company" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon" style="min-width: 90px;">Role</div>
+                                        @Html.DropDownListFor(m => m.ApplicationRoles, null, new { id = "ddlSearchApplicationRole", @class = "form-control select2", placeholder = "Application Role" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">User </div>
+                                        <input type="text" class="form-control" placeholder="User" id="txtSearchUser" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <button type="button" class="btn btn-info" id="btnSearch">Search&nbsp;<i class="fa fa-1x fa-search"></i></button> &nbsp; &nbsp; &nbsp; &nbsp;
+                                <button type="button" class="btn btn-danger" id="btnClearSearch">Clear</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <div class="panel" id="divSearchResults">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="container pull-right" style="text-align: right;">
+                                <button type="button" class="btn btn-success" id="btnAddUser">Add User&nbsp;<i class="fa fa-1x fa-plus"></i></button> &nbsp; &nbsp; &nbsp; &nbsp;
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table-responsive">
+                                <table class="table table-striped" id="tblUserResults">
+                                    <thead class="thead-inverse">
+                                        <tr>
+                                            <th>User Name</th>
+                                            <th>Role</th>
+                                            <th>Company</th>
+                                            <th>Edit</th>
+                                            <th>Delete</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@Html.Partial("_AddEditUser", Model)
+<input type="hidden" id="hdnIndexModelTitle" value="" />
+<script>
+    var divAccessRights = $('div#divAccessRights');
+    var divAddEditUser = $('div#divAddEditUser');
+
+    $(document).ready(function () {
+        SearchUsers();
+        AddUser();
+        RemoveHighlightedCssOnFocus();
+        ClearSearchControls();
+        $("button#btnSearch").trigger("click");
+        $("button#btnClear").click(function () {
+            ClearControlValues(divAddEditUser);
+        });
+    });
+
+    //// Functions to open popup
+    //$(document).on("click", "a#lnkUserView", function () {
+    //    GetOperatedDaysForDuty($(this).attr("value"));
+    //    divDutyOperatedDays.find("input#hdnDutyID").attr("value", $(this).attr("value"));
+    //    $("input#hdnIndexModelTitle").attr("value", "Duty: " + $(this).parent().parent().find("span#lblReferenceDutyID").html());
+    //    SetPopupTitle(divDutyOperatedDays, "View Operating Days - ", $("input#hdnIndexModelTitle").attr("value"));
+    //    divDutyOperatedDays.modal('show');
+    //});
+
+    // Functions to open edit window
+    $(document).on("click", "a#lnkUserEdit", function () {
+        debugger;
+        ClearFormValuesInBlock(divAddEditUser);
+        $("input#hdnIndexModelTitle").attr("value", "User Name: " + $(this).parent().parent().find("span#lblUserName").html());
+        BindUserDetails($(this).parent().parent(), $(this).attr("value"));
+        SetPopupTitle(divAddEditUser, "Edit User - ", $("input#hdnIndexModelTitle").attr("value"));
+        divAddEditUser.modal('show');
+    });
+
+    //Funcions to delete
+    $(document).on("click", "a#lnkUserDelete", function () {
+        debugger;
+        var status = confirm("You are about to delete this User!");
+        if (status) {
+            DeleteUser($(this).attr("value"));
+        }
+    });
+
+    function SetPopupTitle(popup, title, nav) {
+        popup.find("div.modal-title").html("<span style='font-weight: bolder;text-align: right;font-size: larger;'>" + title + "</span>" + nav);
+    }
+
+    function ClearSearchControls() {
+        $("button#btnClearSearch").click(function () {
+            $("select#ddlSearchCompany").val("0").change();
+            $("input#txtSearchUser").val("");
+            $("select#ddlSearchApplicationRole").val("0").change();
+            $("button#btnSearch").trigger("click");
+        });
+    }
+
+    function AddUser() {
+        $("button#btnAddUser").click(function () {
+            ClearFormValuesInBlock(divAddEditUser);
+            SetPopupTitle(divAddEditUser, "Add User", "");
+            divAddEditUser.modal('show');
+            $("ul.screenMenu").removeAttr("style");
+            $("ul.funcMenu").removeAttr("style");
+        });
+    }
+
+    function setDropDownValueByText(dropdownID, value) {
+        var set = "0";
+        $("select#" + dropdownID + " option").each(function () {
+            if ($(this).text() == value) {
+                set = $(this).val();
+            }
+        });
+        $("select#" + dropdownID).val(set).change();
+    }
+
+    function BindUserDetails(row, userID) {
+        debugger;
+        ClearFormValuesInBlock(divAddEditUser);
+        var accessCodes = row.find("input#hdnAccessCodes").attr("value");
+        divAddEditUser.find("input#UserName").val(row.find("span#lblUserName").html());
+        divAddEditUser.find("input#Password").val(row.find("input#hdnPassword").attr("value"));
+        setDropDownValueByText("ddlCompany", row.find("span#lblCompany").html());
+        setDropDownValueByText("ddlApplicationRoles", row.find("span#lblRole").html());
+        divAddEditUser.find("input#hdnUserID").attr("value", userID);
+        SetAccessRights(accessCodes);
+    }
+
+
+    function SetAccessRights(accessCodes) {
+        var checkBoxes = divAccessRights.find("input[type='checkbox']");
+        checkBoxes.each(function (index) {
+            var code = $(this).attr("value");
+            if (accessCodes.indexOf(code) > -1)
+                $(this).prop("checked", true);
+            else
+                $(this).removeAttr("checked");
+        });
+    }
+
+    function SearchUsers() {
+        $("button#btnSearch").click(function () {
+            var companyID = $("select#ddlSearchCompany").val();
+            var user = $("input#txtSearchUser").val();
+            var applicationRoleID = $("select#ddlSearchApplicationRole").val();
+            var tableBody = $("table#tblUserResults").find("tbody");
+            var rows = "";
+            if (companyID == "" && user == "" && applicationRoleID == "") {
+                alert("Please enter search criteria!!");
+                $("#ddlSearchCompany").focus();
+                return false;
+            }
+            else {
+                $.ajax({
+                    async: false,
+                    url: '@Url.Action("SearchUsers", "UserAdministration")',
+                    type: 'Post',
+                    data: JSON.stringify({ CompanyID: companyID, User: user, ApplicationRoleID: applicationRoleID }),
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    error: function (xhr) {
+                        alert('Error: ' + xhr.statusText);
+                    },
+                    success: function (result) {
+                        //Now Process the data
+                        tableBody.html();
+                        if (result.length == 0) {
+                            alert("No records found for the selected criteria!!");
+                            tableBody.html("");
+                        }
+                        else {
+                            $(result).each(function (index) {
+                                debugger;
+                                var CurrentItem = this;
+                                rows = rows + "<tr><td><span id='lblUserName'>" + CurrentItem.UserName + "</span></td>";
+                                rows = rows + "<td><span id='lblRole'>" + CurrentItem.Role + "</span><input type='hidden' value=" + CurrentItem.Password + " id='hdnPassword'/></td>";
+                                rows = rows + "<td><span id='lblCompany'>" + CurrentItem.Company + "</span><input type='hidden' value='" + CurrentItem.AccessCodes + "' id='hdnAccessCodes'/></td>";
+                                rows = rows + "<td><a id='lnkUserEdit' class='linkEdit' value='" + CurrentItem.ID + "'><span class='fa-stack fa-sm '><i class='fa fa-edit fa-stack-1x '></i></span></a>";
+                                rows = rows + "<td><a id='lnkUserDelete' class='linkDelete' value='" + CurrentItem.ID + "'><span class='fa-stack fa-sm '><i class='fa fa-shopping-basket fa-stack-1x '></i></span></a></td>";
+                            });
+
+                            tableBody.html("").html(rows);
+                        }
+                    }
+                }).done(function (result) {
+                    return false;
+                });
+            }
+        });
+    }
+</script>

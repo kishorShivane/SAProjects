@@ -11,6 +11,7 @@ namespace ProductTracking.Web.Controllers
 {
     public class LoginController : Controller
     {
+        UserAdministrationService userAdministrationService = new UserAdministrationService();
 
         [HttpGet]
         [AllowAnonymous]
@@ -61,17 +62,21 @@ namespace ProductTracking.Web.Controllers
         {
             var valid = false;
 
-            string usersXmlPath = Server.MapPath("~/XML_Files/ApplicationsUsersList.xml");
+            var userDetails = userAdministrationService.ValidateUser(viewModel.UserName,viewModel.Password);
 
-            var doc = XDocument.Load(usersXmlPath);
-            var userNames = (from c in doc.Root.Descendants("user")
-                            where c.Attribute("name").Value.ToLower() == viewModel.UserName.ToLower()
-                            select c).FirstOrDefault();
+            //string usersXmlPath = Server.MapPath("~/XML_Files/ApplicationsUsersList.xml");
 
-            if (userNames != null && userNames.Attribute("password").Value.ToString().ToLower() == viewModel.Password.ToLower())
+            //var doc = XDocument.Load(usersXmlPath);
+            //var userNames = (from c in doc.Root.Descendants("user")
+            //                where c.Attribute("name").Value.ToLower() == viewModel.UserName.ToLower()
+            //                select c).FirstOrDefault();
+
+            if (userDetails != null)
             {
-                viewModel.CompanyName = userNames.Attribute("companyname").Value.ToString();
-                viewModel.ConnKey = userNames.Attribute("connectionkey").Value.ToString().ToLower();
+                viewModel.CompanyName = userDetails.Company;
+                viewModel.ConnKey = userDetails.ConnectionKey;
+                viewModel.RoleID = userDetails.RoleID;
+                viewModel.AccessCodes = userDetails.AccessCodes.Split(',').ToList();
                 valid = true;
             }
 

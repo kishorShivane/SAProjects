@@ -1,0 +1,160 @@
+﻿@model Reports.Services.Models.UserAdministration.UserAdministration
+<!-- Modal Contents -->
+<div id="divAddEditUser" class="modal fade ">
+    <!-- class modal and fade -->
+    <div class="modal-dialog modal-lg transaction">
+        <div class="modal-content">
+            <div class="modal-header modal-header-info">
+                <!-- modal header -->
+                <button type="button" class="close"
+                        data-dismiss="modal" aria-hidden="true">
+                    ×
+                </button>
+                <div class="modal-title">Duty</div>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm" style="width: 100%;">
+                                        <div class="input-group-addon">User Name:</div>
+                                        @Html.TextBox("UserName", new { id = "txtUserName", @class = "form-control", placeholder = "UserName", maxlength = "100", style = "width: 100%;", required = "true" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group" id="divRequestStatus">
+                                    <div class="input-group input-group-sm" style="width: 100%;">
+                                        <div class="input-group-addon">Password:<font style="color:red">*</font></div>
+                                        @Html.TextBox("Password", new { id = "txtPassword", @class = "form-control", placeholder = "Password", maxlength = "100", style = "width: 100%;", required = "true" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm" style="width: 100%;">
+                                        <div class="input-group-addon">Company:</div>
+                                        @Html.DropDownList("Company", Model.Companies, new { id = "ddlCompany", @class = "form-control select2", placeholder = "Company", required = "true", style = "width:100%;" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group" id="divRequestStatus">
+                                    <div class="input-group input-group-sm" style="width: 100%;">
+                                        <div class="input-group-addon">Request Status:<font style="color:red">*</font></div>
+                                        @Html.DropDownList("Role", Model.ApplicationRoles, new { id = "ddlApplicationRoles", @class = "form-control select2", placeholder = "Application Roles", required = "true", style = "width:100%;" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        @Html.Partial("_ViewAccessRights", Model.ApplicationMenus)
+                    </div>
+                    <br />
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="row text-center">
+                            <div class="col-md-12">
+                                <input type="hidden" id="hdnUserID" value="0" />
+                                <button type="submit" class="btn btn-info" id="btnSaveUser"><i class="fa fa-1x fa-save"></i>&nbsp;Save</button>&nbsp;&nbsp;&nbsp;&nbsp;
+                                <button type="button" class="btn btn-danger" id="btnClear"><i class="fa fa-1x fa-close"></i>&nbsp;Clear</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <!-- modal footer -->
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+
+        </div> <!-- / .modal-content -->
+
+    </div> <!-- / .modal-dialog -->
+
+</div>
+<!-- / .modal -->
+<script>
+
+    $(document).ready(function () {
+        SaveUser();
+    });
+
+
+    function DeleteUser(userID) {
+        $.ajax({
+            async: false,
+            url: '@Url.Action("DeleteUser", "UserAdministration")',
+            type: 'Post',
+            data: JSON.stringify({ UserID: userID }),
+            dataType: 'json',
+            contentType: 'application/json',
+            error: function (xhr) {
+                alert('Error: ' + xhr.statusText);
+            },
+            success: function (result) {
+                //Now Process the data
+                alert(result);
+                $("button#btnSearch").trigger("click");
+            }
+        }).done(function (result) {
+            return false;
+        });
+    }
+
+    function SaveUser() {
+        $("button#btnSaveUser").click(function () {
+            debugger;
+            if (CheckMandatoryFieldsInBlock(divAddEditUser, "") && CheckNumericFields(divAddEditUser, "")) {
+                var userName = divAddEditUser.find("input#UserName").val();
+                var password = divAddEditUser.find("input#Password").val();
+                var userID = divAddEditUser.find("input#hdnUserID").attr("value");
+                var company = divAddEditUser.find("select#ddlCompany").val();
+                var role = divAddEditUser.find("select#ddlApplicationRoles").val();
+                var accessCodes = '';
+                var checkBoxes = divAccessRights.find("input[type='checkbox']");
+                if (checkBoxes.length > 0) {
+                    checkBoxes.each(function (index) {
+                        var curItem = $(this);
+                        if (curItem.is(":checked")) {
+                            if (accessCodes.length <= 0)
+                                accessCodes = curItem.attr("value");
+                            else
+                                accessCodes = accessCodes + "," + curItem.attr("value");
+                        }
+                    });
+                }
+                $.ajax({
+                    async: false,
+                    url: '@Url.Action("InsertOrUpdateUserInfo", "UserAdministration")',
+                    type: 'Post',
+                    data: JSON.stringify({ UserName: userName, Password: password, ID: userID, RoleID: role, CompanyID: company, AccessCodes: accessCodes }),
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    error: function (xhr) {
+                        alert('Error: ' + xhr.statusText);
+                    },
+                    success: function (result) {
+                        //Now Process the data
+                        if (result == 1) {
+                            divAddEditUser.modal("hide");
+                            alert("User Saved Successfully!!");
+                            $("button#btnSearch").trigger("click");
+                        }
+                        else if (result == -1) {
+                            alert("There is already a user with the same ID!!");
+                        }
+                    }
+                }).done(function (result) {
+                    return false;
+                });
+            }
+        });
+    }
+</script>

@@ -1,4 +1,6 @@
-﻿<!-- Modal Contents -->
+﻿@{   var accessCodes = ((Helpers.Security.EBusPrinciple)System.Threading.Thread.CurrentPrincipal).Properties.AccessCodes;
+}
+<!-- Modal Contents -->
 <div id="divDutyBookings" class="modal fade ">
     <!-- class modal and fade -->
 
@@ -18,7 +20,9 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="container pull-right" style="text-align: right;">
-                            <button type="button" class="btn btn-success" id="btnAddBooking">Add Booking&nbsp;<i class="fa fa-1x fa-plus"></i></button> &nbsp; &nbsp; &nbsp; &nbsp;
+                            @if (accessCodes.Contains("SSMAB"))
+                            { <button type="button" class="btn btn-success" id="btnAddBooking">Add Booking&nbsp;<i class="fa fa-1x fa-plus"></i></button>
+                            } &nbsp; &nbsp; &nbsp; &nbsp;
                         </div>
                     </div>
                 </div>
@@ -33,10 +37,12 @@
                                         <th>BookOffTime</th>
                                         <th>PlaceOn</th>
                                         <th>PlaceOff</th>
-                                        <th>Add Booking</th>
+                                        @if (accessCodes.Contains("SSMAB"))
+                                        {
+                                        <th>Add Booking</th>}
                                         <th>Edit</th>
                                         <th>Delete</th>
-                                        <th>View</th>                                        
+                                        <th>View</th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
@@ -59,6 +65,8 @@
 
 </div><!-- / .modal -->
 <script>
+    debugger;
+    var addBookingAllowed = "@accessCodes.Contains("SSMAB")";
     $(document).ready(function () {
         AddBooking();
     });
@@ -190,7 +198,9 @@
                         }
                         rows = rows + "<td><span id='lblPlaceOn' value='" + CurrentItem.PlaceOnID + "'>" + CurrentItem.PlaceOn + "</span></td>";
                         rows = rows + "<td><span id='lblPlaceOff' value='" + CurrentItem.PlaceOffID + "'>" + CurrentItem.PlaceOff + "</span></td>";
-                        rows = rows + "<td><button type='button' class='btn btn-info' style='padding: 0px 10px;height: 25px !important;' id='btnAddBookingToBelow' value=''><i class='fa fa-arrow-down' aria-hidden='true'></i>&nbsp;Add Booking</button></td>";
+                        debugger;
+                        if (addBookingAllowed != "False")
+                        { rows = rows + "<td><button type='button' class='btn btn-info' style='padding: 0px 10px;height: 25px !important;' id='btnAddBookingToBelow' value=''><i class='fa fa-arrow-down' aria-hidden='true'></i>&nbsp;Add Booking</button></td>"; }                        
                         rows = rows + " <td><a id='lnkDutyBookingEdit' class='linkEdit' value='" + CurrentItem.ID + "'><span class='fa-stack fa-sm '><i class='fa fa-edit fa-stack-1x '></i></span></a></td>"
                         rows = rows + " <td><a id='lnkDutyBookingDelete' class='linkDelete' value='" + CurrentItem.ID + "'><span class='fa-stack fa-sm '><i class='fa fa-shopping-basket fa-stack-1x '></i></span></a></td>"
                         rows = rows + " <td><a id='lnkDutyBookingView' class='linkView' value='" + CurrentItem.ID + "'><span class='fa-stack fa-sm '><i class='fa fa-plus fa-stack-1x '></i></span></a></td>"

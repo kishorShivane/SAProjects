@@ -3,6 +3,7 @@
     ViewBag.Title = "Cash Vs SmartCard UsageByRoute";
     Layout = "~/Views/Shared/_HomeLayout.cshtml";
     var date = DateTime.Now.Date;
+    var accessCodes = ((Helpers.Security.EBusPrinciple)System.Threading.Thread.CurrentPrincipal).Properties.AccessCodes;
 }
 @section scripts
 {
@@ -184,9 +185,10 @@
             <div class="form-group width80">
                 <div align="left" class="col-md-3 col-sm-12" style="margin-top: 20px;">
                     @Html.HiddenFor(s => s.ExcelOrPDF)
-                    <button id="dnPdf" style="width: 100%;" type="submit" class="btn btn-success">
+                    @if (accessCodes.Contains("CVSCUBRDP"))
+                    { <button id="dnPdf" style="width: 100%;" type="submit" class="btn btn-success">
                         Download
-                    </button>
+                    </button> }                   
                 </div>
                 <div class="col-md-1 hidden-xs hidden-sm">
                 </div>

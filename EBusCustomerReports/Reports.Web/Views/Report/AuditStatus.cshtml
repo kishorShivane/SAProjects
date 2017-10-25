@@ -6,6 +6,7 @@
     var greenCount = Model.Count(s => s.ColorName.ToLower().Equals("green"));
     var yellowCount = Model.Count(s => s.ColorName.ToLower().Equals("yellow"));
     var redCount = Model.Count(s => s.ColorName.ToLower().Equals("red"));
+    var accessCodes = ((Helpers.Security.EBusPrinciple)System.Threading.Thread.CurrentPrincipal).Properties.AccessCodes;
 }
 @section scripts
 {
@@ -56,9 +57,10 @@
             <h2 class="page-header" style="margin: 10px; color: #5e5e5e !important">Audit Communication Status</h2>
         </div>
         <div class="col-md-3 col-sm-12" id="buttonsSection">
-            <button id="Print" type="submit" style="margin-top: 10px; margin-left: 20px; width: 140px;" class="btn btn-info">
+            @if (accessCodes.Contains("ASPRNT"))
+            { <button id="Print" type="submit" style="margin-top: 10px; margin-left: 20px; width: 140px;" class="btn btn-info">
                 Print
-            </button>
+            </button> }
         </div>
     </div>
     <div class="row">

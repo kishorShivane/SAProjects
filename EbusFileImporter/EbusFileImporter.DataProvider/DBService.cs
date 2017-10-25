@@ -307,7 +307,7 @@ namespace EbusFileImporter.DataProvider
                 {
                     con.Open();
                     //string query = @"SELECT (ISNULL(int4_Revenue,0)/(CASE WHEN ISNULL(int4_TripBal,1) = 0 THEN 1 ELSE ISNULL(int4_TripBal,1) END)) AS NonRevenue FROM PosTrans WHERE str_SerialNumber ='" + serialNumber + "' AND int2_Class NOT IN (" + classIDs + ") ORDER BY dat_TransTime DESC;";
-                    string query = @"SELECT (ISNULL(int4_Revenue,0)/ISNULL(int4_TripBal,1)) AS NonRevenue FROM PosTrans WHERE str_SerialNumber ='" + serialNumber + "' AND int2_Class NOT IN (" + classIDs + ") ORDER BY dat_TransTime DESC;";
+                    string query = @"SELECT (ISNULL(int4_Revenue,0)/ISNULL(TripsRecharged,1)) AS NonRevenue FROM PosTrans WHERE str_SerialNumber ='" + serialNumber + "' AND int2_Class NOT IN (" + classIDs + ") ORDER BY dat_TransTime DESC;";
                     query = query.Replace("‬", "");
                     using (cmd = new SqlCommand(query, con))
                     {

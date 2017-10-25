@@ -2,6 +2,7 @@
 @{
     ViewBag.Title = "Staff Master";
     Layout = "~/Views/Shared/_HomeLayout.cshtml";
+    var accessCodes = ((Helpers.Security.EBusPrinciple)System.Threading.Thread.CurrentPrincipal).Properties.AccessCodes;
 }
 <style>
     .funkyradio div {
@@ -224,12 +225,12 @@
                                 <div class="form-group">
                                     <div class="input-group input-group-sm" style="width: 127%;">
                                         <div class="input-group-addon">Location<font style="color:red">*</font></div>
-                                        @Html.DropDownList("Location", Model.Locations, new { id = "ddlSearchLocation", @class = "form-control select2", placeholder = "Location",  style = "width:100%;" })
+                                        @Html.DropDownList("Location", Model.Locations, new { id = "ddlSearchLocation", @class = "form-control select2", placeholder = "Location", style = "width:100%;" })
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-4">
-                               
+
                             </div>
                         </div>
                     </div>
@@ -266,9 +267,18 @@
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <button type="button" class="btn btn-info" id="btnGeneratePIN">Show PIN&nbsp;<i class="fa fa-1x fa-cogs"></i></button> &nbsp; &nbsp;
-                                <button type="button" class="btn btn-success" id="btnAddStaff">Add Staff&nbsp;<i class="fa fa-1x fa-plus"></i></button> &nbsp; &nbsp;
-                                <a target="_blank" class="btn btn-danger" style="padding: 4px 12px;" id="lnkPrintStaffs" href="../StaffMaster/PrintStaffs">Download&nbsp;<i class="fa fa-1x fa-plus"></i></a>
+                                @if (accessCodes.Contains("SMSP"))
+                                {
+                                    <button type="button" class="btn btn-info" id="btnGeneratePIN">Show PIN&nbsp;<i class="fa fa-1x fa-cogs"></i></button>
+                                } &nbsp; &nbsp;
+                                @if (accessCodes.Contains("SMAD"))
+                                {
+                                    <button type="button" class="btn btn-success" id="btnAddStaff">Add Staff&nbsp;<i class="fa fa-1x fa-plus"></i></button>
+                                } &nbsp; &nbsp;
+                                @if (accessCodes.Contains("SMDN"))
+                                {
+                                    <a target="_blank" class="btn btn-danger" style="padding: 4px 12px;" id="lnkPrintStaffs" href="../StaffMaster/PrintStaffs">Download&nbsp;<i class="fa fa-1x fa-plus"></i></a>
+                                }
                             </div>
                         </div>
                     </div>
@@ -369,7 +379,7 @@
             divAddEditStaff.find("input#chkStaffActive").prop("checked", true);
         else
             divAddEditStaff.find("input#chkStaffActive").removeProp("checked");
-        if(row.find("span#lblSpecialStaff").html() == "Yes")
+        if (row.find("span#lblSpecialStaff").html() == "Yes")
             divAddEditStaff.find("input#chkSpecialStaff").prop("checked", true);
         else
             divAddEditStaff.find("input#chkSpecialStaff").removeProp("checked");
@@ -455,7 +465,7 @@
                 async: false,
                 url: '@Url.Action("SearchStaff", "StaffMaster")',
                 type: 'Post',
-                data: JSON.stringify({ staffNumber: staffNumber, staffName: staffName, status: status, pinSeed: pinSeed, staffType: staffType ,location:location}),
+                data: JSON.stringify({ staffNumber: staffNumber, staffName: staffName, status: status, pinSeed: pinSeed, staffType: staffType, location: location }),
                 dataType: 'json',
                 contentType: 'application/json',
                 error: function (xhr) {

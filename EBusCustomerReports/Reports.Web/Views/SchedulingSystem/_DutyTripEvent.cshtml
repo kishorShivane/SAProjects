@@ -1,4 +1,6 @@
-﻿<!-- Modal Contents -->
+﻿@{   var accessCodes = ((Helpers.Security.EBusPrinciple)System.Threading.Thread.CurrentPrincipal).Properties.AccessCodes;
+}
+<!-- Modal Contents -->
 <div id="divDutyTripsEvents" class="modal fade ">
     <!-- class modal and fade -->
 
@@ -17,8 +19,12 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="container pull-right" style="text-align: right;">
-                            <button type="button" class="btn btn-success" id="btnAddTrip">Add Trip&nbsp;<i class="fa fa-1x fa-plus"></i></button> &nbsp; &nbsp; &nbsp; &nbsp;
-                            <button type="button" class="btn btn-success" id="btnAddEvent">Add Event&nbsp;<i class="fa fa-1x fa-plus"></i></button> &nbsp; &nbsp; &nbsp; &nbsp;
+                            @if (accessCodes.Contains("SSMAP"))
+                            {  <button type="button" class="btn btn-success" id="btnAddTrip">Add Trip&nbsp;<i class="fa fa-1x fa-plus"></i></button> }
+                            &nbsp; &nbsp; &nbsp; &nbsp;
+                            @if (accessCodes.Contains("SSMAE"))
+                            { <button type="button" class="btn btn-success" id="btnAddEvent">Add Event&nbsp;<i class="fa fa-1x fa-plus"></i></button>}
+                            &nbsp; &nbsp; &nbsp; &nbsp;
                         </div>
                     </div>
                 </div>
@@ -36,7 +42,9 @@
                                         <th>SubRoute</th>
                                         <th>Route</th>
                                         <th>Distance</th>
-                                        <th>Add Trip</th>
+                                        @if (accessCodes.Contains("SSMAP"))
+                                        {
+                                            <th>Add Trip</th> }
                                         <th>Edit</th>
                                         <th>Delete</th>
                                     </tr>
@@ -57,7 +65,9 @@
                                         <th>StartTime</th>
                                         <th>EndTime</th>
                                         <th>Description</th>
-                                        <th>Add Event</th>
+                                        @if (accessCodes.Contains("SSMAE"))
+                                        {
+                                            <th>Add Event</th>}
                                         <th>Edit</th>
                                         <th>Delete</th>
                                     </tr>
@@ -90,6 +100,9 @@
 </div>
 <!-- / .modal -->
 <script>
+    var addTripAllowed = "@accessCodes.Contains("SSMAP")";
+    var addEventAllowed = "@accessCodes.Contains("SSMAE")";
+
     $(document).ready(function () { AddTrip(); AddEvent(); });
 
     $(document).on("click", "a#lnkDutyTripEdit", function () {
@@ -237,7 +250,8 @@
                         rows = rows + "<td><span id='lblSubRoute'>" + CurrentItem.SubRouteNumber + "</span><input type='hidden' value='" + CurrentItem.Position + "' id='hdnPosition'/></td>";
                         rows = rows + "<td><span id='lblRoute'>" + CurrentItem.RouteName + "</span><input type='hidden' value='" + CurrentItem.DefaultContract + "' id='hdnDefaultContract'/></td>";
                         rows = rows + "<td><span id='lblDistance'>" + CurrentItem.Distance + "</span></td>";
-                        rows = rows + "<td><button type='button' class='btn btn-info' style='padding: 0px 10px;height: 25px !important;' id='btnAddTripToBelow' value=''><i class='fa fa-arrow-down' aria-hidden='true'></i>&nbsp;Add Trip</button></td>";
+                        if (addTripAllowed != "False")
+                        { rows = rows + "<td><button type='button' class='btn btn-info' style='padding: 0px 10px;height: 25px !important;' id='btnAddTripToBelow' value=''><i class='fa fa-arrow-down' aria-hidden='true'></i>&nbsp;Add Trip</button></td>"; }
                         rows = rows + " <td><a id='lnkDutyTripEdit' class='linkEdit' value='" + CurrentItem.ID + "'><span class='fa-stack fa-sm '><i class='fa fa-edit fa-stack-1x '></i></span></a></td>";
                         rows = rows + " <td><a id='lnkDutyTripDelete' class='linkDelete' value='" + CurrentItem.ID + "'><span class='fa-stack fa-sm '><i class='fa fa-shopping-basket fa-stack-1x '></i></span></a></td>";
                         rows = rows + " </tr>";
@@ -304,7 +318,8 @@
                         }
 
                         rows = rows + "<td><span id='lblDescription'>" + CurrentItem.Description + "</span></td>";
-                        rows = rows + "<td><button type='button' class='btn btn-info' style='padding: 0px 10px;height: 25px !important;' id='btnAddEventToBelow' value=''><i class='fa fa-arrow-down' aria-hidden='true'></i>&nbsp;Add Event</button></td>";
+                        if (addEventAllowed != "False")
+                        { rows = rows + "<td><button type='button' class='btn btn-info' style='padding: 0px 10px;height: 25px !important;' id='btnAddEventToBelow' value=''><i class='fa fa-arrow-down' aria-hidden='true'></i>&nbsp;Add Event</button></td>"; }
                         rows = rows + " <td><a id='lnkDutyEventEdit' class='linkEdit' value='" + CurrentItem.DutyEventID + "'><span class='fa-stack fa-sm '><i class='fa fa-edit fa-stack-1x '></i></span></a></td>";
                         rows = rows + " <td><a id='lnkDutyEventDelete' class='linkDelete' value='" + CurrentItem.DutyEventID + "'><span class='fa-stack fa-sm '><i class='fa fa-shopping-basket fa-stack-1x '></i></span></a></td>";
                         rows = rows + " </tr>";

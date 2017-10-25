@@ -2,6 +2,8 @@
 @{
     ViewBag.Title = "Service Request";
     Layout = "~/Views/Shared/_HomeLayout.cshtml";
+    var accessCodes = ((Helpers.Security.EBusPrinciple)System.Threading.Thread.CurrentPrincipal).Properties.AccessCodes;
+}
 }
 <style>
     .funkyradio div {
@@ -217,7 +219,9 @@
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <button type="button" class="btn btn-success" id="btnCreateServiceRequest">Create Service Request&nbsp;<i class="fa fa-1x fa-plus"></i></button> &nbsp; &nbsp;
+                                @if (accessCodes.Contains("SRMCSR"))
+                                { <button type="button" class="btn btn-success" id="btnCreateServiceRequest">Create Service Request&nbsp;<i class="fa fa-1x fa-plus"></i></button>}
+                                &nbsp; &nbsp;
                                 <a target="_blank" class="btn btn-danger" style="padding: 4px 12px;" id="lnkPrintStaffs" href="../ServiceRequest/PrintStaffs">Download&nbsp;<i class="fa fa-1x fa-plus"></i></a>
                             </div>
                         </div>
@@ -236,7 +240,10 @@
                                             <th>Request Type</th>
                                             <th>Comments</th>
                                             <th>Status</th>
-                                            <th>Edit</th>
+                                            @if (accessCodes.Contains("SRMESR"))
+                                            {
+                                                <th>Edit</th>
+                                            }
                                         </tr>
                                     </thead>
                                     <tbody></tbody>
@@ -259,6 +266,8 @@
 <script>
     var divAddEditServiceRequest = $("div#divAddEditServiceRequest");
     var divServiceRquestAudit = $("div#divServiceRquestAudit");
+    var editServiceRequestAllowed = "@accessCodes.Contains("SRMESR")";
+
     $(document).ready(function () {
         BindServiceRequests(true, "0");
         RemoveHighlightedCssOnFocus();
@@ -378,7 +387,8 @@
                             rows = rows + "<td class='showAudit'><span id='lblRequestType'>" + CurrentItem.RequestType + "</span><input type='hidden' value=" + CurrentItem.Email + " id='hdnEmail'/></td>";
                             rows = rows + "<td class='showAudit'><span id='lblComments'>" + CurrentItem.Comments + "</span><input type='hidden' value=" + CurrentItem.AdminComments + " id='hdnAdminComments'/></td>";
                             rows = rows + "<td class='showAudit'><span id='lblStatus'>" + CurrentItem.RequestStatus + "</span></td>";
-                            rows = rows + "<td><a id='lnkServiceRequestEdit' class='linkEdit' value='" + CurrentItem.ID + "'><span class='fa-stack fa-sm '><i class='fa fa-edit fa-stack-1x '></i></span></a>";
+                            if(editServiceRequestAllowed != "False")
+                            {rows = rows + "<td><a id='lnkServiceRequestEdit' class='linkEdit' value='" + CurrentItem.ID + "'><span class='fa-stack fa-sm '><i class='fa fa-edit fa-stack-1x '></i></span></a>";}
                             rows = rows + "</tr>";
                         });
                         tableBody.html("").html(rows);

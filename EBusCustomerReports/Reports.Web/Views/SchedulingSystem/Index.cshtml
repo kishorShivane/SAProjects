@@ -2,6 +2,7 @@
 @{
     Layout = "~/Views/Shared/_HomeLayout.cshtml";
     ViewBag.Title = "Scheduling System";
+    var accessCodes = ((Helpers.Security.EBusPrinciple)System.Threading.Thread.CurrentPrincipal).Properties.AccessCodes;
 }
 <style>
     .form-group input[type="checkbox"] {
@@ -139,8 +140,12 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="container pull-right" style="text-align: right;">
-                                <button type="button" class="btn btn-success" id="btnAddDuty">Add Duty&nbsp;<i class="fa fa-1x fa-plus"></i></button> &nbsp; &nbsp; &nbsp; &nbsp;
-                                <button type="button" class="btn btn-success" id="btnUpdateDutyScheduleInfo">Update Duty Schedule Info&nbsp;<i class="fa fa-1x fa-plus"></i></button> &nbsp; &nbsp; &nbsp; &nbsp;
+                                @if (accessCodes.Contains("SSMAD"))
+                                {<button type="button" class="btn btn-success" id="btnAddDuty">Add Duty&nbsp;<i class="fa fa-1x fa-plus"></i></button>
+                                } &nbsp; &nbsp; &nbsp; &nbsp;
+                                @if (accessCodes.Contains("SSMUDSI"))
+                                {<button type="button" class="btn btn-success" id="btnUpdateDutyScheduleInfo">Update Duty Schedule Info&nbsp;<i class="fa fa-1x fa-plus"></i></button>
+                                } &nbsp; &nbsp; &nbsp; &nbsp;
                             </div>
                         </div>
                     </div>

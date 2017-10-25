@@ -2,6 +2,7 @@
 @{
     ViewBag.Title = "Smart Card Transactions";
     Layout = "~/Views/Shared/_HomeLayout.cshtml";
+    var accessCodes = ((Helpers.Security.EBusPrinciple)System.Threading.Thread.CurrentPrincipal).Properties.AccessCodes;
 }
 @section scripts
 {
@@ -124,10 +125,20 @@
             <div class="form-group width80">
                 <div align="left" class="col-md-6 col-sm-12" style="margin-top: 20px;">
                     @Html.HiddenFor(s => s.ExcelOrPDF)
-                    <button id="dnPdf" type="submit" class="btn btn-success">Download PDF
-                        <img style="height: 20px;width: 20px;" src="~/Images/pdf.png"></button>
-                    <button id="dnExcel" type="submit" class="btn btn-info">Download Excel
-                        <img style="height: 20px; width: 20px;" src="~/Images/excel.png" /></button>
+                    @if (accessCodes.Contains("SCTDP"))
+                    {
+                        <button id="dnPdf" type="submit" class="btn btn-success">
+                            Download PDF
+                            <img style="height: 20px;width: 20px;" src="~/Images/pdf.png">
+                        </button>
+                    }
+                    @if (accessCodes.Contains("SCTDE"))
+                    {
+                        <button id="dnExcel" type="submit" class="btn btn-info">
+                            Download Excel
+                            <img style="height: 20px; width: 20px;" src="~/Images/excel.png" />
+                        </button>
+                    }
                 </div>
             </div>
         }
