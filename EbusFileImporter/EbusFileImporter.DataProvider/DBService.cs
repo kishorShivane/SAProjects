@@ -209,6 +209,8 @@ namespace EbusFileImporter.DataProvider
                     Logger.Info("Inserted AuditFileStatus");
                     if (xmlDataToImport.DiagnosticRecords.Any()) DbHelper.BulkCopyDataToTable<DiagnosticRecord>("DiagnosticRecord", xmlDataToImport.DiagnosticRecords, con, transaction);
                     Logger.Info("Inserted DiagnosticRecords");
+                    if (xmlDataToImport.BusChecklistRecords.Any()) DbHelper.BulkCopyDataToTable<BusChecklist>("BusChecklist", xmlDataToImport.BusChecklistRecords, con, transaction);
+                    Logger.Info("Inserted BusChecklistRecords");
                     transaction.Commit();
 
                     if (Constants.DetailedLogging)
@@ -224,6 +226,7 @@ namespace EbusFileImporter.DataProvider
                         Logger.Info("Trans Inserted: " + xmlDataToImport.Trans.Count().ToString());
                         Logger.Info("AuditFileStatus Inserted: " + xmlDataToImport.AuditFileStatuss.Count().ToString());
                         Logger.Info("DiagnosticRecords Inserted: " + xmlDataToImport.DiagnosticRecords.Count().ToString());
+                        Logger.Info("BusChecklistRecords Inserted: " + xmlDataToImport.BusChecklistRecords.Count().ToString());
                         Logger.Info("Commited Changes");
                         Logger.Info("-------DB Transaction - End-------");
                     }

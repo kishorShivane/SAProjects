@@ -201,7 +201,7 @@ namespace Reports.Web.Controllers
         public ActionResult DownloadCashierReconciliationReport(CashierReportSummaryFilter filter)
         {
             var userset = GetUserSettings();
-            var ds = new SmartCardService().GetCashierReconciliationReportDataset(userset.ConnectionKey, filter);
+            var ds = new SmartCardService().GetCashierReconciliationReportDataset(userset.ConnectionKey, userset.CompanyName, filter);
             if (ds.Tables[0].Rows.Count > 0)
             {
                 return DownLoadReportByDataSet(filter.ExcelOrPDF, "~/CrystalReports/Rpt/Cashier/CashierReconciliationSummay.rpt", ds, "CashierReconciliation ");

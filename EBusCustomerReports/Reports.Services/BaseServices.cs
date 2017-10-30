@@ -585,6 +585,7 @@ namespace Reports.Services
             table1.Columns.Add("LocationSelected");//8
             table1.Columns.Add("Location");//9
             table1.Columns.Add("CashierReason");//10
+            table1.Columns.Add("Company");//10
 
             return table1;
         }

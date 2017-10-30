@@ -176,6 +176,12 @@ namespace EbusFileImporter.Core
                     string esn = values[15].ToString().Trim();
                     string psn = values[16].ToString().Trim();
                     string terminal = values[17].ToString().Replace("\"", "").Trim();
+                    int? oldDuty = null, newDuty = null;
+                    if (values.Length > 18)
+                    {
+                        oldDuty = Convert.ToInt32(values[18]);
+                        newDuty = Convert.ToInt32(values[19]);
+                    }
                     //SignonDateTime sub string
                     string temp1 = Signondatetime.Substring(0, 8);
                     string temp2 = Signondatetime.Substring(8, 6);
@@ -234,7 +240,9 @@ namespace EbusFileImporter.Core
                                 Terminal = terminal,
                                 UID = uid,
                                 ESN = esn,
-                                PSN = Convert.ToInt64(psn)
+                                PSN = Convert.ToInt64(psn),
+                                OldDuty = oldDuty,
+                                NewDuty = newDuty
                             });
                             break;
                         case "Cashier":
@@ -259,7 +267,9 @@ namespace EbusFileImporter.Core
                                 Terminal = terminal,
                                 UID = uid,
                                 ESN = esn,
-                                PSN = Convert.ToInt64(psn)
+                                PSN = Convert.ToInt64(psn),
+                                OldDuty = oldDuty,
+                                NewDuty = newDuty
                             });
                             break;
                     }

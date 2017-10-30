@@ -29,5 +29,7 @@ namespace EbusFileImporter.DataProvider.Models
         public string UID { get; set; }
         public string ESN { get; set; }
         public long PSN { get; set; }
+        public Nullable<int> OldDuty { get; set; }
+        public Nullable<int> NewDuty { get; set; }
     }
 }

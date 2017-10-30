@@ -8,10 +8,11 @@
   <user name ="cynthia" password ="intruder" companyname ="Ntambanana" connectionkey = "tabanana30"></user>
   <user name ="Cassim" password ="Cassim" companyname ="Ntambanana" connectionkey = "tabanana30"></user>
   <user name ="BOB" password ="BOB" companyname ="Ntambanana" connectionkey = "tabanana30"></user>
-  <user name ="lisa" password ="lisa" companyname ="Ntambanana" connectionkey = "tabanana30"></user>
+  <user name ="lisantb" password ="lisa" companyname ="Ntambanana" connectionkey = "tabanana30"></user>
   <user name ="karlntb" password ="karl123" companyname ="Ntambanana" connectionkey = "tabanana30"></user>
   <user name ="kobusntb" password ="kobus" companyname ="Ntambanana" connectionkey = "tabanana30"></user>
   <user name ="nereshntb" password ="neresh" companyname ="Ntambanana" connectionkey = "tabanana30"></user>
+  <user name ="sureshntb" password ="suresh" companyname ="Ntambanana" connectionkey = "tabanana30"></user>
   
   <user name ="Mathews" password ="mathews@123" companyname ="GNTMokopane" connectionkey = "mokopane10"></user>
   <user name ="BaleseMP" password ="balese@123" companyname ="GNTMokopane" connectionkey = "mokopane10"></user>
@@ -31,6 +32,8 @@
   <user name ="karlgc" password ="karl123" companyname ="GautengCoaches" connectionkey = "gautengcoaches40"></user>
   <user name ="kobusgc" password ="kobus" companyname ="GautengCoaches" connectionkey = "gautengcoaches40"></user>
   <user name ="demo" password ="demo123" companyname ="DEMO" connectionkey = "gautengcoaches40"></user>
+  <user name ="lisagc" password ="lisa" companyname ="GautengCoaches" connectionkey = "gautengcoaches40"></user>
+  <user name ="sureshgc" password ="suresh" companyname ="GautengCoaches" connectionkey = "gautengcoaches40"></user>
   
   <user name ="ebusmh" password ="ebus@123" companyname ="GNTMarbleHall" connectionkey = "marblehall20"></user>
   <user name ="BaleseMH" password ="balese@123" companyname ="GNTMarbleHall" connectionkey = "marblehall20"></user>
@@ -59,9 +62,9 @@
   <user name ="xulu" password ="xulu" companyname ="Ezakheni" connectionkey = "ezakheni90"></user>
   
   
-  <user name ="lisaikhwezi" password ="lisa" companyname ="Ikhwezi" connectionkey = "ikhwezi60"></user>
+  <user name ="lisaikh" password ="lisa" companyname ="Ikhwezi" connectionkey = "ikhwezi60"></user>
   <user name ="kishor" password ="kishor" companyname ="Ikhwezi" connectionkey = "ikhwezi60"></user>
-  <user name ="suresh" password ="suresh" companyname ="Ikhwezi" connectionkey = "ikhwezi60"></user>
+  <user name ="sureshikh" password ="suresh" companyname ="Ikhwezi" connectionkey = "ikhwezi60"></user>
   <user name ="abu" password ="abu" companyname ="Ikhwezi" connectionkey = "ikhwezi60"></user>
   <user name ="Kobusikh" password ="kobus" companyname ="Ikhwezi" connectionkey = "ikhwezi60"></user>
   <user name ="Neresh" password ="Neresh" companyname ="Ikhwezi" connectionkey = "ikhwezi60"></user>
@@ -69,4 +72,14 @@
   
   <user name ="Sharon" password ="Sharon" companyname ="Mthonjaneni" connectionkey = "mthonjaneni95"></user>
   
+  <user name ="pavan" password ="pavan" companyname ="IKHTest" connectionkey = "ikhtest75"></user>
+  
+  <user name ="Mazembe" password ="Mazembe" companyname ="Matatiele" connectionkey = "matatiele35"></user>
+  <user name ="Nqodi" password ="Nqodi" companyname ="Matatiele" connectionkey = "matatiele35"></user>
+  <user name ="matatiele" password ="matatiele" companyname ="Matatiele" connectionkey = "matatiele35"></user>
+  
+  <user name ="Mlalazi" password ="mlalazi" companyname ="Mlalazi" connectionkey = "mlalazi25"></user>
+  <user name ="NONHLANHLA" password ="NONHLANHLA" companyname ="Mlalazi" connectionkey = "mlalazi25"></user>
+  <user name ="Thabile" password ="Thabile" companyname ="Mlalazi" connectionkey = "mlalazi25"></user>
+  <user name ="Zanele" password ="Zanele" companyname ="Mlalazi" connectionkey = "mlalazi25"></user>
 </applicationUsersList>

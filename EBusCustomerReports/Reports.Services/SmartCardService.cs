@@ -678,7 +678,7 @@ namespace Reports.Services
             return result;
         }
 
-        public DataSet GetCashierReconciliationReportDataset(string connKey, CashierReportSummaryFilter filter)
+        public DataSet GetCashierReconciliationReportDataset(string connKey,string company, CashierReportSummaryFilter filter)
         {
             var result = new List<CashierReconciliationData>();
             var ds = new DataSet();
@@ -761,7 +761,8 @@ namespace Reports.Services
                             filterDateRange,
                             locationsSelected,
                             item.Location,
-                            item.CashierReason == "0" ? "" : item.CashierReason
+                            item.CashierReason == "0" ? "" : item.CashierReason,
+                            company
                        );
                     }
                 }
