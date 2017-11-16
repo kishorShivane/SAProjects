@@ -156,6 +156,32 @@ namespace Reports.Web.Controllers
             }
         }
 
+        public ActionResult CashierReportMatatiele()
+        {
+            var model = new CashierReportSummaryFilter();
+            var service = new InspectorReportService();
+            var staff = service.GetAllSatffDetails(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey);
+            model.Cashiers = staff.Where(s => s.OperatorType.ToLower() == "Cashier".ToLower().Trim()).Select(s => new SelectListItem { Text = s.OperatorName + " - " + s.OperatorID, Value = s.OperatorID }).OrderBy(s => Convert.ToInt32(s.Value)).ToList();
+            model.Locations = service.GetAllLocations(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey).OrderBy(s => Convert.ToInt32(s.Value)).ToList();
+            model.Terminals = service.GetAllTerminals(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey);
+            return View("CashierReportMatatiele", model);
+        }
+
+        public ActionResult DownloadCashierReportMatatiele(CashierReportSummaryFilter filter)
+        {
+            var userset = GetUserSettings();
+            var ds = new SmartCardService().GetCashierSummaryReportDataset(userset.ConnectionKey, userset.CompanyName, filter);
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                return DownLoadCashierReportMatatieleByDataSet(filter.ExcelOrPDF, "~/CrystalReports/Rpt/Cashier/CashierReportMatatiele.rpt", ds, "CashierReport ");
+            }
+            else
+            {
+                TempData["AlertMessage"] = "show";
+                return RedirectToAction("CashierReportMatatiele", "Report");
+            }
+        }
+
 
         public ActionResult NewCashierReportAt()
         {
@@ -825,7 +851,7 @@ namespace Reports.Web.Controllers
                     htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'><u>" + schNonRevTotal + "</u></td>");
                     htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'><u>" + scholarTransferTotal + "</u></td>");
                     htmlcontent.Append("<td align='right' style='width:100px;border-right: thin solid black;border-bottom: thin solid black;'><u>R " + nonRevTotal + "</u></td></tr>");
-                    revTotal = 0; nonRevTotal = 0; adultRevTotal = 0; childRevTotal = 0; adultNonRevTotal = 0; schNonRevTotal = 0;adultTrnsferTotal = 0; scholarTransferTotal = 0;
+                    revTotal = 0; nonRevTotal = 0; adultRevTotal = 0; childRevTotal = 0; adultNonRevTotal = 0; schNonRevTotal = 0; adultTrnsferTotal = 0; scholarTransferTotal = 0;
                 }
             }
             htmlcontent.Append("</Table>");
@@ -954,6 +980,173 @@ namespace Reports.Web.Controllers
             System.Web.HttpContext.Current.Response.End();
         }
 
+        public void ExportCashierReportMatatieleToExcel(List<CashierReportMatatiele> collection, string fileName)
+        {
+            string cashiers = "", dateRange = "", locations = "", terminals = "", customer = "";
+            if (collection.Any())
+            {
+                cashiers = collection.FirstOrDefault().Cashiers;
+                dateRange = collection.FirstOrDefault().DateSelected;
+                locations = collection.FirstOrDefault().Locations;
+                terminals = collection.FirstOrDefault().Terminals;
+                customer = collection.FirstOrDefault().CompanyName;
+            }
+            StringBuilder htmlcontent = new StringBuilder();
+            System.Web.HttpContext.Current.Response.Clear();
+            System.Web.HttpContext.Current.Response.ClearContent();
+            System.Web.HttpContext.Current.Response.ClearHeaders();
+            System.Web.HttpContext.Current.Response.Buffer = true;
+            System.Web.HttpContext.Current.Response.ContentType = "application/ms-excel";
+            System.Web.HttpContext.Current.Response.AddHeader("Content-Disposition", "attachment;filename=" + fileName + ".xls");
+
+            System.Web.HttpContext.Current.Response.Charset = "utf-8";
+            System.Web.HttpContext.Current.Response.ContentEncoding = System.Text.Encoding.GetEncoding("windows-1250");
+            htmlcontent.Append(@"<!DOCTYPE HTML PUBLIC ""-//W3C//DTD HTML 4.0 Transitional//EN"">");
+            ////sets font
+            htmlcontent.Append("<font style='font-size:10.0pt; font-family:Calibri;'>");
+            htmlcontent.Append("<BR><BR><BR>");
+            //sets the table border, cell spacing, border color, font of the text, background, foreground, font height
+            htmlcontent.Append("<Table>");
+            htmlcontent.Append("<tr><td style='width:100px;'</td><td style='width:100px;'</td><td style='width:100px;'</td><td style='width:100px;'</td><td style='width:100px;'</td><td style='width:100px;'</td><td style='width:100px;'</td><td style='width:100px;'</td><td style='width:100px;'</td></tr>");
+            htmlcontent.Append("<tr><td colspan='7' align='center' style='width:700px;'><b>Cashier Report</b></td><td rowspan='6' colspan='2' style='width:200px;' align='right'><img src='http://41.76.211.195/EBusBackOffice/Images/logo_comp1.png' /></td></tr>");
+            htmlcontent.Append("<tr><td colspan='7' align='center' style='width:700px;'><b>" + customer + "</b></td></tr>");
+            htmlcontent.Append("<tr><td colspan='7' style='width:700px;'><b>" + cashiers + "</b></td></tr>");
+            htmlcontent.Append("<tr><td colspan='7' style='width:700px;'><b>" + dateRange + "</b></td></tr>");
+            htmlcontent.Append("<tr><td colspan='7' style='width:700px;'><b>" + locations + "</b></td></tr>");
+            htmlcontent.Append("<tr><td colspan='7' style='width:700px;'><b>" + terminals + "</b></td></tr>");
+            htmlcontent.Append("<tr><td colspan='7' style='width:700px;'></td></tr>");
+            collection.OrderBy(x => x.Date).ThenBy(x => x.Locations).ThenBy(x => x.Terminals).ThenBy(x => x.CashierID);
+            //am getting my grid's column headers
+            int columnscount = collection.Count;
+            var prevDate = ""; var prevLocation = ""; var prevTerminal = ""; string prevCashier = "";
+            double cashOnCard = 0, cashPaidIn = 0, difference = 0, netTickets = 0;
+            double cashOnCardTotal = 0, cashPaidInTotal = 0, differenceTotal = 0, netTicketsTotal = 0;
+
+            //Add headers
+            htmlcontent.Append("<tr>");
+            htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'>Staff Number</td>");
+            htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'>Staff Name</td>");
+            htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'>CashPaid DateTime</td>");
+            htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'>Cash On Card</td>");
+            htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'>Cash Paid In</td>");
+            htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'>Difference</td>");
+            htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'>Reason</td>");
+            htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'>Net Tickets</td>");
+            htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'>Cash Paid Receipt No</td>");
+            htmlcontent.Append("</tr>");
+            for (var i = 0; i < columnscount; i++)
+            {
+                var curItem = collection[i];
+                if (i == 0)
+                {
+                    htmlcontent.Append("<tr><td colspan='9' style='width:900px;border-bottom: thin solid black;'><b>Date :</b>" + curItem.Date + "</td></tr>");
+                    htmlcontent.Append("<tr><td colspan='9' style='width:900px;border-bottom: thin solid black;'><b>Locaion :</b>" + curItem.LocationDesc + "</td></tr>");
+                    htmlcontent.Append("<tr><td colspan='9' style='width:900px;border-bottom: thin solid black;'><b>Terminal :</b>" + curItem.Terminal + "</td></tr>");
+                    htmlcontent.Append("<tr><td colspan='9' style='width:900px;border-bottom: thin solid black;'><b>Cashier :</b>" + curItem.CashierName + " - " + curItem.CashierID + "</td></tr>");
+                }
+                if (i != 0 && (prevDate != curItem.Date || prevLocation != curItem.LocationDesc || prevTerminal != curItem.Terminal || prevCashier != curItem.CashierID))
+                {
+                    htmlcontent.Append("<tr>");
+                    htmlcontent.Append("<td style='width:100px'></td>");
+                    htmlcontent.Append("<td style='width:100px'></td>");
+                    htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'><b>Cashier Total:</b></td>");
+                    htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'><b>R" + cashOnCard + "</b></td>");
+                    htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'><b>R" + cashPaidIn + "</b></td>");
+                    htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'><b>R" + difference + "</b></td>");
+                    htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'></td>");
+                    htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'><b>R" + netTickets + "</b></td>");
+                    htmlcontent.Append("<td style='width:100px'></td>");
+                    htmlcontent.Append("</tr>");
+
+                    htmlcontent.Append("<tr>");
+                    htmlcontent.Append("<td style='width:100px'></td>");
+                    htmlcontent.Append("<td style='width:100px'></td>");
+                    htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'><b>Terminal Total:</b></td>");
+                    htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'><b>R" + cashOnCard + "</b></td>");
+                    htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'><b>R" + cashPaidIn + "</b></td>");
+                    htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'><b>R" + difference + "</b></td>");
+                    htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'></td>");
+                    htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'><b>R" + netTickets + "</b></td>");
+                    htmlcontent.Append("<td style='width:100px'></td>");
+                    htmlcontent.Append("</tr>");
+
+                    cashOnCardTotal += cashOnCard; cashOnCard = 0;
+                    cashPaidInTotal += cashPaidIn; cashPaidIn = 0;
+                    differenceTotal += difference; difference = 0;
+                    netTicketsTotal += netTickets; netTickets = 0;
+
+                    htmlcontent.Append("<tr><td style='width:100px;'</td><td style='width:100px;'</td><td style='width:100px;'</td><td style='width:100px;'</td><td style='width:100px;'</td><td style='width:100px;'</td><td style='width:100px;'</td><td style='width:100px;'</td><td style='width:100px;'</td></tr>");
+                    //New row started
+                    htmlcontent.Append("<tr><td colspan='9' style='width:900px;border-bottom: thin solid black;'><b>Date :</b>" + curItem.Date + "</td></tr>");
+                    htmlcontent.Append("<tr><td colspan='9' style='width:900px;border-bottom: thin solid black;'><b>Locaion :</b>" + curItem.LocationDesc + "</td></tr>");
+                    htmlcontent.Append("<tr><td colspan='9' style='width:900px;border-bottom: thin solid black;'><b>Terminal :</b>" + curItem.Terminal + "</td></tr>");
+                    htmlcontent.Append("<tr><td colspan='9' style='width:900px;border-bottom: thin solid black;'><b>Cashier :</b>" + curItem.CashierName + " - " + curItem.CashierID + "</td></tr>");
+                }
+                cashOnCard += curItem.DriverTotal;
+                cashPaidIn += curItem.CashPaidIn;
+                difference += curItem.Difference;
+                netTickets += curItem.NetTickets;
+
+                htmlcontent.Append("<tr><td style='width:100px;border-left: thin solid black;border-bottom: thin solid black;'>" + curItem.StaffNumber + "</td>");
+                htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'>" + curItem.StaffName + "</td>");
+                htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'>" + curItem.Date + " - " + curItem.Time + "</td>");
+                htmlcontent.Append("<td align='right' style='width:100px;border-bottom: thin solid black;'>R " + curItem.DriverTotal + "</td>");
+                htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'>R" + curItem.CashPaidIn + "</td>");
+                htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'>R" + curItem.Difference + "</td>");
+                htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'>" + curItem.Reason + "</td>");
+                htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'>" + curItem.NetTickets + "</td>");
+                htmlcontent.Append("<td align='right' style='width:100px;border-right: thin solid black;border-bottom: thin solid black;'>R " + curItem.CashinReceiptNo + "</td></tr>");
+                prevDate = curItem.Date;
+                prevLocation = curItem.LocationDesc;
+                prevTerminal = curItem.Terminal;
+                prevCashier = curItem.CashierID;
+
+                if (i == columnscount - 1)
+                {
+                    htmlcontent.Append("<tr>");
+                    htmlcontent.Append("<td style='width:100px'></td>");
+                    htmlcontent.Append("<td style='width:100px'></td>");
+                    htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'><b>Cashier Total:</b></td>");
+                    htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'><b>R" + cashOnCard + "</b></td>");
+                    htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'><b>R" + cashPaidIn + "</b></td>");
+                    htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'><b>R" + difference + "</b></td>");
+                    htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'></td>");
+                    htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'><b>R" + netTickets + "</b></td>");
+                    htmlcontent.Append("<td style='width:100px'></td>");
+                    htmlcontent.Append("</tr>");
+
+                    htmlcontent.Append("<tr>");
+                    htmlcontent.Append("<td style='width:100px'></td>");
+                    htmlcontent.Append("<td style='width:100px'></td>");
+                    htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'><b>Terminal Total:</b></td>");
+                    htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'><b>R" + cashOnCard + "</b></td>");
+                    htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'><b>R" + cashPaidIn + "</b></td>");
+                    htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'><b>R" + difference + "</b></td>");
+                    htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'></td>");
+                    htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'><b>R" + netTickets + "</b></td>");
+                    htmlcontent.Append("<td style='width:100px'></td>");
+                    htmlcontent.Append("</tr>");
+
+                    htmlcontent.Append("<tr>");
+                    htmlcontent.Append("<td style='width:100px'></td>");
+                    htmlcontent.Append("<td style='width:100px'></td>");
+                    htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'><b>Grand Total:</b></td>");
+                    htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'><b>R" + cashOnCardTotal + "</b></td>");
+                    htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'><b>R" + cashPaidInTotal + "</b></td>");
+                    htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'><b>R" + differenceTotal + "</b></td>");
+                    htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'></td>");
+                    htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'><b>R" + netTicketsTotal + "</b></td>");
+                    htmlcontent.Append("<td style='width:100px'></td>");
+                    htmlcontent.Append("</tr>");
+                }
+            }
+            htmlcontent.Append("</Table>");
+            htmlcontent.Append("</font>");
+            System.Web.HttpContext.Current.Response.Write(htmlcontent.ToString());
+            System.Web.HttpContext.Current.Response.Flush();
+            System.Web.HttpContext.Current.Response.End();
+        }
+
         public ActionResult DownloadRevenueByDutyReport(SchVsOprViewModel filters, string rptPath, string fileName, string spName)
         {
             var conKey = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey;
@@ -997,7 +1190,7 @@ namespace Reports.Web.Controllers
                 else
                 {
                     ExportRevenueByDutyToExcel(result.Item2, fileName);
-                    return RedirectToAction("RevenueByDuty", "Report"); ;
+                    return RedirectToAction("RevenueByDuty", "Report");
                 }
             }
             else
@@ -1650,6 +1843,80 @@ namespace Reports.Web.Controllers
                 rptH.Dispose();
             }
 
+        }
+
+        private ActionResult DownLoadCashierReportMatatieleByDataSet(bool excelOrPDF, string rptPath, DataSet ds, string reportName)
+        {
+            var fileType = excelOrPDF ? CrystalDecisions.Shared.ExportFormatType.PortableDocFormat : CrystalDecisions.Shared.ExportFormatType.Excel;
+            if (fileType == CrystalDecisions.Shared.ExportFormatType.PortableDocFormat)
+            {
+                var rptH = new ReportClass
+                {
+                    FileName = Server.MapPath(rptPath)
+                };
+
+                try
+                {
+                    rptH.Load();
+
+                    rptH.SetDataSource(ds.Tables[0]);
+
+                    rptH.ExportToHttpResponse(fileType, System.Web.HttpContext.Current.Response, true, reportName + DateTime.Now.ToString("dd-MM-yyyy H:mm:ss"));
+
+                    return new DownloadPdfResult(rptH, reportName + " " + DateTime.Now.ToString("dd-MM-yyyy H:mm:ss"));
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+                finally
+                {
+                    rptH.Close();
+                    rptH.Dispose();
+                }
+            }
+            else
+            {
+                var collection = ConvertDataTableToCashierReportMatatieleData(ds.Tables[0]);
+                ExportCashierReportMatatieleToExcel(collection, reportName + " " + DateTime.Now.ToString("dd-MM-yyyy H:mm:ss"));
+                return RedirectToAction("CashierReportMatatiele", "Report");
+            }
+
+
+        }
+
+        private List<CashierReportMatatiele> ConvertDataTableToCashierReportMatatieleData(DataTable dataTable)
+        {
+            List<CashierReportMatatiele> collection = new List<CashierReportMatatiele>();
+            if (dataTable.Rows.Count > 0)
+            {
+                foreach (DataRow item in dataTable.Rows)
+                {
+                    collection.Add(new CashierReportMatatiele()
+                    {
+                        StaffNumber = item["StaffNumber"].ToString(),
+                        StaffName = item["str50_StaffName"].ToString(),
+                        Date = Convert.ToDateTime(item["Date"]).ToString("dd-MM-yyyy"),
+                        Time = Convert.ToDateTime(item["Time"]).ToString("HH:mm:ss"),
+                        DriverTotal = Convert.ToInt32(item["DriverTotal"]),
+                        CashPaidIn = Convert.ToInt32(item["CashPaidIn"]),
+                        Difference = Convert.ToInt32(item["Difference"]),
+                        Reason = item["Reason"].ToString(),
+                        NetTickets = Convert.ToInt32(item["NetTickets"]),
+                        CashinReceiptNo = Convert.ToInt32(item["CashinReceiptNo"]),
+                        CompanyName = item["CompanyName"].ToString(),
+                        Cashiers = item["Cashiers"].ToString(),
+                        DateSelected = item["DateSelected"].ToString(),
+                        Locations = item["Locations"].ToString(),
+                        Terminals = item["Terminals"].ToString(),
+                        LocationDesc = item["str50_LocationDesc"].ToString(),
+                        Terminal = item["Terminal"].ToString(),
+                        CashierID = item["CashierID"].ToString(),
+                        CashierName = item["str50_CashierName"].ToString()
+                    });
+                }
+            }
+            return collection;
         }
 
         private UserSettings GetUserSettings()

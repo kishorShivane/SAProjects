@@ -157,6 +157,12 @@
       <SubType>Component</SubType>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="CrystalReports\Rpt\Cashier\CashierReportMatatiele.cs">
+      <DependentUpon>CashierReportMatatiele.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="CrystalReports\Rpt\ClassSummary\NewCashierSummary.cs">
       <DependentUpon>NewCashierSummary.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -576,6 +582,7 @@
     <Content Include="Views\UserAdministration\ViewUsers.cshtml" />
     <Content Include="Views\UserAdministration\_AddEditUser.cshtml" />
     <Content Include="Views\UserAdministration\_ViewAccessRights.cshtml" />
+    <Content Include="Views\Report\CashierReportMatatiele.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -609,6 +616,10 @@
     <EmbeddedResource Include="CrystalReports\Rpt\Cashier\CashierReconciliationSummay.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>CashierReconciliationSummay.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CrystalReports\Rpt\Cashier\CashierReportMatatiele.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CashierReportMatatiele.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="CrystalReports\Rpt\ClassSummary\NewCashierSummary.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>

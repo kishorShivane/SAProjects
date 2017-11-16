@@ -303,35 +303,37 @@ namespace EbusFileImporter.DataProvider
             SqlConnection con = null;
             SqlCommand cmd = null;
             var classIDs = @"10002,10004,10000,10022,10024,10001,731,732,733‬,741,742,743,744,745,746";
-            try
-            {
 
-                using (con = GetConnection(GetConnectionString(connectionKey)))
+            using (con = GetConnection(GetConnectionString(connectionKey)))
+            {
+                con.Open();
+                //string query = @"SELECT (ISNULL(int4_Revenue,0)/(CASE WHEN ISNULL(int4_TripBal,1) = 0 THEN 1 ELSE ISNULL(int4_TripBal,1) END)) AS NonRevenue FROM PosTrans WHERE str_SerialNumber ='" + serialNumber + "' AND int2_Class NOT IN (" + classIDs + ") ORDER BY dat_TransTime DESC;";
+                string query = @"SELECT TOP 1 int4_Revenue, TripsRecharged FROM PosTrans WHERE str_SerialNumber ='" + serialNumber + "' AND int2_Class NOT IN (" + classIDs + ") ORDER BY dat_TransTime DESC;";
+                query = query.Replace("‬", "");
+
+                try
                 {
-                    con.Open();
-                    //string query = @"SELECT (ISNULL(int4_Revenue,0)/(CASE WHEN ISNULL(int4_TripBal,1) = 0 THEN 1 ELSE ISNULL(int4_TripBal,1) END)) AS NonRevenue FROM PosTrans WHERE str_SerialNumber ='" + serialNumber + "' AND int2_Class NOT IN (" + classIDs + ") ORDER BY dat_TransTime DESC;";
-                    string query = @"SELECT (ISNULL(int4_Revenue,0)/ISNULL(TripsRecharged,1)) AS NonRevenue FROM PosTrans WHERE str_SerialNumber ='" + serialNumber + "' AND int2_Class NOT IN (" + classIDs + ") ORDER BY dat_TransTime DESC;";
-                    query = query.Replace("‬", "");
                     using (cmd = new SqlCommand(query, con))
                     {
-                        var item = cmd.ExecuteScalar();
-                        if (item != null)
+                        var item = cmd.ExecuteReader();
+                        while (item.Read())
                         {
-                            result = Convert.ToInt32(item);
+                            int int4_Revenue = Convert.ToInt32(item["int4_Revenue"]);
+                            int TripsRecharged = Convert.ToInt32(item["TripsRecharged"]);
+                            result = int4_Revenue / TripsRecharged;
                         }
                     }
                 }
-            }
-            catch (Exception)
-            {
-                Logger.Error("Failed in GetNonRevenueFormPosTrans:" + serialNumber);
-                throw;
-            }
-            finally
-            {
-                con.Close();
-                con.Dispose();
-                cmd.Dispose();
+                catch (DivideByZeroException e)
+                {
+                    Logger.Error("Divide By Zero Exception in getting GetNonRevenueFormPosTrans:" + serialNumber + " setting default value to non revenue.");
+                }
+                finally
+                {
+                    con.Close();
+                    con.Dispose();
+                    cmd.Dispose();
+                }
             }
             return result;
         }

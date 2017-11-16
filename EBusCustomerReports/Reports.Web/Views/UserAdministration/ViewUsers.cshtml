@@ -255,8 +255,9 @@
     function SetAccessRights(accessCodes) {
         var checkBoxes = divAccessRights.find("input[type='checkbox']");
         checkBoxes.each(function (index) {
-            var code = $(this).attr("value");
-            if (accessCodes.indexOf(code) > -1)
+            var preCode = "," + $(this).attr("value");
+            var postCode = $(this).attr("value") + ",";
+            if (accessCodes.indexOf(preCode) > -1 || accessCodes.indexOf(postCode) > -1)
                 $(this).prop("checked", true);
             else
                 $(this).removeAttr("checked");

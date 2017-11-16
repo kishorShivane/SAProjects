@@ -172,7 +172,7 @@
                                         @if (accessCodes.Contains("EBUSUA"))
                                         {
                                             <li>
-                                                <a href="@Url.Action("UserAdministration", "ViewUsers")">User Administration</a>
+                                                <a href="@Url.Action("ViewUsers", "UserAdministration")">User Administration</a>
                                             </li>
                                         }
                                         @if (accessCodes.Contains("RM"))
@@ -213,6 +213,12 @@
                                         {
                                             <li>
                                                 <a href="@Url.Action("CashierReportAt", "Report")">Cashier Report</a>
+                                            </li>
+                                        }
+                                        @if (accessCodes.Contains("CRMR"))
+                                        {
+                                            <li>
+                                                <a href="@Url.Action("CashierReportMatatiele", "Report")">Cashier Report</a>
                                             </li>
                                         }
                                         @if (accessCodes.Contains("NCAR"))

@@ -1230,20 +1230,19 @@ namespace EbusFileImporter.Core
                                             transDetail.int2_AlightingStageID = (short)thisTrans.Element("StageNo");
                                             transDetail.int2_Class = Convert.ToInt16(ticketType, 16);
                                             transDetail.int4_Revenue = (int)thisTrans.Element("Fare");
-                                            switch (transDetail.int4_Revenue)
+                                            if (transDetail.int4_Revenue == 0 || thisTrans.Element("ClassValue").Value == "A0")
                                             {
-                                                case 0:
-                                                    transDetail.int4_NonRevenue = 0;
-                                                    transDetail.int2_TicketCount = 0;
-                                                    transDetail.int2_PassCount = 1;
-                                                    transDetail.int2_Transfers = 0;
-                                                    break;
-                                                default:
-                                                    transDetail.int4_NonRevenue = 0;
-                                                    transDetail.int2_TicketCount = 1;
-                                                    transDetail.int2_PassCount = 0;
-                                                    transDetail.int2_Transfers = 0;
-                                                    break;
+                                                transDetail.int4_NonRevenue = 0;
+                                                transDetail.int2_TicketCount = 0;
+                                                transDetail.int2_PassCount = 1;
+                                                transDetail.int2_Transfers = 0;
+                                            }
+                                            else
+                                            {
+                                                transDetail.int4_NonRevenue = 0;
+                                                transDetail.int2_TicketCount = 1;
+                                                transDetail.int2_PassCount = 0;
+                                                transDetail.int2_Transfers = 0;
                                             }
                                             transDetail.dat_TransDate = helper.ConvertToInsertDateString((string)thisTrans.Element("IssueDate"));
                                             transDetail.dat_TransTime = helper.ConvertToInsertDateTimeString((string)thisTrans.Element("IssueDate"), (string)thisTrans.Element("IssueTime"));
