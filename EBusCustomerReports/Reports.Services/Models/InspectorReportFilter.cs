@@ -39,8 +39,16 @@ namespace Reports.Services.Models
             StaffList = new List<SelectListItem>();
             Terminals = new List<SelectListItem>();
             Locations = new List<SelectListItem>();
+            Classes = new List<SelectListItem>();
+            ClassTypes= new List<SelectListItem>();
             ExcelOrPDF = true; //PDF=true, EXCEL=false
         }
+
+        public string[] ClassesSelected { get; set; }
+        public List<SelectListItem> Classes { get; set; }
+
+        public string[] ClassTypesSelected { get; set; }
+        public List<SelectListItem> ClassTypes { get; set; }
 
         public string[] CashiersSelected { get; set; }
         public List<SelectListItem> Cashiers { get; set; }

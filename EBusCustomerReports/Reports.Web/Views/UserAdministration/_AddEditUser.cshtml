@@ -53,7 +53,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        @Html.Partial("_ViewAccessRights", Model.ApplicationMenus)
+                        @Html.Partial("_ViewAccessRights", Model)
                     </div>
                     <br />
                 </div>
@@ -122,7 +122,7 @@
                 if (checkBoxes.length > 0) {
                     checkBoxes.each(function (index) {
                         var curItem = $(this);
-                        if (curItem.is(":checked")) {
+                        if (curItem.is(":checked") && !curItem.is(':disabled')) {
                             if (accessCodes.length <= 0)
                                 accessCodes = curItem.attr("value");
                             else

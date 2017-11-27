@@ -262,6 +262,8 @@ namespace Reports.Services
             table1.Columns[30].DataType = typeof(double);
             table1.Columns.Add("TransactionDatetime");//31
 
+            table1.Columns.Add("ClassesSelected");//32
+            table1.Columns.Add("ClassTypesSelected");//33
             return table1;
         }
 

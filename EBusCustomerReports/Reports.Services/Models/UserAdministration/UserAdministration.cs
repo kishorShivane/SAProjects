@@ -12,6 +12,7 @@ namespace Reports.Services.Models.UserAdministration
         public List<SelectListItem> Companies { get; set; }
         public List<SelectListItem> ApplicationRoles { get; set; }
         public List<AdministrationDB.ApplicationMenu> ApplicationMenus { get; set; }
+        public List<string> AccessCodes { get; set; }
     }
 
     public class Company

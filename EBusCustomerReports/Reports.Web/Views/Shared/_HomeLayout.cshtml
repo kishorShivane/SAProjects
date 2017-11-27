@@ -245,6 +245,12 @@
                                                 <a href="@Url.Action("DailyAuditAtamelangReport", "Report" )">Daily Audit</a>
                                             </li>
                                         }
+                                        @if (accessCodes.Contains("DAMR"))
+                                        {
+                                            <li>
+                                                <a href="@Url.Action("DailyAuditMatatieleReport", "Report" )">Daily Audit</a>
+                                            </li>
+                                        }
                                         @if (accessCodes.Contains("CA"))
                                         {
                                             <li>

@@ -217,6 +217,12 @@
       <SubType>Component</SubType>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="CrystalReports\Rpt\DailyAudit\DailyAuditMatatiele.cs">
+      <DependentUpon>DailyAuditMatatiele.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="CrystalReports\Rpt\DailyAudit\DailyAuditAtamelang.cs">
       <DependentUpon>DailyAuditAtamelang.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -583,6 +589,7 @@
     <Content Include="Views\UserAdministration\_AddEditUser.cshtml" />
     <Content Include="Views\UserAdministration\_ViewAccessRights.cshtml" />
     <Content Include="Views\Report\CashierReportMatatiele.cshtml" />
+    <Content Include="Views\Report\DailyAuditMatatiele.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -656,6 +663,10 @@
     <EmbeddedResource Include="CrystalReports\Rpt\DailyAudit\DailyAnalysis.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>DailyAnalysis.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CrystalReports\Rpt\DailyAudit\DailyAuditMatatiele.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>DailyAuditMatatiele.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="CrystalReports\Rpt\DailyAudit\DailyAuditAtamelang.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>

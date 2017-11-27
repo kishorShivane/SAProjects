@@ -1183,6 +1183,119 @@ namespace Reports.Services
             return ds;
         }
 
+        public DataSet GetDailyAuditMatatieleReportDataset(string connKey, CashierReportSummaryFilter filter, string companyName)
+        {
+            var result = GetDailyAuditMatatieleReportDataset(connKey, filter);
+
+            //filter details
+            var filterDateRange = string.Format("{0}: {1}", "Date ", filter.StartDate);
+            var staffSelected = string.Format("Staffs : {0} ", filter.StaffSelected != null ? string.Join(",", filter.StaffSelected) : "All");
+            var locationSelected = string.Format("Locations : {0} ", filter.LocationsSelected != null ? string.Join(",", filter.LocationsSelected) : "All");
+            var classesSelected = string.Format("Classes : {0} ", filter.ClassesSelected != null ? string.Join(",", filter.ClassesSelected) : "All");
+            var classTypesSelected = string.Format("ClassTypes : {0} ", filter.ClassTypesSelected != null ? string.Join(",", filter.ClassTypesSelected) : "All");
+
+            var ds = new DataSet();
+            var table1 = DailyAuditByCashierTerminalDataset();
+
+            var filteredResult = new List<DailyAuditData>();
+
+            result.ForEach(s =>
+            {
+
+                var multiplePairExistRes = result.Where(r => r.FirstJourney == s.FirstJourney
+                    && r.EmployeeNo == s.EmployeeNo
+                    && r.DutyDate == s.DutyDate).Count();
+
+                if (multiplePairExistRes > 1)
+                {
+                    var multiplePairExistFil = filteredResult.Where(r => r.FirstJourney == s.FirstJourney
+                    && r.EmployeeNo == s.EmployeeNo
+                    && r.DutyDate == s.DutyDate).Count();
+
+                    if (multiplePairExistRes > 1)
+                    {
+                        filteredResult.RemoveAll(r => r.FirstJourney == s.FirstJourney
+                                        && r.EmployeeNo == s.EmployeeNo
+                                        && r.DutyDate == s.DutyDate
+                                        && r.TotalPs == 0); //remove all zero
+
+                        var multiplePairExistFilNonZeroPsg = filteredResult.Where(r => r.FirstJourney == s.FirstJourney
+                                        && r.EmployeeNo == s.EmployeeNo
+                                        && r.DutyDate == s.DutyDate).Count();
+                        if (multiplePairExistFilNonZeroPsg > 0 && s.TotalPs <= 0)
+                        {
+                            //there is already non zero object so ignore current zero object
+                        }
+                        else
+                        {
+                            filteredResult.Add(s);
+                        }
+                    }
+                    else
+                    {
+                        filteredResult.Add(s);
+                    }
+                }
+                else
+                {
+                    filteredResult.Add(s);
+                }
+            });
+
+            if (filteredResult.Any())
+            {
+                foreach (var res in filteredResult)
+                {
+                    table1.Rows.Add(
+                        res.EmployeeNo,
+                        res.EmployeeName.Trim() + " (" + res.EmployeeNo + ")",
+                        res.Module,
+                        res.Duty,
+                        res.DutyDate,
+                        res.DutySignOn,
+                        res.DutySignOff,
+                        res.BusNumber,
+                        res.EquipmentNumber.PadLeft(6, '0'),
+                        res.FirstRoute,
+                        res.FirstJourney,
+                        res.Revenue,
+                        res.Tickets,
+                        res.Passes,
+                        res.Transfers,
+                        res.modulesignoff,
+                        res.modulesignon,
+                        companyName,
+                        filterDateRange,
+                        staffSelected,
+                        "",
+                        res.TotalPs,
+                        locationSelected,
+                        "",
+                        res.CashierName.Trim(), res.str4_LocationCode.Trim() + " (" + res.LocationID + ")", res.Terminal.Trim(), res.Cashsignon, res.Cashsignoff, res.CashierNum.Trim(), res.NonRevenue, res.TransactionDatetime.Trim(),
+                        classesSelected,
+                        classTypesSelected);
+                }
+            }
+            else
+            {
+                DataRow dr = table1.NewRow();
+                dr["companyName"] = companyName;
+                dr["DateRangeFilter"] = filterDateRange;
+                dr["StaffsSelected"] = staffSelected;
+                dr["casherSelected"] = "";
+                dr["LocationSelected"] = locationSelected;
+                dr["TermnalSelected"] = "";
+                dr["ClassesSelected"] = locationSelected;
+                dr["ClassTypesSelected"] = locationSelected;
+                table1.Rows.Add(dr);
+            }
+
+
+            ds.Tables.Add(table1);
+            return ds;
+        }
+
+
         public List<DailyAuditData> GetDailyAuditByCashierTerminalData(string connKey, CashierReportSummaryFilter filter)
         {
             var schs = new List<DailyAuditData>();
@@ -1533,6 +1646,177 @@ namespace Reports.Services
                 cmd.Parameters.AddWithValue("@CasherIds", filter.CashiersSelected != null ? string.Join(",", filter.CashiersSelected) : "");
                 cmd.Parameters.AddWithValue("@LocationIDs", filter.LocationsSelected != null ? string.Join(",", filter.LocationsSelected) : "");
                 cmd.Parameters.AddWithValue("@Terminals", filter.TerminalsSelected != null ? string.Join(",", filter.TerminalsSelected) : "");
+                cmd.Parameters.AddWithValue("@FromDate", CustomDateTime.ConvertStringToDateSaFormat(filter.StartDate).ToString("yyyy-MM-dd"));
+                cmd.Parameters.AddWithValue("@ToDate", CustomDateTime.ConvertStringToDateSaFormat(filter.EndDate).ToString("yyyy-MM-dd"));
+                cmd.CommandTimeout = 500000;
+
+                myConnection.Open();
+                SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+
+                while (dr.Read())
+                {
+                    var sch = new DailyAuditData();
+
+                    if (dr["EmployeeNo"] != null && dr["EmployeeNo"].ToString() != string.Empty)
+                    {
+                        sch.EmployeeNo = Convert.ToInt32(dr["EmployeeNo"].ToString());
+                    }
+
+                    if (dr["DutyDate"] != null && dr["DutyDate"].ToString() != string.Empty)
+                    {
+                        var datePart = dr["DutyDate"].ToString().Split(' ')[0];
+                        var date = datePart.Split('/');
+                        var mont = (date[0].Length == 1 ? "0" + date[0] : date[0]).Trim();
+
+                        sch.DutyDate = (date[1].Length == 1 ? "0" + date[1] : date[1]).Trim() + "/" + mont + "/" + date[2].Trim();
+                    }
+
+                    if (dr["DutySignOn"] != null && dr["DutySignOn"].ToString() != string.Empty)
+                    {
+                        sch.DutySignOn = dr["DutySignOn"].ToString();
+                    }
+
+                    if (dr["DutySignOff"] != null && dr["DutySignOff"].ToString() != string.Empty)
+                    {
+                        sch.DutySignOff = dr["DutySignOff"].ToString();
+                    }
+
+                    if (dr["Module"] != null && dr["Module"].ToString() != string.Empty)
+                    {
+                        sch.Module = Convert.ToInt32(dr["Module"].ToString());
+                    }
+
+                    if (dr["TotalPs"] != null && dr["TotalPs"].ToString() != string.Empty)
+                    {
+                        sch.TotalPs = Convert.ToInt32(dr["TotalPs"].ToString());
+                    }
+
+                    if (dr["Duty"] != null && dr["Duty"].ToString() != string.Empty)
+                    {
+                        sch.Duty = Convert.ToInt32(dr["Duty"].ToString());
+                    }
+
+                    if (dr["EmployeeName"] != null && dr["EmployeeName"].ToString() != string.Empty)
+                    {
+                        sch.EmployeeName = dr["EmployeeName"].ToString().Trim();
+                    }
+
+                    if (dr["BusNumber"] != null && dr["BusNumber"].ToString() != string.Empty)
+                    {
+                        sch.BusNumber = dr["BusNumber"].ToString().Trim();
+                    }
+
+                    if (dr["EquipmentNumber"] != null && dr["EquipmentNumber"].ToString() != string.Empty)
+                    {
+                        sch.EquipmentNumber = dr["EquipmentNumber"].ToString().Trim();
+                    }
+
+                    if (dr["FirstRoute"] != null && dr["FirstRoute"].ToString() != string.Empty)
+                    {
+                        sch.FirstRoute = dr["FirstRoute"].ToString().Trim();
+                    }
+
+                    if (dr["FirstJourney"] != null && dr["FirstJourney"].ToString() != string.Empty)
+                    {
+                        sch.FirstJourney = dr["FirstJourney"].ToString().Trim();
+                    }
+
+                    if (dr["Revenue"] != null && dr["Revenue"].ToString() != string.Empty)
+                    {
+                        sch.Revenue = dr["Revenue"].ToString().Trim();
+                    }
+
+                    if (dr["NonRevenue"] != null && dr["NonRevenue"].ToString() != string.Empty)
+                    {
+                        sch.NonRevenue = dr["NonRevenue"].ToString().Trim();
+                    }
+
+                    if (dr["CashierNum"] != null && dr["CashierNum"].ToString() != string.Empty)
+                    {
+                        sch.CashierNum = dr["CashierNum"].ToString().Trim();
+                    }
+
+                    if (dr["Tickets"] != null && dr["Tickets"].ToString() != string.Empty)
+                    {
+                        sch.Tickets = dr["Tickets"].ToString().Trim();
+                    }
+
+                    if (dr["Passes"] != null && dr["Passes"].ToString() != string.Empty)
+                    {
+                        sch.Passes = dr["Passes"].ToString().Trim();
+                    }
+
+                    if (dr["Transfers"] != null && dr["Transfers"].ToString() != string.Empty)
+                    {
+                        sch.Transfers = dr["Transfers"].ToString().Trim();
+                    }
+
+                    if (dr["modulesignoff"] != null && dr["modulesignoff"].ToString() != string.Empty)
+                    {
+                        sch.modulesignoff = Convert.ToDateTime(dr["modulesignoff"].ToString().Trim()).ToString("dd/MM/yyyy");
+                    }
+
+                    if (dr["modulesignon"] != null && dr["modulesignon"].ToString() != string.Empty)
+                    {
+                        sch.modulesignon = Convert.ToDateTime(dr["modulesignon"].ToString().Trim()).ToString("dd/MM/yyyy");
+                    }
+
+                    ////
+                    if (dr["CashierName"] != null && dr["CashierName"].ToString() != string.Empty)
+                    {
+                        sch.CashierName = dr["CashierName"].ToString().Trim();
+                    }
+                    if (dr["str4_LocationCode"] != null && dr["str4_LocationCode"].ToString() != string.Empty)
+                    {
+                        sch.str4_LocationCode = dr["str4_LocationCode"].ToString().Trim();
+                    }
+                    if (dr["LocationID"] != null && dr["LocationID"].ToString() != string.Empty)
+                    {
+                        sch.LocationID = dr["LocationID"].ToString().Trim();
+                    }
+                    if (dr["Terminal"] != null && dr["Terminal"].ToString() != string.Empty)
+                    {
+                        sch.Terminal = dr["Terminal"].ToString().Trim();
+                    }
+                    /////
+                    if (dr["Cashsignoff"] != null && dr["Cashsignoff"].ToString() != string.Empty)
+                    {
+                        sch.Cashsignoff = Convert.ToDateTime(dr["Cashsignoff"].ToString().Trim()).ToString("dd/MM/yyyy HH:mm");
+                    }
+                    if (dr["Cashsignon"] != null && dr["Cashsignon"].ToString() != string.Empty)
+                    {
+                        sch.Cashsignon = Convert.ToDateTime(dr["Cashsignon"].ToString().Trim()).ToString("dd/MM/yyyy HH:mm");
+                    }
+                    if (dr["TransactionDatetime"] != null && dr["TransactionDatetime"].ToString() != string.Empty)
+                    {
+                        sch.TransactionDatetime = Convert.ToDateTime(dr["TransactionDatetime"].ToString().Trim()).ToString("dd/MM/yyyy");
+                    }
+                    schs.Add(sch);
+                }
+            }
+            finally
+            {
+                myConnection.Close();
+            }
+            return schs;
+        }
+
+        public List<DailyAuditData> GetDailyAuditMatatieleReportDataset(string connKey, CashierReportSummaryFilter filter)
+        {
+            var schs = new List<DailyAuditData>();
+            var myConnection = new SqlConnection(GetConnectionString(connKey));
+
+            try
+            {
+                var cmd = new SqlCommand("DailyAuditForMatatiele", myConnection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+
+                cmd.Parameters.AddWithValue("@StafIds", filter.StaffSelected != null ? string.Join(",", filter.StaffSelected) : "");
+                cmd.Parameters.AddWithValue("@Classes", filter.CashiersSelected != null ? string.Join(",", filter.ClassesSelected) : "");
+                cmd.Parameters.AddWithValue("@LocationIDs", filter.LocationsSelected != null ? string.Join(",", filter.LocationsSelected) : "");
+                cmd.Parameters.AddWithValue("@ClassTypes", filter.TerminalsSelected != null ? string.Join(",", filter.ClassTypesSelected) : "");
                 cmd.Parameters.AddWithValue("@FromDate", CustomDateTime.ConvertStringToDateSaFormat(filter.StartDate).ToString("yyyy-MM-dd"));
                 cmd.Parameters.AddWithValue("@ToDate", CustomDateTime.ConvertStringToDateSaFormat(filter.EndDate).ToString("yyyy-MM-dd"));
                 cmd.CommandTimeout = 500000;

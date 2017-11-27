@@ -27,6 +27,7 @@ namespace Reports.Web.Controllers
             var res = new UserSettings();
             res.ConnectionKey = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey;
             res.CompanyName = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.CompanyName;
+            res.AccessCodes = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.AccessCodes;
             res.Username = HttpContext.User.Identity.Name;
             res.RoleID = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.RoleID;
             return res;
@@ -37,8 +38,10 @@ namespace Reports.Web.Controllers
         public ActionResult ViewUsers()
         {
             var userAdministration = new UserAdministration();
-            var roleID = GetUserSettings().RoleID;
-            var company = GetUserSettings().CompanyName;
+            var res = GetUserSettings();
+            var roleID = res.RoleID;
+            var company = res.CompanyName;
+            var accessCodes = res.AccessCodes;
             var companies = UserAdministrationService.GetCompanies().ToList();
             var applicationRoles = UserAdministrationService.GetApplicationRoles(roleID).ToList();
 
@@ -49,6 +52,7 @@ namespace Reports.Web.Controllers
             userAdministration.Companies = companies;
             userAdministration.ApplicationRoles = applicationRoles;
             userAdministration.ApplicationMenus = UserAdministrationService.GetApplicationMenu().ToList();
+            userAdministration.AccessCodes = roleID == 1 ? new List<string>() : accessCodes;
             return View(userAdministration);
         }
 

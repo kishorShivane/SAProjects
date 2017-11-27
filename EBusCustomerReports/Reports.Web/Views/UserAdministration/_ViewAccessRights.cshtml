@@ -1,4 +1,4 @@
-﻿@model List<Reports.Services.AdministrationDB.ApplicationMenu>
+﻿@model Reports.Services.Models.UserAdministration.UserAdministration
 <!-- Modal Contents -->
 <div id="divAccessRights">
     <div class="row">
@@ -6,24 +6,39 @@
         <div class="col-md-8">
             <div class="row" style="height: 300px;overflow: auto;">
                 <ul>
-                    @foreach (var menu in Model)
+                    @foreach (var menu in Model.ApplicationMenus)
                     {
                         <li>
-                            <input type="checkbox" class="expand" id="chk+@(menu.ApplicationMenuCode)" value="@(menu.ApplicationMenuCode)" /> &nbsp; <a class="expandLink"><b><i>@menu.ApplicationMenu1</i></b></a>
+                            @if (!Model.AccessCodes.Any() || Model.AccessCodes.Contains(menu.ApplicationMenuCode))
+                            { <input type="checkbox" class="expand" id="chk+@(menu.ApplicationMenuCode)" value="@(menu.ApplicationMenuCode)" /> <text>&nbsp;</text><a class="expandLink"><b><i>@menu.ApplicationMenu1</i></b></a>}
+                            else
+                            { <input type="checkbox" class="expand" id="chk+@(menu.ApplicationMenuCode)" value="@(menu.ApplicationMenuCode)" disabled="disabled" /> <text>&nbsp;</text><a class="expandLink"><b><i>@menu.ApplicationMenu1</i></b></a>}
                             @if (menu.ApplicationScreens.Any())
                             {
                                 <ul class="screenMenu">
                                     @foreach (var screen in menu.ApplicationScreens)
                                     {
                                         <li>
-                                            <input type="checkbox" class="expand" id="chk+@(screen.ScreenCode)" value="@(screen.ScreenCode)" /> &nbsp; <a class="expandLink"><b><i>@screen.ScreenName</i></b></a>
+                                            @if (!Model.AccessCodes.Any() || Model.AccessCodes.Contains(screen.ScreenCode))
+                                            { <input type="checkbox" class="expand" id="chk+@(screen.ScreenCode)" value="@(screen.ScreenCode)" /><text>&nbsp;</text>
+                                                <a class="expandLink"><b><i>@screen.ScreenName</i></b></a>}
+                                            else
+                                            {
+                                                <input type="checkbox" class="expand" id="chk+@(screen.ScreenCode)" value="@(screen.ScreenCode)" disabled="disabled" /> <text>&nbsp;</text>
+                                                <a class="expandLink"><b><i>@screen.ScreenName</i></b></a>}
                                             @if (screen.ApplicationFunctionalities.Any())
                                             {
                                                 <ul class="funcMenu">
                                                     @foreach (var func in screen.ApplicationFunctionalities)
                                                     {
                                                         <li>
-                                                            <input type="checkbox" class="expand" id="chk+@(func.FunctionalityCode)" value="@(func.FunctionalityCode)" /> &nbsp; <a class="expandLink"><b><i>@func.FunctionalityName</i></b></a>
+                                                            @if (!Model.AccessCodes.Any() || Model.AccessCodes.Contains(func.FunctionalityCode))
+                                                            { <input type="checkbox" class="expand" id="chk+@(func.FunctionalityCode)" value="@(func.FunctionalityCode)" /><text>&nbsp;</text>
+                                                                <a class="expandLink"><b><i>@func.FunctionalityName</i></b></a>}
+                                                            else
+                                                            {
+                                                                <input type="checkbox" class="expand" id="chk+@(func.FunctionalityCode)" value="@(func.FunctionalityCode)" disabled="disabled" /><text>&nbsp;</text>
+                                                                <a class="expandLink"><b><i>@func.FunctionalityName</i></b></a>}
                                                         </li>
                                                     }
                                                 </ul>
@@ -48,11 +63,11 @@
             var parentUL = $('ul', checkBox.parent()).eq(0);
 
             if (checkBox.is(":checked")) {
-                parentUL.find("input").prop("checked", true);
-                parentUL.css("display", "block").find("ul").css("display", "block");                
+                parentUL.find("input").not(':disabled').prop("checked", true);
+                parentUL.css("display", "block").find("ul").css("display", "block");
             }
             else {
-                parentUL.find("input").removeAttr("checked");
+                parentUL.find("input").not(':disabled').removeAttr("checked");
                 parentUL.css("display", "none").find("ul").css("display", "none");
             }
         });

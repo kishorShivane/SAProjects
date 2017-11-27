@@ -272,6 +272,96 @@ namespace Reports.Services
             return res;
         }
 
+        public List<SelectListItem> GetAllClasses(string connKey)
+        {
+            var res = new List<SelectListItem>();
+
+            var myConnection = new SqlConnection(GetConnectionString(connKey));
+
+            try
+            {
+                var cmd = new SqlCommand()
+                {
+                    CommandType = CommandType.Text,
+                    Connection = myConnection
+                };
+
+                cmd.CommandText = "select int2_Class,str50_LongName from Class";
+                cmd.CommandTimeout = 500000;
+                myConnection.Open();
+
+                SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+
+                while (dr.Read())
+                {
+                    var obj = new SelectListItem();
+
+                    if (dr["int2_Class"] != null && dr["int2_Class"].ToString() != string.Empty)
+                    {
+                        obj.Value = dr["int2_Class"].ToString().Trim();
+                    }
+
+                    if (dr["str50_LongName"] != null && dr["str50_LongName"].ToString() != string.Empty)
+                    {
+                        obj.Text = dr["int2_Class"].ToString().Trim() + " - " + dr["str50_LongName"].ToString().Trim();
+                    }
+                    res.Add(obj);
+                }
+            }
+
+            finally
+            {
+                myConnection.Close();
+            }
+
+            return res;
+        }
+
+        public List<SelectListItem> GetAllClassTypes(string connKey)
+        {
+            var res = new List<SelectListItem>();
+
+            var myConnection = new SqlConnection(GetConnectionString(connKey));
+
+            try
+            {
+                var cmd = new SqlCommand()
+                {
+                    CommandType = CommandType.Text,
+                    Connection = myConnection
+                };
+
+                cmd.CommandText = "select int_TypeID,str30_Description from ClassType";
+                cmd.CommandTimeout = 500000;
+                myConnection.Open();
+
+                SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+
+                while (dr.Read())
+                {
+                    var obj = new SelectListItem();
+
+                    if (dr["int_TypeID"] != null && dr["int_TypeID"].ToString() != string.Empty)
+                    {
+                        obj.Value = dr["int_TypeID"].ToString().Trim();
+                    }
+
+                    if (dr["str30_Description"] != null && dr["str30_Description"].ToString() != string.Empty)
+                    {
+                        obj.Text = dr["int_TypeID"].ToString().Trim() + " - " + dr["str30_Description"].ToString().Trim();
+                    }
+                    res.Add(obj);
+                }
+            }
+
+            finally
+            {
+                myConnection.Close();
+            }
+
+            return res;
+        }
+
         public List<SelectListItem> GetAllTerminals(string connKey)
         {
             var res = new List<SelectListItem>();

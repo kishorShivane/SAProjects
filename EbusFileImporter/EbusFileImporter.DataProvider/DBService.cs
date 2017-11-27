@@ -324,9 +324,13 @@ namespace EbusFileImporter.DataProvider
                         }
                     }
                 }
-                catch (DivideByZeroException e)
+                catch (DivideByZeroException)
                 {
                     Logger.Error("Divide By Zero Exception in getting GetNonRevenueFormPosTrans:" + serialNumber + " setting default value to non revenue.");
+                }
+                catch (Exception)
+                {
+                    Logger.Error("Error in getting GetNonRevenueFormPosTrans:" + serialNumber);
                 }
                 finally
                 {

@@ -223,7 +223,6 @@ namespace Reports.Web.Controllers
             return View("CashierReconciliationReport", model);
         }
 
-
         public ActionResult DownloadCashierReconciliationReport(CashierReportSummaryFilter filter)
         {
             var userset = GetUserSettings();
@@ -397,7 +396,6 @@ namespace Reports.Web.Controllers
 
             return View(model);
         }
-
 
         public ActionResult SmartCardUsageDownload(SmartCardUsageFilter filter)
         {
@@ -1255,7 +1253,7 @@ namespace Reports.Web.Controllers
 
         #endregion
 
-        #region DailyAudit
+            #region DailyAudit
 
         public ActionResult SellersDailyAuditReport()
         {
@@ -1395,6 +1393,36 @@ namespace Reports.Web.Controllers
             {
                 TempData["AlertMessage"] = "show";
                 return RedirectToAction("DailyAuditAtamelangReport", "Report");
+            }
+
+        }
+
+        public ActionResult DailyAuditMatatieleReport()
+        {
+            var model = new CashierReportSummaryFilter();
+            var service = new InspectorReportService();
+            var staff = service.GetAllSatffDetails(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey);
+            model.StaffList = staff.Where(s => s.OperatorType.ToLower() == "driver".ToLower().Trim() || s.OperatorType.ToLower() == "seller".ToLower().Trim()).Select(s => new SelectListItem { Text = s.OperatorName + " - " + s.OperatorID, Value = s.OperatorID }).OrderBy(s => Convert.ToInt32(s.Value)).ToList();
+            model.Locations = service.GetAllLocations(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey).OrderBy(s => Convert.ToInt32(s.Value)).ToList();
+            model.Classes = service.GetAllClasses(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey).OrderBy(s => Convert.ToInt32(s.Value)).ToList();
+            model.ClassTypes = service.GetAllClassTypes(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey).OrderBy(s => Convert.ToInt32(s.Value)).ToList();
+
+            return View("DailyAuditMatatiele", model);
+        }
+
+        public ActionResult DownloadDailyAuditMatatieleReport(CashierReportSummaryFilter filter)
+        {
+            var userset = GetUserSettings();
+            filter.EndDate = filter.StartDate;
+            var ds = new SmartCardService().GetDailyAuditMatatieleReportDataset(userset.ConnectionKey, filter, userset.CompanyName);
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                return DownLoadReportByDataSet(filter.ExcelOrPDF, "~/CrystalReports/Rpt/DailyAudit/DailyAuditMatatiele.rpt", ds, "DailyAudit ");
+            }
+            else
+            {
+                TempData["AlertMessage"] = "show";
+                return RedirectToAction("DailyAuditMatatieleReport", "Report");
             }
 
         }
