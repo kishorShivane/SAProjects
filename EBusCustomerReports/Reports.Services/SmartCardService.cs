@@ -1271,7 +1271,7 @@ namespace Reports.Services
                         res.TotalPs,
                         locationSelected,
                         "",
-                        res.CashierName.Trim(), res.str4_LocationCode.Trim() + " (" + res.LocationID + ")", res.Terminal.Trim(), res.Cashsignon, res.Cashsignoff, res.CashierNum.Trim(), res.NonRevenue, res.TransactionDatetime.Trim(),
+                        res.CashierName.Trim(), res.str4_LocationCode.Trim() + " (" + res.LocationID + ")", res.Terminal.Trim(), res.Cashsignon, res.Cashsignoff, res.CashierNum.Trim(), res.NonRevenue,"",
                         classesSelected,
                         classTypesSelected);
                 }
@@ -1814,9 +1814,9 @@ namespace Reports.Services
                 };
 
                 cmd.Parameters.AddWithValue("@StafIds", filter.StaffSelected != null ? string.Join(",", filter.StaffSelected) : "");
-                cmd.Parameters.AddWithValue("@Classes", filter.CashiersSelected != null ? string.Join(",", filter.ClassesSelected) : "");
+                cmd.Parameters.AddWithValue("@Classes", filter.ClassesSelected != null ? string.Join(",", filter.ClassesSelected) : "");
                 cmd.Parameters.AddWithValue("@LocationIDs", filter.LocationsSelected != null ? string.Join(",", filter.LocationsSelected) : "");
-                cmd.Parameters.AddWithValue("@ClassTypes", filter.TerminalsSelected != null ? string.Join(",", filter.ClassTypesSelected) : "");
+                cmd.Parameters.AddWithValue("@ClassTypes", filter.ClassTypesSelected != null ? string.Join(",", filter.ClassTypesSelected) : "");
                 cmd.Parameters.AddWithValue("@FromDate", CustomDateTime.ConvertStringToDateSaFormat(filter.StartDate).ToString("yyyy-MM-dd"));
                 cmd.Parameters.AddWithValue("@ToDate", CustomDateTime.ConvertStringToDateSaFormat(filter.EndDate).ToString("yyyy-MM-dd"));
                 cmd.CommandTimeout = 500000;

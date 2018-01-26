@@ -265,6 +265,12 @@
       <SubType>Component</SubType>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="CrystalReports\Rpt\FormE\JourneyAnalysisSummaryBySubRoute.cs">
+      <DependentUpon>JourneyAnalysisSummaryBySubRoute.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="CrystalReports\Rpt\FormE\FormEDetailedAtamelangTGX.cs">
       <DependentUpon>FormEDetailedAtamelangTGX.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -590,6 +596,7 @@
     <Content Include="Views\UserAdministration\_ViewAccessRights.cshtml" />
     <Content Include="Views\Report\CashierReportMatatiele.cshtml" />
     <Content Include="Views\Report\DailyAuditMatatiele.cshtml" />
+    <Content Include="Views\Report\JourneyAnalysisSummaryBySubRoute.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -695,6 +702,10 @@
     <EmbeddedResource Include="CrystalReports\Rpt\FormE\FormEAtamelangTGX.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>FormEAtamelangTGX.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CrystalReports\Rpt\FormE\JourneyAnalysisSummaryBySubRoute.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>JourneyAnalysisSummaryBySubRoute.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="CrystalReports\Rpt\FormE\FormEDetailedAtamelangTGX.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>

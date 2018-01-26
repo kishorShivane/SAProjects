@@ -115,7 +115,9 @@
     <Compile Include="Models\CashierReconciliationData.cs" />
     <Compile Include="Models\Asset.cs" />
     <Compile Include="Models\CashierReportMatatiele.cs" />
+    <Compile Include="Models\JourneyAnalysisSummaryBySubRouteViewModel.cs" />
     <Compile Include="Models\RevenueByDuty.cs" />
+    <Compile Include="Models\JourneyAnalysisSummaryBySubRoute.cs" />
     <Compile Include="Models\ServiceRequest\ServiceRequest.cs" />
     <Compile Include="Models\StaffMaster\StaffMaster.cs" />
     <Compile Include="Models\UserAdministration\ApplicationFunctionality.cs" />

@@ -66,6 +66,8 @@ namespace Reports.Web.CrystalReports.Datasets
 
         private RevByDutyDataTable tableRevByDuty;
 
+        private JourneyAnalysisSummaryBySubRouteDataTable tableJourneyAnalysisSummaryBySubRoute;
+
         private global::System.Data.SchemaSerializationMode _schemaSerializationMode = global::System.Data.SchemaSerializationMode.IncludeSchema;
 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -177,6 +179,10 @@ namespace Reports.Web.CrystalReports.Datasets
                 if ((ds.Tables["RevByDuty"] != null))
                 {
                     base.Tables.Add(new RevByDutyDataTable(ds.Tables["RevByDuty"]));
+                }
+                if ((ds.Tables["JourneyAnalysisSummaryBySubRoute"] != null))
+                {
+                    base.Tables.Add(new JourneyAnalysisSummaryBySubRouteDataTable(ds.Tables["JourneyAnalysisSummaryBySubRoute"]));
                 }
                 this.DataSetName = ds.DataSetName;
                 this.Prefix = ds.Prefix;
@@ -439,6 +445,18 @@ namespace Reports.Web.CrystalReports.Datasets
 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+        [global::System.ComponentModel.Browsable(false)]
+        [global::System.ComponentModel.DesignerSerializationVisibility(global::System.ComponentModel.DesignerSerializationVisibility.Content)]
+        public JourneyAnalysisSummaryBySubRouteDataTable JourneyAnalysisSummaryBySubRoute
+        {
+            get
+            {
+                return this.tableJourneyAnalysisSummaryBySubRoute;
+            }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         [global::System.ComponentModel.BrowsableAttribute(true)]
         [global::System.ComponentModel.DesignerSerializationVisibilityAttribute(global::System.ComponentModel.DesignerSerializationVisibility.Visible)]
         public override global::System.Data.SchemaSerializationMode SchemaSerializationMode
@@ -596,6 +614,10 @@ namespace Reports.Web.CrystalReports.Datasets
                 if ((ds.Tables["RevByDuty"] != null))
                 {
                     base.Tables.Add(new RevByDutyDataTable(ds.Tables["RevByDuty"]));
+                }
+                if ((ds.Tables["JourneyAnalysisSummaryBySubRoute"] != null))
+                {
+                    base.Tables.Add(new JourneyAnalysisSummaryBySubRouteDataTable(ds.Tables["JourneyAnalysisSummaryBySubRoute"]));
                 }
                 this.DataSetName = ds.DataSetName;
                 this.Prefix = ds.Prefix;
@@ -794,6 +816,14 @@ namespace Reports.Web.CrystalReports.Datasets
                     this.tableRevByDuty.InitVars();
                 }
             }
+            this.tableJourneyAnalysisSummaryBySubRoute = ((JourneyAnalysisSummaryBySubRouteDataTable)(base.Tables["JourneyAnalysisSummaryBySubRoute"]));
+            if ((initTable == true))
+            {
+                if ((this.tableJourneyAnalysisSummaryBySubRoute != null))
+                {
+                    this.tableJourneyAnalysisSummaryBySubRoute.InitVars();
+                }
+            }
         }
 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -845,6 +875,8 @@ namespace Reports.Web.CrystalReports.Datasets
             base.Tables.Add(this.tableCashierReconciliationSummay);
             this.tableRevByDuty = new RevByDutyDataTable();
             base.Tables.Add(this.tableRevByDuty);
+            this.tableJourneyAnalysisSummaryBySubRoute = new JourneyAnalysisSummaryBySubRouteDataTable();
+            base.Tables.Add(this.tableJourneyAnalysisSummaryBySubRoute);
         }
 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -989,6 +1021,13 @@ namespace Reports.Web.CrystalReports.Datasets
 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+        private bool ShouldSerializeJourneyAnalysisSummaryBySubRoute()
+        {
+            return false;
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         private void SchemaChanged(object sender, global::System.ComponentModel.CollectionChangeEventArgs e)
         {
             if ((e.Action == global::System.ComponentModel.CollectionChangeAction.Remove))
@@ -1113,6 +1152,9 @@ namespace Reports.Web.CrystalReports.Datasets
 
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         public delegate void RevByDutyRowChangeEventHandler(object sender, RevByDutyRowChangeEvent e);
+
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+        public delegate void JourneyAnalysisSummaryBySubRouteRowChangeEventHandler(object sender, JourneyAnalysisSummaryBySubRouteRowChangeEvent e);
 
         /// <summary>
         ///Represents the strongly named DataTable class.
@@ -13938,6 +13980,523 @@ namespace Reports.Web.CrystalReports.Datasets
                 global::System.Xml.Schema.XmlSchemaAttribute attribute2 = new global::System.Xml.Schema.XmlSchemaAttribute();
                 attribute2.Name = "tableTypeName";
                 attribute2.FixedValue = "RevByDutyDataTable";
+                type.Attributes.Add(attribute2);
+                type.Particle = sequence;
+                global::System.Xml.Schema.XmlSchema dsSchema = ds.GetSchemaSerializable();
+                if (xs.Contains(dsSchema.TargetNamespace))
+                {
+                    global::System.IO.MemoryStream s1 = new global::System.IO.MemoryStream();
+                    global::System.IO.MemoryStream s2 = new global::System.IO.MemoryStream();
+                    try
+                    {
+                        global::System.Xml.Schema.XmlSchema schema = null;
+                        dsSchema.Write(s1);
+                        for (global::System.Collections.IEnumerator schemas = xs.Schemas(dsSchema.TargetNamespace).GetEnumerator(); schemas.MoveNext();)
+                        {
+                            schema = ((global::System.Xml.Schema.XmlSchema)(schemas.Current));
+                            s2.SetLength(0);
+                            schema.Write(s2);
+                            if ((s1.Length == s2.Length))
+                            {
+                                s1.Position = 0;
+                                s2.Position = 0;
+                                for (; ((s1.Position != s1.Length)
+                                            && (s1.ReadByte() == s2.ReadByte()));)
+                                {
+                                    ;
+                                }
+                                if ((s1.Position == s1.Length))
+                                {
+                                    return type;
+                                }
+                            }
+                        }
+                    }
+                    finally
+                    {
+                        if ((s1 != null))
+                        {
+                            s1.Close();
+                        }
+                        if ((s2 != null))
+                        {
+                            s2.Close();
+                        }
+                    }
+                }
+                xs.Add(dsSchema);
+                return type;
+            }
+        }
+
+        /// <summary>
+        ///Represents the strongly named DataTable class.
+        ///</summary>
+        [global::System.Serializable()]
+        [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedTableSchema")]
+        public partial class JourneyAnalysisSummaryBySubRouteDataTable : global::System.Data.TypedTableBase<JourneyAnalysisSummaryBySubRouteRow>
+        {
+
+            private global::System.Data.DataColumn columnJourneyID;
+
+            private global::System.Data.DataColumn columnRoute;
+
+            private global::System.Data.DataColumn columnScheduledTrips;
+
+            private global::System.Data.DataColumn columnOperatedTrips;
+
+            private global::System.Data.DataColumn columnNotOperatedTrips;
+
+            private global::System.Data.DataColumn columnTickets;
+
+            private global::System.Data.DataColumn columnPasses;
+
+            private global::System.Data.DataColumn columnTotalPassengers;
+
+            private global::System.Data.DataColumn columnRevenue;
+
+            private global::System.Data.DataColumn columnDateRangeFilter;
+
+            private global::System.Data.DataColumn columnContractsFilter;
+
+            private global::System.Data.DataColumn columnClassesFilter;
+
+            private global::System.Data.DataColumn columnClassesTypeFilter;
+
+            private global::System.Data.DataColumn columnRouteFilter;
+
+            private global::System.Data.DataColumn columncompanyName;
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public JourneyAnalysisSummaryBySubRouteDataTable()
+            {
+                this.TableName = "JourneyAnalysisSummaryBySubRoute";
+                this.BeginInit();
+                this.InitClass();
+                this.EndInit();
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            internal JourneyAnalysisSummaryBySubRouteDataTable(global::System.Data.DataTable table)
+            {
+                this.TableName = table.TableName;
+                if ((table.CaseSensitive != table.DataSet.CaseSensitive))
+                {
+                    this.CaseSensitive = table.CaseSensitive;
+                }
+                if ((table.Locale.ToString() != table.DataSet.Locale.ToString()))
+                {
+                    this.Locale = table.Locale;
+                }
+                if ((table.Namespace != table.DataSet.Namespace))
+                {
+                    this.Namespace = table.Namespace;
+                }
+                this.Prefix = table.Prefix;
+                this.MinimumCapacity = table.MinimumCapacity;
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            protected JourneyAnalysisSummaryBySubRouteDataTable(global::System.Runtime.Serialization.SerializationInfo info, global::System.Runtime.Serialization.StreamingContext context) :
+                    base(info, context)
+            {
+                this.InitVars();
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn JourneyIDColumn
+            {
+                get
+                {
+                    return this.columnJourneyID;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn RouteColumn
+            {
+                get
+                {
+                    return this.columnRoute;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn ScheduledTripsColumn
+            {
+                get
+                {
+                    return this.columnScheduledTrips;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn OperatedTripsColumn
+            {
+                get
+                {
+                    return this.columnOperatedTrips;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn NotOperatedTripsColumn
+            {
+                get
+                {
+                    return this.columnNotOperatedTrips;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn TicketsColumn
+            {
+                get
+                {
+                    return this.columnTickets;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn PassesColumn
+            {
+                get
+                {
+                    return this.columnPasses;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn TotalPassengersColumn
+            {
+                get
+                {
+                    return this.columnTotalPassengers;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn RevenueColumn
+            {
+                get
+                {
+                    return this.columnRevenue;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn DateRangeFilterColumn
+            {
+                get
+                {
+                    return this.columnDateRangeFilter;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn ContractsFilterColumn
+            {
+                get
+                {
+                    return this.columnContractsFilter;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn ClassesFilterColumn
+            {
+                get
+                {
+                    return this.columnClassesFilter;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn ClassesTypeFilterColumn
+            {
+                get
+                {
+                    return this.columnClassesTypeFilter;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn RouteFilterColumn
+            {
+                get
+                {
+                    return this.columnRouteFilter;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn companyNameColumn
+            {
+                get
+                {
+                    return this.columncompanyName;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            [global::System.ComponentModel.Browsable(false)]
+            public int Count
+            {
+                get
+                {
+                    return this.Rows.Count;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public JourneyAnalysisSummaryBySubRouteRow this[int index]
+            {
+                get
+                {
+                    return ((JourneyAnalysisSummaryBySubRouteRow)(this.Rows[index]));
+                }
+            }
+
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public event JourneyAnalysisSummaryBySubRouteRowChangeEventHandler JourneyAnalysisSummaryBySubRouteRowChanging;
+
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public event JourneyAnalysisSummaryBySubRouteRowChangeEventHandler JourneyAnalysisSummaryBySubRouteRowChanged;
+
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public event JourneyAnalysisSummaryBySubRouteRowChangeEventHandler JourneyAnalysisSummaryBySubRouteRowDeleting;
+
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public event JourneyAnalysisSummaryBySubRouteRowChangeEventHandler JourneyAnalysisSummaryBySubRouteRowDeleted;
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void AddJourneyAnalysisSummaryBySubRouteRow(JourneyAnalysisSummaryBySubRouteRow row)
+            {
+                this.Rows.Add(row);
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public JourneyAnalysisSummaryBySubRouteRow AddJourneyAnalysisSummaryBySubRouteRow(string JourneyID, string Route, double ScheduledTrips, double OperatedTrips, double NotOperatedTrips, double Tickets, double Passes, double TotalPassengers, double Revenue, string DateRangeFilter, string ContractsFilter, string ClassesFilter, string ClassesTypeFilter, string RouteFilter, string companyName)
+            {
+                JourneyAnalysisSummaryBySubRouteRow rowJourneyAnalysisSummaryBySubRouteRow = ((JourneyAnalysisSummaryBySubRouteRow)(this.NewRow()));
+                object[] columnValuesArray = new object[] {
+                        JourneyID,
+                        Route,
+                        ScheduledTrips,
+                        OperatedTrips,
+                        NotOperatedTrips,
+                        Tickets,
+                        Passes,
+                        TotalPassengers,
+                        Revenue,
+                        DateRangeFilter,
+                        ContractsFilter,
+                        ClassesFilter,
+                        ClassesTypeFilter,
+                        RouteFilter,
+                        companyName};
+                rowJourneyAnalysisSummaryBySubRouteRow.ItemArray = columnValuesArray;
+                this.Rows.Add(rowJourneyAnalysisSummaryBySubRouteRow);
+                return rowJourneyAnalysisSummaryBySubRouteRow;
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public override global::System.Data.DataTable Clone()
+            {
+                JourneyAnalysisSummaryBySubRouteDataTable cln = ((JourneyAnalysisSummaryBySubRouteDataTable)(base.Clone()));
+                cln.InitVars();
+                return cln;
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            protected override global::System.Data.DataTable CreateInstance()
+            {
+                return new JourneyAnalysisSummaryBySubRouteDataTable();
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            internal void InitVars()
+            {
+                this.columnJourneyID = base.Columns["JourneyID"];
+                this.columnRoute = base.Columns["Route"];
+                this.columnScheduledTrips = base.Columns["ScheduledTrips"];
+                this.columnOperatedTrips = base.Columns["OperatedTrips"];
+                this.columnNotOperatedTrips = base.Columns["NotOperatedTrips"];
+                this.columnTickets = base.Columns["Tickets"];
+                this.columnPasses = base.Columns["Passes"];
+                this.columnTotalPassengers = base.Columns["TotalPassengers"];
+                this.columnRevenue = base.Columns["Revenue"];
+                this.columnDateRangeFilter = base.Columns["DateRangeFilter"];
+                this.columnContractsFilter = base.Columns["ContractsFilter"];
+                this.columnClassesFilter = base.Columns["ClassesFilter"];
+                this.columnClassesTypeFilter = base.Columns["ClassesTypeFilter"];
+                this.columnRouteFilter = base.Columns["RouteFilter"];
+                this.columncompanyName = base.Columns["companyName"];
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            private void InitClass()
+            {
+                this.columnJourneyID = new global::System.Data.DataColumn("JourneyID", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnJourneyID);
+                this.columnRoute = new global::System.Data.DataColumn("Route", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnRoute);
+                this.columnScheduledTrips = new global::System.Data.DataColumn("ScheduledTrips", typeof(double), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnScheduledTrips);
+                this.columnOperatedTrips = new global::System.Data.DataColumn("OperatedTrips", typeof(double), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnOperatedTrips);
+                this.columnNotOperatedTrips = new global::System.Data.DataColumn("NotOperatedTrips", typeof(double), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnNotOperatedTrips);
+                this.columnTickets = new global::System.Data.DataColumn("Tickets", typeof(double), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnTickets);
+                this.columnPasses = new global::System.Data.DataColumn("Passes", typeof(double), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnPasses);
+                this.columnTotalPassengers = new global::System.Data.DataColumn("TotalPassengers", typeof(double), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnTotalPassengers);
+                this.columnRevenue = new global::System.Data.DataColumn("Revenue", typeof(double), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnRevenue);
+                this.columnDateRangeFilter = new global::System.Data.DataColumn("DateRangeFilter", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnDateRangeFilter);
+                this.columnContractsFilter = new global::System.Data.DataColumn("ContractsFilter", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnContractsFilter);
+                this.columnClassesFilter = new global::System.Data.DataColumn("ClassesFilter", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnClassesFilter);
+                this.columnClassesTypeFilter = new global::System.Data.DataColumn("ClassesTypeFilter", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnClassesTypeFilter);
+                this.columnRouteFilter = new global::System.Data.DataColumn("RouteFilter", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnRouteFilter);
+                this.columncompanyName = new global::System.Data.DataColumn("companyName", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columncompanyName);
+                this.columnJourneyID.Caption = "Contract";
+                this.columnRoute.Caption = "DOTRoute";
+                this.columnClassesFilter.Caption = "ContractsFilter";
+                this.columnClassesTypeFilter.Caption = "ContractsFilter";
+                this.columnRouteFilter.Caption = "ContractsFilter";
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public JourneyAnalysisSummaryBySubRouteRow NewJourneyAnalysisSummaryBySubRouteRow()
+            {
+                return ((JourneyAnalysisSummaryBySubRouteRow)(this.NewRow()));
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            protected override global::System.Data.DataRow NewRowFromBuilder(global::System.Data.DataRowBuilder builder)
+            {
+                return new JourneyAnalysisSummaryBySubRouteRow(builder);
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            protected override global::System.Type GetRowType()
+            {
+                return typeof(JourneyAnalysisSummaryBySubRouteRow);
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            protected override void OnRowChanged(global::System.Data.DataRowChangeEventArgs e)
+            {
+                base.OnRowChanged(e);
+                if ((this.JourneyAnalysisSummaryBySubRouteRowChanged != null))
+                {
+                    this.JourneyAnalysisSummaryBySubRouteRowChanged(this, new JourneyAnalysisSummaryBySubRouteRowChangeEvent(((JourneyAnalysisSummaryBySubRouteRow)(e.Row)), e.Action));
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            protected override void OnRowChanging(global::System.Data.DataRowChangeEventArgs e)
+            {
+                base.OnRowChanging(e);
+                if ((this.JourneyAnalysisSummaryBySubRouteRowChanging != null))
+                {
+                    this.JourneyAnalysisSummaryBySubRouteRowChanging(this, new JourneyAnalysisSummaryBySubRouteRowChangeEvent(((JourneyAnalysisSummaryBySubRouteRow)(e.Row)), e.Action));
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            protected override void OnRowDeleted(global::System.Data.DataRowChangeEventArgs e)
+            {
+                base.OnRowDeleted(e);
+                if ((this.JourneyAnalysisSummaryBySubRouteRowDeleted != null))
+                {
+                    this.JourneyAnalysisSummaryBySubRouteRowDeleted(this, new JourneyAnalysisSummaryBySubRouteRowChangeEvent(((JourneyAnalysisSummaryBySubRouteRow)(e.Row)), e.Action));
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            protected override void OnRowDeleting(global::System.Data.DataRowChangeEventArgs e)
+            {
+                base.OnRowDeleting(e);
+                if ((this.JourneyAnalysisSummaryBySubRouteRowDeleting != null))
+                {
+                    this.JourneyAnalysisSummaryBySubRouteRowDeleting(this, new JourneyAnalysisSummaryBySubRouteRowChangeEvent(((JourneyAnalysisSummaryBySubRouteRow)(e.Row)), e.Action));
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void RemoveJourneyAnalysisSummaryBySubRouteRow(JourneyAnalysisSummaryBySubRouteRow row)
+            {
+                this.Rows.Remove(row);
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public static global::System.Xml.Schema.XmlSchemaComplexType GetTypedTableSchema(global::System.Xml.Schema.XmlSchemaSet xs)
+            {
+                global::System.Xml.Schema.XmlSchemaComplexType type = new global::System.Xml.Schema.XmlSchemaComplexType();
+                global::System.Xml.Schema.XmlSchemaSequence sequence = new global::System.Xml.Schema.XmlSchemaSequence();
+                ReportDatasets ds = new ReportDatasets();
+                global::System.Xml.Schema.XmlSchemaAny any1 = new global::System.Xml.Schema.XmlSchemaAny();
+                any1.Namespace = "http://www.w3.org/2001/XMLSchema";
+                any1.MinOccurs = new decimal(0);
+                any1.MaxOccurs = decimal.MaxValue;
+                any1.ProcessContents = global::System.Xml.Schema.XmlSchemaContentProcessing.Lax;
+                sequence.Items.Add(any1);
+                global::System.Xml.Schema.XmlSchemaAny any2 = new global::System.Xml.Schema.XmlSchemaAny();
+                any2.Namespace = "urn:schemas-microsoft-com:xml-diffgram-v1";
+                any2.MinOccurs = new decimal(1);
+                any2.ProcessContents = global::System.Xml.Schema.XmlSchemaContentProcessing.Lax;
+                sequence.Items.Add(any2);
+                global::System.Xml.Schema.XmlSchemaAttribute attribute1 = new global::System.Xml.Schema.XmlSchemaAttribute();
+                attribute1.Name = "namespace";
+                attribute1.FixedValue = ds.Namespace;
+                type.Attributes.Add(attribute1);
+                global::System.Xml.Schema.XmlSchemaAttribute attribute2 = new global::System.Xml.Schema.XmlSchemaAttribute();
+                attribute2.Name = "tableTypeName";
+                attribute2.FixedValue = "JourneyAnalysisSummaryBySubRouteDataTable";
                 type.Attributes.Add(attribute2);
                 type.Particle = sequence;
                 global::System.Xml.Schema.XmlSchema dsSchema = ds.GetSchemaSerializable();
@@ -29870,6 +30429,563 @@ namespace Reports.Web.CrystalReports.Datasets
         }
 
         /// <summary>
+        ///Represents strongly named DataRow class.
+        ///</summary>
+        public partial class JourneyAnalysisSummaryBySubRouteRow : global::System.Data.DataRow
+        {
+
+            private JourneyAnalysisSummaryBySubRouteDataTable tableJourneyAnalysisSummaryBySubRoute;
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            internal JourneyAnalysisSummaryBySubRouteRow(global::System.Data.DataRowBuilder rb) :
+                    base(rb)
+            {
+                this.tableJourneyAnalysisSummaryBySubRoute = ((JourneyAnalysisSummaryBySubRouteDataTable)(this.Table));
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string JourneyID
+            {
+                get
+                {
+                    try
+                    {
+                        return ((string)(this[this.tableJourneyAnalysisSummaryBySubRoute.JourneyIDColumn]));
+                    }
+                    catch (global::System.InvalidCastException e)
+                    {
+                        throw new global::System.Data.StrongTypingException("The value for column \'JourneyID\' in table \'JourneyAnalysisSummaryBySubRoute\' is D" +
+                                "BNull.", e);
+                    }
+                }
+                set
+                {
+                    this[this.tableJourneyAnalysisSummaryBySubRoute.JourneyIDColumn] = value;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string Route
+            {
+                get
+                {
+                    try
+                    {
+                        return ((string)(this[this.tableJourneyAnalysisSummaryBySubRoute.RouteColumn]));
+                    }
+                    catch (global::System.InvalidCastException e)
+                    {
+                        throw new global::System.Data.StrongTypingException("The value for column \'Route\' in table \'JourneyAnalysisSummaryBySubRoute\' is DBNul" +
+                                "l.", e);
+                    }
+                }
+                set
+                {
+                    this[this.tableJourneyAnalysisSummaryBySubRoute.RouteColumn] = value;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public double ScheduledTrips
+            {
+                get
+                {
+                    try
+                    {
+                        return ((double)(this[this.tableJourneyAnalysisSummaryBySubRoute.ScheduledTripsColumn]));
+                    }
+                    catch (global::System.InvalidCastException e)
+                    {
+                        throw new global::System.Data.StrongTypingException("The value for column \'ScheduledTrips\' in table \'JourneyAnalysisSummaryBySubRoute\'" +
+                                " is DBNull.", e);
+                    }
+                }
+                set
+                {
+                    this[this.tableJourneyAnalysisSummaryBySubRoute.ScheduledTripsColumn] = value;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public double OperatedTrips
+            {
+                get
+                {
+                    try
+                    {
+                        return ((double)(this[this.tableJourneyAnalysisSummaryBySubRoute.OperatedTripsColumn]));
+                    }
+                    catch (global::System.InvalidCastException e)
+                    {
+                        throw new global::System.Data.StrongTypingException("The value for column \'OperatedTrips\' in table \'JourneyAnalysisSummaryBySubRoute\' " +
+                                "is DBNull.", e);
+                    }
+                }
+                set
+                {
+                    this[this.tableJourneyAnalysisSummaryBySubRoute.OperatedTripsColumn] = value;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public double NotOperatedTrips
+            {
+                get
+                {
+                    try
+                    {
+                        return ((double)(this[this.tableJourneyAnalysisSummaryBySubRoute.NotOperatedTripsColumn]));
+                    }
+                    catch (global::System.InvalidCastException e)
+                    {
+                        throw new global::System.Data.StrongTypingException("The value for column \'NotOperatedTrips\' in table \'JourneyAnalysisSummaryBySubRout" +
+                                "e\' is DBNull.", e);
+                    }
+                }
+                set
+                {
+                    this[this.tableJourneyAnalysisSummaryBySubRoute.NotOperatedTripsColumn] = value;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public double Tickets
+            {
+                get
+                {
+                    try
+                    {
+                        return ((double)(this[this.tableJourneyAnalysisSummaryBySubRoute.TicketsColumn]));
+                    }
+                    catch (global::System.InvalidCastException e)
+                    {
+                        throw new global::System.Data.StrongTypingException("The value for column \'Tickets\' in table \'JourneyAnalysisSummaryBySubRoute\' is DBN" +
+                                "ull.", e);
+                    }
+                }
+                set
+                {
+                    this[this.tableJourneyAnalysisSummaryBySubRoute.TicketsColumn] = value;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public double Passes
+            {
+                get
+                {
+                    try
+                    {
+                        return ((double)(this[this.tableJourneyAnalysisSummaryBySubRoute.PassesColumn]));
+                    }
+                    catch (global::System.InvalidCastException e)
+                    {
+                        throw new global::System.Data.StrongTypingException("The value for column \'Passes\' in table \'JourneyAnalysisSummaryBySubRoute\' is DBNu" +
+                                "ll.", e);
+                    }
+                }
+                set
+                {
+                    this[this.tableJourneyAnalysisSummaryBySubRoute.PassesColumn] = value;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public double TotalPassengers
+            {
+                get
+                {
+                    try
+                    {
+                        return ((double)(this[this.tableJourneyAnalysisSummaryBySubRoute.TotalPassengersColumn]));
+                    }
+                    catch (global::System.InvalidCastException e)
+                    {
+                        throw new global::System.Data.StrongTypingException("The value for column \'TotalPassengers\' in table \'JourneyAnalysisSummaryBySubRoute" +
+                                "\' is DBNull.", e);
+                    }
+                }
+                set
+                {
+                    this[this.tableJourneyAnalysisSummaryBySubRoute.TotalPassengersColumn] = value;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public double Revenue
+            {
+                get
+                {
+                    try
+                    {
+                        return ((double)(this[this.tableJourneyAnalysisSummaryBySubRoute.RevenueColumn]));
+                    }
+                    catch (global::System.InvalidCastException e)
+                    {
+                        throw new global::System.Data.StrongTypingException("The value for column \'Revenue\' in table \'JourneyAnalysisSummaryBySubRoute\' is DBN" +
+                                "ull.", e);
+                    }
+                }
+                set
+                {
+                    this[this.tableJourneyAnalysisSummaryBySubRoute.RevenueColumn] = value;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string DateRangeFilter
+            {
+                get
+                {
+                    try
+                    {
+                        return ((string)(this[this.tableJourneyAnalysisSummaryBySubRoute.DateRangeFilterColumn]));
+                    }
+                    catch (global::System.InvalidCastException e)
+                    {
+                        throw new global::System.Data.StrongTypingException("The value for column \'DateRangeFilter\' in table \'JourneyAnalysisSummaryBySubRoute" +
+                                "\' is DBNull.", e);
+                    }
+                }
+                set
+                {
+                    this[this.tableJourneyAnalysisSummaryBySubRoute.DateRangeFilterColumn] = value;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string ContractsFilter
+            {
+                get
+                {
+                    try
+                    {
+                        return ((string)(this[this.tableJourneyAnalysisSummaryBySubRoute.ContractsFilterColumn]));
+                    }
+                    catch (global::System.InvalidCastException e)
+                    {
+                        throw new global::System.Data.StrongTypingException("The value for column \'ContractsFilter\' in table \'JourneyAnalysisSummaryBySubRoute" +
+                                "\' is DBNull.", e);
+                    }
+                }
+                set
+                {
+                    this[this.tableJourneyAnalysisSummaryBySubRoute.ContractsFilterColumn] = value;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string ClassesFilter
+            {
+                get
+                {
+                    try
+                    {
+                        return ((string)(this[this.tableJourneyAnalysisSummaryBySubRoute.ClassesFilterColumn]));
+                    }
+                    catch (global::System.InvalidCastException e)
+                    {
+                        throw new global::System.Data.StrongTypingException("The value for column \'ClassesFilter\' in table \'JourneyAnalysisSummaryBySubRoute\' " +
+                                "is DBNull.", e);
+                    }
+                }
+                set
+                {
+                    this[this.tableJourneyAnalysisSummaryBySubRoute.ClassesFilterColumn] = value;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string ClassesTypeFilter
+            {
+                get
+                {
+                    try
+                    {
+                        return ((string)(this[this.tableJourneyAnalysisSummaryBySubRoute.ClassesTypeFilterColumn]));
+                    }
+                    catch (global::System.InvalidCastException e)
+                    {
+                        throw new global::System.Data.StrongTypingException("The value for column \'ClassesTypeFilter\' in table \'JourneyAnalysisSummaryBySubRou" +
+                                "te\' is DBNull.", e);
+                    }
+                }
+                set
+                {
+                    this[this.tableJourneyAnalysisSummaryBySubRoute.ClassesTypeFilterColumn] = value;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string RouteFilter
+            {
+                get
+                {
+                    try
+                    {
+                        return ((string)(this[this.tableJourneyAnalysisSummaryBySubRoute.RouteFilterColumn]));
+                    }
+                    catch (global::System.InvalidCastException e)
+                    {
+                        throw new global::System.Data.StrongTypingException("The value for column \'RouteFilter\' in table \'JourneyAnalysisSummaryBySubRoute\' is" +
+                                " DBNull.", e);
+                    }
+                }
+                set
+                {
+                    this[this.tableJourneyAnalysisSummaryBySubRoute.RouteFilterColumn] = value;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string companyName
+            {
+                get
+                {
+                    try
+                    {
+                        return ((string)(this[this.tableJourneyAnalysisSummaryBySubRoute.companyNameColumn]));
+                    }
+                    catch (global::System.InvalidCastException e)
+                    {
+                        throw new global::System.Data.StrongTypingException("The value for column \'companyName\' in table \'JourneyAnalysisSummaryBySubRoute\' is" +
+                                " DBNull.", e);
+                    }
+                }
+                set
+                {
+                    this[this.tableJourneyAnalysisSummaryBySubRoute.companyNameColumn] = value;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsJourneyIDNull()
+            {
+                return this.IsNull(this.tableJourneyAnalysisSummaryBySubRoute.JourneyIDColumn);
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetJourneyIDNull()
+            {
+                this[this.tableJourneyAnalysisSummaryBySubRoute.JourneyIDColumn] = global::System.Convert.DBNull;
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsRouteNull()
+            {
+                return this.IsNull(this.tableJourneyAnalysisSummaryBySubRoute.RouteColumn);
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetRouteNull()
+            {
+                this[this.tableJourneyAnalysisSummaryBySubRoute.RouteColumn] = global::System.Convert.DBNull;
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsScheduledTripsNull()
+            {
+                return this.IsNull(this.tableJourneyAnalysisSummaryBySubRoute.ScheduledTripsColumn);
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetScheduledTripsNull()
+            {
+                this[this.tableJourneyAnalysisSummaryBySubRoute.ScheduledTripsColumn] = global::System.Convert.DBNull;
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsOperatedTripsNull()
+            {
+                return this.IsNull(this.tableJourneyAnalysisSummaryBySubRoute.OperatedTripsColumn);
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetOperatedTripsNull()
+            {
+                this[this.tableJourneyAnalysisSummaryBySubRoute.OperatedTripsColumn] = global::System.Convert.DBNull;
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsNotOperatedTripsNull()
+            {
+                return this.IsNull(this.tableJourneyAnalysisSummaryBySubRoute.NotOperatedTripsColumn);
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetNotOperatedTripsNull()
+            {
+                this[this.tableJourneyAnalysisSummaryBySubRoute.NotOperatedTripsColumn] = global::System.Convert.DBNull;
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsTicketsNull()
+            {
+                return this.IsNull(this.tableJourneyAnalysisSummaryBySubRoute.TicketsColumn);
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetTicketsNull()
+            {
+                this[this.tableJourneyAnalysisSummaryBySubRoute.TicketsColumn] = global::System.Convert.DBNull;
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsPassesNull()
+            {
+                return this.IsNull(this.tableJourneyAnalysisSummaryBySubRoute.PassesColumn);
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetPassesNull()
+            {
+                this[this.tableJourneyAnalysisSummaryBySubRoute.PassesColumn] = global::System.Convert.DBNull;
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsTotalPassengersNull()
+            {
+                return this.IsNull(this.tableJourneyAnalysisSummaryBySubRoute.TotalPassengersColumn);
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetTotalPassengersNull()
+            {
+                this[this.tableJourneyAnalysisSummaryBySubRoute.TotalPassengersColumn] = global::System.Convert.DBNull;
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsRevenueNull()
+            {
+                return this.IsNull(this.tableJourneyAnalysisSummaryBySubRoute.RevenueColumn);
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetRevenueNull()
+            {
+                this[this.tableJourneyAnalysisSummaryBySubRoute.RevenueColumn] = global::System.Convert.DBNull;
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsDateRangeFilterNull()
+            {
+                return this.IsNull(this.tableJourneyAnalysisSummaryBySubRoute.DateRangeFilterColumn);
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetDateRangeFilterNull()
+            {
+                this[this.tableJourneyAnalysisSummaryBySubRoute.DateRangeFilterColumn] = global::System.Convert.DBNull;
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsContractsFilterNull()
+            {
+                return this.IsNull(this.tableJourneyAnalysisSummaryBySubRoute.ContractsFilterColumn);
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetContractsFilterNull()
+            {
+                this[this.tableJourneyAnalysisSummaryBySubRoute.ContractsFilterColumn] = global::System.Convert.DBNull;
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsClassesFilterNull()
+            {
+                return this.IsNull(this.tableJourneyAnalysisSummaryBySubRoute.ClassesFilterColumn);
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetClassesFilterNull()
+            {
+                this[this.tableJourneyAnalysisSummaryBySubRoute.ClassesFilterColumn] = global::System.Convert.DBNull;
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsClassesTypeFilterNull()
+            {
+                return this.IsNull(this.tableJourneyAnalysisSummaryBySubRoute.ClassesTypeFilterColumn);
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetClassesTypeFilterNull()
+            {
+                this[this.tableJourneyAnalysisSummaryBySubRoute.ClassesTypeFilterColumn] = global::System.Convert.DBNull;
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsRouteFilterNull()
+            {
+                return this.IsNull(this.tableJourneyAnalysisSummaryBySubRoute.RouteFilterColumn);
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetRouteFilterNull()
+            {
+                this[this.tableJourneyAnalysisSummaryBySubRoute.RouteFilterColumn] = global::System.Convert.DBNull;
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IscompanyNameNull()
+            {
+                return this.IsNull(this.tableJourneyAnalysisSummaryBySubRoute.companyNameColumn);
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetcompanyNameNull()
+            {
+                this[this.tableJourneyAnalysisSummaryBySubRoute.companyNameColumn] = global::System.Convert.DBNull;
+            }
+        }
+
+        /// <summary>
         ///Row event argument class
         ///</summary>
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
@@ -30651,6 +31767,46 @@ namespace Reports.Web.CrystalReports.Datasets
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public RevByDutyRow Row
+            {
+                get
+                {
+                    return this.eventRow;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataRowAction Action
+            {
+                get
+                {
+                    return this.eventAction;
+                }
+            }
+        }
+
+        /// <summary>
+        ///Row event argument class
+        ///</summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+        public class JourneyAnalysisSummaryBySubRouteRowChangeEvent : global::System.EventArgs
+        {
+
+            private JourneyAnalysisSummaryBySubRouteRow eventRow;
+
+            private global::System.Data.DataRowAction eventAction;
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public JourneyAnalysisSummaryBySubRouteRowChangeEvent(JourneyAnalysisSummaryBySubRouteRow row, global::System.Data.DataRowAction action)
+            {
+                this.eventRow = row;
+                this.eventAction = action;
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public JourneyAnalysisSummaryBySubRouteRow Row
             {
                 get
                 {

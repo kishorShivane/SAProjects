@@ -26,7 +26,8 @@ namespace Reports.Web.Controllers
         public const string sp5 = "EbusScheduledbutnotWorked";//"Sample5"; // Scheduled, but not Worked
         public const string sp6 = "EbusHomeScreen";//"Sample6"; // Home Screen
         public const string sp7 = "EbusFormE"; // Form-E
-        public const string sp8 = "EbusRevenueByDuty"; // Form-E
+        public const string sp8 = "EbusRevenueByDuty"; // Revenue By Duty
+        public const string sp9 = "EbusJourneyAnalysisSummaryBySubRoute"; // Revenue By Duty
 
         //Home
         public ActionResult Index()
@@ -1253,7 +1254,7 @@ namespace Reports.Web.Controllers
 
         #endregion
 
-            #region DailyAudit
+        #region DailyAudit
 
         public ActionResult SellersDailyAuditReport()
         {
@@ -1428,6 +1429,36 @@ namespace Reports.Web.Controllers
         }
 
         #endregion
+
+        #region JourneyAnalysisSummaryBySubRoute
+        public ActionResult JourneyAnalysisSummaryBySubRouteReport()
+        {
+            var model = new ReportsService().GetJourneyAnalysisSummaryBySubRouteFilter(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey);
+            return View("JourneyAnalysisSummaryBySubRoute", model);
+        }
+
+        public ActionResult JourneyAnalysisSummaryBySubRouteDownload(JourneyAnalysisSummaryBySubRouteViewModel filters)
+        {
+            var userset = GetUserSettings();
+            var conKey = userset.ConnectionKey;
+            var comp = userset.CompanyName;
+
+            var service = new ReportsService();
+
+            var ds = service.GetJourneyAnalysisSummaryBySubRouteDetails(conKey, filters, sp9, comp);
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                var key = ((EBusPrinciple)System.Threading.Thread.CurrentPrincipal).Properties.ConnKey.ToString().ToLower();
+                return DownLoadReportByDataSet(filters.ExcelOrPDF, "~/CrystalReports/Rpt/FormE/JourneyAnalysisSummaryBySubRoute.rpt", ds, "JourneyAnalysisSummaryBySubRoute ");
+            }
+            else
+            {
+                TempData["AlertMessage"] = "show";
+                return RedirectToAction("JourneyAnalysisSummaryBySubRouteReport", "Report");
+            }
+        }
+        #endregion
+
 
         #region FormEDetailed
 

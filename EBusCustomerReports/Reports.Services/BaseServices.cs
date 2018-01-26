@@ -321,6 +321,47 @@ namespace Reports.Services
             return table1;
         }
 
+
+        public DataTable JourneyAnalysisSummaryBySubRouteDataSet()
+        {
+            var table1 = new DataTable("JourneyAnalysisSummaryBySubRoute");
+
+            table1.Columns.Add("JourneyID");//0
+            table1.Columns.Add("Route");//1
+           
+            table1.Columns.Add("ScheduledTrips");//2
+            table1.Columns[2].DataType = typeof(double);
+
+            table1.Columns.Add("OperatedTrips");//3
+            table1.Columns[3].DataType = typeof(double);
+
+            table1.Columns.Add("NotOperatedTrips");//4
+            table1.Columns[4].DataType = typeof(double);
+
+            table1.Columns.Add("Tickets");//5
+            table1.Columns[5].DataType = typeof(double);
+
+            table1.Columns.Add("Passes");//6
+            table1.Columns[6].DataType = typeof(double);
+
+            table1.Columns.Add("TotalPassengers");//7
+            table1.Columns[7].DataType = typeof(Int32);
+
+            table1.Columns.Add("Revenue");//8
+            table1.Columns[8].DataType = typeof(double);
+
+            table1.Columns.Add("DateRangeFilter");//9
+            table1.Columns.Add("ContractsFilter");//10
+            table1.Columns.Add("ClassesFilter");//11
+            table1.Columns.Add("ClassesTypeFilter");//12
+            table1.Columns.Add("RouteFilter");//13
+
+            table1.Columns.Add("companyName");//14
+           
+
+            return table1;
+        }
+
         public DataTable FormE2Dataset()
         {
             var table1 = FormEDataset();

@@ -26,7 +26,7 @@
     <link href="~/Styles/Dashboard/sb-admin-2.css" rel="stylesheet" />
     <link href="~/Styles/Select2/select2.min.css" rel="stylesheet" />
     @*
-        <link href="~/Styles/Dashboard/font-awesome.min.css" rel="stylesheet" />*@
+    <link href="~/Styles/Dashboard/font-awesome.min.css" rel="stylesheet" />*@
     <link href="~/Styles/FontAwesome/font-awesome.min.css" rel="stylesheet" />
     <script src="~/Scripts/Dashboard/metisMenu.min.js"></script>
     <script src="~/Scripts/Dashboard/sb-admin-2.js"></script>
@@ -80,7 +80,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a style="font-size:25px;" class="navbar-brand" href="@Url.Action("Index", "Report")">Online Reporting System</a>
+                    <a style="font-size:25px;" class="navbar-brand" href="@Url.Action("Index", "Report" )">Online Reporting System</a>
                 </div>
                 <ul class="nav navbar-top-links navbar-right">
                     <li class="dropdown">
@@ -89,7 +89,7 @@
                         </a>
                         <ul class="dropdown-menu dropdown-user">
                             <li>
-                                <a href="@Url.Action("Logout", "Login")"><span class="glyphicon glyphicon-off" aria-hidden="true"> Logout</span></a>
+                                <a href="@Url.Action("Logout", "Login" )"><span class="glyphicon glyphicon-off" aria-hidden="true"> Logout</span></a>
                             </li>
                         </ul>
                     </li>
@@ -98,352 +98,359 @@
                     <div class="sidebar-nav navbar-collapse">
                         <ul class="nav" id="side-menu">
                             <li>
-                                <a href="@Url.Action("Index", "Report")"><i class="fa fa-dashboard fa-fw"></i>Home</a>
+                                <a href="@Url.Action("Index", "Report" )"><i class="fa fa-dashboard fa-fw"></i>Home</a>
                             </li>
                             @{
-                                if (accessCodes.Contains("ANALY"))
-                                {
+                            if (accessCodes.Contains("ANALY"))
+                            {
+                            <li>
+                                <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i>Analysis</a>
+                                <ul class="nav nav-second-level">
+                                    @if (accessCodes.Contains("CSBCT"))
+                                    {
                                     <li>
-                                        <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i>Analysis</a>
-                                        <ul class="nav nav-second-level">
-                                            @if (accessCodes.Contains("CSBCT"))
-                                            {
-                                                <li>
-                                                    <a href="@Url.Action("ClassSummaryByClassType", "Report")">Class Summary By ClassType</a>
-                                                </li>
-                                            }
-                                            @if (accessCodes.Contains("SABC"))
-                                            {
-                                                <li>
-                                                    <a href="@Url.Action("SalesAnalysisByClass", "Report")">Sales Analysis By Class</a>
-                                                </li>
-                                            }
-                                            @if (accessCodes.Contains("SABR"))
-                                            {
-                                                <li>
-                                                    <a href="@Url.Action("SalesAnalysisByRoute", "Report")">Sales Analysis By Route</a>
-                                                </li>
-                                            }
-                                            @if (accessCodes.Contains("OABR"))
-                                            {
-                                                <li>
-                                                    <a href="@Url.Action("OriginAnalysisByRoute", "Report")">Origin Analysis By Route</a>
-                                                </li>
-                                            }
-                                            @if (accessCodes.Contains("YBDR"))
-                                            {
-                                                <li>
-                                                    <a href="@Url.Action("YearlyBreakDown", "Report")">Yearly BreakDown Comparison</a>
-                                                </li>
-                                            }
-                                            @if (accessCodes.Contains("YBDBR"))
-                                            {
-                                                <li>
-                                                    <a href="@Url.Action("YearlyBreakDownByRoute", "Report")">Yearly BreakDown Comparison By Route</a>
-                                                </li>
-                                            }
-                                            @if (accessCodes.Contains("DAR"))
-                                            {
-                                                <li>
-                                                    <a href="@Url.Action("DailyAnalysisReport", "Report")">Daily Analysis</a>
-                                                </li>
-                                            }
-                                        </ul>
+                                        <a href="@Url.Action("ClassSummaryByClassType", "Report" )">Class Summary By ClassType</a>
                                     </li>
-                                }
+                                    }
+                                    @if (accessCodes.Contains("SABC"))
+                                    {
+                                    <li>
+                                        <a href="@Url.Action("SalesAnalysisByClass", "Report" )">Sales Analysis By Class</a>
+                                    </li>
+                                    }
+                                    @if (accessCodes.Contains("SABR"))
+                                    {
+                                    <li>
+                                        <a href="@Url.Action("SalesAnalysisByRoute", "Report" )">Sales Analysis By Route</a>
+                                    </li>
+                                    }
+                                    @if (accessCodes.Contains("OABR"))
+                                    {
+                                    <li>
+                                        <a href="@Url.Action("OriginAnalysisByRoute", "Report" )">Origin Analysis By Route</a>
+                                    </li>
+                                    }
+                                    @if (accessCodes.Contains("YBDR"))
+                                    {
+                                    <li>
+                                        <a href="@Url.Action("YearlyBreakDown", "Report" )">Yearly BreakDown Comparison</a>
+                                    </li>
+                                    }
+                                    @if (accessCodes.Contains("YBDBR"))
+                                    {
+                                    <li>
+                                        <a href="@Url.Action("YearlyBreakDownByRoute", "Report" )">Yearly BreakDown Comparison By Route</a>
+                                    </li>
+                                    }
+                                    @if (accessCodes.Contains("DAR"))
+                                    {
+                                    <li>
+                                        <a href="@Url.Action("DailyAnalysisReport", "Report" )">Daily Analysis</a>
+                                    </li>
+                                    }
+                                </ul>
+                            </li>
+                            }
                             }
                             @if (accessCodes.Contains("CONFIG"))
                             {
-                                <li>
-                                    <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i>Configuration</a>
-                                    <ul class="nav nav-second-level">
-                                        @if (accessCodes.Contains("SMH"))
-                                        {
-                                            <li>
-                                                <a href="@Url.Action("SmartCardHotlisting", "Report")">Smart Card Hotlisting</a>
-                                            </li>
-                                        }
-                                        @if (accessCodes.Contains("SM"))
-                                        {
-                                            <li>
-                                                <a href="@Url.Action("Index", "StaffMaster" )">Staff Master</a>
-                                            </li>
-                                        }
-                                        @if (accessCodes.Contains("EBUSUA"))
-                                        {
-                                            <li>
-                                                <a href="@Url.Action("ViewUsers", "UserAdministration")">User Administration</a>
-                                            </li>
-                                        }
-                                        @if (accessCodes.Contains("RM"))
-                                        {
-                                            <li>
-                                                <a href="@Url.Action("Index", "RouteMaster")">Route Master</a>
-                                            </li>
-                                        }
-                                    </ul>
-                                </li>
+                            <li>
+                                <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i>Configuration</a>
+                                <ul class="nav nav-second-level">
+                                    @if (accessCodes.Contains("SMH"))
+                                    {
+                                    <li>
+                                        <a href="@Url.Action("SmartCardHotlisting", "Report" )">Smart Card Hotlisting</a>
+                                    </li>
+                                    }
+                                    @if (accessCodes.Contains("SM"))
+                                    {
+                                    <li>
+                                        <a href="@Url.Action("Index", "StaffMaster" )">Staff Master</a>
+                                    </li>
+                                    }
+                                    @if (accessCodes.Contains("EBUSUA"))
+                                    {
+                                    <li>
+                                        <a href="@Url.Action("ViewUsers", "UserAdministration" )">User Administration</a>
+                                    </li>
+                                    }
+                                    @if (accessCodes.Contains("RM"))
+                                    {
+                                    <li>
+                                        <a href="@Url.Action("Index", "RouteMaster" )">Route Master</a>
+                                    </li>
+                                    }
+                                </ul>
+                            </li>
                             }
                             @if (accessCodes.Contains("EXECP"))
                             {
-                                <li>
-                                    <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i>Exception</a>
-                                    <ul class="nav nav-second-level">
-                                        @if (accessCodes.Contains("ELR"))
-                                        {
-                                            <li>
-                                                <a href="@Url.Action("EarlyLateRunning", "Report")">Early Late Running Report</a>
-                                            </li>
-                                        }
-                                        @if (accessCodes.Contains("SCU"))
-                                        {
-                                            <li>
-                                                <a href="@Url.Action("SmartCardUsage", "Report")">Smart Card Usage</a>
-                                            </li>
-                                        }
-                                    </ul>
-                                </li>
+                            <li>
+                                <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i>Exception</a>
+                                <ul class="nav nav-second-level">
+                                    @if (accessCodes.Contains("ELR"))
+                                    {
+                                    <li>
+                                        <a href="@Url.Action("EarlyLateRunning", "Report" )">Early Late Running Report</a>
+                                    </li>
+                                    }
+                                    @if (accessCodes.Contains("SCU"))
+                                    {
+                                    <li>
+                                        <a href="@Url.Action("SmartCardUsage", "Report" )">Smart Card Usage</a>
+                                    </li>
+                                    }
+                                </ul>
+                            </li>
                             }
                             @if (accessCodes.Contains("FINAN"))
                             {
-                                <li>
-                                    <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i>Financial</a>
-                                    <ul class="nav nav-second-level">
-                                        @if (accessCodes.Contains("CRA"))
-                                        {
-                                            <li>
-                                                <a href="@Url.Action("CashierReportAt", "Report")">Cashier Report</a>
-                                            </li>
-                                        }
-                                        @if (accessCodes.Contains("CRMR"))
-                                        {
-                                            <li>
-                                                <a href="@Url.Action("CashierReportMatatiele", "Report")">Cashier Report</a>
-                                            </li>
-                                        }
-                                        @if (accessCodes.Contains("NCAR"))
-                                        {
-                                            <li>
-                                                <a href="@Url.Action("NewCashierReportAt", "Report" )">New Cashier Report</a>
-                                            </li>
-                                        }
-                                        @if (accessCodes.Contains("DABCT"))
-                                        {
-                                            <li>
-                                                <a href="@Url.Action("DailyAuditByCashierTerminal", "Report" )">Daily Audit By Cashier Terminal</a>
-                                            </li>
-                                        }
-                                        @if (accessCodes.Contains("DABCTR"))
-                                        {
-                                            <li>
-                                                <a href="@Url.Action("DailyAuditByCashierTerminalSummary", "Report" )">Daily Audit By Cashier Terminal Summary</a>
-                                            </li>
-                                        }
-                                        @if (accessCodes.Contains("DAAR"))
-                                        {
-                                            <li>
-                                                <a href="@Url.Action("DailyAuditAtamelangReport", "Report" )">Daily Audit</a>
-                                            </li>
-                                        }
-                                        @if (accessCodes.Contains("DAMR"))
-                                        {
-                                            <li>
-                                                <a href="@Url.Action("DailyAuditMatatieleReport", "Report" )">Daily Audit</a>
-                                            </li>
-                                        }
-                                        @if (accessCodes.Contains("CA"))
-                                        {
-                                            <li>
-                                                <a href="@Url.Action("CashierReport", "Report" )"> Cashier Report </a>
-                                            </li>
-                                        }
-                                        @if (accessCodes.Contains("SCT"))
-                                        {
-                                            <li>
-                                                <a href="@Url.Action("SmartCardTransactions", "Report")">Smart Card Transactions</a>
-                                            </li>
-                                        }
-                                    </ul>
-                                </li>
+                            <li>
+                                <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i>Financial</a>
+                                <ul class="nav nav-second-level">
+                                    @if (accessCodes.Contains("CRA"))
+                                    {
+                                    <li>
+                                        <a href="@Url.Action("CashierReportAt", "Report" )">Cashier Report</a>
+                                    </li>
+                                    }
+                                    @if (accessCodes.Contains("CRMR"))
+                                    {
+                                    <li>
+                                        <a href="@Url.Action("CashierReportMatatiele", "Report" )">Cashier Report</a>
+                                    </li>
+                                    }
+                                    @if (accessCodes.Contains("NCAR"))
+                                    {
+                                    <li>
+                                        <a href="@Url.Action("NewCashierReportAt", "Report" )">New Cashier Report</a>
+                                    </li>
+                                    }
+                                    @if (accessCodes.Contains("DABCT"))
+                                    {
+                                    <li>
+                                        <a href="@Url.Action("DailyAuditByCashierTerminal", "Report" )">Daily Audit By Cashier Terminal</a>
+                                    </li>
+                                    }
+                                    @if (accessCodes.Contains("DABCTR"))
+                                    {
+                                    <li>
+                                        <a href="@Url.Action("DailyAuditByCashierTerminalSummary", "Report" )">Daily Audit By Cashier Terminal Summary</a>
+                                    </li>
+                                    }
+                                    @if (accessCodes.Contains("DAAR"))
+                                    {
+                                    <li>
+                                        <a href="@Url.Action("DailyAuditAtamelangReport", "Report" )">Daily Audit</a>
+                                    </li>
+                                    }
+                                    @if (accessCodes.Contains("DAMR"))
+                                    {
+                                    <li>
+                                        <a href="@Url.Action("DailyAuditMatatieleReport", "Report" )">Daily Audit</a>
+                                    </li>
+                                    }
+                                    @if (accessCodes.Contains("CA"))
+                                    {
+                                    <li>
+                                        <a href="@Url.Action("CashierReport", "Report" )"> Cashier Report </a>
+                                    </li>
+                                    }
+                                    @if (accessCodes.Contains("SCT"))
+                                    {
+                                    <li>
+                                        <a href="@Url.Action("SmartCardTransactions", "Report" )">Smart Card Transactions</a>
+                                    </li>
+                                    }
+                                </ul>
+                            </li>
                             }
                             @if (accessCodes.Contains("NDOT"))
                             {
-                                <li>
-                                    <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i>NDOT</a>
-                                    <ul class="nav nav-second-level">
-                                        @if (accessCodes.Contains("SVOS"))
-                                        {
-                                            <li>
-                                                <a href="@Url.Action("FullDutySummary", "Report")">Duty Scheduled Vs Operated Summary</a>
-                                            </li>
-                                        }
-                                        @if (accessCodes.Contains("SVOR"))
-                                        {
-                                            <li>
-                                                <a href="@Url.Action("ScheduledVsOperatedReport", "Report" )">Duty Schedule Vs Operated</a>
-                                            </li>
-                                        }
-                                        @if (accessCodes.Contains("SNOR"))
-                                        {
-                                            <li>
-                                                <a href="@Url.Action("ScheduledNotOperatedReport", "Report" )">Scheduled But Not Operated</a>
-                                            </li>
-                                        }
-                                        @if (accessCodes.Contains("NSBOR"))
-                                        {
-                                            <li>
-                                                <a href="@Url.Action("NotScheduledButOperatedReport", "Report" )">Worked But Not Scheduled</a>
-                                            </li>
-                                        }
-                                        @if (accessCodes.Contains("FER"))
-                                        {
-                                            <li>
-                                                <a href="@Url.Action("FormEReport", "Report" )">Form-E Summary</a>
-                                            </li>
-                                        }
-                                        @if (accessCodes.Contains("FEDR"))
-                                        {
-                                            <li>
-                                                <a href="@Url.Action("FormEDetailedReport", "Report")">Form-E Detailed</a>
-                                            </li>
-                                        }
-                                    </ul>
-                                </li>
+                            <li>
+                                <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i>NDOT</a>
+                                <ul class="nav nav-second-level">
+                                    @if (accessCodes.Contains("SVOS"))
+                                    {
+                                    <li>
+                                        <a href="@Url.Action("FullDutySummary", "Report" )">Duty Scheduled Vs Operated Summary</a>
+                                    </li>
+                                    }
+                                    @if (accessCodes.Contains("SVOR"))
+                                    {
+                                    <li>
+                                        <a href="@Url.Action("ScheduledVsOperatedReport", "Report" )">Duty Schedule Vs Operated</a>
+                                    </li>
+                                    }
+                                    @if (accessCodes.Contains("SNOR"))
+                                    {
+                                    <li>
+                                        <a href="@Url.Action("ScheduledNotOperatedReport", "Report" )">Scheduled But Not Operated</a>
+                                    </li>
+                                    }
+                                    @if (accessCodes.Contains("NSBOR"))
+                                    {
+                                    <li>
+                                        <a href="@Url.Action("NotScheduledButOperatedReport", "Report" )">Worked But Not Scheduled</a>
+                                    </li>
+                                    }
+                                    @if (accessCodes.Contains("FER"))
+                                    {
+                                    <li>
+                                        <a href="@Url.Action("FormEReport", "Report" )">Form-E Summary</a>
+                                    </li>
+                                    }
+                                    @if (accessCodes.Contains("FEDR"))
+                                    {
+                                    <li>
+                                        <a href="@Url.Action("FormEDetailedReport", "Report" )">Form-E Detailed</a>
+                                    </li>
+                                    }
+                                    @if (accessCodes.Contains("JASBSB"))
+                                    {
+                                    <li>
+                                        <a href="@Url.Action("JourneyAnalysisSummaryBySubRouteReport", "Report" )">Journey Analysis Summary By SubRoute</a>
+                                    </li>
+                                    }
+
+                                </ul>
+                            </li>
                             }
                             @if (accessCodes.Contains("OPERT"))
                             {
-                                <li>
-                                    <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i>Operational</a>
-                                    <ul class="nav nav-second-level">
-                                        @if (accessCodes.Contains("DARALL"))
-                                        {
-                                            <li>
-                                                <a href="@Url.Action("DailyAuditReport", "Report")">Daily Audit</a>
-                                            </li>
-                                        }
-                                        @if (accessCodes.Contains("CR"))
-                                        {
-                                            <li>
-                                                <a href="@Url.Action("CashierReconciliation", "Report" )">Cashier Reconciliation</a>
-                                            </li>
-                                        }
-                                        @if (accessCodes.Contains("RBDR"))
-                                        {
-                                            <li>
-                                                <a href="@Url.Action("RevenueByDuty", "Report" )">Revenue By Duty</a>
-                                            </li>
-                                        }
-                                        @if (accessCodes.Contains("RBDALL"))
-                                        {
-                                            <li>
-                                                <a href="@Url.Action("RevenueByDutyAll", "Report" )">Revenue By Duty</a>
-                                            </li>
-                                        }
-                                        @if (accessCodes.Contains("DIR"))
-                                        {
-                                            <li>
-                                                <a href="@Url.Action("DailyInspectorReport", "Report" )">Daily Inspector Report</a>
-                                            </li>
-                                        }
-                                        @if (accessCodes.Contains("DTDR"))
-                                        {
-                                            <li>
-                                                <a href="@Url.Action("DriverDetails", "Report" )">Driver Transaction Detail Report</a>
-                                            </li>
-                                        }
-                                        @if (accessCodes.Contains("DSR"))
-                                        {
-                                            <li>
-                                                <a href="@Url.Action("DutySheets", "Report" )">Duty Sheets</a>
-                                            </li>
-                                        }
-                                        @if (accessCodes.Contains("SDAR"))
-                                        {
-                                            <li>
-                                                <a href="@Url.Action("SellersDailyAuditReport", "Report" )">Sellers Daily Audit</a>
-                                            </li>
-                                        }
-                                        @if (accessCodes.Contains("TT"))
-                                        {
-                                            <li>
-                                                <a href="@Url.Action("TimeTable", "Report")">Time Table</a>
-                                            </li>
-                                        }
-                                    </ul>
-                                </li>
+                            <li>
+                                <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i>Operational</a>
+                                <ul class="nav nav-second-level">
+                                    @if (accessCodes.Contains("DARALL"))
+                                    {
+                                    <li>
+                                        <a href="@Url.Action("DailyAuditReport", "Report" )">Daily Audit</a>
+                                    </li>
+                                    }
+                                    @if (accessCodes.Contains("CR"))
+                                    {
+                                    <li>
+                                        <a href="@Url.Action("CashierReconciliation", "Report" )">Cashier Reconciliation</a>
+                                    </li>
+                                    }
+                                    @if (accessCodes.Contains("RBDR"))
+                                    {
+                                    <li>
+                                        <a href="@Url.Action("RevenueByDuty", "Report" )">Revenue By Duty</a>
+                                    </li>
+                                    }
+                                    @if (accessCodes.Contains("RBDALL"))
+                                    {
+                                    <li>
+                                        <a href="@Url.Action("RevenueByDutyAll", "Report" )">Revenue By Duty</a>
+                                    </li>
+                                    }
+                                    @if (accessCodes.Contains("DIR"))
+                                    {
+                                    <li>
+                                        <a href="@Url.Action("DailyInspectorReport", "Report" )">Daily Inspector Report</a>
+                                    </li>
+                                    }
+                                    @if (accessCodes.Contains("DTDR"))
+                                    {
+                                    <li>
+                                        <a href="@Url.Action("DriverDetails", "Report" )">Driver Transaction Detail Report</a>
+                                    </li>
+                                    }
+                                    @if (accessCodes.Contains("DSR"))
+                                    {
+                                    <li>
+                                        <a href="@Url.Action("DutySheets", "Report" )">Duty Sheets</a>
+                                    </li>
+                                    }
+                                    @if (accessCodes.Contains("SDAR"))
+                                    {
+                                    <li>
+                                        <a href="@Url.Action("SellersDailyAuditReport", "Report" )">Sellers Daily Audit</a>
+                                    </li>
+                                    }
+                                    @if (accessCodes.Contains("TT"))
+                                    {
+                                    <li>
+                                        <a href="@Url.Action("TimeTable", "Report" )">Time Table</a>
+                                    </li>
+                                    }
+                                </ul>
+                            </li>
                             }
                             @if (accessCodes.Contains("GRAPR"))
                             {
-                                <li>
-                                    <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i>Graphical Reports</a>
-                                    <ul class="nav nav-second-level">
-                                        @if (accessCodes.Contains("AS"))
-                                        {
-                                            <li>
-                                                <a href="@Url.Action("AuditStatus", "Report")">Audit Communication Status</a>
-                                            </li>
-                                        }
-                                        @if (accessCodes.Contains("CVSCUBR"))
-                                        {
-                                            <li>
-                                                <a href="@Url.Action("CashVsSmartCardUsageByRoute", "Report" )">Cash vs Smart Card Usage by Route</a>
-                                            </li>
-                                        }
-                                        @if (accessCodes.Contains("CSBCTG"))
-                                        {
-                                            <li>
-                                                <a href="@Url.Action("ClassSummaryByClassTypeGraph", "Report" )">Class Summary By Class Type</a>
-                                            </li>
-                                        }
-                                        @if (accessCodes.Contains("MRG"))
-                                        {
-                                            <li>
-                                                <a href="@Url.Action("MonthRevenueGraph", "Report" )">Monthly Revenue Summary</a>
-                                            </li>
-                                        }
-                                        @if (accessCodes.Contains("AM"))
-                                        {
-                                            <li>
-                                                <a href="@Url.Action("Index", "Asset")"><i class="><i class="fa fa-clock-o fa-fw"></i> Asset Master</a>
-                                            </li>
-                                        }
-                                    </ul>
-                                </li>
+                            <li>
+                                <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i>Graphical Reports</a>
+                                <ul class="nav nav-second-level">
+                                    @if (accessCodes.Contains("AS"))
+                                    {
+                                    <li>
+                                        <a href="@Url.Action("AuditStatus", "Report" )">Audit Communication Status</a>
+                                    </li>
+                                    }
+                                    @if (accessCodes.Contains("CVSCUBR"))
+                                    {
+                                    <li>
+                                        <a href="@Url.Action("CashVsSmartCardUsageByRoute", "Report" )">Cash vs Smart Card Usage by Route</a>
+                                    </li>
+                                    }
+                                    @if (accessCodes.Contains("CSBCTG"))
+                                    {
+                                    <li>
+                                        <a href="@Url.Action("ClassSummaryByClassTypeGraph", "Report" )">Class Summary By Class Type</a>
+                                    </li>
+                                    }
+                                    @if (accessCodes.Contains("MRG"))
+                                    {
+                                    <li>
+                                        <a href="@Url.Action("MonthRevenueGraph", "Report" )">Monthly Revenue Summary</a>
+                                    </li>
+                                    }
+                                    @if (accessCodes.Contains("AM"))
+                                    {
+                                    <li>
+                                        <a href="@Url.Action("Index", "Asset" )"><i class="><i class="fa fa-clock-o fa-fw"></i> Asset Master</a>
+                                    </li>
+                                    }
+                                </ul>
+                            </li>
                             }
                             @if (accessCodes.Contains("SCHLDSYS") && accessCodes.Contains("SSM"))
                             {
-                                <li>
-                                    <a href="@Url.Action("Index", "SchedulingSystem")"><i class="fa fa-clock-o fa-fw"></i> Scheduling System</a>
-                                </li>
+                            <li>
+                                <a href="@Url.Action("Index", "SchedulingSystem" )"><i class="fa fa-clock-o fa-fw"></i> Scheduling System</a>
+                            </li>
                             }
                             @if (accessCodes.Contains("MANU"))
                             {
-                                <li>
-                                    <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i>Manuals</a>
-                                    <ul class="nav nav-second-level">
-                                        @if (accessCodes.Contains("CLF"))
-                                        {
-                                            var filePath = "../Manuals/" + @key.ToString().ToLower() + "/ClassList.xlsx";
-                                            <li>
-                                                <a href=@filePath target="_blank"><i class="fa fa-file-pdf-o fa-fw"></i>Class List</a>
-                                            </li>
-                                        }
-                                    </ul>
-                                </li>
+                            <li>
+                                <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i>Manuals</a>
+                                <ul class="nav nav-second-level">
+                                    @if (accessCodes.Contains("CLF"))
+                                    {
+                                    var filePath = "../Manuals/" + @key.ToString().ToLower() + "/ClassList.xlsx";
+                                    <li>
+                                        <a href=@filePath target="_blank"><i class="fa fa-file-pdf-o fa-fw"></i>Class List</a>
+                                    </li>
+                                    }
+                                </ul>
+                            </li>
                             }
                             @if (accessCodes.Contains("SUPPRT"))
                             {
-                                <li>
-                                    <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i>Support</a>
-                                    <ul class="nav nav-second-level">
-                                        @if (accessCodes.Contains("SRM"))
-                                        {
-                                            <li>
-                                                <a href="@Url.Action("Index", "ServiceRequest")">Service Request</a>
-                                            </li>
-                                        }
-                                    </ul>
-                                </li>
+                            <li>
+                                <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i>Support</a>
+                                <ul class="nav nav-second-level">
+                                    @if (accessCodes.Contains("SRM"))
+                                    {
+                                    <li>
+                                        <a href="@Url.Action("Index", "ServiceRequest" )">Service Request</a>
+                                    </li>
+                                    }
+                                </ul>
+                            </li>
                             }
                             <li>
                                 <img style="height: 80px; width: 110px; margin: 5px;" src="http://41.76.211.195/EBusBackOffice/Images/logo_comp1.png" />

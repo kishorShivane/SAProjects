@@ -106,6 +106,22 @@ namespace Reports.Services
             return res;
         }
 
+        public JourneyAnalysisSummaryBySubRouteViewModel GetJourneyAnalysisSummaryBySubRouteFilter(string connKey)
+        {
+            var res = new JourneyAnalysisSummaryBySubRouteViewModel();
+            var salesAnalysisService = new SalesAnalysisService();
+            var service = new InspectorReportService();
+            var allContracts = GetAllContacts(connKey);
+            res.Classes = salesAnalysisService.GetAllCalsses(connKey);
+            res.Routes = salesAnalysisService.GetAllRoutes(connKey);
+            res.ClassesTypes = service.GetAllClassTypes(connKey);
+
+            res.Contracts = (from f in allContracts
+                             select new SelectListItem { Selected = false, Text = f, Value = f }).ToList();
+            return res;
+        }
+
+
         public EarlyLateRunningModel GetEarlyLateRunningModel(string connKey)
         {
             var res = new EarlyLateRunningModel();
@@ -142,6 +158,7 @@ namespace Reports.Services
 
             return res;
         }
+
 
         public List<SchVsWorked> GetListData(string connKey, SchVsOprViewModel filter, string spName, bool isFormE = false, bool isHomeScreen = false)
         {
@@ -745,6 +762,146 @@ namespace Reports.Services
             ds.Tables.Add(table1);
             return ds;
         }
+
+        public DataSet GetJourneyAnalysisSummaryBySubRouteDetails(string connKey, JourneyAnalysisSummaryBySubRouteViewModel filter, string spName, string companyName)
+        {
+            //filter details
+            var filterDateRange = string.Format(" {0}: {1} to {2}", "Date Range", filter.StartDate, filter.EndDate);
+            var filterContractsRange = " Contracts: Filter Not Selected";
+            var filterClassesRange = " Classes: Filter Not Selected";
+            var filterClassesTypeRange = " Classes Types: Filter Not Selected";
+            var filterRoutesRange = " Routes: Filter Not Selected";
+
+            if (filter.ContractsSelected != null && filter.ContractsSelected.Length > 0)
+            {
+                filterContractsRange = " Contracts: " + string.Join(", ", filter.ContractsSelected);
+            }
+
+            if (filter.ClassesSelected != null && filter.ClassesSelected.Length > 0)
+            {
+                filterClassesRange = " Classes: " + string.Join(", ", filter.ClassesSelected);
+            }
+
+            if (filter.ClassesTypeSelected != null && filter.ClassesTypeSelected.Length > 0)
+            {
+                filterClassesTypeRange = " Classes Types: " + string.Join(", ", filter.ClassesTypeSelected);
+            }
+
+            if (filter.RoutesSelected != null && filter.RoutesSelected.Length > 0)
+            {
+                filterRoutesRange = " Routes: " + string.Join(", ", filter.RoutesSelected);
+            }
+
+            var ds = new DataSet();
+            var table1 = JourneyAnalysisSummaryBySubRouteDataSet();
+
+            var rawData = GetJourneyAnalysisSummaryBySubRouteData(connKey, filter, spName);
+            var filteredResult = new List<JourneyAnalysisSummaryBySubRoute>();
+
+            rawData.ForEach(s =>
+            {
+                var multiplePairExistRes = rawData.Where(r => r.str4_JourneyNo == s.str4_JourneyNo
+                    && r.DutyID == s.DutyID).Count();
+
+                if (multiplePairExistRes > 1)
+                {
+                    var multiplePairExistFil = filteredResult.Where(r => r.str4_JourneyNo == s.str4_JourneyNo
+                                        && r.DutyID == s.DutyID).Count();
+
+                    if (multiplePairExistRes > 1)
+                    {
+                        filteredResult.RemoveAll(r => r.str4_JourneyNo == s.str4_JourneyNo
+                                        && r.DutyID == s.DutyID
+                                        && r.Int_TotalPassengers == 0); //remove all zero
+
+                        var multiplePairExistFilNonZeroPsg = filteredResult.Where(r => r.str4_JourneyNo == s.str4_JourneyNo
+                                        && r.DutyID == s.DutyID).Count();
+                        if (multiplePairExistFilNonZeroPsg > 0 && s.Int_TotalPassengers <= 0)
+                        {
+                            //there is already non zero object so ignore current zero object
+                        }
+                        else
+                        {
+                            filteredResult.Add(s);
+                        }
+                    }
+                    else
+                    {
+                        filteredResult.Add(s);
+                    }
+                }
+                else
+                {
+                    filteredResult.Add(s);
+                }
+            });
+
+            var data = filteredResult;
+
+            //first group by contract
+            var result = (from a in data
+                               group a by a.RouteNumber into grp
+                               select new JourneyAnalysisSummaryBySubRoute
+                               {
+                                   str4_JourneyNo = grp.FirstOrDefault().str4_JourneyNo,
+                                   routeName = grp.FirstOrDefault().routeName,
+                                   DutyID = grp.FirstOrDefault().DutyID,
+                                   RouteNumber = grp.Key,
+                                   Contract = grp.Any() ? grp.FirstOrDefault().Contract : string.Empty,
+
+                                   ScheduledTrips = grp.Any() ? grp.Where(s => s.TripStatus.ToLower() != "not scheduled, but worked").Count().ToString() : string.Empty,
+                                   OperatedTrips = grp.Any() ? grp.Where(s => s.TripStatus.ToLower() == "worked").Count().ToString() : string.Empty,
+                                   NotOperatedTrips = grp.Any() ? grp.Where(s => s.TripStatus.ToLower() == "scheduled, but not worked").Count().ToString() : string.Empty,
+
+                                   Tickets = grp.Sum(s => Convert.ToInt32(s.int4_JourneyTickets)).ToString(),
+                                   Passes = grp.Sum(s => Convert.ToInt32(s.int4_JourneyPasses)).ToString(),
+                                   TotalPassengers = grp.Sum(s => Convert.ToInt32(s.Int_TotalPassengers)).ToString(),
+                                   TotalRevenue = grp.Sum(s => Convert.ToDouble(s.JourneyRevenue)).ToString(),
+
+                               }).ToList();
+
+            if (result.Any())
+            {
+                foreach (var res in result)
+                {
+                    table1.Rows.Add(
+                            res.str4_JourneyNo,
+                            res.RouteNumber + " - " + res.routeName,
+                            res.ScheduledTrips,
+                            res.OperatedTrips,
+                            res.NotOperatedTrips,
+                            res.Tickets,
+                            res.Passes,
+                            res.TotalPassengers,
+                            res.TotalRevenue,
+                            filterDateRange,
+                            filterContractsRange,
+                            filterClassesRange,
+                            filterClassesTypeRange,
+                            filterRoutesRange
+                        );
+                }
+            }
+            else
+            {
+                //Empty row for blank report.
+                DataRow dr = table1.NewRow();
+                dr["DateRangeFilter"] = filterDateRange;
+                dr["ContractsFilter"] = filterContractsRange;
+                dr["ClassesFilter"] = filterClassesRange;
+                dr["ClassesTypeFilter"] = filterClassesTypeRange;
+                dr["RouteFilter"] = filterRoutesRange;
+                dr["companyName"] = companyName;
+
+                table1.Rows.Add(dr);
+            }
+
+
+
+            ds.Tables.Add(table1);
+            return ds;
+        }
+
 
         //formE as sc vs Opr
         public DataSet FullDutySummary(string connKey, SchVsOprViewModel filter, string spName, string companyName, bool isFormEReport = false)
@@ -1603,6 +1760,95 @@ namespace Reports.Services
                     //{
                     //    sch.IsPosition = Convert.ToBoolean(dr["IsPosition"]);
                     //}
+
+                    schs.Add(sch);
+                }
+            }
+            finally
+            {
+                myConnection.Close();
+            }
+            return schs;
+        }
+
+        public List<JourneyAnalysisSummaryBySubRoute> GetJourneyAnalysisSummaryBySubRouteData(string connKey, JourneyAnalysisSummaryBySubRouteViewModel filter, string spName)
+        {
+            var schs = new List<JourneyAnalysisSummaryBySubRoute>();
+            var myConnection = new SqlConnection(GetConnectionString(connKey));
+
+            try
+            {
+                var cmd = new SqlCommand(spName, myConnection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+
+                cmd.Parameters.AddWithValue("@Classes", filter.ClassesSelected == null ? "" : string.Join(",", filter.ClassesSelected));
+                cmd.Parameters.AddWithValue("@ClassesType", filter.ClassesTypeSelected == null ? "" : string.Join(",", filter.ClassesTypeSelected));
+                cmd.Parameters.AddWithValue("@Routes", filter.RoutesSelected == null ? "" : string.Join(",", filter.RoutesSelected));
+                cmd.Parameters.AddWithValue("@Contracts", filter.ContractsSelected == null ? "" : string.Join(",", string.Join(",", filter.ContractsSelected)));
+
+                var dateRangeString = GetDateRangeString(filter.StartDate, filter.EndDate);
+
+                if (dateRangeString == string.Empty)
+                {
+                    return new List<JourneyAnalysisSummaryBySubRoute>();
+                }
+
+                cmd.Parameters.AddWithValue("@dateSelected", dateRangeString);
+                cmd.CommandTimeout = 500000;
+
+                myConnection.Open();
+                SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+
+                while (dr.Read())
+                {
+                    var sch = new JourneyAnalysisSummaryBySubRoute();
+
+                    if (dr["int4_DutyID"] != null && dr["int4_DutyID"].ToString() != string.Empty)
+                    {
+                        sch.DutyID = dr["int4_DutyID"].ToString();
+                    }
+
+                    if (dr["str4_JourneyNo"] != null && dr["str4_JourneyNo"].ToString() != string.Empty)
+                    {
+                        sch.str4_JourneyNo = dr["str4_JourneyNo"].ToString();
+                    }
+
+                    if (dr["RouteNumber"] != null && dr["RouteNumber"].ToString() != string.Empty && dr["SubRouteNumber"] != null && dr["SubRouteNumber"].ToString() != string.Empty)
+                    {
+                        sch.RouteNumber = dr["RouteNumber"].ToString() + " - " + dr["SubRouteNumber"].ToString();
+                    }
+
+                    if (dr["int4_JourneyTickets"] != null && dr["int4_JourneyTickets"].ToString() != string.Empty)
+                    {
+                        sch.int4_JourneyTickets = dr["int4_JourneyTickets"].ToString();
+                    }
+
+                    if (dr["int4_JourneyPasses"] != null && dr["int4_JourneyPasses"].ToString() != string.Empty)
+                    {
+                        sch.int4_JourneyPasses = dr["int4_JourneyPasses"].ToString();
+                    }
+
+                    if (dr["TripStatus"] != null && dr["TripStatus"].ToString() != string.Empty)
+                    {
+                        sch.TripStatus = dr["TripStatus"].ToString();
+                    }
+
+                    if (dr["Int_TotalPassengers"] != null && dr["Int_TotalPassengers"].ToString() != string.Empty)
+                    {
+                        sch.Int_TotalPassengers = Convert.ToInt64(dr["Int_TotalPassengers"].ToString());
+                    }
+
+                    if (dr["SubRouteName"] != null && dr["SubRouteName"].ToString() != string.Empty)
+                    {
+                        sch.routeName = dr["SubRouteName"].ToString().Trim();
+                    }
+
+                    if (dr["int4_JourneyRevenue"] != null && dr["int4_JourneyRevenue"].ToString() != string.Empty)
+                    {
+                        sch.JourneyRevenue = dr["int4_JourneyRevenue"].ToString();
+                    }
 
                     schs.Add(sch);
                 }
