@@ -313,6 +313,12 @@
       <SubType>Component</SubType>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="CrystalReports\Rpt\SalesAnalysis\SalesAnalysisByRouteSummary.cs">
+      <DependentUpon>SalesAnalysisByRouteSummary.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="CrystalReports\Rpt\SalesAnalysis\YearlyBreakDownByRoute.cs">
       <DependentUpon>YearlyBreakDownByRoute.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -597,6 +603,7 @@
     <Content Include="Views\Report\CashierReportMatatiele.cshtml" />
     <Content Include="Views\Report\DailyAuditMatatiele.cshtml" />
     <Content Include="Views\Report\JourneyAnalysisSummaryBySubRoute.cshtml" />
+    <Content Include="Views\Report\SalesAnalysisByRouteSummary.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -734,6 +741,10 @@
     <EmbeddedResource Include="CrystalReports\Rpt\SalesAnalysis\OriginAnalysisByRouteAtamelangTGX.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>OriginAnalysisByRouteAtamelangTGX.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CrystalReports\Rpt\SalesAnalysis\SalesAnalysisByRouteSummary.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>SalesAnalysisByRouteSummary.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="CrystalReports\Rpt\SalesAnalysis\YearlyBreakDownByRoute.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>

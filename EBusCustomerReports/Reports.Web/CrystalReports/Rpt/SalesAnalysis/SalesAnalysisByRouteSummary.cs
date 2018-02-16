@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Reports.Web.CrystalReports.Rpt.FormE {
+namespace Reports.Web.CrystalReports.Rpt.SalesAnalysis {
     using System;
     using System.ComponentModel;
     using CrystalDecisions.Shared;
@@ -16,14 +16,14 @@ namespace Reports.Web.CrystalReports.Rpt.FormE {
     using CrystalDecisions.CrystalReports.Engine;
     
     
-    public class JourneyAnalysisSummaryBySubRoute : ReportClass {
+    public class SalesAnalysisByRouteSummary : ReportClass {
         
-        public JourneyAnalysisSummaryBySubRoute() {
+        public SalesAnalysisByRouteSummary() {
         }
         
         public override string ResourceName {
             get {
-                return "JourneyAnalysisSummaryBySubRoute.rpt";
+                return "SalesAnalysisByRouteSummary.rpt";
             }
             set {
                 // Do nothing
@@ -41,7 +41,7 @@ namespace Reports.Web.CrystalReports.Rpt.FormE {
         
         public override string FullResourceName {
             get {
-                return "Reports.Web.CrystalReports.Rpt.FormE.JourneyAnalysisSummaryBySubRoute.rpt";
+                return "Reports.Web.CrystalReports.Rpt.SalesAnalysis.SalesAnalysisByRouteSummary.rpt";
             }
             set {
                 // Do nothing
@@ -66,7 +66,7 @@ namespace Reports.Web.CrystalReports.Rpt.FormE {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section GroupHeaderSection2 {
+        public CrystalDecisions.CrystalReports.Engine.Section GroupHeaderSection1 {
             get {
                 return this.ReportDefinition.Sections[2];
             }
@@ -74,7 +74,7 @@ namespace Reports.Web.CrystalReports.Rpt.FormE {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section GroupHeaderSection1 {
+        public CrystalDecisions.CrystalReports.Engine.Section Section3 {
             get {
                 return this.ReportDefinition.Sections[3];
             }
@@ -82,7 +82,7 @@ namespace Reports.Web.CrystalReports.Rpt.FormE {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section Section3 {
+        public CrystalDecisions.CrystalReports.Engine.Section GroupFooterSection1 {
             get {
                 return this.ReportDefinition.Sections[4];
             }
@@ -90,7 +90,7 @@ namespace Reports.Web.CrystalReports.Rpt.FormE {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section GroupFooterSection1 {
+        public CrystalDecisions.CrystalReports.Engine.Section Section4 {
             get {
                 return this.ReportDefinition.Sections[5];
             }
@@ -98,33 +98,17 @@ namespace Reports.Web.CrystalReports.Rpt.FormE {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section GroupFooterSection2 {
-            get {
-                return this.ReportDefinition.Sections[6];
-            }
-        }
-        
-        [Browsable(false)]
-        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section Section4 {
-            get {
-                return this.ReportDefinition.Sections[7];
-            }
-        }
-        
-        [Browsable(false)]
-        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public CrystalDecisions.CrystalReports.Engine.Section Section5 {
             get {
-                return this.ReportDefinition.Sections[8];
+                return this.ReportDefinition.Sections[6];
             }
         }
     }
     
     [System.Drawing.ToolboxBitmapAttribute(typeof(CrystalDecisions.Shared.ExportOptions), "report.bmp")]
-    public class CachedJourneyAnalysisSummaryBySubRoute : Component, ICachedReport {
+    public class CachedSalesAnalysisByRouteSummary : Component, ICachedReport {
         
-        public CachedJourneyAnalysisSummaryBySubRoute() {
+        public CachedSalesAnalysisByRouteSummary() {
         }
         
         [Browsable(false)]
@@ -161,7 +145,7 @@ namespace Reports.Web.CrystalReports.Rpt.FormE {
         }
         
         public virtual CrystalDecisions.CrystalReports.Engine.ReportDocument CreateReport() {
-            JourneyAnalysisSummaryBySubRoute rpt = new JourneyAnalysisSummaryBySubRoute();
+            SalesAnalysisByRouteSummary rpt = new SalesAnalysisByRouteSummary();
             rpt.Site = this.Site;
             return rpt;
         }

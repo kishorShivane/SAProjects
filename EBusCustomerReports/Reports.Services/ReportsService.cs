@@ -482,7 +482,7 @@ namespace Reports.Services
                      group c by new
                      {
                          c.str4_JourneyNo,
-                         c.int4_OperatorID,
+                         //c.int4_OperatorID,
                          c.int4_DutyId,
                          c.dateSelected
                      } into grp
@@ -490,6 +490,20 @@ namespace Reports.Services
             //count = items.Where(r => r.str4_JourneyNo == s.str4_JourneyNo
             //                            && r.int4_OperatorID == s.int4_OperatorID && r.int4_DutyId == s.int4_DutyId
             //                            && r.dateSelected == s.dateSelected)
+            return count;
+        }
+
+        public int getCountOfTypeTrips(List<JourneyAnalysisSummaryBySubRoute> items, string tripType, bool isEqual)
+        {
+            var count = 0;
+            count = (from c in items
+                     where (isEqual && c.TripStatus.ToLower() == tripType) || (!isEqual && c.TripStatus.ToLower() != tripType)
+                     group c by new
+                     {
+                         c.str4_JourneyNo,
+                         c.dateSelected
+                     } into grp
+                     select grp).ToList().Count();
             return count;
         }
 
@@ -801,21 +815,24 @@ namespace Reports.Services
             rawData.ForEach(s =>
             {
                 var multiplePairExistRes = rawData.Where(r => r.str4_JourneyNo == s.str4_JourneyNo
-                    && r.DutyID == s.DutyID).Count();
+                    && r.DutyID == s.DutyID && r.dateSelected == s.dateSelected
+                    ).Count();
 
                 if (multiplePairExistRes > 1)
                 {
                     var multiplePairExistFil = filteredResult.Where(r => r.str4_JourneyNo == s.str4_JourneyNo
-                                        && r.DutyID == s.DutyID).Count();
+                                        && r.DutyID == s.DutyID && r.dateSelected == s.dateSelected
+                                        ).Count();
 
                     if (multiplePairExistRes > 1)
                     {
                         filteredResult.RemoveAll(r => r.str4_JourneyNo == s.str4_JourneyNo
-                                        && r.DutyID == s.DutyID
+                                        && r.DutyID == s.DutyID && r.dateSelected == s.dateSelected
                                         && r.Int_TotalPassengers == 0); //remove all zero
 
                         var multiplePairExistFilNonZeroPsg = filteredResult.Where(r => r.str4_JourneyNo == s.str4_JourneyNo
-                                        && r.DutyID == s.DutyID).Count();
+                                        && r.DutyID == s.DutyID && r.dateSelected == s.dateSelected
+                                        ).Count();
                         if (multiplePairExistFilNonZeroPsg > 0 && s.Int_TotalPassengers <= 0)
                         {
                             //there is already non zero object so ignore current zero object
@@ -836,29 +853,36 @@ namespace Reports.Services
                 }
             });
 
-            var data = filteredResult;
+            var data = filteredResult.Where(s => !string.IsNullOrEmpty(s.Contract)).ToList();
 
             //first group by contract
-            var result = (from a in data
-                               group a by a.RouteNumber into grp
-                               select new JourneyAnalysisSummaryBySubRoute
-                               {
-                                   str4_JourneyNo = grp.FirstOrDefault().str4_JourneyNo,
-                                   routeName = grp.FirstOrDefault().routeName,
-                                   DutyID = grp.FirstOrDefault().DutyID,
-                                   RouteNumber = grp.Key,
-                                   Contract = grp.Any() ? grp.FirstOrDefault().Contract : string.Empty,
+            var groupByContract = (from a in data
+                                   group a by a.Contract into g
+                                   select g).ToList();
+            var result = new List<JourneyAnalysisSummaryBySubRoute>();
+            foreach (var contract in groupByContract)
+            {
+                result.AddRange((from a in contract
+                                 group a by new { a.RouteNumber, a.str4_JourneyNo } into grp
+                                 select new JourneyAnalysisSummaryBySubRoute
+                                 {
+                                     str4_JourneyNo = grp.Key.str4_JourneyNo,
+                                     routeName = grp.FirstOrDefault().routeName,
+                                     DutyID = grp.FirstOrDefault().DutyID,
+                                     RouteNumber = grp.Key.RouteNumber,
+                                     Contract = grp.Any() ? grp.FirstOrDefault().Contract : string.Empty,
 
-                                   ScheduledTrips = grp.Any() ? grp.Where(s => s.TripStatus.ToLower() != "not scheduled, but worked").Count().ToString() : string.Empty,
-                                   OperatedTrips = grp.Any() ? grp.Where(s => s.TripStatus.ToLower() == "worked").Count().ToString() : string.Empty,
-                                   NotOperatedTrips = grp.Any() ? grp.Where(s => s.TripStatus.ToLower() == "scheduled, but not worked").Count().ToString() : string.Empty,
+                                     ScheduledTrips = grp.Any() ? getCountOfTypeTrips(grp.ToList(), "not scheduled, but worked", false).ToString() : string.Empty,
+                                     OperatedTrips = grp.Any() ? getCountOfTypeTrips(grp.ToList(), "worked", true).ToString() : string.Empty,
+                                     NotOperatedTrips = grp.Any() ? getCountOfTypeTrips(grp.ToList(), "scheduled, but not worked", true).ToString() : string.Empty,
 
-                                   Tickets = grp.Sum(s => Convert.ToInt32(s.int4_JourneyTickets)).ToString(),
-                                   Passes = grp.Sum(s => Convert.ToInt32(s.int4_JourneyPasses)).ToString(),
-                                   TotalPassengers = grp.Sum(s => Convert.ToInt32(s.Int_TotalPassengers)).ToString(),
-                                   TotalRevenue = grp.Sum(s => Convert.ToDouble(s.JourneyRevenue)).ToString(),
+                                     Tickets = grp.Sum(s => Convert.ToInt32(s.int4_JourneyTickets)).ToString(),
+                                     Passes = grp.Sum(s => Convert.ToInt32(s.int4_JourneyPasses)).ToString(),
+                                     TotalPassengers = grp.Sum(s => Convert.ToInt32(s.Int_TotalPassengers)).ToString(),
+                                     TotalRevenue = grp.Sum(s => Convert.ToDouble(s.JourneyRevenue)).ToString(),
 
-                               }).ToList();
+                                 }).ToList());
+            }
 
             if (result.Any())
             {
@@ -878,7 +902,9 @@ namespace Reports.Services
                             filterContractsRange,
                             filterClassesRange,
                             filterClassesTypeRange,
-                            filterRoutesRange
+                            filterRoutesRange,
+                            companyName,
+                            res.Contract
                         );
                 }
             }
@@ -1850,6 +1876,19 @@ namespace Reports.Services
                         sch.JourneyRevenue = dr["int4_JourneyRevenue"].ToString();
                     }
 
+                    if (dr["str7_Contract"] != null && dr["str7_Contract"].ToString() != string.Empty)
+                    {
+                        sch.Contract = dr["str7_Contract"].ToString();
+                    }
+
+                    if (dr["dat_JourneyStartDate"] != null && dr["dat_JourneyStartDate"].ToString() != string.Empty)
+                    {
+                        var datePart = dr["dat_JourneyStartDate"].ToString().Split(' ')[0];
+                        var date = datePart.Split('/');
+                        var mont = (date[0].Length == 1 ? "0" + date[0] : date[0]).Trim();
+
+                        sch.dateSelected = (date[1].Length == 1 ? "0" + date[1] : date[1]).Trim() + "/" + mont + "/" + date[2].Trim();
+                    }
                     schs.Add(sch);
                 }
             }

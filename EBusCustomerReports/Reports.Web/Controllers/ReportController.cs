@@ -1720,6 +1720,41 @@ namespace Reports.Web.Controllers
 
         #endregion
 
+        #region Sales AnalysisByRoute Summary
+
+        public ActionResult SalesAnalysisByRouteSummary()
+        {
+            var service = new SalesAnalysisService();
+            var conKey = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey;
+
+            var model = service.GetSalesAnalysisSummaryFilter(conKey);
+
+            return View("SalesAnalysisByRouteSummary", model);
+        }
+
+        public ActionResult SalesAnalysisByRouteSummaryReportDownload(SalesAnalysisFilter filters)
+        {
+            var userset = GetUserSettings();
+            var conKey = userset.ConnectionKey;
+            var comp = userset.CompanyName;
+
+            var service = new SalesAnalysisService();
+
+            var ds = service.GetSalesAnalysisByRouteSummaryDataSet(conKey, filters, comp);
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                return DownLoadReportByDataSet(filters.ExcelOrPDF, "~/CrystalReports/Rpt/SalesAnalysis/SalesAnalysisByRouteSummary.rpt", ds, "SalesAnalysis ByRoute Summary ");
+            }
+            else
+            {
+                TempData["AlertMessage"] = "show";
+                return RedirectToAction("SalesAnalysisByRouteSummary", "Report");
+            }
+
+        }
+
+        #endregion
+
         #region ClassSummaryByClassType
 
         public ActionResult ClassSummaryByClassType()

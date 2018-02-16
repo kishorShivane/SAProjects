@@ -14067,6 +14067,8 @@ namespace Reports.Web.CrystalReports.Datasets
 
             private global::System.Data.DataColumn columncompanyName;
 
+            private global::System.Data.DataColumn columnContract;
+
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public JourneyAnalysisSummaryBySubRouteDataTable()
@@ -14258,6 +14260,16 @@ namespace Reports.Web.CrystalReports.Datasets
 
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn ContractColumn
+            {
+                get
+                {
+                    return this.columnContract;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count
             {
@@ -14298,7 +14310,23 @@ namespace Reports.Web.CrystalReports.Datasets
 
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public JourneyAnalysisSummaryBySubRouteRow AddJourneyAnalysisSummaryBySubRouteRow(string JourneyID, string Route, double ScheduledTrips, double OperatedTrips, double NotOperatedTrips, double Tickets, double Passes, double TotalPassengers, double Revenue, string DateRangeFilter, string ContractsFilter, string ClassesFilter, string ClassesTypeFilter, string RouteFilter, string companyName)
+            public JourneyAnalysisSummaryBySubRouteRow AddJourneyAnalysisSummaryBySubRouteRow(
+                        string JourneyID,
+                        string Route,
+                        double ScheduledTrips,
+                        double OperatedTrips,
+                        double NotOperatedTrips,
+                        double Tickets,
+                        double Passes,
+                        double TotalPassengers,
+                        double Revenue,
+                        string DateRangeFilter,
+                        string ContractsFilter,
+                        string ClassesFilter,
+                        string ClassesTypeFilter,
+                        string RouteFilter,
+                        string companyName,
+                        string Contract)
             {
                 JourneyAnalysisSummaryBySubRouteRow rowJourneyAnalysisSummaryBySubRouteRow = ((JourneyAnalysisSummaryBySubRouteRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
@@ -14316,7 +14344,8 @@ namespace Reports.Web.CrystalReports.Datasets
                         ClassesFilter,
                         ClassesTypeFilter,
                         RouteFilter,
-                        companyName};
+                        companyName,
+                        Contract};
                 rowJourneyAnalysisSummaryBySubRouteRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowJourneyAnalysisSummaryBySubRouteRow);
                 return rowJourneyAnalysisSummaryBySubRouteRow;
@@ -14357,6 +14386,7 @@ namespace Reports.Web.CrystalReports.Datasets
                 this.columnClassesTypeFilter = base.Columns["ClassesTypeFilter"];
                 this.columnRouteFilter = base.Columns["RouteFilter"];
                 this.columncompanyName = base.Columns["companyName"];
+                this.columnContract = base.Columns["Contract"];
             }
 
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -14393,6 +14423,8 @@ namespace Reports.Web.CrystalReports.Datasets
                 base.Columns.Add(this.columnRouteFilter);
                 this.columncompanyName = new global::System.Data.DataColumn("companyName", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columncompanyName);
+                this.columnContract = new global::System.Data.DataColumn("Contract", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnContract);
                 this.columnJourneyID.Caption = "Contract";
                 this.columnRoute.Caption = "DOTRoute";
                 this.columnClassesFilter.Caption = "ContractsFilter";
@@ -30776,6 +30808,28 @@ namespace Reports.Web.CrystalReports.Datasets
 
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string Contract
+            {
+                get
+                {
+                    try
+                    {
+                        return ((string)(this[this.tableJourneyAnalysisSummaryBySubRoute.ContractColumn]));
+                    }
+                    catch (global::System.InvalidCastException e)
+                    {
+                        throw new global::System.Data.StrongTypingException("The value for column \'Contract\' in table \'JourneyAnalysisSummaryBySubRoute\' is DB" +
+                                "Null.", e);
+                    }
+                }
+                set
+                {
+                    this[this.tableJourneyAnalysisSummaryBySubRoute.ContractColumn] = value;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool IsJourneyIDNull()
             {
                 return this.IsNull(this.tableJourneyAnalysisSummaryBySubRoute.JourneyIDColumn);
@@ -30982,6 +31036,20 @@ namespace Reports.Web.CrystalReports.Datasets
             public void SetcompanyNameNull()
             {
                 this[this.tableJourneyAnalysisSummaryBySubRoute.companyNameColumn] = global::System.Convert.DBNull;
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsContractNull()
+            {
+                return this.IsNull(this.tableJourneyAnalysisSummaryBySubRoute.ContractColumn);
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetContractNull()
+            {
+                this[this.tableJourneyAnalysisSummaryBySubRoute.ContractColumn] = global::System.Convert.DBNull;
             }
         }
 

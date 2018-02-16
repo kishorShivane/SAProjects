@@ -27,6 +27,7 @@ namespace Reports.Services
         public string TotalPassengers { get; set; }
         public string JourneyRevenue { get; set; }
         public string TotalRevenue { get; set; }
+        public string dateSelected { get; set; }
 
     }
 }

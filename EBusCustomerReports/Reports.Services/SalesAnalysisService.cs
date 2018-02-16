@@ -611,6 +611,97 @@ namespace Reports.Services
             return ds;
         }
 
+        public DataSet GetSalesAnalysisByRouteSummaryDataSet(string connKey, SalesAnalysisFilter filter, string companyName)
+        {
+            var ds = new DataSet();
+            var table1 = SalesRouteAnalsisDataset();
+            var service = new InspectorReportService();
+            var filterDateRange = string.Format("{0} :  {1} to {2}", "Date Range", filter.StartDate, filter.EndDate);
+
+            var filterClassTypesSelected = "ClassTypes: Filter Not Selected";
+            var filterRoutesSelected = "Routes: Filter Not Selected";
+            var filterClassGroupsSelected = "Class Groups: Filter Not Selected";
+
+            if (filter.ClassesTypesSelected != null && filter.ClassesTypesSelected.Length > 0)
+            {
+                var classes = service.GetAllClassTypes(connKey).Where(s => filter.ClassesTypesSelected.Contains(s.Value)).Select(s => s.Text).ToList();
+                filterClassTypesSelected = "Classes: " + string.Join(", ", classes);
+            }
+
+            if (filter.RoutesSelected != null && filter.RoutesSelected.Length > 0)
+            {
+                var routes = GetAllRoutes(connKey).Where(s => filter.RoutesSelected.Contains(s.Value)).Select(s => s.Text).ToList();
+                filterRoutesSelected = "Routes: " + string.Join(", ", routes);
+            }
+
+            if (filter.ClassGroupsSelected != null && filter.ClassGroupsSelected.Length > 0)
+            {
+                var cgrp = GetAllClassGroups(connKey).Where(s => filter.ClassGroupsSelected.Contains(s.Value)).Select(s => s.Text).ToList();
+                filterClassGroupsSelected = "Class Groups: " + string.Join(", ", cgrp);
+            }
+
+            var result = GetSalesAnalysisByRouteSummaryData(connKey, filter);
+
+            result = (from e in result
+                      group e by new { e.RouteID, e.ClassType } into grp
+                      select new SalesAnalysisByRoute()
+                      {
+                          ClassType = grp.Key.ClassType,
+                          RouteID = grp.Key.RouteID,
+                          RouteName = grp.ToList().FirstOrDefault().RouteName,
+                          Revenue = grp.ToList().Sum(x => x.Revenue),
+                          NonRevenue = grp.ToList().Sum(x => x.NonRevenue),
+                          TxCount = grp.ToList().Sum(x => x.TxCount),
+                          TicketCount = grp.ToList().Sum(x => x.TicketCount),
+                      }).ToList();
+
+            if (result.Any())
+            {
+                foreach (var item in result)
+                {
+                    item.CompanyName = companyName;
+                    item.dateRange = filterDateRange;
+                    item.ClassIdFilters = filterClassTypesSelected;
+                    item.RoutesFilters = filterRoutesSelected;
+                    item.ClassGroupFilter = filterClassGroupsSelected;
+                    table1.Rows.Add(
+                                item.RouteID,
+                                item.RouteName,
+                                item.ClassID,
+                                item.ClassName,
+                                item.ClassType,
+                                item.Revenue,
+                                item.NonRevenue,
+                                item.AnnulCash,
+                                item.TxCount,
+                                item.TicketCount,
+                                item.dateRange,
+                                item.RoutesFilters,
+                                item.ClassIdFilters,
+                                item.CompanyName,
+                                item.ClassGroupFilter,
+                                (double)((item.Revenue / (item.TicketCount == 0 ? 1 : item.TicketCount)))
+                        );
+                }
+            }
+            else
+            {
+                DataRow dr = table1.NewRow();
+                dr["CompanyName"] = companyName;
+                dr["dateRange"] = filterDateRange;
+                dr["ClassIdFilters"] = filterClassTypesSelected;
+                dr["RoutesFilters"] = filterRoutesSelected;
+                dr["ClassGroupFilter"] = filterClassGroupsSelected;
+
+                table1.Rows.Add(dr);
+            }
+
+
+            ds.Tables.Add(table1);
+            return ds;
+        }
+
+
         public DataSet GetClassSummaryDataSet(string connKey, SalesAnalysisFilter filter, string companyName, string spName, bool isClassType)
         {
             var ds = new DataSet();
@@ -701,6 +792,95 @@ namespace Reports.Services
 
                 cmd.Parameters.AddWithValue("@routeIds", filter.RoutesSelected == null ? "" : string.Join(",", filter.RoutesSelected));
                 cmd.Parameters.AddWithValue("@classIds", filter.ClassesSelected == null ? "" : string.Join(",", filter.ClassesSelected));
+                cmd.Parameters.AddWithValue("@classgroupIds", filter.ClassGroupsSelected == null ? "" : string.Join(",", filter.ClassGroupsSelected));
+                cmd.Parameters.AddWithValue("@fromDate", CustomDateTime.ConvertStringToDateSaFormat(filter.StartDate).ToString("yyyy-MM-dd"));
+                cmd.Parameters.AddWithValue("@toDate", CustomDateTime.ConvertStringToDateSaFormat(filter.EndDate).ToString("yyyy-MM-dd"));
+                cmd.CommandTimeout = 500000;
+
+                myConnection.Open();
+                SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+
+                while (dr.Read())
+                {
+                    var sch = new SalesAnalysisByRoute();
+
+                    if (dr["RouteID"] != null && dr["RouteID"].ToString() != string.Empty)
+                    {
+                        sch.RouteID = (dr["RouteID"].ToString());
+                    }
+
+                    if (dr["RouteName"] != null && dr["RouteName"].ToString() != string.Empty)
+                    {
+                        sch.RouteName = (dr["RouteName"].ToString());
+                    }
+
+                    if (dr["ClassName"] != null && dr["ClassName"].ToString() != string.Empty)
+                    {
+                        sch.ClassName = (dr["ClassName"].ToString());
+                    }
+
+                    if (dr["ClassType"] != null && dr["ClassType"].ToString() != string.Empty)
+                    {
+                        sch.ClassType = (dr["ClassType"].ToString());
+                    }
+
+                    if (dr["ClassID"] != null && dr["ClassID"].ToString() != string.Empty)
+                    {
+                        sch.ClassID = Convert.ToInt32(dr["ClassID"].ToString());
+                    }
+
+                    if (dr["Revenue"] != null && dr["Revenue"].ToString() != string.Empty)
+                    {
+                        sch.Revenue = Convert.ToDouble(dr["Revenue"].ToString());
+                    }
+
+                    if (dr["NonRevenue"] != null && dr["NonRevenue"].ToString() != string.Empty)
+                    {
+                        sch.NonRevenue = Convert.ToDouble(dr["NonRevenue"].ToString());
+                    }
+
+                    if (dr["AnnulCash"] != null && dr["AnnulCash"].ToString() != string.Empty)
+                    {
+                        sch.AnnulCash = Convert.ToDouble(dr["AnnulCash"].ToString());
+                    }
+
+                    if (dr["TxCount"] != null && dr["TxCount"].ToString() != string.Empty)
+                    {
+                        sch.TxCount = Convert.ToInt32(dr["TxCount"].ToString());
+                    }
+
+                    if (dr["TicketCount"] != null && dr["TicketCount"].ToString() != string.Empty)
+                    {
+                        sch.TicketCount = Convert.ToInt32(dr["TicketCount"].ToString());
+                    }
+
+                    result.Add(sch);
+                }
+            }
+
+            finally
+            {
+                myConnection.Close();
+            }
+
+            return result;
+        }
+
+        private List<SalesAnalysisByRoute> GetSalesAnalysisByRouteSummaryData(string connKey, SalesAnalysisFilter filter)
+        {
+            var result = new List<SalesAnalysisByRoute>();
+
+            var myConnection = new SqlConnection(GetConnectionString(connKey));
+
+            try
+            {
+                var cmd = new SqlCommand("EbusSalesAnalysisByRouteSummaryReport", myConnection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+
+                cmd.Parameters.AddWithValue("@routeIds", filter.RoutesSelected == null ? "" : string.Join(",", filter.RoutesSelected));
+                cmd.Parameters.AddWithValue("@classTypeIds", filter.ClassesTypesSelected == null ? "" : string.Join(",", filter.ClassesTypesSelected));
                 cmd.Parameters.AddWithValue("@classgroupIds", filter.ClassGroupsSelected == null ? "" : string.Join(",", filter.ClassGroupsSelected));
                 cmd.Parameters.AddWithValue("@fromDate", CustomDateTime.ConvertStringToDateSaFormat(filter.StartDate).ToString("yyyy-MM-dd"));
                 cmd.Parameters.AddWithValue("@toDate", CustomDateTime.ConvertStringToDateSaFormat(filter.EndDate).ToString("yyyy-MM-dd"));
@@ -959,11 +1139,19 @@ namespace Reports.Services
             model.Classes = GetAllCalsses(connKey);
             model.Routes = GetAllRoutes(connKey);
             model.ClassGroups = GetAllClassGroups(connKey);
-
-
-
             return model;
         }
+
+        public SalesAnalysisFilter GetSalesAnalysisSummaryFilter(string connKey)
+        {
+            var model = new SalesAnalysisFilter();
+            var service = new InspectorReportService();
+            model.ClassesTypes = service.GetAllClassTypes(connKey);
+            model.Routes = GetAllRoutes(connKey);
+            model.ClassGroups = GetAllClassGroups(connKey);
+            return model;
+        }
+
 
         public SalesAnalysisFilter GetSalesAnalysisFilterForGraph(string connKey)
         {

@@ -357,7 +357,7 @@ namespace Reports.Services
             table1.Columns.Add("RouteFilter");//13
 
             table1.Columns.Add("companyName");//14
-           
+            table1.Columns.Add("Contract");//15
 
             return table1;
         }
