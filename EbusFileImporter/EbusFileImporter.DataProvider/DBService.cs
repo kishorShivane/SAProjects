@@ -126,7 +126,7 @@ namespace EbusFileImporter.DataProvider
             }
             catch (Exception)
             {
-                Logger.Error("Failed in DoesRecordExist integer");
+                Logger.Error("Failed in DoesRecordExist integer for table" + tableName);
                 throw;
             }
             finally
@@ -149,7 +149,7 @@ namespace EbusFileImporter.DataProvider
                 using (con = GetConnection(GetConnectionString(connectionKey)))
                 {
                     con.Open();
-                    string query = "SELECT " + keyField + " FROM " + tableName + " ORDER BY " + keyField + " DESC;";
+                    string query = "SELECT TOP 1" + keyField + " FROM " + tableName + " ORDER BY " + keyField + " DESC;";
                     using (cmd = new SqlCommand(query, con))
                     {
                         var item = cmd.ExecuteScalar();
@@ -162,7 +162,7 @@ namespace EbusFileImporter.DataProvider
             }
             catch (Exception)
             {
-                Logger.Error("Failed in GetLatestIDUsed");
+                Logger.Error("Failed in GetLatestIDUsed for " + tableName);
                 throw;
             }
             finally

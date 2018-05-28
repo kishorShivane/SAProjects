@@ -12,7 +12,7 @@ namespace Reports.Web.Helpers
 {
     public static class MailHelper
     {
-        public static bool SendMailToEbus(string cardID, string reason, string comments, string userName, string companyName)
+        public static bool SendMailToEbus(string cardID, string reason, string comments, string userName, string companyName, bool isGmail = false)
         {
             var result = true;
             var emailTolist = ConfigurationManager.AppSettings.Get("EmailToList");
@@ -52,10 +52,19 @@ namespace Reports.Web.Helpers
             email.DeliveryNotificationOptions = DeliveryNotificationOptions.OnFailure;
 
             SmtpClient client = new SmtpClient();
-            client.Credentials = new System.Net.NetworkCredential("info@ebussupplies.co.za", "ebus0117836833");
-
-            client.Host = "mail.ebussupplies.co.za";
-            client.Port = 25;
+            if (!isGmail)
+            {
+                client.Credentials = new System.Net.NetworkCredential("info@ebussupplies.co.za", "ebus0117836833");
+                client.Host = "mail.ebussupplies.co.za";
+                client.Port = 25;
+            }
+            else
+            {
+                client.Credentials = new System.Net.NetworkCredential(ConfigurationManager.AppSettings["UserName"], ConfigurationManager.AppSettings["Password"]);
+                client.Host = ConfigurationManager.AppSettings["SMTP"];
+                client.Port = Convert.ToInt32(ConfigurationManager.AppSettings["SMTPPort"]);
+            }
+            
             client.DeliveryMethod = SmtpDeliveryMethod.Network;
             try
             {

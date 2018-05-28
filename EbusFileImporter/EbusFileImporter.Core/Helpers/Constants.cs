@@ -23,5 +23,6 @@ namespace EbusFileImporter.Core.Helpers
         public static string EmailUserName = ConfigurationManager.AppSettings["EmailUserName"];
         public static string EbusPassword = ConfigurationManager.AppSettings["EbusPassword"];
         public static bool DetailedLogging = ConfigurationManager.AppSettings["DetailedLogging"] == "true" ? true : false;
+        public static bool IgnoreCheckList = ConfigurationManager.AppSettings["IgnoreCheckList"] == "true" ? true : false;
     }
 }

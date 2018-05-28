@@ -78,7 +78,8 @@ namespace EbusFileImporter.Core
                 #endregion
 
                 #region Check for validity of ExtendedWaybill date
-                Logger.Info("Check for validity of ExtendedWaybill date - Start");
+                if (Constants.DetailedLogging)
+                { Logger.Info("Check for validity of ExtendedWaybill date - Start"); }
                 var extendedWaybill = nodes.Where((x => x.Attribute("STXID").Value.Equals("122")));
                 var tempDutyDetail = nodes.Where((x => x.Attribute("STXID").Value.Equals("151"))).FirstOrDefault();
                 if (tempDutyDetail != null && extendedWaybill != null && extendedWaybill.Any())
@@ -296,6 +297,27 @@ namespace EbusFileImporter.Core
                         auditFileDetail.RecordModified = todayDate;
                         auditFileDetail.AuditFileName = Path.GetFileName(filePath);
                         auditFileDetails.Add(auditFileDetail);
+                    }
+                    else if (nodes125.Count() == 1)
+                    {
+                        var lastEndOfJourneyTime = nodes.Where(x => x.Attribute("STXID").Value.Equals("156")).LastOrDefault() == null ? "000000" : nodes.Where(x => x.Attribute("STXID").Value.Equals("156")).LastOrDefault().Element("JourneyStopTime").Value;
+                        var thisNode = nodes125.ToList()[0];
+                        var nextnode = nodes125.ToList()[0];
+                        auditFileDetail.Id_Status = latestAuditFileStatus;
+                        auditFileDetail.id_duty = dutyDetail.id_Duty;
+                        auditFileDetail.DriverAuditStatus1 = (int)thisNode.Element("AuditStatus");
+                        auditFileDetail.DriverNumber1 = (int)thisNode.Element("DriverNumber");
+                        auditFileDetail.DriverCardSerialNumber1 = (string)thisNode.Element("DriverCardSerialNo");
+                        auditFileDetail.DriverStatus1DateTime = helper.ConvertToInsertDateTimeString((string)node151.Element("DutyDate"), (string)thisNode.Element("Time"));
+                        auditFileDetail.DriverAuditStatus2 = 02;
+                        auditFileDetail.DriverNumber2 = (int)nextnode.Element("DriverNumber");
+                        auditFileDetail.DriverCardSerialNumber2 = (string)nextnode.Element("DriverCardSerialNo");
+                        auditFileDetail.DriverStatus2DateTime = helper.ConvertToInsertDateTimeString((string)node151.Element("DutyDate"), (string)lastEndOfJourneyTime);
+                        auditFileDetail.DutySignOffMode = (int)node154.Element("SignOffMode");
+                        auditFileDetail.RecordModified = todayDate;
+                        auditFileDetail.AuditFileName = Path.GetFileName(filePath);
+                        auditFileDetails.Add(auditFileDetail);
+                        Logger.Info("AuditFileStatus Correction: No AuditFileStatus node found at the end, data is auto corrected");
                     }
                     else
                     {
@@ -1095,6 +1117,27 @@ namespace EbusFileImporter.Core
                         auditFileDetail.AuditFileName = Path.GetFileName(filePath);
                         auditFileDetails.Add(auditFileDetail);
                     }
+                    else if (nodes125.Count() == 1)
+                    {
+                        var lastEndOfJourneyTime = nodes.Where(x => x.Attribute("STXID").Value.Equals("156")).LastOrDefault() == null ? "000000" : nodes.Where(x => x.Attribute("STXID").Value.Equals("156")).LastOrDefault().Element("JourneyStopTime").Value;
+                        var thisNode = nodes125.ToList()[0];
+                        var nextnode = nodes125.ToList()[0];
+                        auditFileDetail.Id_Status = latestAuditFileStatus;
+                        auditFileDetail.id_duty = dutyDetail.id_Duty;
+                        auditFileDetail.DriverAuditStatus1 = (int)thisNode.Element("AuditStatus");
+                        auditFileDetail.DriverNumber1 = (int)thisNode.Element("DriverNumber");
+                        auditFileDetail.DriverCardSerialNumber1 = (string)thisNode.Element("DriverCardSerialNo");
+                        auditFileDetail.DriverStatus1DateTime = helper.ConvertToInsertDateTimeString((string)node151.Element("DutyDate"), (string)thisNode.Element("Time"));
+                        auditFileDetail.DriverAuditStatus2 = 02;
+                        auditFileDetail.DriverNumber2 = (int)nextnode.Element("DriverNumber");
+                        auditFileDetail.DriverCardSerialNumber2 = (string)nextnode.Element("DriverCardSerialNo");
+                        auditFileDetail.DriverStatus2DateTime = helper.ConvertToInsertDateTimeString((string)node151.Element("DutyDate"), (string)lastEndOfJourneyTime);
+                        auditFileDetail.DutySignOffMode = (int)node154.Element("SignOffMode");
+                        auditFileDetail.RecordModified = todayDate;
+                        auditFileDetail.AuditFileName = Path.GetFileName(filePath);
+                        auditFileDetails.Add(auditFileDetail);
+                        Logger.Info("AuditFileStatus Correction: No AuditFileStatus node found at the end, data is auto corrected");
+                    }
                     else
                     {
                         Logger.Info("Error: No AuditFileStatus node found, Moving file to error folder");
@@ -1869,74 +1912,96 @@ namespace EbusFileImporter.Core
                             busChecklistDetail = new BusChecklist();
                             busChecklistDetail.id_Duty = dutyDetail.id_Duty;
                             busChecklistDetail.id_Module = moduleDetail.id_Module;
-                            var checklistItems = thisBusChecklist.Element("CheckItems").Elements("CheckItem");
-                            checklistItems.ToList().ForEach(x =>
+                            var checklistItems = thisBusChecklist.Element("CheckItems")?.Elements("CheckItem");
+                            if (checklistItems != null)
                             {
-                                switch ((int)x.Attribute("ItemID"))
+                                checklistItems.ToList().ForEach(x =>
                                 {
-                                    case 1:
-                                        busChecklistDetail.SignOnCheckItem1 = (string)x.Attribute("ItemOK") == "true" ? true : false;
-                                        break;
-                                    case 2:
-                                        busChecklistDetail.SignOnCheckItem2 = (string)x.Attribute("ItemOK") == "true" ? true : false;
-                                        break;
-                                    case 3:
-                                        busChecklistDetail.SignOnCheckItem3 = (string)x.Attribute("ItemOK") == "true" ? true : false;
-                                        break;
-                                    case 4:
-                                        busChecklistDetail.SignOnCheckItem4 = (string)x.Attribute("ItemOK") == "true" ? true : false;
-                                        break;
-                                    case 5:
-                                        busChecklistDetail.SignOnCheckItem5 = (string)x.Attribute("ItemOK") == "true" ? true : false;
-                                        break;
-                                    case 6:
-                                        busChecklistDetail.SignOnCheckItem6 = (string)x.Attribute("ItemOK") == "true" ? true : false;
-                                        break;
-                                    case 7:
-                                        busChecklistDetail.SignOnCheckItem7 = (string)x.Attribute("ItemOK") == "true" ? true : false;
-                                        break;
-                                    case 8:
-                                        busChecklistDetail.SignOnCheckItem8 = (string)x.Attribute("ItemOK") == "true" ? true : false;
-                                        break;
-                                    default:
-                                        break;
-                                }
-                            });
+                                    switch ((int)x.Attribute("ItemID"))
+                                    {
+                                        case 1:
+                                            busChecklistDetail.SignOnCheckItem1 = (string)x.Attribute("ItemOK") == "true" ? true : false;
+                                            break;
+                                        case 2:
+                                            busChecklistDetail.SignOnCheckItem2 = (string)x.Attribute("ItemOK") == "true" ? true : false;
+                                            break;
+                                        case 3:
+                                            busChecklistDetail.SignOnCheckItem3 = (string)x.Attribute("ItemOK") == "true" ? true : false;
+                                            break;
+                                        case 4:
+                                            busChecklistDetail.SignOnCheckItem4 = (string)x.Attribute("ItemOK") == "true" ? true : false;
+                                            break;
+                                        case 5:
+                                            busChecklistDetail.SignOnCheckItem5 = (string)x.Attribute("ItemOK") == "true" ? true : false;
+                                            break;
+                                        case 6:
+                                            busChecklistDetail.SignOnCheckItem6 = (string)x.Attribute("ItemOK") == "true" ? true : false;
+                                            break;
+                                        case 7:
+                                            busChecklistDetail.SignOnCheckItem7 = (string)x.Attribute("ItemOK") == "true" ? true : false;
+                                            break;
+                                        case 8:
+                                            busChecklistDetail.SignOnCheckItem8 = (string)x.Attribute("ItemOK") == "true" ? true : false;
+                                            break;
+                                        default:
+                                            break;
+                                    }
+                                });
+                            }
+                            else if (!Constants.IgnoreCheckList)
+                            {
+                                Logger.Info("Error: No checklist node found in bus checklist, Moving file to error folder");
+                                helper.MoveErrorFile(filePath, dbName);
+                                if (Constants.EnableEmailTrigger) emailHelper.SendMail(filePath, dbName, "", EmailType.Error);
+                                return false;
+                            }
+
                             busChecklistDetail.SignOnDeviceDefective = (int)thisBusChecklist.Element("DeviceDefective");
                             busChecklistDetail.SignOnTime = helper.ConvertToInsertTimeString((string)thisBusChecklist.Element("Time"));
-                            checklistItems = lastBusChecklist.Element("CheckItems").Elements("CheckItem");
-                            checklistItems.ToList().ForEach(x =>
+                            checklistItems = lastBusChecklist.Element("CheckItems")?.Elements("CheckItem");
+                            if (checklistItems != null)
                             {
-                                switch ((int)x.Attribute("ItemID"))
+                                checklistItems.ToList().ForEach(x =>
                                 {
-                                    case 1:
-                                        busChecklistDetail.SignOffCheckItem1 = (string)x.Attribute("ItemOK") == "true" ? true : false;
-                                        break;
-                                    case 2:
-                                        busChecklistDetail.SignOffCheckItem2 = (string)x.Attribute("ItemOK") == "true" ? true : false;
-                                        break;
-                                    case 3:
-                                        busChecklistDetail.SignOffCheckItem3 = (string)x.Attribute("ItemOK") == "true" ? true : false;
-                                        break;
-                                    case 4:
-                                        busChecklistDetail.SignOffCheckItem4 = (string)x.Attribute("ItemOK") == "true" ? true : false;
-                                        break;
-                                    case 5:
-                                        busChecklistDetail.SignOffCheckItem5 = (string)x.Attribute("ItemOK") == "true" ? true : false;
-                                        break;
-                                    case 6:
-                                        busChecklistDetail.SignOffCheckItem6 = (string)x.Attribute("ItemOK") == "true" ? true : false;
-                                        break;
-                                    case 7:
-                                        busChecklistDetail.SignOffCheckItem7 = (string)x.Attribute("ItemOK") == "true" ? true : false;
-                                        break;
-                                    case 8:
-                                        busChecklistDetail.SignOffCheckItem8 = (string)x.Attribute("ItemOK") == "true" ? true : false;
-                                        break;
-                                    default:
-                                        break;
-                                }
-                            });
+                                    switch ((int)x.Attribute("ItemID"))
+                                    {
+                                        case 1:
+                                            busChecklistDetail.SignOnCheckItem1 = (string)x.Attribute("ItemOK") == "true" ? true : false;
+                                            break;
+                                        case 2:
+                                            busChecklistDetail.SignOnCheckItem2 = (string)x.Attribute("ItemOK") == "true" ? true : false;
+                                            break;
+                                        case 3:
+                                            busChecklistDetail.SignOnCheckItem3 = (string)x.Attribute("ItemOK") == "true" ? true : false;
+                                            break;
+                                        case 4:
+                                            busChecklistDetail.SignOnCheckItem4 = (string)x.Attribute("ItemOK") == "true" ? true : false;
+                                            break;
+                                        case 5:
+                                            busChecklistDetail.SignOnCheckItem5 = (string)x.Attribute("ItemOK") == "true" ? true : false;
+                                            break;
+                                        case 6:
+                                            busChecklistDetail.SignOnCheckItem6 = (string)x.Attribute("ItemOK") == "true" ? true : false;
+                                            break;
+                                        case 7:
+                                            busChecklistDetail.SignOnCheckItem7 = (string)x.Attribute("ItemOK") == "true" ? true : false;
+                                            break;
+                                        case 8:
+                                            busChecklistDetail.SignOnCheckItem8 = (string)x.Attribute("ItemOK") == "true" ? true : false;
+                                            break;
+                                        default:
+                                            break;
+                                    }
+                                });
+                            }
+                            else if (!Constants.IgnoreCheckList)
+                            {
+                                Logger.Info("Error: No checklist node found in bus checklist, Moving file to error folder");
+                                helper.MoveErrorFile(filePath, dbName);
+                                if (Constants.EnableEmailTrigger) emailHelper.SendMail(filePath, dbName, "", EmailType.Error);
+                                return false;
+                            }
+
                             busChecklistDetail.SignOffDeviceDefective = (int)lastBusChecklist.Element("DeviceDefective");
                             busChecklistDetail.SignOffTime = helper.ConvertToInsertTimeString((string)lastBusChecklist.Element("Time"));
                             busChecklistDetail.id_BusChecklist = latestBusChecklistID;

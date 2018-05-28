@@ -441,8 +441,9 @@
                                             FileInfo[] files = di.GetFiles();
                                             foreach (var file in files)
                                             {
+                                                var filePath = "../Manuals/" + @key.ToString().ToLower() + "/" + file.Name;
                                                 <li>
-                                                    <a href=@file.FullName target="_blank"><i class="fa fa-file-pdf-o fa-fw"></i>@Path.GetFileNameWithoutExtension(file.Name)</a>
+                                                    <a href=@filePath target="_blank"><i class="fa fa-file-pdf-o fa-fw"></i>@Path.GetFileNameWithoutExtension(file.Name)</a>
                                                 </li>
                                             }
                                         }

@@ -96,10 +96,14 @@ namespace EBusFileUploaderService
                 {
                     try
                     {
-                        UploadFTPLocation(filePath, ftpServerAddress, ftpUsername, ftpPassword);
-                        UploadFTPLocation(filePath, ftpServerAddressAlternative, ftpUsername, ftpPassword);
-                        //delete local file, need to chk if file is uploaded successfully 
-                        DeleteLocalFile(filePath);
+                        if (!CheckIfFileExistsOnFTP(Path.GetFileName(filePath), ftpServerAddress, ftpUsername, ftpPassword))
+                        {
+                            UploadFTPLocation(filePath, ftpServerAddress, ftpUsername, ftpPassword);
+                            UploadFTPLocation(filePath, ftpServerAddressAlternative, ftpUsername, ftpPassword);
+                            //delete local file, need to chk if file is uploaded successfully 
+                            DeleteLocalFile(filePath);
+                        }
+
                     }
                     catch (Exception ex)
                     {
@@ -149,6 +153,28 @@ namespace EBusFileUploaderService
                 }
             }
         }
+
+        private bool CheckIfFileExistsOnFTP(string fileName, string ftpServerAddress, string ftpUsername, string ftpPassword)
+        {
+            var request = (FtpWebRequest)WebRequest.Create(ftpServerAddress + "/" + fileName);
+            request.Credentials = new NetworkCredential(ftpUsername, ftpPassword);
+            request.Method = WebRequestMethods.Ftp.GetFileSize;
+
+            try
+            {
+                FtpWebResponse response = (FtpWebResponse)request.GetResponse();
+                return true;
+            }
+            catch (WebException ex)
+            {
+                FtpWebResponse response = (FtpWebResponse)ex.Response;
+                Logger.Log(string.Format("File {0} exist on FTP {1} ", fileName, ftpServerAddress));
+                if (response.StatusCode == FtpStatusCode.ActionNotTakenFileUnavailable)
+                    return false;
+            }
+            return false;
+        }
+
 
         public string GetConfigValueByKey(string key)
         {
