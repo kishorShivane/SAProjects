@@ -15,5 +15,6 @@ namespace EbusFileImporter.DataProvider.Models
         public string Revenue { get; set; }
         public string CashierID { get; set; }
         public string ImportDateTime { get; set; }
+        public string CashOnCard { get; set; }
     }
 }

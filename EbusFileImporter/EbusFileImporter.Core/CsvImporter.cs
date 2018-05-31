@@ -378,7 +378,9 @@ namespace EbusFileImporter.Core
                     string time = values[2].ToString().Trim();
                     string Employee = values[3].ToString().Trim();
                     string Revenue = values[5].ToString().Trim();
-
+                    string cashOnCard = "";
+                    if (values.Length > 6)
+                        cashOnCard = values[6].ToString().Trim();
                     //sets the date time 
                     string CashierDate = DateTime.ParseExact(date, "yyyyMMdd", null).ToString("dd-MM-yyyy");
 
@@ -394,15 +396,32 @@ namespace EbusFileImporter.Core
                     //Parsing the Cashier Time
                     DateTime Time12 = DateTime.Parse(CashierTime);
 
-                    cashierDetails.Add(new Cashier()
+                    if (values.Length > 6 || dbName == "ikhwezi60")
                     {
-                        StaffNumber = Employee,
-                        Date = date23,
-                        Time = Time12,
-                        Revenue = Revenue,
-                        CashierID = newFile,
-                        ImportDateTime = todayDate.ToString()
-                    });
+                        cashierDetails.Add(new Cashier()
+                        {
+                            StaffNumber = Employee,
+                            Date = date23,
+                            Time = Time12,
+                            Revenue = Revenue,
+                            CashierID = newFile,
+                            ImportDateTime = todayDate.ToString(),
+                            CashOnCard = cashOnCard
+                        });
+                    }
+                    else
+                    {
+                        cashierDetails.Add(new Cashier()
+                        {
+                            StaffNumber = Employee,
+                            Date = date23,
+                            Time = Time12,
+                            Revenue = Revenue,
+                            CashierID = newFile,
+                            ImportDateTime = todayDate.ToString()
+                        });
+                    }
+
 
                     #region Process Staff Information
                     if (!dbService.DoesRecordExist("Staff", "int4_StaffID", Employee, dbName))

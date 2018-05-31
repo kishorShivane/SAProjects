@@ -300,6 +300,7 @@ namespace EbusFileImporter.Core
                     }
                     else if (nodes125.Count() == 1)
                     {
+                        auditFileDetail = new AuditFileStatus();
                         var lastEndOfJourneyTime = nodes.Where(x => x.Attribute("STXID").Value.Equals("156")).LastOrDefault() == null ? "000000" : nodes.Where(x => x.Attribute("STXID").Value.Equals("156")).LastOrDefault().Element("JourneyStopTime").Value;
                         var thisNode = nodes125.ToList()[0];
                         var nextnode = nodes125.ToList()[0];
@@ -1119,6 +1120,7 @@ namespace EbusFileImporter.Core
                     }
                     else if (nodes125.Count() == 1)
                     {
+                        auditFileDetail = new AuditFileStatus();
                         var lastEndOfJourneyTime = nodes.Where(x => x.Attribute("STXID").Value.Equals("156")).LastOrDefault() == null ? "000000" : nodes.Where(x => x.Attribute("STXID").Value.Equals("156")).LastOrDefault().Element("JourneyStopTime").Value;
                         var thisNode = nodes125.ToList()[0];
                         var nextnode = nodes125.ToList()[0];
