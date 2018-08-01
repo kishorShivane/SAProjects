@@ -141,7 +141,9 @@ namespace EbusFileImporter.Core
                     var lastLine = lines.LastOrDefault();
                     string[] values = lastLine.Split(',');
                     string receiptnumber = values[13].ToString().Trim();
-                    if (dbService.DoesRecordExist("CashierSigonSignoff", "WaybillNumber", Convert.ToInt32(receiptnumber), dbName))
+                    string terminal = values[17].ToString().Replace("\"", "").Trim();
+                    string casherID = fileName.Substring(34, 6);
+                    if (dbService.DoesCSVRecordExist("CashierSigonSignoff", "WaybillNumber,Terminal,CashierID", receiptnumber + "," + terminal + "," + casherID, dbName))
                     {
                         Logger.Info("Duplicate file found - " + fileName);
                         helper.MoveDuplicateFile(filePath, dbName);

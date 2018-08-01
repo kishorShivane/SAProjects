@@ -12,9 +12,10 @@ namespace Reports.Web.Helpers
 {
     public static class MailHelper
     {
-        public static bool SendMailToEbus(string cardID, string reason, string comments, string userName, string companyName, bool isGmail = false)
+        public static bool SendMailToEbus(string cardID, string reason, string comments, string userName, string companyName)
         {
             var result = true;
+            var isFromGmail = ConfigurationManager.AppSettings["UseGmailForEmail"] == null ? false : ConfigurationManager.AppSettings["UseGmailForEmail"] == "true" ? true : false;
             var emailTolist = ConfigurationManager.AppSettings.Get("EmailToList");
 
             var message = "Hi" + "\r\n";
@@ -38,10 +39,9 @@ namespace Reports.Web.Helpers
             var email = new System.Net.Mail.MailMessage
             {
                 Body = message,
-                From = new MailAddress("info@ebussupplies.com"),
                 Subject = "Smart Card Hot List Requested : " + cardID + " From : " + companyName,
                 IsBodyHtml = false
-            };
+            }; 
 
             foreach (var id in emailTolist.Split(';'))
             {
@@ -52,17 +52,20 @@ namespace Reports.Web.Helpers
             email.DeliveryNotificationOptions = DeliveryNotificationOptions.OnFailure;
 
             SmtpClient client = new SmtpClient();
-            if (!isGmail)
+            if (!isFromGmail)
             {
-                client.Credentials = new System.Net.NetworkCredential("info@ebussupplies.co.za", "ebus0117836833");
-                client.Host = "mail.ebussupplies.co.za";
-                client.Port = 25;
+                email.From = new MailAddress(ConfigurationManager.AppSettings["FromEmail"]);
+                client.Credentials = new System.Net.NetworkCredential(ConfigurationManager.AppSettings["UserName"], ConfigurationManager.AppSettings["Password"]);
+                client.Host = ConfigurationManager.AppSettings["SMTP"];
+                client.Port = Convert.ToInt32(ConfigurationManager.AppSettings["SMTPPort"]); ;
             }
             else
             {
-                client.Credentials = new System.Net.NetworkCredential(ConfigurationManager.AppSettings["UserName"], ConfigurationManager.AppSettings["Password"]);
-                client.Host = ConfigurationManager.AppSettings["SMTP"];
-                client.Port = Convert.ToInt32(ConfigurationManager.AppSettings["SMTPPort"]);
+                email.From = new MailAddress(ConfigurationManager.AppSettings["GmailFromEmail"]);
+                client.Credentials = new System.Net.NetworkCredential(ConfigurationManager.AppSettings["GmailUserName"], ConfigurationManager.AppSettings["GmailPassword"]);
+                client.Host = ConfigurationManager.AppSettings["GmailSMTP"];
+                client.Port = Convert.ToInt32(ConfigurationManager.AppSettings["GmailSMTPPort"]);
+                client.EnableSsl = true;
             }
             
             client.DeliveryMethod = SmtpDeliveryMethod.Network;

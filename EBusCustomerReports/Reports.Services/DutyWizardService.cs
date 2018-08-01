@@ -706,7 +706,7 @@ namespace Reports.Services
             var status = false;
             try
             {
-
+                var isFromGmail = ConfigurationManager.AppSettings["UseGmailForEmail"] == null ? false : ConfigurationManager.AppSettings["UseGmailForEmail"] == "true" ? true : false;
                 MailAddress mailfrom = null;
                 SmtpClient smtp = null;
 

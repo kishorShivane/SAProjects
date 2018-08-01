@@ -374,8 +374,12 @@ namespace Reports.Services
                             {
                                 hexVal = hexVal.PadLeft(8, '0');
                             }
+
+                            var littleIndian = LittleEndian(hexVal);
+                            var decValue = Convert.ToInt64(littleIndian, 16);
                             //result.Tables[0].Rows[i]["str_SerialNumber"] = Math.Abs(int.Parse(hexVal.ToString(), System.Globalization.NumberStyles.HexNumber));
-                            result.Tables[0].Rows[i]["str_SerialNumber"] = Convert.ToInt32(hexVal, 16);
+                            //result.Tables[0].Rows[i]["str_SerialNumber"] = Convert.ToInt32(hexVal, 16);
+                            result.Tables[0].Rows[i]["str_SerialNumber"] = decValue;
                         }
                     }
                 }
@@ -389,6 +393,17 @@ namespace Reports.Services
                 myConnection.Close();
             }
             return result;
+        }
+
+        private string LittleEndian(string num)
+        {
+            var chars = num.Reverse().ToList();
+            var littleIndian = "";
+            for (int i = 0; i < 8; i += 2)
+            {
+                littleIndian = littleIndian + chars[i + 1].ToString() + chars[i].ToString();
+            }
+            return littleIndian;
         }
 
         public List<SelectListItem> GetAllHotlistReasons(string connKey)
@@ -678,7 +693,7 @@ namespace Reports.Services
             return result;
         }
 
-        public DataSet GetCashierReconciliationReportDataset(string connKey,string company, CashierReportSummaryFilter filter)
+        public DataSet GetCashierReconciliationReportDataset(string connKey, string company, CashierReportSummaryFilter filter)
         {
             var result = new List<CashierReconciliationData>();
             var ds = new DataSet();
@@ -1271,7 +1286,7 @@ namespace Reports.Services
                         res.TotalPs,
                         locationSelected,
                         "",
-                        res.CashierName.Trim(), res.str4_LocationCode.Trim() + " (" + res.LocationID + ")", res.Terminal.Trim(), res.Cashsignon, res.Cashsignoff, res.CashierNum.Trim(), res.NonRevenue,"",
+                        res.CashierName.Trim(), res.str4_LocationCode.Trim() + " (" + res.LocationID + ")", res.Terminal.Trim(), res.Cashsignon, res.Cashsignoff, res.CashierNum.Trim(), res.NonRevenue, "",
                         classesSelected,
                         classTypesSelected);
                 }

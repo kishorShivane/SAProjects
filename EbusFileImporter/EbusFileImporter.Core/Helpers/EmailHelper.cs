@@ -27,21 +27,35 @@ namespace EbusFileImporter.Core.Helpers
             {
                 MailAddress mailfrom = null;
                 SmtpClient smtp = null;
-
+                MailAddress mailto = null;
+                MailMessage newmsg = null;
                 using (StreamReader reader = new StreamReader(Constants.EmailTemplate + "EmailTemplate.html"))
                 {
                     body = reader.ReadToEnd();
                 }
 
-                smtp = new SmtpClient(Constants.Host, Convert.ToInt32(Constants.Port));
-                smtp.Credentials = new NetworkCredential(Constants.EmailUserName, Constants.EbusPassword);
-                smtp.EnableSsl = false;
-                smtp.UseDefaultCredentials = true;
-                smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
-                mailfrom = new MailAddress(Constants.FromEmail);
+                if (Constants.UseGmailForEmail)
+                {
+                    smtp = new SmtpClient(Constants.GmailHost, Convert.ToInt32(Constants.GmailPort));
+                    smtp.Credentials = new NetworkCredential(Constants.GmailUserName, Constants.GmailPassword);
+                    mailfrom = new MailAddress(Constants.GmailFromEmail);
+                    mailto = new MailAddress(Constants.ToEmail);
+                    newmsg = new MailMessage(mailfrom, mailto);
+                    smtp.EnableSsl = true;
+                }
+                else
+                {
+                    smtp = new SmtpClient(Constants.Host, Convert.ToInt32(Constants.Port));
+                    smtp.Credentials = new NetworkCredential(Constants.EmailUserName, Constants.EbusPassword);
+                    mailfrom = new MailAddress(Constants.FromEmail);
+                    mailto = new MailAddress(Constants.ToEmail);
+                    newmsg = new MailMessage(mailfrom, mailto);
+                    smtp.UseDefaultCredentials = true;
+                    smtp.EnableSsl = false;
+                    smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
+                }
 
-                MailAddress mailto = new MailAddress(Constants.ToEmail);
-                MailMessage newmsg = new MailMessage(mailfrom, mailto);
+
 
                 var message = GetMessageByEmailType(type);
                 string file = Path.GetFileName(fileName);
@@ -68,59 +82,15 @@ namespace EbusFileImporter.Core.Helpers
                 newmsg.IsBodyHtml = true;
                 newmsg.Body = body;
 
-                System.Net.ServicePointManager.ServerCertificateValidationCallback = delegate (object s,
-               System.Security.Cryptography.X509Certificates.X509Certificate certificate,
-               System.Security.Cryptography.X509Certificates.X509Chain chain,
-               System.Net.Security.SslPolicyErrors sslPolicyErrors)
-                {
-                    return true;
-                };
+              //  System.Net.ServicePointManager.ServerCertificateValidationCallback = delegate (object s,
+              //System.Security.Cryptography.X509Certificates.X509Certificate certificate,
+              //System.Security.Cryptography.X509Certificates.X509Chain chain,
+              //System.Net.Security.SslPolicyErrors sslPolicyErrors)
+              //  {
+              //      return true;
+              //  };
 
                 smtp.Send(newmsg);
-
-                //System.Net.Mail.MailMessage mail = new System.Net.Mail.MailMessage();
-                //var emailTolist = Constants.ToEmail;
-                //foreach (var id in emailTolist.Split(';'))
-                //{
-                //    mail.To.Add(id);
-                //}
-
-                //mail.IsBodyHtml = true;
-                //using (StreamReader reader = new StreamReader(Constants.EmailTemplate + "EmailTemplate.html"))
-                //{
-                //    body = reader.ReadToEnd();
-                //}
-
-                //var message = GetMessageByEmailType(type);
-                //string file = Path.GetFileName(fileName);
-
-                //body = body.Replace("[*FileName*]", file);
-                //body = body.Replace("[*ClientName*]", customer);
-                //if (type == EmailType.Error)
-                //{
-                //    body = body.Replace("[*Error*]", "Error Message: <div style='color:red'>" + exception + "</div>");
-                //    mail.Subject = Constants.ErrorEmailSubject;
-                //}
-                //else
-                //{
-                //    body = body.Replace("[*Error*]", "");
-                //    mail.Subject = Constants.DuplicateEmailSubject;
-                //}
-                //body = body.Replace("[*Message*]", message);
-
-                //mail.From = new MailAddress(Constants.FromEmail);
-                //mail.Body = body;
-                //mail.IsBodyHtml = true;
-
-                //SmtpClient client = new SmtpClient();
-                //client.Credentials = new NetworkCredential(Constants.EmailUserName, Constants.EbusPassword);
-                //client.UseDefaultCredentials = true;
-                //client.Host = Constants.Host;
-                //client.Port = Constants.Port;
-                //client.DeliveryMethod = SmtpDeliveryMethod.Network;
-
-                ////Send the msg
-                //client.Send(mail);
             }
             catch (Exception ex)
             {

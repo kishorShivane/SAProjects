@@ -138,6 +138,72 @@ namespace EbusFileImporter.DataProvider
             return result;
         }
 
+        public bool IsNumeric(string input)
+        {
+            int test;
+            return int.TryParse(input, out test);
+        }
+
+        public bool DoesCSVRecordExist(string tableName, string searchField, string searchString, string connectionKey)
+        {
+            var result = false;
+            SqlConnection con = null;
+            SqlCommand cmd = null;
+            try
+            {
+                using (con = GetConnection(GetConnectionString(connectionKey)))
+                {
+                    con.Open();
+                    var searchFieldList = searchField.Split(',');
+                    var searchStringList = searchString.Split(',');
+                    var whereClause = "";
+                    if (searchFieldList.Count() == searchStringList.Count())
+                    {
+                        for (var i = 0; i < searchFieldList.Count(); i++)
+                        {
+                            var searchValue = searchStringList[i];
+                            if (!IsNumeric(searchStringList[i]))
+                            {
+                                searchValue = "'" + searchValue + "'";
+                            }
+
+                            if (whereClause == string.Empty)
+                            {
+                                whereClause = searchFieldList[i] + " = " + searchValue;
+                            }
+                            else
+                            {
+                                whereClause = whereClause + " AND " + searchFieldList[i] + " = " + searchValue;
+                            }
+                        }
+                    }
+
+                    string query = "SELECT " + searchField + " FROM " + tableName + " WHERE " + whereClause + ";";
+                    using (cmd = new SqlCommand(query, con))
+                    {
+                        var item = cmd.ExecuteScalar();
+                        if (item != null)
+                        {
+                            result = true;
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                Logger.Error("Failed in DoesRecordExist integer for table" + tableName);
+                throw;
+            }
+            finally
+            {
+                con.Close();
+                con.Dispose();
+                cmd.Dispose();
+            }
+            return result;
+        }
+
+
         public int GetLatestIDUsed(string tableName, string keyField, string connectionKey)
         {
             var result = 0;

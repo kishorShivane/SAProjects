@@ -521,7 +521,7 @@ namespace Reports.Web.Controllers
             {
                 var reasons = new SmartCardService().GetAllHotlistReasons(GetUserSettings().ConnectionKey);
                 var reason = reasons.Where(x => x.Value.Equals(model.ReasonSelected)).Select(x => x.Text).FirstOrDefault().ToString();
-                var res = MailHelper.SendMailToEbus(model.SmartCardNubmer, reason, model.Comments, settings.Username, settings.CompanyName, true);
+                var res = MailHelper.SendMailToEbus(model.SmartCardNubmer, reason, model.Comments, settings.Username, settings.CompanyName);
                 if (res == false)
                 {
                     message = "Couldn't send request, Please try after some time !";
