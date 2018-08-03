@@ -29,9 +29,9 @@ namespace EBusFileUploaderService
         }
 
         //we dont delete here ..just move from local depo folder to back up folder
-        public void DeleteLocalFile(string sourceFile)
+        public void DeleteLocalFile(string sourceFile, string fileBackUpPath)
         {
-            var destinationDirectory = GetConfigValueByKey("fileBackUpPath");
+            var destinationDirectory = fileBackUpPath;
             var destinationPath = "";
             try
             {
@@ -78,32 +78,51 @@ namespace EBusFileUploaderService
         /// </summary>
         public void UploadFilesToFtp()
         {
-            string ftpServerAddress = GetConfigValueByKey("ebusFtpUploadAddress");
-            string ftpServerAddressAlternative = GetConfigValueByKey("ebusFtpUploadAddressAlternative");
-
             var localFolderPath = GetConfigValueByKey("depoLocalFolderPath");
 
-            var ftpUsername = GetConfigValueByKey("ebusFtpUserName");
-            var ftpPassword = GetConfigValueByKey("ebusFtpUserPassword");
+            string ftpServerAddress = GetConfigValueByKey("DefaultFTP");
+            string ftpServerAddressAlternative = GetConfigValueByKey("DefaultFTPAlternative");
+            string ftpUsername = GetConfigValueByKey("DefaultUserName");
+            string ftpPassword = GetConfigValueByKey("DefaultPassword");
+            string fileBackUpPath = GetConfigValueByKey("DefaultFileBackUpPath");
+            string filePathToUpload = "";
 
             if (Directory.Exists(localFolderPath))
             {
                 var filePaths = Directory.GetFiles(localFolderPath, "*.*");
-
-                Logger.Log("Number of Files : " + filePaths.Count());
-
-                foreach (var filePath in filePaths)
+                if (filePaths.Any())
                 {
+                    Logger.Log("Number of Files : " + filePaths.Count());
+                    var fileNameMatchingID = GetConfigValueByKey("FileNameMatchingID").Split(',');
+                    if (fileNameMatchingID.Any())
+                    {
+                        foreach (var filePath in filePaths)
+                        {
+                            for (var i = 0; i < fileNameMatchingID.Count(); i++)
+                            {
+                                if (filePath.Contains(fileNameMatchingID[i].Trim()))
+                                {
+                                    filePathToUpload = filePath;
+                                    ftpServerAddress = GetConfigValueByKey(fileNameMatchingID[i].Trim() + "FTP");
+                                    ftpServerAddressAlternative = GetConfigValueByKey(fileNameMatchingID[i].Trim() + "FTPAlternative");
+                                    ftpUsername = GetConfigValueByKey(fileNameMatchingID[i].Trim() + "UserName");
+                                    ftpPassword = GetConfigValueByKey(fileNameMatchingID[i].Trim() + "Password");
+                                    fileBackUpPath = GetConfigValueByKey(fileNameMatchingID[i].Trim() + "FileBackUpPath");
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
                     try
                     {
-                        if (!CheckIfFileExistsOnFTP(Path.GetFileName(filePath), ftpServerAddress, ftpUsername, ftpPassword))
+                        if (!CheckIfFileExistsOnFTP(Path.GetFileName(filePathToUpload), ftpServerAddress, ftpUsername, ftpPassword))
                         {
-                            UploadFTPLocation(filePath, ftpServerAddress, ftpUsername, ftpPassword);
-                            UploadFTPLocation(filePath, ftpServerAddressAlternative, ftpUsername, ftpPassword);
+                            if (ftpServerAddress != string.Empty) UploadFTPLocation(filePathToUpload, ftpServerAddress, ftpUsername, ftpPassword);
+                            if (ftpServerAddressAlternative != string.Empty) UploadFTPLocation(filePathToUpload, ftpServerAddressAlternative, ftpUsername, ftpPassword);
                             //delete local file, need to chk if file is uploaded successfully 
-                            DeleteLocalFile(filePath);
+                            DeleteLocalFile(filePathToUpload, fileBackUpPath);
                         }
-
                     }
                     catch (Exception ex)
                     {
