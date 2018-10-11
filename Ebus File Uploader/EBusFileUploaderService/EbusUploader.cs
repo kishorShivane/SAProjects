@@ -18,6 +18,13 @@ namespace EBusFileUploaderService
             InitializeComponent();
         }
 
+        internal void TestStartupAndStop(string[] args)
+        {
+            this.OnStart(args);
+            Console.ReadLine();
+            this.OnStop();
+        }
+
         protected override void OnStart(string[] args)
         {
             timer.Elapsed += new ElapsedEventHandler(OnElapsedTime);
@@ -98,31 +105,80 @@ namespace EBusFileUploaderService
                     {
                         foreach (var filePath in filePaths)
                         {
+                            filePathToUpload = filePath.Trim();
                             for (var i = 0; i < fileNameMatchingID.Count(); i++)
                             {
-                                if (filePath.Contains(fileNameMatchingID[i].Trim()))
+                                var localID = fileNameMatchingID[i].Trim();
+                                if (filePath.Contains(localID))
                                 {
-                                    filePathToUpload = filePath;
-                                    ftpServerAddress = GetConfigValueByKey(fileNameMatchingID[i].Trim() + "FTP");
-                                    ftpServerAddressAlternative = GetConfigValueByKey(fileNameMatchingID[i].Trim() + "FTPAlternative");
-                                    ftpUsername = GetConfigValueByKey(fileNameMatchingID[i].Trim() + "UserName");
-                                    ftpPassword = GetConfigValueByKey(fileNameMatchingID[i].Trim() + "Password");
-                                    fileBackUpPath = GetConfigValueByKey(fileNameMatchingID[i].Trim() + "FileBackUpPath");
+
+                                    ftpServerAddress = GetConfigValueByKey(localID + "FTP");
+                                    ftpServerAddressAlternative = GetConfigValueByKey(localID + "FTPAlternative");
+                                    ftpUsername = GetConfigValueByKey(localID + "UserName");
+                                    ftpPassword = GetConfigValueByKey(localID + "Password");
+                                    fileBackUpPath = GetConfigValueByKey(localID + "FileBackUpPath");
                                     break;
                                 }
+                            }
+
+                            try
+                            {
+                                if (!CheckIfFileExistsOnFTP(Path.GetFileName(filePathToUpload).Trim(), ftpServerAddress, ftpUsername, ftpPassword))
+                                {
+                                    if (ftpServerAddress != string.Empty) UploadFTPLocation(filePathToUpload, ftpServerAddress, ftpUsername, ftpPassword);
+                                    if (ftpServerAddressAlternative != string.Empty) UploadFTPLocation(filePathToUpload, ftpServerAddressAlternative, ftpUsername, ftpPassword);
+                                    //delete local file, need to chk if file is uploaded successfully 
+                                    DeleteLocalFile(filePathToUpload, fileBackUpPath);
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Logger.Log(ex.Message);
                             }
                         }
                     }
 
+
+                }
+            }
+        }
+
+        private void UploadFTPLocation(string filePath, string ftpServerAddress, string ftpUsername, string ftpPassword)
+        {
+            var uri = new Uri(ftpServerAddress + "/" + Path.GetFileName(filePath));
+            if (uri.IsWellFormedOriginalString())
+            {
+                var request = WebRequest.Create(uri);
+
+                Logger.Log(string.Format("uploading file {0} into ftp path {1} ", filePath, ftpServerAddress));
+
+                request.Method = WebRequestMethods.Ftp.UploadFile;
+                request.Credentials = new NetworkCredential(ftpUsername, ftpPassword);
+                request.Proxy = new WebProxy();
+
+                if (File.Exists(filePath))
+                {
                     try
                     {
-                        if (!CheckIfFileExistsOnFTP(Path.GetFileName(filePathToUpload), ftpServerAddress, ftpUsername, ftpPassword))
-                        {
-                            if (ftpServerAddress != string.Empty) UploadFTPLocation(filePathToUpload, ftpServerAddress, ftpUsername, ftpPassword);
-                            if (ftpServerAddressAlternative != string.Empty) UploadFTPLocation(filePathToUpload, ftpServerAddressAlternative, ftpUsername, ftpPassword);
-                            //delete local file, need to chk if file is uploaded successfully 
-                            DeleteLocalFile(filePathToUpload, fileBackUpPath);
-                        }
+                        //read file
+                        //FileStream stream = File.OpenRead(filePath);
+                        //var buffer = new byte[stream.Length];
+                        //stream.Read(buffer, 0, buffer.Length);
+                        //stream.Close();
+                        //stream.Dispose(); //1
+
+                        byte[] buffer = File.ReadAllBytes(filePath);
+
+                        //upload file
+                        Stream reqStream = request.GetRequestStream();
+                        reqStream.Write(buffer, 0, buffer.Length);
+                        reqStream.Close();
+                        reqStream.Dispose();//1
+
+                        FtpWebResponse ftpResp = (FtpWebResponse)request.GetResponse();//1
+
+                        Logger.Log("File Uploadded Successfully.");
+
                     }
                     catch (Exception ex)
                     {
@@ -132,64 +188,27 @@ namespace EBusFileUploaderService
             }
         }
 
-        private void UploadFTPLocation(string filePath, string ftpServerAddress, string ftpUsername, string ftpPassword)
-        {
-            var request = WebRequest.Create(ftpServerAddress + Path.GetFileName(filePath));
-
-            Logger.Log(string.Format("uploading file {0} into ftp path {1} ", filePath, ftpServerAddress));
-
-            request.Method = WebRequestMethods.Ftp.UploadFile;
-            request.Credentials = new NetworkCredential(ftpUsername, ftpPassword);
-            request.Proxy = new WebProxy();
-
-            if (File.Exists(filePath))
-            {
-                try
-                {
-                    //read file
-                    //FileStream stream = File.OpenRead(filePath);
-                    //var buffer = new byte[stream.Length];
-                    //stream.Read(buffer, 0, buffer.Length);
-                    //stream.Close();
-                    //stream.Dispose(); //1
-
-                    byte[] buffer = File.ReadAllBytes(filePath);
-
-                    //upload file
-                    Stream reqStream = request.GetRequestStream();
-                    reqStream.Write(buffer, 0, buffer.Length);
-                    reqStream.Close();
-                    reqStream.Dispose();//1
-
-                    FtpWebResponse ftpResp = (FtpWebResponse)request.GetResponse();//1
-
-                    Logger.Log("File Uploadded Successfully.");
-
-                }
-                catch (Exception ex)
-                {
-                    Logger.Log(ex.Message);
-                }
-            }
-        }
-
         private bool CheckIfFileExistsOnFTP(string fileName, string ftpServerAddress, string ftpUsername, string ftpPassword)
         {
-            var request = (FtpWebRequest)WebRequest.Create(ftpServerAddress + "/" + fileName);
-            request.Credentials = new NetworkCredential(ftpUsername, ftpPassword);
-            request.Method = WebRequestMethods.Ftp.GetFileSize;
+            var uri = new Uri(ftpServerAddress + "/" + fileName);
+            if (uri.IsWellFormedOriginalString())
+            {
+                var request = (FtpWebRequest)WebRequest.Create(uri);
+                request.Credentials = new NetworkCredential(ftpUsername, ftpPassword);
+                request.Method = WebRequestMethods.Ftp.GetFileSize;
 
-            try
-            {
-                FtpWebResponse response = (FtpWebResponse)request.GetResponse();
-                return true;
-            }
-            catch (WebException ex)
-            {
-                FtpWebResponse response = (FtpWebResponse)ex.Response;
-                Logger.Log(string.Format("File {0} exist on FTP {1} ", fileName, ftpServerAddress));
-                if (response.StatusCode == FtpStatusCode.ActionNotTakenFileUnavailable)
-                    return false;
+                try
+                {
+                    FtpWebResponse response = (FtpWebResponse)request.GetResponse();
+                    return true;
+                }
+                catch (WebException ex)
+                {
+                    FtpWebResponse response = (FtpWebResponse)ex.Response;
+                    Logger.Log(string.Format("File {0} exist on FTP {1} ", fileName, ftpServerAddress));
+                    if (response.StatusCode == FtpStatusCode.ActionNotTakenFileUnavailable)
+                        return false;
+                }
             }
             return false;
         }
@@ -199,7 +218,7 @@ namespace EBusFileUploaderService
         {
             var value = "";
             value = ConfigurationManager.AppSettings.Get(key);
-            return value;
+            return value.Trim();
         }
     }
 }
