@@ -425,7 +425,7 @@ namespace Reports.Services
                 }
             });
 
-            if (filteredResult.Any())
+            if (filteredResult.Distinct().Any())
             {
                 foreach (var res in filteredResult)
                 {
