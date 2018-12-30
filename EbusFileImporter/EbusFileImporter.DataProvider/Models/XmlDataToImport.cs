@@ -20,5 +20,6 @@ namespace EbusFileImporter.DataProvider.Models
         public List<AuditFileStatus> AuditFileStatuss { get; set; } = new List<AuditFileStatus>();
         public List<DiagnosticRecord> DiagnosticRecords { get; set; } = new List<DiagnosticRecord>();
         public List<BusChecklist> BusChecklistRecords { get; set; } = new List<BusChecklist>();
+        public List<GPSCoordinate> GPSCoordinates { get; set; } = new List<GPSCoordinate>();
     }
 }

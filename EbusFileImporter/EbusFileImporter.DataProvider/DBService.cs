@@ -277,6 +277,8 @@ namespace EbusFileImporter.DataProvider
                     Logger.Info("Inserted DiagnosticRecords");
                     if (xmlDataToImport.BusChecklistRecords.Any()) DbHelper.BulkCopyDataToTable<BusChecklist>("BusChecklist", xmlDataToImport.BusChecklistRecords, con, transaction);
                     Logger.Info("Inserted BusChecklistRecords");
+                    if (xmlDataToImport.GPSCoordinates.Any()) DbHelper.BulkCopyDataToTable<GPSCoordinate>("GPSCoordinates", xmlDataToImport.GPSCoordinates, con, transaction);
+                    Logger.Info("Inserted GPS Coordinates");
                     transaction.Commit();
 
                     if (Constants.DetailedLogging)

@@ -57,6 +57,7 @@
     <Compile Include="Models\DiagnosticRecord.cs" />
     <Compile Include="Models\Duty.cs" />
     <Compile Include="Models\BusChecklist.cs" />
+    <Compile Include="Models\GPSCoordinates.cs" />
     <Compile Include="Models\Inspector.cs" />
     <Compile Include="Models\Journey.cs" />
     <Compile Include="Models\Module.cs" />

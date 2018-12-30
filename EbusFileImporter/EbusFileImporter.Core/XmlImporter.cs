@@ -138,6 +138,8 @@ namespace EbusFileImporter.Core
                 List<Stage> stageDetails = new List<Stage>();
                 Stage stageDetail = null;
                 Trans transDetail = null;
+                GPSCoordinate gPSCoordinate = null;
+                List<GPSCoordinate> gPSCoordinates = new List<GPSCoordinate>();
                 List<Trans> transDetails = new List<Trans>();
                 PosTrans posTransDetail = null;
                 List<PosTrans> posTransDetails = new List<PosTrans>();
@@ -496,6 +498,36 @@ namespace EbusFileImporter.Core
                                             transDetail.int4_AnnulCash = null;
                                             //transDetail.id_SCTrans = null;
                                             transDetail.int4_TicketSerialNumber = (int)thisTrans.Element("TicketSerialNo");
+
+                                            #region GPS CO-Ordinates
+                                            if ((t.Element("Latitude") != null && t.Element("Longitude") != null) && (t.Element("Latitude").Value.Trim() != string.Empty && t.Element("Longitude").Value.Trim() != string.Empty))
+                                            {
+                                                string latitude = t.Element("Latitude").Value.Trim();
+                                                string longitude = t.Element("Longitude").Value.Trim();
+                                                if (latitude.Length > 9 || longitude.Length > 9)
+                                                {
+                                                    latitude = latitude.TrimStart('0');
+                                                    longitude = longitude.TrimStart('0');
+                                                }
+                                                gPSCoordinate = new GPSCoordinate();
+                                                gPSCoordinate.id_Trans = latestTransID;
+                                                gPSCoordinate.id_Stage = stageDetail.id_Stage;
+                                                gPSCoordinate.id_Journey = journeyDetail.id_Journey;
+                                                gPSCoordinate.id_Duty = dutyDetail.id_Duty;
+                                                gPSCoordinate.id_Module = moduleDetail.id_Module;
+                                                gPSCoordinate.Latitude = latitude;
+                                                gPSCoordinate.LatDegree = Convert.ToInt32(latitude.Substring(0,2));
+                                                gPSCoordinate.LatMinutes = Convert.ToInt32(latitude.Substring(2, 2));
+                                                gPSCoordinate.LatSeconds = (Convert.ToDecimal(latitude.Substring(5, 3))/1000)*60;
+                                                gPSCoordinate.LatDir = latitude.Substring(8, 1);
+                                                gPSCoordinate.Longitude = longitude;
+                                                gPSCoordinate.LongDegree = Convert.ToInt32(longitude.Substring(0, 2));
+                                                gPSCoordinate.LongMinutes = Convert.ToInt32(longitude.Substring(2, 2));
+                                                gPSCoordinate.LongSeconds = (Convert.ToDecimal(longitude.Substring(5, 3)) / 1000) * 60;
+                                                gPSCoordinate.LongDir = longitude.Substring(8, 1);
+                                                gPSCoordinates.Add(gPSCoordinate);
+                                            }
+                                            #endregion
 
                                             #region Process Ticket Type 
                                             var nonRevenue = 0;
@@ -2101,6 +2133,16 @@ namespace EbusFileImporter.Core
                         x.id_Stage = x.id_Stage + latestStageID;
                     });
 
+                    gPSCoordinates.ForEach(x =>
+                    {
+                        x.id_Trans = x.id_Trans + latestTransID;
+                        x.id_Module = x.id_Module + latestModuleID;
+                        x.id_Duty = x.id_Duty + latestDutyID;
+                        x.id_Journey = x.id_Journey + latestJourneyID;
+                        x.id_Stage = x.id_Stage + latestStageID;
+                    });
+
+
                     posTransDetails.ForEach(x =>
                     {
                         x.id_PosTrans = x.id_PosTrans + latestPosTransID;
@@ -2141,7 +2183,8 @@ namespace EbusFileImporter.Core
                         Inspectors = inspectorDetails,
                         AuditFileStatuss = auditFileDetails,
                         DiagnosticRecords = diagnosticRecords,
-                        BusChecklistRecords = busChecklistDetail != null ? new List<BusChecklist>() { busChecklistDetail } : new List<BusChecklist>()
+                        BusChecklistRecords = busChecklistDetail != null ? new List<BusChecklist>() { busChecklistDetail } : new List<BusChecklist>(),
+                        GPSCoordinates = gPSCoordinates
                     };
 
                     result = dbService.InsertXmlFileData(xmlDataToImport, dbName);
