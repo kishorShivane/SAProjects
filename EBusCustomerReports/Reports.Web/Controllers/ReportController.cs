@@ -1,19 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using CrystalDecisions.CrystalReports.Engine;
+﻿using CrystalDecisions.CrystalReports.Engine;
 using Helpers;
-using Reports.Services;
 using Helpers.Security;
-using System.Threading;
-using Reports.Services.Models;
-using System.Data;
+using Reports.Services;
 using Reports.Services.Helpers;
+using Reports.Services.Models;
 using Reports.Web.Helpers;
-using System.Configuration;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Web.Mvc;
 
 namespace Reports.Web.Controllers
 {
@@ -32,8 +30,8 @@ namespace Reports.Web.Controllers
         //Home
         public ActionResult Index()
         {
-            var conKey = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey;
-            var model = new ReportsService().GetHomeScreenData(conKey);
+            string conKey = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey;
+            HomeViewModel model = new ReportsService().GetHomeScreenData(conKey);
             return View(model);
         }
 
@@ -41,19 +39,19 @@ namespace Reports.Web.Controllers
 
         public ActionResult MonthRevenueGraph()
         {
-            var model = new MonthyRevenueFilter();
+            MonthyRevenueFilter model = new MonthyRevenueFilter();
             return View(model);
         }
 
         public JsonResult GetMonthRevenueGraphData(string years, string months)
         {
-            var userset = GetUserSettings();
-            var conKey = userset.ConnectionKey;
-            var comp = userset.CompanyName;
+            UserSettings userset = GetUserSettings();
+            string conKey = userset.ConnectionKey;
+            string comp = userset.CompanyName;
 
-            var service = new SalesAnalysisService();
+            SalesAnalysisService service = new SalesAnalysisService();
 
-            var list = service.GetMonthRevenueData(conKey, months, years);
+            MonthyRevenueDataGraph list = service.GetMonthRevenueData(conKey, months, years);
 
             var jsonData = new
             {
@@ -69,9 +67,9 @@ namespace Reports.Web.Controllers
         #region DailyAuditByCashierTerminal
         public ActionResult DailyAuditByCashierTerminal()
         {
-            var model = new CashierReportSummaryFilter();
-            var service = new InspectorReportService();
-            var staff = service.GetAllSatffDetails(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey);
+            CashierReportSummaryFilter model = new CashierReportSummaryFilter();
+            InspectorReportService service = new InspectorReportService();
+            List<OperatorDetails> staff = service.GetAllSatffDetails(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey);
             model.Cashiers = staff.Where(s => s.OperatorType.ToLower() == "cashier".ToLower().Trim()).Select(s => new SelectListItem { Text = s.OperatorName + " - " + s.OperatorID, Value = s.OperatorID }).OrderBy(s => Convert.ToInt32(s.Value)).ToList();
             model.StaffList = staff.Where(s => s.OperatorType.ToLower() == "driver".ToLower().Trim() || s.OperatorType.ToLower() == "seller".ToLower().Trim()).Select(s => new SelectListItem { Text = s.OperatorName + " - " + s.OperatorID, Value = s.OperatorID }).OrderBy(s => Convert.ToInt32(s.Value)).ToList();
             model.Locations = service.GetAllLocations(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey).OrderBy(s => Convert.ToInt32(s.Value)).ToList();
@@ -81,9 +79,9 @@ namespace Reports.Web.Controllers
 
         public ActionResult DailyAuditByCashierTerminalSummary()
         {
-            var model = new CashierReportSummaryFilter();
-            var service = new InspectorReportService();
-            var staff = service.GetAllSatffDetails(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey);
+            CashierReportSummaryFilter model = new CashierReportSummaryFilter();
+            InspectorReportService service = new InspectorReportService();
+            List<OperatorDetails> staff = service.GetAllSatffDetails(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey);
             model.Cashiers = staff.Where(s => s.OperatorType.ToLower() == "cashier".ToLower().Trim()).Select(s => new SelectListItem { Text = s.OperatorName + " - " + s.OperatorID, Value = s.OperatorID }).OrderBy(s => Convert.ToInt32(s.Value)).ToList();
             model.StaffList = staff.Where(s => s.OperatorType.ToLower() == "driver".ToLower().Trim() || s.OperatorType.ToLower() == "seller".ToLower().Trim()).Select(s => new SelectListItem { Text = s.OperatorName + " - " + s.OperatorID, Value = s.OperatorID }).OrderBy(s => Convert.ToInt32(s.Value)).ToList();
             model.Locations = service.GetAllLocations(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey).OrderBy(s => Convert.ToInt32(s.Value)).ToList();
@@ -93,11 +91,11 @@ namespace Reports.Web.Controllers
 
         public ActionResult DownloadDailyAuditByCashierTerminalReport(CashierReportSummaryFilter filter)
         {
-            var userset = GetUserSettings();
-            var ds = new SmartCardService().GetDailyAuditByCashierTerminalDataset(userset.ConnectionKey, filter, userset.CompanyName);
+            UserSettings userset = GetUserSettings();
+            DataSet ds = new SmartCardService().GetDailyAuditByCashierTerminalDataset(userset.ConnectionKey, filter, userset.CompanyName);
             if (ds.Tables[0].Rows.Count > 0)
             {
-                var key = ((EBusPrinciple)System.Threading.Thread.CurrentPrincipal).Properties.ConnKey.ToString().ToLower();
+                string key = ((EBusPrinciple)System.Threading.Thread.CurrentPrincipal).Properties.ConnKey.ToString().ToLower();
                 if (key.Equals("atamelang70"))
                 { return DownLoadReportByDataSet(filter.ExcelOrPDF, "~/CrystalReports/Rpt/Cashier/DailyAuditByCashierTerminalAtamelangTGX.rpt", ds, "DailyAuditByCashierTerminal "); }
                 else
@@ -114,8 +112,8 @@ namespace Reports.Web.Controllers
 
         public ActionResult DownloadDailyAuditByCashierTerminalReportSummary(CashierReportSummaryFilter filter)
         {
-            var userset = GetUserSettings();
-            var ds = new SmartCardService().GetDailyAuditByCashierTerminalDatasetSummary(userset.ConnectionKey, filter, userset.CompanyName);
+            UserSettings userset = GetUserSettings();
+            DataSet ds = new SmartCardService().GetDailyAuditByCashierTerminalDatasetSummary(userset.ConnectionKey, filter, userset.CompanyName);
             if (ds.Tables[0].Rows.Count > 0)
             {
                 return DownLoadReportByDataSet(filter.ExcelOrPDF, "~/CrystalReports/Rpt/Cashier/DailyAuditByCashierTerminalSummary.rpt", ds, "DailyAuditByCashierTerminal ");
@@ -133,9 +131,9 @@ namespace Reports.Web.Controllers
 
         public ActionResult CashierReportAt()
         {
-            var model = new CashierReportSummaryFilter();
-            var service = new InspectorReportService();
-            var staff = service.GetAllSatffDetails(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey);
+            CashierReportSummaryFilter model = new CashierReportSummaryFilter();
+            InspectorReportService service = new InspectorReportService();
+            List<OperatorDetails> staff = service.GetAllSatffDetails(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey);
             model.Cashiers = staff.Where(s => s.OperatorType.ToLower() == "Cashier".ToLower().Trim()).Select(s => new SelectListItem { Text = s.OperatorName + " - " + s.OperatorID, Value = s.OperatorID }).OrderBy(s => Convert.ToInt32(s.Value)).ToList();
             model.Locations = service.GetAllLocations(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey).OrderBy(s => Convert.ToInt32(s.Value)).ToList();
             model.Terminals = service.GetAllTerminals(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey);
@@ -144,8 +142,8 @@ namespace Reports.Web.Controllers
 
         public ActionResult DownloadCashierSummaryReport(CashierReportSummaryFilter filter)
         {
-            var userset = GetUserSettings();
-            var ds = new SmartCardService().GetCashierSummaryReportDataset(userset.ConnectionKey, userset.CompanyName, filter);
+            UserSettings userset = GetUserSettings();
+            DataSet ds = new SmartCardService().GetCashierSummaryReportDataset(userset.ConnectionKey, userset.CompanyName, filter);
             if (ds.Tables[0].Rows.Count > 0)
             {
                 return DownLoadReportByDataSet(filter.ExcelOrPDF, "~/CrystalReports/Rpt/Cashier/CashierSummary.rpt", ds, "CashierReport ");
@@ -159,9 +157,9 @@ namespace Reports.Web.Controllers
 
         public ActionResult CashierReportMatatiele()
         {
-            var model = new CashierReportSummaryFilter();
-            var service = new InspectorReportService();
-            var staff = service.GetAllSatffDetails(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey);
+            CashierReportSummaryFilter model = new CashierReportSummaryFilter();
+            InspectorReportService service = new InspectorReportService();
+            List<OperatorDetails> staff = service.GetAllSatffDetails(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey);
             model.Cashiers = staff.Where(s => s.OperatorType.ToLower() == "Cashier".ToLower().Trim()).Select(s => new SelectListItem { Text = s.OperatorName + " - " + s.OperatorID, Value = s.OperatorID }).OrderBy(s => Convert.ToInt32(s.Value)).ToList();
             model.Locations = service.GetAllLocations(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey).OrderBy(s => Convert.ToInt32(s.Value)).ToList();
             model.Terminals = service.GetAllTerminals(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey);
@@ -170,8 +168,8 @@ namespace Reports.Web.Controllers
 
         public ActionResult DownloadCashierReportMatatiele(CashierReportSummaryFilter filter)
         {
-            var userset = GetUserSettings();
-            var ds = new SmartCardService().GetCashierSummaryReportDataset(userset.ConnectionKey, userset.CompanyName, filter);
+            UserSettings userset = GetUserSettings();
+            DataSet ds = new SmartCardService().GetCashierSummaryReportDataset(userset.ConnectionKey, userset.CompanyName, filter);
             if (ds.Tables[0].Rows.Count > 0)
             {
                 return DownLoadCashierReportMatatieleByDataSet(filter.ExcelOrPDF, "~/CrystalReports/Rpt/Cashier/CashierReportMatatiele.rpt", ds, "CashierReport ");
@@ -186,9 +184,9 @@ namespace Reports.Web.Controllers
 
         public ActionResult NewCashierReportAt()
         {
-            var model = new CashierReportSummaryFilter();
-            var service = new InspectorReportService();
-            var staff = service.GetAllSatffDetails(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey);
+            CashierReportSummaryFilter model = new CashierReportSummaryFilter();
+            InspectorReportService service = new InspectorReportService();
+            List<OperatorDetails> staff = service.GetAllSatffDetails(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey);
             model.Cashiers = staff.Where(s => s.OperatorType.ToLower() == "Cashier".ToLower().Trim()).Select(s => new SelectListItem { Text = s.OperatorName + " - " + s.OperatorID, Value = s.OperatorID }).OrderBy(s => Convert.ToInt32(s.Value)).ToList();
             model.Locations = service.GetAllLocations(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey).OrderBy(s => Convert.ToInt32(s.Value)).ToList();
             model.Terminals = service.GetAllTerminals(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey);
@@ -197,8 +195,8 @@ namespace Reports.Web.Controllers
 
         public ActionResult DownloadNewCashierSummaryReport(CashierReportSummaryFilter filter)
         {
-            var userset = GetUserSettings();
-            var ds = new SmartCardService().GetCashierSummaryReportDataset(userset.ConnectionKey, userset.CompanyName, filter);
+            UserSettings userset = GetUserSettings();
+            DataSet ds = new SmartCardService().GetCashierSummaryReportDataset(userset.ConnectionKey, userset.CompanyName, filter);
             if (ds.Tables[0].Rows.Count > 0)
             {
                 return DownLoadReportByDataSet(filter.ExcelOrPDF, "~/CrystalReports/Rpt/Cashier/NewCashierSummary.rpt", ds, "NewCashierReport ");
@@ -216,9 +214,9 @@ namespace Reports.Web.Controllers
 
         public ActionResult CashierReconciliation()
         {
-            var model = new CashierReportSummaryFilter();
-            var service = new InspectorReportService();
-            var staff = service.GetAllSatffDetails(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey);
+            CashierReportSummaryFilter model = new CashierReportSummaryFilter();
+            InspectorReportService service = new InspectorReportService();
+            List<OperatorDetails> staff = service.GetAllSatffDetails(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey);
             model.StaffList = staff.Where(s => s.OperatorType.ToLower() == "driver".ToLower().Trim() || s.OperatorType.ToLower() == "seller".ToLower().Trim()).Select(s => new SelectListItem { Text = s.OperatorName + " - " + s.OperatorID, Value = s.OperatorID }).OrderBy(s => Convert.ToInt32(s.Value)).ToList();
             model.Locations = service.GetAllLocations(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey).OrderBy(s => Convert.ToInt32(s.Value)).ToList();
             return View("CashierReconciliationReport", model);
@@ -226,8 +224,8 @@ namespace Reports.Web.Controllers
 
         public ActionResult DownloadCashierReconciliationReport(CashierReportSummaryFilter filter)
         {
-            var userset = GetUserSettings();
-            var ds = new SmartCardService().GetCashierReconciliationReportDataset(userset.ConnectionKey, userset.CompanyName, filter);
+            UserSettings userset = GetUserSettings();
+            DataSet ds = new SmartCardService().GetCashierReconciliationReportDataset(userset.ConnectionKey, userset.CompanyName, filter);
             if (ds.Tables[0].Rows.Count > 0)
             {
                 return DownLoadReportByDataSet(filter.ExcelOrPDF, "~/CrystalReports/Rpt/Cashier/CashierReconciliationSummay.rpt", ds, "CashierReconciliation ");
@@ -246,14 +244,14 @@ namespace Reports.Web.Controllers
 
         public ActionResult EarlyLateRunning()
         {
-            var model = new ReportsService().GetEarlyLateRunningModel(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey);
+            EarlyLateRunningModel model = new ReportsService().GetEarlyLateRunningModel(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey);
             return View(model);
         }
 
         public ActionResult DownloadEarlyLateRunning(EarlyLateRunningModel filter)
         {
-            var userset = GetUserSettings();
-            var ds = new ReportsService().GetEarlyLateRunningReport(userset.ConnectionKey, filter, Convert.ToInt32(filter.TimeSelected), userset.CompanyName);
+            UserSettings userset = GetUserSettings();
+            DataSet ds = new ReportsService().GetEarlyLateRunningReport(userset.ConnectionKey, filter, Convert.ToInt32(filter.TimeSelected), userset.CompanyName);
             if (ds.Tables[0].Rows.Count > 0)
             {
                 return DownLoadReportByDataSet(true, "~/CrystalReports/Rpt/EarlyLateRunning.rpt", ds, "EarlyLateRunning ");
@@ -272,8 +270,8 @@ namespace Reports.Web.Controllers
 
         public ActionResult CashVsSmartCardUsageByRoute()
         {
-            var model = new CashVsSmartCardUsageByRouteFilter();
-            var userset = GetUserSettings();
+            CashVsSmartCardUsageByRouteFilter model = new CashVsSmartCardUsageByRouteFilter();
+            UserSettings userset = GetUserSettings();
             model.Routes = new SmartCardService().GetAllDriverRoutes(userset.ConnectionKey);
             return View(model);
         }
@@ -281,11 +279,11 @@ namespace Reports.Web.Controllers
         [HttpGet]
         public PartialViewResult GetCashVsSmartCardUsageByRouteData(string fromdate, string todate, string routes)
         {
-            var userset = GetUserSettings();
-            var conKey = userset.ConnectionKey;
-            var comp = userset.CompanyName;
+            UserSettings userset = GetUserSettings();
+            string conKey = userset.ConnectionKey;
+            string comp = userset.CompanyName;
 
-            var service = new SmartCardService();
+            SmartCardService service = new SmartCardService();
 
             if (string.IsNullOrEmpty(fromdate))
             {
@@ -297,7 +295,7 @@ namespace Reports.Web.Controllers
                 todate = DateTime.Now.AddDays(0).ToString("dd-MM-yyyy");
             }
 
-            var list = service.GetCashVsSmartCardUsageByRouteData(conKey, routes, fromdate, todate);
+            List<CashVsSmartCardUsageByRouteData> list = service.GetCashVsSmartCardUsageByRouteData(conKey, routes, fromdate, todate);
 
             return PartialView("CashVsSmartCardTable", list);
         }
@@ -305,11 +303,11 @@ namespace Reports.Web.Controllers
 
         public ActionResult DownloadCashVsSmartCardUsageByRoute(string fromdate, string todate, string routes)
         {
-            var userset = GetUserSettings();
-            var conKey = userset.ConnectionKey;
-            var comp = userset.CompanyName;
+            UserSettings userset = GetUserSettings();
+            string conKey = userset.ConnectionKey;
+            string comp = userset.CompanyName;
 
-            var service = new SmartCardService();
+            SmartCardService service = new SmartCardService();
 
             if (string.IsNullOrEmpty(todate))
             {
@@ -321,7 +319,7 @@ namespace Reports.Web.Controllers
                 todate = DateTime.Now.AddDays(0).ToString("dd-MM-yyyy");
             }
 
-            var ds = service.GetCashVsSmartCardUsageByRouteDataSet(conKey, routes, fromdate, todate, comp);
+            DataSet ds = service.GetCashVsSmartCardUsageByRouteDataSet(conKey, routes, fromdate, todate, comp);
 
             if (ds.Tables[0].Rows.Count > 0)
             {
@@ -340,17 +338,19 @@ namespace Reports.Web.Controllers
 
         public ActionResult YearlyBreakDownByRoute()
         {
-            var model = new YearlyBreakDownFilter();
-            model.Classes = new SalesAnalysisService().GetAllCalsses(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey);
-            model.RoutesList = new SalesAnalysisService().GetAllRoutes(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey);
+            YearlyBreakDownFilter model = new YearlyBreakDownFilter
+            {
+                Classes = new SalesAnalysisService().GetAllCalsses(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey),
+                RoutesList = new SalesAnalysisService().GetAllRoutes(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey)
+            };
             return View(model);
         }
 
         public ActionResult YearlyBreakDownByRouteDownload(YearlyBreakDownFilter filter)
         {
-            var userset = GetUserSettings();
+            UserSettings userset = GetUserSettings();
 
-            var ds = new SalesAnalysisService().GetYearlyBreakDownByRouteDataSet(userset.ConnectionKey, userset.CompanyName, filter);
+            DataSet ds = new SalesAnalysisService().GetYearlyBreakDownByRouteDataSet(userset.ConnectionKey, userset.CompanyName, filter);
             if (ds.Tables[0].Rows.Count > 0)
             {
                 return DownLoadReportByDataSet(filter.ExcelOrPDF, "~/CrystalReports/Rpt/SalesAnalysis/YearlyBreakDownByRoute.rpt", ds, "YearlyBreakDownByRoute ");
@@ -365,16 +365,18 @@ namespace Reports.Web.Controllers
 
         public ActionResult YearlyBreakDown()
         {
-            var model = new YearlyBreakDownFilter();
-            model.Classes = new SalesAnalysisService().GetAllCalsses(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey);
+            YearlyBreakDownFilter model = new YearlyBreakDownFilter
+            {
+                Classes = new SalesAnalysisService().GetAllCalsses(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey)
+            };
             return View(model);
         }
 
         public ActionResult YearlyBreakDownDownload(YearlyBreakDownFilter filter)
         {
-            var userset = GetUserSettings();
+            UserSettings userset = GetUserSettings();
 
-            var ds = new SalesAnalysisService().GetYearlyBreakDownDataSet(userset.ConnectionKey, userset.CompanyName, filter);
+            DataSet ds = new SalesAnalysisService().GetYearlyBreakDownDataSet(userset.ConnectionKey, userset.CompanyName, filter);
             if (ds.Tables[0].Rows.Count > 0)
             {
                 return DownLoadReportByDataSet(filter.ExcelOrPDF, "~/CrystalReports/Rpt/SalesAnalysis/YearlyBreakDown.rpt", ds, "YearlyBreakDown ");
@@ -393,7 +395,7 @@ namespace Reports.Web.Controllers
 
         public ActionResult SmartCardUsage()
         {
-            var model = new SmartCardUsageFilter();
+            SmartCardUsageFilter model = new SmartCardUsageFilter();
 
             return View(model);
         }
@@ -401,11 +403,11 @@ namespace Reports.Web.Controllers
         public ActionResult SmartCardUsageDownload(SmartCardUsageFilter filter)
         {
 
-            var userset = GetUserSettings();
+            UserSettings userset = GetUserSettings();
 
-            var service = new CashierServices();
+            CashierServices service = new CashierServices();
 
-            var ds = new SmartCardService().GetSmartCardUsageData(userset.ConnectionKey, userset.CompanyName, filter.NumberOfTimesUsed.Value, filter.StartDate, filter.EndDate);
+            DataSet ds = new SmartCardService().GetSmartCardUsageData(userset.ConnectionKey, userset.CompanyName, filter.NumberOfTimesUsed.Value, filter.StartDate, filter.EndDate);
             if (ds.Tables[0].Rows.Count > 0)
             {
                 return DownLoadReportByDataSet(filter.ExcelOrPDF, "~/CrystalReports/Rpt/SmartCardTransaction/SmartCardUsage.rpt", ds, "Smart card usage");
@@ -423,10 +425,10 @@ namespace Reports.Web.Controllers
 
         public ActionResult TimeTable()
         {
-            var model = new DutySheetsViewModel();
-            var settings = GetUserSettings();
-            var allDuties = new ReportsService().GetAllDuties(settings.ConnectionKey);
-            var allcons = new ReportsService().GetAllContacts(settings.ConnectionKey);
+            DutySheetsViewModel model = new DutySheetsViewModel();
+            UserSettings settings = GetUserSettings();
+            List<SelectListItem> allDuties = new ReportsService().GetAllDuties(settings.ConnectionKey);
+            List<string> allcons = new ReportsService().GetAllContacts(settings.ConnectionKey);
 
             model.Duties = allDuties;
 
@@ -439,13 +441,13 @@ namespace Reports.Web.Controllers
         public ActionResult TimeTableDownload(DutySheetsViewModel filter)
         {
 
-            var userset = GetUserSettings();
-            var duties = filter.DutiesSelected == null ? "" : string.Join(",", filter.DutiesSelected);
-            var consSel = filter.ContractsSelected == null ? "" : string.Join(",", filter.ContractsSelected);
+            UserSettings userset = GetUserSettings();
+            string duties = filter.DutiesSelected == null ? "" : string.Join(",", filter.DutiesSelected);
+            string consSel = filter.ContractsSelected == null ? "" : string.Join(",", filter.ContractsSelected);
 
-            var service = new CashierServices();
+            CashierServices service = new CashierServices();
 
-            var ds = new DutySheetsService().GetTimeTableDetails(userset.ConnectionKey, userset.CompanyName, filter.ShowAllOperatingDays, filter.DutyDate, duties, consSel);
+            DataSet ds = new DutySheetsService().GetTimeTableDetails(userset.ConnectionKey, userset.CompanyName, filter.ShowAllOperatingDays, filter.DutyDate, duties, consSel);
             if (ds.Tables[0].Rows.Count > 0)
             {
                 return DownLoadReportByDataSet(filter.ExcelOrPDF, "~/CrystalReports/Rpt/DriverTrans/TimeTable.rpt", ds, "Time Table");
@@ -464,9 +466,9 @@ namespace Reports.Web.Controllers
 
         public ActionResult DutySheets()
         {
-            var model = new DutySheetsViewModel();
-            var settings = GetUserSettings();
-            var allDuties = new ReportsService().GetAllDuties(settings.ConnectionKey);
+            DutySheetsViewModel model = new DutySheetsViewModel();
+            UserSettings settings = GetUserSettings();
+            List<SelectListItem> allDuties = new ReportsService().GetAllDuties(settings.ConnectionKey);
             model.Duties = allDuties;
 
             return View(model);
@@ -475,12 +477,12 @@ namespace Reports.Web.Controllers
         public ActionResult DutySheetsDownload(DutySheetsViewModel filter)
         {
 
-            var userset = GetUserSettings();
-            var duties = filter.DutiesSelected == null ? "" : string.Join(",", filter.DutiesSelected);
+            UserSettings userset = GetUserSettings();
+            string duties = filter.DutiesSelected == null ? "" : string.Join(",", filter.DutiesSelected);
 
-            var service = new CashierServices();
+            CashierServices service = new CashierServices();
 
-            var ds = new DutySheetsService().GetDutySheetDetails(userset.ConnectionKey, userset.CompanyName, filter.ShowAllOperatingDays, filter.DutyDate, duties);
+            DataSet ds = new DutySheetsService().GetDutySheetDetails(userset.ConnectionKey, userset.CompanyName, filter.ShowAllOperatingDays, filter.DutyDate, duties);
             if (ds.Tables[0].Rows.Count > 0)
             {
                 return DownLoadReportByDataSet(filter.ExcelOrPDF, "~/CrystalReports/Rpt/DriverTrans/DutySheets.rpt", ds, "DutySheets");
@@ -499,19 +501,21 @@ namespace Reports.Web.Controllers
 
         public ActionResult SmartCardHotlisting()
         {
-            var model = new SmartCardHotList();
-            model.Reasons = new SmartCardService().GetAllHotlistReasons(GetUserSettings().ConnectionKey);
+            SmartCardHotList model = new SmartCardHotList
+            {
+                Reasons = new SmartCardService().GetAllHotlistReasons(GetUserSettings().ConnectionKey)
+            };
             return View(model);
         }
 
         [HttpPost]
         public ActionResult SubmitCardForHotlist(SmartCardHotList model)
         {
-            var settings = GetUserSettings();
-            var message = "Request for Smart Card Hotlisting sent Sucessfully !";
+            UserSettings settings = GetUserSettings();
+            string message = "Request for Smart Card Hotlisting sent Sucessfully !";
             model.CreatedBy = settings.Username;
             model.CreatedDate = DateTime.Now;
-            var result = new SmartCardService().SaveSmartCardHolistingRequest(settings.ConnectionKey, model);
+            SmartCardHotList result = new SmartCardService().SaveSmartCardHolistingRequest(settings.ConnectionKey, model);
 
             if (result.IsDuplicate == true)
             {
@@ -519,9 +523,9 @@ namespace Reports.Web.Controllers
             }
             else
             {
-                var reasons = new SmartCardService().GetAllHotlistReasons(GetUserSettings().ConnectionKey);
-                var reason = reasons.Where(x => x.Value.Equals(model.ReasonSelected)).Select(x => x.Text).FirstOrDefault().ToString();
-                var res = MailHelper.SendMailToEbus(model.SmartCardNubmer, reason, model.Comments, settings.Username, settings.CompanyName);
+                List<SelectListItem> reasons = new SmartCardService().GetAllHotlistReasons(GetUserSettings().ConnectionKey);
+                string reason = reasons.Where(x => x.Value.Equals(model.ReasonSelected)).Select(x => x.Text).FirstOrDefault().ToString();
+                bool res = MailHelper.SendMailToEbus(model.SmartCardNubmer, reason, model.Comments, settings.Username, settings.CompanyName);
                 if (res == false)
                 {
                     message = "Couldn't send request, Please try after some time !";
@@ -537,20 +541,20 @@ namespace Reports.Web.Controllers
 
         public ActionResult DriverDetails()
         {
-            var conKey = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey;
-            var model = new InspectorReportService().GetDriverDetailsReportFilter(conKey);
+            string conKey = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey;
+            DriverDetailsFilter model = new InspectorReportService().GetDriverDetailsReportFilter(conKey);
             return View(model);
         }
 
         public ActionResult GetDriverTransactionDetailsDownload(DriverDetailsFilter filter)
         {
-            var userset = GetUserSettings();
-            var conKey = userset.ConnectionKey;
-            var comp = userset.CompanyName;
+            UserSettings userset = GetUserSettings();
+            string conKey = userset.ConnectionKey;
+            string comp = userset.CompanyName;
 
-            var service = new CashierServices();
+            CashierServices service = new CashierServices();
 
-            var ds = new InspectorReportService().GetDriverTransactionDetails(conKey, CustomDateTime.ConvertStringToDateSaFormat(filter.StartDate), Convert.ToInt32(filter.DriversSelected), comp);
+            DataSet ds = new InspectorReportService().GetDriverTransactionDetails(conKey, CustomDateTime.ConvertStringToDateSaFormat(filter.StartDate), Convert.ToInt32(filter.DriversSelected), comp);
             if (ds.Tables[0].Rows.Count > 0)
             {
                 return DownLoadReportByDataSet(filter.ExcelOrPDF, "~/CrystalReports/Rpt/DriverTrans/DriverTransDetails.rpt", ds, "DriverDetails");
@@ -569,35 +573,35 @@ namespace Reports.Web.Controllers
 
         public ActionResult RevenueByDuty()
         {
-            var model = new ReportsService().GetFilter(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey);
+            SchVsOprViewModel model = new ReportsService().GetFilter(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey);
             return View("RevenueByDuty", model);
         }
         public ActionResult RevenueByDutyDownload(SchVsOprViewModel filters)
         {
-            var key = ((EBusPrinciple)System.Threading.Thread.CurrentPrincipal).Properties.ConnKey.ToString().ToLower();
+            string key = ((EBusPrinciple)System.Threading.Thread.CurrentPrincipal).Properties.ConnKey.ToString().ToLower();
             return DownloadRevenueByDutyReport(filters, Server.MapPath("~/CrystalReports/Rpt/RevenueByDuty.rpt"), "RevenueByDuty " + DateTime.Now.ToString("dd-MM-yyyy H:mm:ss"), sp8);
         }
 
         public ActionResult RevenueByDutyAll()
         {
-            var model = new ReportsService().GetFilter(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey);
+            SchVsOprViewModel model = new ReportsService().GetFilter(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey);
             return View("RevenueByDutyAll", model);
         }
         public ActionResult RevenueByDutyAllDownload(SchVsOprViewModel filters)
         {
-            var key = ((EBusPrinciple)System.Threading.Thread.CurrentPrincipal).Properties.ConnKey.ToString().ToLower();
+            string key = ((EBusPrinciple)System.Threading.Thread.CurrentPrincipal).Properties.ConnKey.ToString().ToLower();
             return DownloadRevenueByDutyAllReport(filters, Server.MapPath("~/CrystalReports/Rpt/RevenueByDutyAll.rpt"), "RevenueByDuty " + DateTime.Now.ToString("dd-MM-yyyy H:mm:ss"), sp8);
         }
 
         //1
         public ActionResult ScheduledVsOperatedReport()
         {
-            var model = new ReportsService().GetFilter(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey);
+            SchVsOprViewModel model = new ReportsService().GetFilter(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey);
             return View("ScheduledVsOperated", model);
         }
         public ActionResult ScheduledVsOperatedDownload(SchVsOprViewModel filters)
         {
-            var key = ((EBusPrinciple)System.Threading.Thread.CurrentPrincipal).Properties.ConnKey.ToString().ToLower();
+            string key = ((EBusPrinciple)System.Threading.Thread.CurrentPrincipal).Properties.ConnKey.ToString().ToLower();
             if (key.Equals("atamelang70"))
             { return DownloadReportGeneric(filters, Server.MapPath("~/CrystalReports/Rpt/ScheduledVsOperatedOkAtamelangTGX.rpt"), "ScheduledVsOperated " + DateTime.Now.ToString("dd-MM-yyyy H:mm:ss"), sp2); }
             else
@@ -608,12 +612,12 @@ namespace Reports.Web.Controllers
         //2
         public ActionResult NotScheduledButOperatedReport()
         {
-            var model = new ReportsService().GetFilter(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey);
+            SchVsOprViewModel model = new ReportsService().GetFilter(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey);
             return View("NotScheduledButOperated", model);
         }
         public ActionResult NotScheduledButOperatedDownload(SchVsOprViewModel filters)
         {
-            var key = ((EBusPrinciple)System.Threading.Thread.CurrentPrincipal).Properties.ConnKey.ToString().ToLower();
+            string key = ((EBusPrinciple)System.Threading.Thread.CurrentPrincipal).Properties.ConnKey.ToString().ToLower();
             if (key.Equals("atamelang70"))
             { return DownloadReportGeneric(filters, Server.MapPath("~/CrystalReports/Rpt/NotScheduledButOperatedAtamelangTGX.rpt"), "Operated Not Scheduled " + DateTime.Now.ToString("dd-MM-yyyy H:mm:ss"), sp4); }
             else
@@ -623,7 +627,7 @@ namespace Reports.Web.Controllers
         //3
         public ActionResult ScheduledNotOperatedReport()
         {
-            var model = new ReportsService().GetFilter(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey);
+            SchVsOprViewModel model = new ReportsService().GetFilter(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey);
             return View("ScheduledNotOperated", model);
         }
         public ActionResult ScheduledNotOperatedDownload(SchVsOprViewModel filters)
@@ -633,17 +637,17 @@ namespace Reports.Web.Controllers
 
         public ActionResult DownloadReportGeneric(SchVsOprViewModel filters, string rptPath, string fileName, string spName, bool isFormE = false)
         {
-            var conKey = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey;
-            var comp = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.CompanyName;
+            string conKey = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey;
+            string comp = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.CompanyName;
 
-            var service = new ReportsService();
+            ReportsService service = new ReportsService();
 
-            var ds = isFormE ? service.GetFormEReport(conKey, filters, spName, comp, isFormE) : service.GetScheduledVsOperatedReport(conKey, filters, spName, comp, isFormE);
+            DataSet ds = isFormE ? service.GetFormEReport(conKey, filters, spName, comp, isFormE) : service.GetScheduledVsOperatedReport(conKey, filters, spName, comp, isFormE);
             if (ds.Tables[0].Rows.Count > 0)
             {
-                var fileType = filters.ExcelOrPDF ? CrystalDecisions.Shared.ExportFormatType.PortableDocFormat : CrystalDecisions.Shared.ExportFormatType.Excel;
+                CrystalDecisions.Shared.ExportFormatType fileType = filters.ExcelOrPDF ? CrystalDecisions.Shared.ExportFormatType.PortableDocFormat : CrystalDecisions.Shared.ExportFormatType.Excel;
 
-                var rptH = new ReportClass
+                ReportClass rptH = new ReportClass
                 {
                     FileName = rptPath
                 };
@@ -673,30 +677,41 @@ namespace Reports.Web.Controllers
             {
                 TempData["AlertMessage"] = "show";
                 if (fileName.Contains("Operated Not Scheduled"))
+                {
                     return RedirectToAction("NotScheduledButOperatedReport", "Report");
+                }
+
                 if (fileName.Contains("ScheduledNotOperated"))
+                {
                     return RedirectToAction("ScheduledNotOperatedReport", "Report");
+                }
+
                 if (fileName.Contains("ScheduledVsOperated"))
+                {
                     return RedirectToAction("ScheduledVsOperatedReport", "Report");
+                }
+
                 if (fileName.Contains("FormE"))
+                {
                     return RedirectToAction("FormEReport", "Report");
+                }
             }
             return RedirectToAction("Index", "Report");
         }
 
         public ActionResult DownloadFullDuty(SchVsOprViewModel filters, string rptPath, string fileName, string spName, bool isFormE = false)
         {
-            var conKey = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey;
-            var comp = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.CompanyName;
+            string conKey = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey;
+            string comp = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.CompanyName;
 
-            var service = new ReportsService();
+            ReportsService service = new ReportsService();
 
-            var ds = service.FullDutySummary(conKey, filters, spName, comp, isFormE);//full duty report
+            DataSet ds = service.FullDutySummary(conKey, filters, spName, comp, isFormE);//full duty report
             if (ds.Tables[0].Rows.Count > 0)
             {
-                var fileType = filters.ExcelOrPDF ? CrystalDecisions.Shared.ExportFormatType.PortableDocFormat : CrystalDecisions.Shared.ExportFormatType.Excel;
+                CrystalDecisions.Shared.ExportFormatType fileType = filters.ExcelOrPDF ? CrystalDecisions.Shared.ExportFormatType.PortableDocFormat : CrystalDecisions.Shared.ExportFormatType.Excel;
 
-                var rptH = new ReportClass
+                ReportClass rptH = new ReportClass
                 {
                     FileName = rptPath
                 };
@@ -763,12 +778,12 @@ namespace Reports.Web.Controllers
             collection.OrderBy(x => x.DutyID).ThenBy(x => x.Total);
             //am getting my grid's column headers
             int columnscount = collection.Count;
-            var prevDuty = ""; double prevTotal = 0;
+            string prevDuty = ""; double prevTotal = 0;
             double revTotal = 0, nonRevTotal = 0;
             double adultRevTotal = 0, childRevTotal = 0, adultNonRevTotal = 0, schNonRevTotal = 0, adultTrnsferTotal = 0, scholarTransferTotal = 0;
-            for (var i = 0; i < columnscount; i++)
+            for (int i = 0; i < columnscount; i++)
             {
-                var curItem = collection[i];
+                RevenueByDuty curItem = collection[i];
                 if (prevDuty != curItem.DutyID && prevTotal != curItem.Total)
                 {
                     if (i != 0)
@@ -894,12 +909,12 @@ namespace Reports.Web.Controllers
             collection.OrderBy(x => x.DutyID).ThenBy(x => x.Total);
             //am getting my grid's column headers
             int columnscount = collection.Count;
-            var prevDuty = ""; double prevTotal = 0;
+            string prevDuty = ""; double prevTotal = 0;
             double revTotal = 0, nonRevTotal = 0;
             double adultRevTotal = 0, childRevTotal = 0, adultNonRevTotal = 0, schNonRevTotal = 0;
-            for (var i = 0; i < columnscount; i++)
+            for (int i = 0; i < columnscount; i++)
             {
-                var curItem = collection[i];
+                RevenueByDuty curItem = collection[i];
                 if (prevDuty != curItem.DutyID && prevTotal != curItem.Total)
                 {
                     if (i != 0)
@@ -1017,7 +1032,7 @@ namespace Reports.Web.Controllers
             collection.OrderBy(x => x.Date).ThenBy(x => x.Locations).ThenBy(x => x.Terminals).ThenBy(x => x.CashierID);
             //am getting my grid's column headers
             int columnscount = collection.Count;
-            var prevDate = ""; var prevLocation = ""; var prevTerminal = ""; string prevCashier = "";
+            string prevDate = ""; string prevLocation = ""; string prevTerminal = ""; string prevCashier = "";
             double cashOnCard = 0, cashPaidIn = 0, difference = 0, netTickets = 0;
             double cashOnCardTotal = 0, cashPaidInTotal = 0, differenceTotal = 0, netTicketsTotal = 0;
 
@@ -1033,9 +1048,9 @@ namespace Reports.Web.Controllers
             htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'>Net Tickets</td>");
             htmlcontent.Append("<td style='width:100px;border-bottom: thin solid black;'>Cash Paid Receipt No</td>");
             htmlcontent.Append("</tr>");
-            for (var i = 0; i < columnscount; i++)
+            for (int i = 0; i < columnscount; i++)
             {
-                var curItem = collection[i];
+                CashierReportMatatiele curItem = collection[i];
                 if (i == 0)
                 {
                     htmlcontent.Append("<tr><td colspan='9' style='width:900px;border-bottom: thin solid black;'><b>Date :</b>" + curItem.Date + "</td></tr>");
@@ -1148,20 +1163,20 @@ namespace Reports.Web.Controllers
 
         public ActionResult DownloadRevenueByDutyReport(SchVsOprViewModel filters, string rptPath, string fileName, string spName)
         {
-            var conKey = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey;
-            var comp = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.CompanyName;
+            string conKey = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey;
+            string comp = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.CompanyName;
 
-            var service = new ReportsService();
+            ReportsService service = new ReportsService();
 
-            var result = service.RevenueByDuty(conKey, filters, spName, comp);//full duty report
-            var ds = result.Item1;
+            Tuple<DataSet, List<RevenueByDuty>> result = service.RevenueByDuty(conKey, filters, spName, comp);//full duty report
+            DataSet ds = result.Item1;
             if (ds.Tables[0].Rows.Count > 0)
             {
-                var fileType = filters.ExcelOrPDF ? CrystalDecisions.Shared.ExportFormatType.PortableDocFormat : CrystalDecisions.Shared.ExportFormatType.Excel;
+                CrystalDecisions.Shared.ExportFormatType fileType = filters.ExcelOrPDF ? CrystalDecisions.Shared.ExportFormatType.PortableDocFormat : CrystalDecisions.Shared.ExportFormatType.Excel;
 
                 if (fileType != CrystalDecisions.Shared.ExportFormatType.Excel)
                 {
-                    var rptH = new ReportClass
+                    ReportClass rptH = new ReportClass
                     {
                         FileName = rptPath
                     };
@@ -1201,20 +1216,20 @@ namespace Reports.Web.Controllers
 
         public ActionResult DownloadRevenueByDutyAllReport(SchVsOprViewModel filters, string rptPath, string fileName, string spName)
         {
-            var conKey = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey;
-            var comp = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.CompanyName;
+            string conKey = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey;
+            string comp = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.CompanyName;
 
-            var service = new ReportsService();
+            ReportsService service = new ReportsService();
 
-            var result = service.RevenueByDutyAll(conKey, filters, spName, comp);//full duty report
-            var ds = result.Item1;
+            Tuple<DataSet, List<RevenueByDuty>> result = service.RevenueByDutyAll(conKey, filters, spName, comp);//full duty report
+            DataSet ds = result.Item1;
             if (ds.Tables[0].Rows.Count > 0)
             {
-                var fileType = filters.ExcelOrPDF ? CrystalDecisions.Shared.ExportFormatType.PortableDocFormat : CrystalDecisions.Shared.ExportFormatType.Excel;
+                CrystalDecisions.Shared.ExportFormatType fileType = filters.ExcelOrPDF ? CrystalDecisions.Shared.ExportFormatType.PortableDocFormat : CrystalDecisions.Shared.ExportFormatType.Excel;
 
                 if (fileType != CrystalDecisions.Shared.ExportFormatType.Excel)
                 {
-                    var rptH = new ReportClass
+                    ReportClass rptH = new ReportClass
                     {
                         FileName = rptPath
                     };
@@ -1258,22 +1273,22 @@ namespace Reports.Web.Controllers
 
         public ActionResult SellersDailyAuditReport()
         {
-            var conKey = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey;
-            var model = new ReportsService().GetFilterForDailyAudit(conKey);
+            string conKey = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey;
+            DailyAuditViewModel model = new ReportsService().GetFilterForDailyAudit(conKey);
             return View("SellersAudit", model);
         }
 
         public ActionResult DownloadSellersDailyAuditReport(DailyAuditViewModel filters)
         {
-            var userset = GetUserSettings();
-            var conKey = userset.ConnectionKey;
-            var comp = userset.CompanyName;
+            UserSettings userset = GetUserSettings();
+            string conKey = userset.ConnectionKey;
+            string comp = userset.CompanyName;
 
 
-            var ds = new ReportsService().GetDailyAuditReportForSellers(conKey, filters, comp);
+            DataSet ds = new ReportsService().GetDailyAuditReportForSellers(conKey, filters, comp);
             if (ds.Tables[0].Rows.Count > 0)
             {
-                var fileType = filters.ExcelOrPDF ? CrystalDecisions.Shared.ExportFormatType.PortableDocFormat : CrystalDecisions.Shared.ExportFormatType.Excel;
+                CrystalDecisions.Shared.ExportFormatType fileType = filters.ExcelOrPDF ? CrystalDecisions.Shared.ExportFormatType.PortableDocFormat : CrystalDecisions.Shared.ExportFormatType.Excel;
 
                 return DownLoadReportByDataSet(filters.ExcelOrPDF, "~/CrystalReports/Rpt/DailyAudit/SellersDailyAudit.rpt", ds, "SellersDailyAudit ");
             }
@@ -1288,32 +1303,32 @@ namespace Reports.Web.Controllers
 
         public ActionResult DailyAuditReport()
         {
-            var conKey = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey;
-            var model = new ReportsService().GetFilterForDailyAudit(conKey);
+            string conKey = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey;
+            DailyAuditViewModel model = new ReportsService().GetFilterForDailyAudit(conKey);
             return View("DailyAudit", model);
         }
 
         public ActionResult DailyAnalysisReport()
         {
-            var conKey = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey;
-            var model = new ReportsService().GetFilterForDailyAudit(conKey);
+            string conKey = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey;
+            DailyAuditViewModel model = new ReportsService().GetFilterForDailyAudit(conKey);
             return View("DailyAnalysis", model);
         }
 
         public ActionResult DownloadDailyAuditReport(DailyAuditViewModel filters)
         {
-            var conKey = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey;
-            var comp = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.CompanyName;
+            string conKey = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey;
+            string comp = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.CompanyName;
 
-            var ds = new ReportsService().GetDailyAuditReport(conKey, filters, comp);
+            DataSet ds = new ReportsService().GetDailyAuditReport(conKey, filters, comp);
 
-            var fileType = filters.ExcelOrPDF ? CrystalDecisions.Shared.ExportFormatType.PortableDocFormat : CrystalDecisions.Shared.ExportFormatType.Excel;
+            CrystalDecisions.Shared.ExportFormatType fileType = filters.ExcelOrPDF ? CrystalDecisions.Shared.ExportFormatType.PortableDocFormat : CrystalDecisions.Shared.ExportFormatType.Excel;
 
             ReportClass rptH = null;
             try
             {
-                var fileName = "";
-                var key = conKey.ToString().ToLower();
+                string fileName = "";
+                string key = conKey.ToString().ToLower();
                 if (key.Equals("atamelang70"))
                 {
                     if (ds.Tables[0].Rows.Count > 0)
@@ -1373,9 +1388,9 @@ namespace Reports.Web.Controllers
 
         public ActionResult DailyAuditAtamelangReport()
         {
-            var model = new CashierReportSummaryFilter();
-            var service = new InspectorReportService();
-            var staff = service.GetAllSatffDetails(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey);
+            CashierReportSummaryFilter model = new CashierReportSummaryFilter();
+            InspectorReportService service = new InspectorReportService();
+            List<OperatorDetails> staff = service.GetAllSatffDetails(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey);
             model.StaffList = staff.Where(s => s.OperatorType.ToLower() == "driver".ToLower().Trim() || s.OperatorType.ToLower() == "seller".ToLower().Trim()).Select(s => new SelectListItem { Text = s.OperatorName + " - " + s.OperatorID, Value = s.OperatorID }).OrderBy(s => Convert.ToInt32(s.Value)).ToList();
             model.Locations = service.GetAllLocations(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey).OrderBy(s => Convert.ToInt32(s.Value)).ToList();
             return View("DailyAuditAtamelang", model);
@@ -1383,9 +1398,9 @@ namespace Reports.Web.Controllers
 
         public ActionResult DownloadDailyAuditAtamelangReport(CashierReportSummaryFilter filter)
         {
-            var userset = GetUserSettings();
+            UserSettings userset = GetUserSettings();
             filter.EndDate = filter.StartDate;
-            var ds = new SmartCardService().GetDailyAuditAtamelangReportDataset(userset.ConnectionKey, filter, userset.CompanyName);
+            DataSet ds = new SmartCardService().GetDailyAuditAtamelangReportDataset(userset.ConnectionKey, filter, userset.CompanyName);
             if (ds.Tables[0].Rows.Count > 0)
             {
                 return DownLoadReportByDataSet(filter.ExcelOrPDF, "~/CrystalReports/Rpt/DailyAudit/DailyAuditAtamelang.rpt", ds, "DailyAudit ");
@@ -1400,9 +1415,9 @@ namespace Reports.Web.Controllers
 
         public ActionResult DailyAuditMatatieleReport()
         {
-            var model = new CashierReportSummaryFilter();
-            var service = new InspectorReportService();
-            var staff = service.GetAllSatffDetails(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey);
+            CashierReportSummaryFilter model = new CashierReportSummaryFilter();
+            InspectorReportService service = new InspectorReportService();
+            List<OperatorDetails> staff = service.GetAllSatffDetails(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey);
             model.StaffList = staff.Where(s => s.OperatorType.ToLower() == "driver".ToLower().Trim() || s.OperatorType.ToLower() == "seller".ToLower().Trim()).Select(s => new SelectListItem { Text = s.OperatorName + " - " + s.OperatorID, Value = s.OperatorID }).OrderBy(s => Convert.ToInt32(s.Value)).ToList();
             model.Locations = service.GetAllLocations(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey).OrderBy(s => Convert.ToInt32(s.Value)).ToList();
             model.Classes = service.GetAllClasses(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey).OrderBy(s => Convert.ToInt32(s.Value)).ToList();
@@ -1413,9 +1428,9 @@ namespace Reports.Web.Controllers
 
         public ActionResult DownloadDailyAuditMatatieleReport(CashierReportSummaryFilter filter)
         {
-            var userset = GetUserSettings();
+            UserSettings userset = GetUserSettings();
             filter.EndDate = filter.StartDate;
-            var ds = new SmartCardService().GetDailyAuditMatatieleReportDataset(userset.ConnectionKey, filter, userset.CompanyName);
+            DataSet ds = new SmartCardService().GetDailyAuditMatatieleReportDataset(userset.ConnectionKey, filter, userset.CompanyName);
             if (ds.Tables[0].Rows.Count > 0)
             {
                 return DownLoadReportByDataSet(filter.ExcelOrPDF, "~/CrystalReports/Rpt/DailyAudit/DailyAuditMatatiele.rpt", ds, "DailyAudit ");
@@ -1433,22 +1448,22 @@ namespace Reports.Web.Controllers
         #region JourneyAnalysisSummaryBySubRoute
         public ActionResult JourneyAnalysisSummaryBySubRouteReport()
         {
-            var model = new ReportsService().GetJourneyAnalysisSummaryBySubRouteFilter(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey);
+            JourneyAnalysisSummaryBySubRouteViewModel model = new ReportsService().GetJourneyAnalysisSummaryBySubRouteFilter(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey);
             return View("JourneyAnalysisSummaryBySubRoute", model);
         }
 
         public ActionResult JourneyAnalysisSummaryBySubRouteDownload(JourneyAnalysisSummaryBySubRouteViewModel filters)
         {
-            var userset = GetUserSettings();
-            var conKey = userset.ConnectionKey;
-            var comp = userset.CompanyName;
+            UserSettings userset = GetUserSettings();
+            string conKey = userset.ConnectionKey;
+            string comp = userset.CompanyName;
 
-            var service = new ReportsService();
+            ReportsService service = new ReportsService();
 
-            var ds = service.GetJourneyAnalysisSummaryBySubRouteDetails(conKey, filters, sp9, comp);
+            DataSet ds = service.GetJourneyAnalysisSummaryBySubRouteDetails(conKey, filters, sp9, comp);
             if (ds.Tables[0].Rows.Count > 0)
             {
-                var key = ((EBusPrinciple)System.Threading.Thread.CurrentPrincipal).Properties.ConnKey.ToString().ToLower();
+                string key = ((EBusPrinciple)System.Threading.Thread.CurrentPrincipal).Properties.ConnKey.ToString().ToLower();
                 return DownLoadReportByDataSet(filters.ExcelOrPDF, "~/CrystalReports/Rpt/FormE/JourneyAnalysisSummaryBySubRoute.rpt", ds, "JourneyAnalysisSummaryBySubRoute ");
             }
             else
@@ -1464,23 +1479,23 @@ namespace Reports.Web.Controllers
 
         public ActionResult FormEDetailedReport()
         {
-            var model = new ReportsService().GetFilter(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey);
+            SchVsOprViewModel model = new ReportsService().GetFilter(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey);
             return View("FormEDetailed", model);
         }
 
 
         public ActionResult FormEDetailedReportDownload(SchVsOprViewModel filters)
         {
-            var userset = GetUserSettings();
-            var conKey = userset.ConnectionKey;
-            var comp = userset.CompanyName;
+            UserSettings userset = GetUserSettings();
+            string conKey = userset.ConnectionKey;
+            string comp = userset.CompanyName;
 
-            var service = new ReportsService();
+            ReportsService service = new ReportsService();
 
-            var ds = service.GetFormEDetailed(conKey, filters, sp7, comp);
+            DataSet ds = service.GetFormEDetailed(conKey, filters, sp7, comp);
             if (ds.Tables[0].Rows.Count > 0)
             {
-                var key = ((EBusPrinciple)System.Threading.Thread.CurrentPrincipal).Properties.ConnKey.ToString().ToLower();
+                string key = ((EBusPrinciple)System.Threading.Thread.CurrentPrincipal).Properties.ConnKey.ToString().ToLower();
                 if (key.Equals("atamelang70"))
                 { return DownLoadReportByDataSet(filters.ExcelOrPDF, "~/CrystalReports/Rpt/FormE/FormEDetailedAtamelangTGX.rpt", ds, "FormE Detailed "); }
                 else
@@ -1498,13 +1513,13 @@ namespace Reports.Web.Controllers
         #region FormE
         public ActionResult FormEReport()
         {
-            var model = new ReportsService().GetFilter(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey);
+            SchVsOprViewModel model = new ReportsService().GetFilter(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey);
             return View("FormE", model);
         }
 
         public ActionResult FormEReportDownload(SchVsOprViewModel filters)
         {
-            var key = ((EBusPrinciple)System.Threading.Thread.CurrentPrincipal).Properties.ConnKey.ToString().ToLower();
+            string key = ((EBusPrinciple)System.Threading.Thread.CurrentPrincipal).Properties.ConnKey.ToString().ToLower();
             if (key.Equals("atamelang70"))
             { return DownloadReportGeneric(filters, Server.MapPath("~/CrystalReports/Rpt/FormE/FormEAtamelangTGX.rpt"), "FormE " + DateTime.Now.ToString("dd-MM-yyyy H:mm:ss"), sp7, true); }
             else
@@ -1516,13 +1531,13 @@ namespace Reports.Web.Controllers
         #region FormE2
         public ActionResult FullDutySummary()
         {
-            var model = new ReportsService().GetFilter(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey);
+            SchVsOprViewModel model = new ReportsService().GetFilter(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey);
             return View("FullDutySummary", model);
         }
 
         public ActionResult FullDutySummaryDownload(SchVsOprViewModel filters)
         {
-            var key = ((EBusPrinciple)System.Threading.Thread.CurrentPrincipal).Properties.ConnKey.ToString().ToLower();
+            string key = ((EBusPrinciple)System.Threading.Thread.CurrentPrincipal).Properties.ConnKey.ToString().ToLower();
             if (key.Equals("atamelang70"))
             { return DownloadFullDuty(filters, Server.MapPath("~/CrystalReports/Rpt/FormE/FullDutySummaryAtamelangTGX.rpt"), "FullDuty Summary " + DateTime.Now.ToString("dd-MM-yyyy H:mm:ss"), sp7, true); }
             else
@@ -1540,17 +1555,17 @@ namespace Reports.Web.Controllers
 
         public ActionResult DownloadSmartCardTrans(SmartCardTransFilter filters)
         {
-            var conKey = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey;
-            var comp = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.CompanyName;
+            string conKey = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey;
+            string comp = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.CompanyName;
 
-            var service = new SmartCardService();
+            SmartCardService service = new SmartCardService();
 
-            var ds = service.GetSmartCardTransDataSet(conKey, filters, comp);
+            DataSet ds = service.GetSmartCardTransDataSet(conKey, filters, comp);
             if (ds.Tables[0].Rows.Count > 0)
             {
-                var fileType = filters.ExcelOrPDF ? CrystalDecisions.Shared.ExportFormatType.PortableDocFormat : CrystalDecisions.Shared.ExportFormatType.Excel;
+                CrystalDecisions.Shared.ExportFormatType fileType = filters.ExcelOrPDF ? CrystalDecisions.Shared.ExportFormatType.PortableDocFormat : CrystalDecisions.Shared.ExportFormatType.Excel;
 
-                var rptH = new ReportClass
+                ReportClass rptH = new ReportClass
                 {
                     FileName = Server.MapPath("~/CrystalReports/Rpt/SmartCardTransaction/SmartCardAudit.rpt")
                 };
@@ -1588,27 +1603,27 @@ namespace Reports.Web.Controllers
 
         public ActionResult DailyInspectorReport()
         {
-            var service = new InspectorReportService();
-            var conKey = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey;
+            InspectorReportService service = new InspectorReportService();
+            string conKey = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey;
 
-            var model = service.GetInspectorReportFilter(conKey);
+            InspectorReportFilter model = service.GetInspectorReportFilter(conKey);
 
             return View("DailyInspectorReport", model);
         }
 
         public ActionResult DailyInspectorReportDownload(InspectorReportFilter filters)
         {
-            var conKey = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey;
-            var comp = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.CompanyName;
+            string conKey = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey;
+            string comp = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.CompanyName;
 
-            var service = new InspectorReportService();
+            InspectorReportService service = new InspectorReportService();
 
-            var ds = service.GetInspectorTransDataSet(conKey, filters, comp);
+            DataSet ds = service.GetInspectorTransDataSet(conKey, filters, comp);
             if (ds.Tables[0].Rows.Count > 0)
             {
-                var fileType = filters.ExcelOrPDF ? CrystalDecisions.Shared.ExportFormatType.PortableDocFormat : CrystalDecisions.Shared.ExportFormatType.Excel;
+                CrystalDecisions.Shared.ExportFormatType fileType = filters.ExcelOrPDF ? CrystalDecisions.Shared.ExportFormatType.PortableDocFormat : CrystalDecisions.Shared.ExportFormatType.Excel;
 
-                var rptH = new ReportClass
+                ReportClass rptH = new ReportClass
                 {
                     FileName = Server.MapPath("~/CrystalReports/Rpt/DailyInspector/DailyInspector.rpt")
                 };
@@ -1648,10 +1663,10 @@ namespace Reports.Web.Controllers
 
         public ActionResult OriginAnalysisByRoute()
         {
-            var service = new SalesAnalysisService();
-            var conKey = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey;
+            SalesAnalysisService service = new SalesAnalysisService();
+            string conKey = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey;
 
-            var model = service.GetSalesAnalysisFilter(conKey);
+            SalesAnalysisFilter model = service.GetSalesAnalysisFilter(conKey);
             model.RouteTypes = service.GetAllRouteTypes(conKey);
 
             return View("OriginAnalysisByRoute", model);
@@ -1659,16 +1674,16 @@ namespace Reports.Web.Controllers
 
         public ActionResult OriginAnalysisByRouteReportDownload(SalesAnalysisFilter filters)
         {
-            var userset = GetUserSettings();
-            var conKey = userset.ConnectionKey;
-            var comp = userset.CompanyName;
+            UserSettings userset = GetUserSettings();
+            string conKey = userset.ConnectionKey;
+            string comp = userset.CompanyName;
 
-            var service = new SalesAnalysisService();
+            SalesAnalysisService service = new SalesAnalysisService();
 
-            var ds = service.GetOriginAnalysisByRouteDataSet(conKey, filters, comp);
+            DataSet ds = service.GetOriginAnalysisByRouteDataSet(conKey, filters, comp);
             if (ds.Tables[0].Rows.Count > 0)
             {
-                var key = ((EBusPrinciple)System.Threading.Thread.CurrentPrincipal).Properties.ConnKey.ToString().ToLower();
+                string key = ((EBusPrinciple)System.Threading.Thread.CurrentPrincipal).Properties.ConnKey.ToString().ToLower();
                 if (key.Equals("atamelang70"))
                 { return DownLoadReportByDataSet(filters.ExcelOrPDF, "~/CrystalReports/Rpt/SalesAnalysis/OriginAnalysisByRouteAtamelangTGX.rpt", ds, "OriginAnalysis ByRoute "); }
                 else
@@ -1689,23 +1704,23 @@ namespace Reports.Web.Controllers
 
         public ActionResult SalesAnalysisByRoute()
         {
-            var service = new SalesAnalysisService();
-            var conKey = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey;
+            SalesAnalysisService service = new SalesAnalysisService();
+            string conKey = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey;
 
-            var model = service.GetSalesAnalysisFilter(conKey);
+            SalesAnalysisFilter model = service.GetSalesAnalysisFilter(conKey);
 
             return View("SalesAnalysisByRoute", model);
         }
 
         public ActionResult SalesAnalysisByRouteReportDownload(SalesAnalysisFilter filters)
         {
-            var userset = GetUserSettings();
-            var conKey = userset.ConnectionKey;
-            var comp = userset.CompanyName;
+            UserSettings userset = GetUserSettings();
+            string conKey = userset.ConnectionKey;
+            string comp = userset.CompanyName;
 
-            var service = new SalesAnalysisService();
+            SalesAnalysisService service = new SalesAnalysisService();
 
-            var ds = service.GetSalesAnalysisByRouteDataSet(conKey, filters, comp);
+            DataSet ds = service.GetSalesAnalysisByRouteDataSet(conKey, filters, comp);
             if (ds.Tables[0].Rows.Count > 0)
             {
                 return DownLoadReportByDataSet(filters.ExcelOrPDF, "~/CrystalReports/Rpt/SalesAnalysis/SalesAnalysisByRoute.rpt", ds, "SalesAnalysis ByRoute ");
@@ -1724,23 +1739,23 @@ namespace Reports.Web.Controllers
 
         public ActionResult SalesAnalysisByRouteSummary()
         {
-            var service = new SalesAnalysisService();
-            var conKey = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey;
+            SalesAnalysisService service = new SalesAnalysisService();
+            string conKey = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey;
 
-            var model = service.GetSalesAnalysisSummaryFilter(conKey);
+            SalesAnalysisFilter model = service.GetSalesAnalysisSummaryFilter(conKey);
 
             return View("SalesAnalysisByRouteSummary", model);
         }
 
         public ActionResult SalesAnalysisByRouteSummaryReportDownload(SalesAnalysisFilter filters)
         {
-            var userset = GetUserSettings();
-            var conKey = userset.ConnectionKey;
-            var comp = userset.CompanyName;
+            UserSettings userset = GetUserSettings();
+            string conKey = userset.ConnectionKey;
+            string comp = userset.CompanyName;
 
-            var service = new SalesAnalysisService();
+            SalesAnalysisService service = new SalesAnalysisService();
 
-            var ds = service.GetSalesAnalysisByRouteSummaryDataSet(conKey, filters, comp);
+            DataSet ds = service.GetSalesAnalysisByRouteSummaryDataSet(conKey, filters, comp);
             if (ds.Tables[0].Rows.Count > 0)
             {
                 return DownLoadReportByDataSet(filters.ExcelOrPDF, "~/CrystalReports/Rpt/SalesAnalysis/SalesAnalysisByRouteSummary.rpt", ds, "SalesAnalysis ByRoute Summary ");
@@ -1759,39 +1774,39 @@ namespace Reports.Web.Controllers
 
         public ActionResult ClassSummaryByClassType()
         {
-            var service = new SalesAnalysisService();
-            var conKey = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey;
+            SalesAnalysisService service = new SalesAnalysisService();
+            string conKey = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey;
 
-            var model = service.GetSalesAnalysisFilter(conKey);
+            SalesAnalysisFilter model = service.GetSalesAnalysisFilter(conKey);
 
             return View("ClassSummaryByClassType", model);
         }
 
         public ActionResult ClassSummaryByClassTypeGraph()
         {
-            var service = new SalesAnalysisService();
-            var conKey = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey;
+            SalesAnalysisService service = new SalesAnalysisService();
+            string conKey = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey;
 
-            var model = service.GetSalesAnalysisFilterForGraph(conKey);
+            SalesAnalysisFilter model = service.GetSalesAnalysisFilterForGraph(conKey);
 
             return View("ClassSummaryByClassTypeGraph", model);
         }
 
         public JsonResult GetClassSummaryByClassTypeGraphData(string classGroupId)
         {
-            var userset = GetUserSettings();
-            var conKey = userset.ConnectionKey;
-            var comp = userset.CompanyName;
-            var filters = new SalesAnalysisFilter();
+            UserSettings userset = GetUserSettings();
+            string conKey = userset.ConnectionKey;
+            string comp = userset.CompanyName;
+            SalesAnalysisFilter filters = new SalesAnalysisFilter();
 
             if (!string.IsNullOrEmpty(classGroupId) && classGroupId.ToLower() != "all")
             {
                 filters.ClassGroupsSelected = new string[] { classGroupId };
             }
 
-            var service = new SalesAnalysisService();
+            SalesAnalysisService service = new SalesAnalysisService();
 
-            var list = service.GetClassSummaryByClassTypeGraphData(conKey, filters);
+            List<ClassTypeGraph> list = service.GetClassSummaryByClassTypeGraphData(conKey, filters);
 
             var jsonData = new
             {
@@ -1803,13 +1818,13 @@ namespace Reports.Web.Controllers
 
         public ActionResult ClassSummaryByClassTypeDownload(SalesAnalysisFilter filters)
         {
-            var userset = GetUserSettings();
-            var conKey = userset.ConnectionKey;
-            var comp = userset.CompanyName;
+            UserSettings userset = GetUserSettings();
+            string conKey = userset.ConnectionKey;
+            string comp = userset.CompanyName;
 
-            var service = new SalesAnalysisService();
+            SalesAnalysisService service = new SalesAnalysisService();
 
-            var ds = service.GetClassSummaryDataSet(conKey, filters, comp, "EbusClassSummaryByClassType", true);
+            DataSet ds = service.GetClassSummaryDataSet(conKey, filters, comp, "EbusClassSummaryByClassType", true);
             if (ds.Tables[0].Rows.Count > 0)
             {
                 return DownLoadReportByDataSet(filters.ExcelOrPDF, "~/CrystalReports/Rpt/ClassSummary/ClassSummaryByClassType.rpt", ds, "ClassSummary By ClassType ");
@@ -1828,12 +1843,24 @@ namespace Reports.Web.Controllers
 
         public ActionResult AuditStatus()
         {
-            var service = new AuditStatusService();
-            var conKey = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey;
 
-            var model = service.GetAuditStatusForGraph(conKey);
-
+            AuditStatusService service = new AuditStatusService();
+            string conKey = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey;
+            AuditStatusModel model = new AuditStatusModel
+            {
+                AuditStatuses = service.GetAuditStatusForGraph(conKey),
+                Reasons = service.GetAuditComReasons(conKey)
+            };
             return View("AuditStatus", model);
+        }
+
+        [HttpPost]
+        public string UpdateAuditComStatus(string busID, string reasonID)
+        {
+            AuditStatusService service = new AuditStatusService();
+            string conKey = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey;
+            service.UpdateAuditComStatus(busID, reasonID, conKey);
+            return "Record Updated Successfully!!";
         }
 
         #endregion
@@ -1842,23 +1869,23 @@ namespace Reports.Web.Controllers
 
         public ActionResult SalesAnalysisByClass()
         {
-            var service = new SalesAnalysisService();
-            var conKey = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey;
+            SalesAnalysisService service = new SalesAnalysisService();
+            string conKey = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey;
 
-            var model = service.GetSalesAnalysisFilter(conKey);
+            SalesAnalysisFilter model = service.GetSalesAnalysisFilter(conKey);
 
             return View("SalesAnalysisByClass", model);
         }
 
         public ActionResult SalesAnalysisByClassDownload(SalesAnalysisFilter filters)
         {
-            var userset = GetUserSettings();
-            var conKey = userset.ConnectionKey;
-            var comp = userset.CompanyName;
+            UserSettings userset = GetUserSettings();
+            string conKey = userset.ConnectionKey;
+            string comp = userset.CompanyName;
 
-            var service = new SalesAnalysisService();
+            SalesAnalysisService service = new SalesAnalysisService();
 
-            var ds = service.GetClassSummaryDataSet(conKey, filters, comp, "EbusSalesAnalysisByClass", false);
+            DataSet ds = service.GetClassSummaryDataSet(conKey, filters, comp, "EbusSalesAnalysisByClass", false);
             if (ds.Tables[0].Rows.Count > 0)
             {
                 return DownLoadReportByDataSet(filters.ExcelOrPDF, "~/CrystalReports/Rpt/ClassSummary/SalesAnalysisByClass.rpt", ds, "Sales Analysis By Class ");
@@ -1877,21 +1904,21 @@ namespace Reports.Web.Controllers
 
         public ActionResult CashierReport()
         {
-            var model = new CashierFilter();
-            var service = new InspectorReportService();
+            CashierFilter model = new CashierFilter();
+            InspectorReportService service = new InspectorReportService();
             model.Locations = service.GetAllLocations(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey).OrderBy(s => Convert.ToInt32(s.Value)).ToList();
             return View("CashierReport", model);
         }
 
         public ActionResult CashierReportDownload(CashierFilter filters)
         {
-            var userset = GetUserSettings();
-            var conKey = userset.ConnectionKey;
-            var comp = userset.CompanyName;
+            UserSettings userset = GetUserSettings();
+            string conKey = userset.ConnectionKey;
+            string comp = userset.CompanyName;
 
-            var service = new CashierServices();
+            CashierServices service = new CashierServices();
 
-            var ds = service.GetCashierDataSet(conKey, filters, comp);
+            DataSet ds = service.GetCashierDataSet(conKey, filters, comp);
             if (ds.Tables[0].Rows.Count > 0)
             {
                 return DownLoadReportByDataSet(filters.ExcelOrPDF, "~/CrystalReports/Rpt/Cashier/CashierReport.rpt", ds, "CashierReport ");
@@ -1910,9 +1937,9 @@ namespace Reports.Web.Controllers
 
         private ActionResult DownLoadReportByDataSet(bool excelOrPDF, string rptPath, DataSet ds, string reportName)
         {
-            var fileType = excelOrPDF ? CrystalDecisions.Shared.ExportFormatType.PortableDocFormat : CrystalDecisions.Shared.ExportFormatType.Excel;
+            CrystalDecisions.Shared.ExportFormatType fileType = excelOrPDF ? CrystalDecisions.Shared.ExportFormatType.PortableDocFormat : CrystalDecisions.Shared.ExportFormatType.Excel;
 
-            var rptH = new ReportClass
+            ReportClass rptH = new ReportClass
             {
                 FileName = Server.MapPath(rptPath)
             };
@@ -1941,10 +1968,10 @@ namespace Reports.Web.Controllers
 
         private ActionResult DownLoadCashierReportMatatieleByDataSet(bool excelOrPDF, string rptPath, DataSet ds, string reportName)
         {
-            var fileType = excelOrPDF ? CrystalDecisions.Shared.ExportFormatType.PortableDocFormat : CrystalDecisions.Shared.ExportFormatType.Excel;
+            CrystalDecisions.Shared.ExportFormatType fileType = excelOrPDF ? CrystalDecisions.Shared.ExportFormatType.PortableDocFormat : CrystalDecisions.Shared.ExportFormatType.Excel;
             if (fileType == CrystalDecisions.Shared.ExportFormatType.PortableDocFormat)
             {
-                var rptH = new ReportClass
+                ReportClass rptH = new ReportClass
                 {
                     FileName = Server.MapPath(rptPath)
                 };
@@ -1971,7 +1998,7 @@ namespace Reports.Web.Controllers
             }
             else
             {
-                var collection = ConvertDataTableToCashierReportMatatieleData(ds.Tables[0]);
+                List<CashierReportMatatiele> collection = ConvertDataTableToCashierReportMatatieleData(ds.Tables[0]);
                 ExportCashierReportMatatieleToExcel(collection, reportName + " " + DateTime.Now.ToString("dd-MM-yyyy H:mm:ss"));
                 return RedirectToAction("CashierReportMatatiele", "Report");
             }
@@ -2015,10 +2042,12 @@ namespace Reports.Web.Controllers
 
         private UserSettings GetUserSettings()
         {
-            var res = new UserSettings();
-            res.ConnectionKey = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey;
-            res.CompanyName = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.CompanyName;
-            res.Username = HttpContext.User.Identity.Name;
+            UserSettings res = new UserSettings
+            {
+                ConnectionKey = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey,
+                CompanyName = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.CompanyName,
+                Username = HttpContext.User.Identity.Name
+            };
             return res;
         }
 

@@ -5,8 +5,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Web.Mvc;
 
 namespace Reports.Services
 {
@@ -14,13 +13,13 @@ namespace Reports.Services
     {
         public List<AuditStatus> GetAuditStatusForGraph(string connKey)
         {
-            var result = new List<AuditStatus>();
+            List<AuditStatus> result = new List<AuditStatus>();
 
-            var myConnection = new SqlConnection(GetConnectionString(connKey));
+            SqlConnection myConnection = new SqlConnection(GetConnectionString(connKey));
 
             try
             {
-                var cmd = new SqlCommand("EbusGetAuditStatusForGraph", myConnection)
+                SqlCommand cmd = new SqlCommand("EbusGetAuditStatusForGraph", myConnection)
                 {
                     CommandType = CommandType.StoredProcedure
                 };
@@ -32,7 +31,7 @@ namespace Reports.Services
 
                 while (dr.Read())
                 {
-                    var sch = new AuditStatus();
+                    AuditStatus sch = new AuditStatus();
                     if (dr["str_BusId"] != null && dr["str_BusId"].ToString() != string.Empty)
                     {
                         sch.str_BusId = (dr["str_BusId"].ToString());
@@ -40,18 +39,18 @@ namespace Reports.Services
 
                     if (dr["LastestDate"] != null && dr["LastestDate"].ToString() != string.Empty)
                     {
-                        var date = dr["LastestDate"].ToString().Split(' ')[0].Split('/');
+                        string[] date = dr["LastestDate"].ToString().Split(' ')[0].Split('/');
 
-                        var mont = (date[0].Length == 1 ? "0" + date[0] : date[0]).Trim();
-                        var d = (date[1].Length == 1 ? "0" + date[1] : date[1]).Trim();
+                        string mont = (date[0].Length == 1 ? "0" + date[0] : date[0]).Trim();
+                        string d = (date[1].Length == 1 ? "0" + date[1] : date[1]).Trim();
 
                         sch.LastestDate = d + "/" + mont + "/" + date[2].Trim();
 
-                        var date1 = CustomDateTime.ConvertStringToDateSaFormat(sch.LastestDate);
-                        var date2 = DateTime.Now.Date;//curent date
+                        DateTime date1 = CustomDateTime.ConvertStringToDateSaFormat(sch.LastestDate);
+                        DateTime date2 = DateTime.Now.Date;//curent date
 
-                        var diff = (int)(date2 - date1).TotalDays;
-                        var currentDayNum = (int)DateTime.Now.DayOfWeek; //sunday=0, mon=1, tue=2, wed=3, thr=4, fri=5, sat =6
+                        int diff = (int)(date2 - date1).TotalDays;
+                        int currentDayNum = (int)DateTime.Now.DayOfWeek; //sunday=0, mon=1, tue=2, wed=3, thr=4, fri=5, sat =6
 
                         if (currentDayNum == 1)//exclude sat sun chk f
                         {
@@ -67,18 +66,21 @@ namespace Reports.Services
                             sch.Color = "#0BEA0B";
                             sch.ColorName = "Green";
                             sch.SortingStatus = 3;
+                            sch.int4_ReasonID = "6";
                         }
                         else if (diff <= 2) //yellow
                         {
                             sch.Color = "#FBFB00";
                             sch.ColorName = "Yellow";
                             sch.SortingStatus = 2;
+                            sch.int4_ReasonID = "6";
                         }
                         else if (diff > 2) //red
                         {
                             sch.ColorName = "Red";
                             sch.Color = "#E21717";
                             sch.SortingStatus = 1;
+                            sch.int4_ReasonID = "0";
                         }
                     }
 
@@ -96,6 +98,13 @@ namespace Reports.Services
                     {
                         sch.int4_OperatorID = (dr["int4_OperatorID"].ToString());
                     }
+
+
+                    if (sch.int4_ReasonID == "0" && dr["int4_ReasonID"] != null && dr["int4_ReasonID"].ToString() != string.Empty)
+                    {
+                        sch.int4_ReasonID = (dr["int4_ReasonID"].ToString());
+                    }
+
                     result.Add(sch);
                 }
             }
@@ -105,7 +114,81 @@ namespace Reports.Services
                 myConnection.Close();
             }
 
-            return result.Where(s => s.str_BusId.ToLower().Trim() != "0").OrderBy(s=>s.SortingStatus).ToList();
+            return result.Where(s => s.str_BusId.ToLower().Trim() != "0").OrderBy(s => s.SortingStatus).ToList();
+        }
+
+
+        public List<SelectListItem> GetAuditComReasons(string connKey)
+        {
+            List<SelectListItem> res = new List<SelectListItem>();
+            SqlConnection myConnection = new SqlConnection(GetConnectionString(connKey));
+
+            try
+            {
+                SqlCommand cmd = new SqlCommand()
+                {
+                    CommandType = CommandType.Text,
+                    Connection = myConnection
+                };
+
+                cmd.CommandText = @"select ReasonID,Reason from AuditComReasons;";
+                cmd.CommandTimeout = 500000;
+
+                myConnection.Open();
+
+                SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+
+                while (dr.Read())
+                {
+                    SelectListItem obj = new SelectListItem();
+                    if (dr["ReasonID"] != null)
+                    {
+                        obj.Value = dr["ReasonID"].ToString();
+                    }
+                    if (dr["Reason"] != null)
+                    {
+                        obj.Text = obj.Value + " - " + dr["Reason"].ToString();
+                    }
+                    res.Add(obj);
+                }
+            }
+            finally
+            {
+                myConnection.Close();
+            }
+
+            return res;
+        }
+
+        public bool UpdateAuditComStatus(string busID, string reasonID, string connKey)
+        {
+            bool res = false;
+            SqlConnection myConnection = new SqlConnection(GetConnectionString(connKey));
+
+            try
+            {
+                SqlCommand cmd = new SqlCommand()
+                {
+                    CommandType = CommandType.Text,
+                    Connection = myConnection
+                };
+
+                cmd.CommandText = @"update BusNumberList SET int4_ReasonID = " + reasonID + " WHERE Bsu_ID = " + busID;
+                cmd.CommandTimeout = 500000;
+
+                myConnection.Open();
+
+                int count = cmd.ExecuteNonQuery();
+
+                if (count > 0) res = true;
+                return res;
+            }
+            finally
+            {
+                myConnection.Close();
+            }
+
+            return res;
         }
     }
 }

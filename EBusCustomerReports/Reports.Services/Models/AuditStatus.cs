@@ -13,6 +13,7 @@ namespace Reports.Services.Models
         public string Str_ETMID { get; set; }
         public string ETMType { get; set; }
         public string int4_OperatorID { get; set; }
+        public string int4_ReasonID { get; set; }
         public string Color { get; set; }
         public string ColorName { get; set; }
 
