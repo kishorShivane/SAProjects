@@ -188,6 +188,7 @@
     <Compile Include="Controllers\RouteMasterController.cs" />
     <Compile Include="Controllers\SchedulingSystemController.cs" />
     <Compile Include="Controllers\ServiceRequestController.cs" />
+    <Compile Include="Controllers\SmartCardController.cs" />
     <Compile Include="Controllers\StaffMasterController.cs" />
     <Compile Include="Controllers\UserAdministrationController.cs" />
     <Compile Include="Controllers\UserController.cs" />
@@ -654,6 +655,7 @@
     <Content Include="Views\Report\DailyAuditMatatiele.cshtml" />
     <Content Include="Views\Report\JourneyAnalysisSummaryBySubRoute.cshtml" />
     <Content Include="Views\Report\SalesAnalysisByRouteSummary.cshtml" />
+    <Content Include="Views\SmartCard\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

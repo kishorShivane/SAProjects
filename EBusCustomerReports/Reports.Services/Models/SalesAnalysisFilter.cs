@@ -8,41 +8,41 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Reports.Services.Models
 {
-    public class CashVsSmartCardUsageByRouteFilter
+    public class SalesAnalysisFilter
     {
-        public CashVsSmartCardUsageByRouteFilter()
+        public SalesAnalysisFilter()
         {
+            Classes = new List<SelectListItem>();
             Routes = new List<SelectListItem>();
+            ClassGroups = new List<SelectListItem>();
+            ExcelOrPDF = true; //PDF=true, EXCEL=false
+            RouteTypes = new List<SelectListItem>();
+            ClassesTypes = new List<SelectListItem>();
+            RouteTypes.Add(new SelectListItem { Text = "Driver", Selected = false, Value = "Driver" });
+            RouteTypes.Add(new SelectListItem { Text = "Seller", Selected = false, Value = "Seller" });
         }
+
+
+        public string[] RouteTypeSelected { get; set; }
+        public List<SelectListItem> RouteTypes { get; set; }
+
+        public string[] ClassesSelected { get; set; }
+        public List<SelectListItem> Classes { get; set; }
+
+        public string[] ClassesTypesSelected { get; set; }
+        public List<SelectListItem> ClassesTypes { get; set; }
 
         public string[] RoutesSelected { get; set; }
         public List<SelectListItem> Routes { get; set; }
+
+        public string[] ClassGroupsSelected { get; set; }
+        public List<SelectListItem> ClassGroups { get; set; }
 
         [Required]
         public string StartDate { get; set; }
         [Required]
         public string EndDate { get; set; }
 
-        public bool ExcelOrPDF { get; set; } 
-    }
-
-    public class CashVsSmartCardUsageByRouteData
-    { 
-        public string str_RouteID { get; set; }
-        public string str50_RouteName { get; set; }
-
-        public string ColorCodeTickets { get; set; }
-        public string ColorCodePasses { get; set; }
-
-        public decimal int4_JourneyTickets { get; set; }
-        public decimal int4_JourneyTicketsPercent { get; set; }
-
-        public decimal int4_JourneyPasses { get; set; }
-        public decimal int4_JourneyPassesPercent { get; set; }
-
-        public decimal int4_JourneyTransfer { get; set; }
-        public decimal int4_JourneyTransferPercent { get; set; }
-
-        public decimal TotalPassengers { get; set; }
+        public bool ExcelOrPDF { get; set; }
     }
 }

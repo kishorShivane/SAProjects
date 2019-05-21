@@ -260,6 +260,7 @@
                     }
                     else {
                         $(result).each(function (index) {
+                            debugger;
                             var CurrentItem = this;
                             var stages = JSON.stringify(CurrentItem.RouteStages).replace(/\"/g, "##");
                             rows = rows + "<tr><td><span id='lblRouteNumber'>" + CurrentItem.RouteNumber + "</span></td><td><span id='lblRouteDetail'>" + CurrentItem.RouteDetail + "</span></td>";

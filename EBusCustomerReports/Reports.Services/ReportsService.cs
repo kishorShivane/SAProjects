@@ -52,6 +52,8 @@ namespace Reports.Services
 
             graphData.ForEach(s =>
             {
+                //var str = s.dateSelected.Split('/');
+                //s.dayOfWeek = new DateTime(Convert.ToInt32(str[2]), Convert.ToInt32(str[1]), Convert.ToInt32(str[0])).Date.DayOfWeek.ToString();
                 s.dayOfWeek = CustomDateTime.ConvertStringToDateSaFormat(s.dateSelected).Date.DayOfWeek.ToString();
             });
 

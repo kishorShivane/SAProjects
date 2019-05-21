@@ -179,6 +179,7 @@
     <Compile Include="Models\RevenueByDuty.cs" />
     <Compile Include="Models\JourneyAnalysisSummaryBySubRoute.cs" />
     <Compile Include="Models\ServiceRequest\ServiceRequest.cs" />
+    <Compile Include="Models\SmartCard\SmartCardData.cs" />
     <Compile Include="Models\StaffMaster\StaffMaster.cs" />
     <Compile Include="Models\UserAdministration\ApplicationFunctionality.cs" />
     <Compile Include="Models\UserAdministration\ApplicationMenu.cs" />
@@ -187,7 +188,7 @@
     <Compile Include="Models\UserAdministration\UserInformation.cs" />
     <Compile Include="RouteMasterService.cs" />
     <Compile Include="DutyWizardService.cs" />
-    <Compile Include="Models\Copy of SalesAnalysisFilter.cs" />
+    <Compile Include="Models\SalesAnalysisFilter.cs" />
     <Compile Include="Models\Duty.cs" />
     <Compile Include="Models\DutyBooking.cs" />
     <Compile Include="Models\DutyDBF.cs" />
@@ -223,7 +224,7 @@
     <Compile Include="Models\DutySheetsViewModel.cs" />
     <Compile Include="Models\SmartCardHotList.cs" />
     <Compile Include="Models\DriverDetailsFilter.cs" />
-    <Compile Include="Models\SalesAnalysisFilter.cs" />
+    <Compile Include="Models\CashVsSmartCardUsageByRoute.cs" />
     <Compile Include="Models\InspectorReportData.cs" />
     <Compile Include="Models\InspectorReportFilter.cs" />
     <Compile Include="Models\Operator.cs" />
