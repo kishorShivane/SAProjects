@@ -10,6 +10,7 @@ namespace Reports.Services.Models
     {
         public string Contract { get; set; }
         public string DOTRoute { get; set; }
+        public string WayfarerRoute { get; set; }
         public string From { get; set; }
         public string To { get; set; }
         public string ScheduledTrips { get; set; }

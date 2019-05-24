@@ -26,6 +26,7 @@ namespace Reports.Web.Controllers
         public const string sp7 = "EbusFormE"; // Form-E
         public const string sp8 = "EbusRevenueByDuty"; // Revenue By Duty
         public const string sp9 = "EbusJourneyAnalysisSummaryBySubRoute"; // Revenue By Duty
+        public const string sp10 = "EbusFormEReference"; // Form-E Reference
 
         //Home
         public ActionResult Index()
@@ -698,6 +699,56 @@ namespace Reports.Web.Controllers
             }
             return RedirectToAction("Index", "Report");
         }
+
+        public ActionResult DownloadFormEReference(SchVsOprViewModel filters, string rptPath, string fileName, string spName)
+        {
+            string conKey = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey;
+            string comp = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.CompanyName;
+
+            ReportsService service = new ReportsService();
+
+            DataSet ds = service.GetFormEReferenceReport(conKey, filters, spName, comp);
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                CrystalDecisions.Shared.ExportFormatType fileType = filters.ExcelOrPDF ? CrystalDecisions.Shared.ExportFormatType.PortableDocFormat : CrystalDecisions.Shared.ExportFormatType.Excel;
+
+                ReportClass rptH = new ReportClass
+                {
+                    FileName = rptPath
+                };
+
+                try
+                {
+                    rptH.Load();
+
+                    rptH.SetDataSource(ds.Tables[0]);
+
+                    rptH.ExportToHttpResponse(fileType, System.Web.HttpContext.Current.Response, true, fileName);
+
+                    return new DownloadPdfResult(rptH, fileName);
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+                finally
+                {
+                    rptH.Close();
+                    rptH.Dispose();
+                }
+
+            }
+            else
+            {
+                TempData["AlertMessage"] = "show";
+                if (fileName.Contains("FormEReference"))
+                {
+                    return RedirectToAction("FormEReferenceReport", "Report");
+                }
+            }
+            return RedirectToAction("Index", "Report");
+        }
+
 
         public ActionResult DownloadFullDuty(SchVsOprViewModel filters, string rptPath, string fileName, string spName, bool isFormE = false)
         {
@@ -1524,6 +1575,18 @@ namespace Reports.Web.Controllers
             { return DownloadReportGeneric(filters, Server.MapPath("~/CrystalReports/Rpt/FormE/FormEAtamelangTGX.rpt"), "FormE " + DateTime.Now.ToString("dd-MM-yyyy H:mm:ss"), sp7, true); }
             else
             { return DownloadReportGeneric(filters, Server.MapPath("~/CrystalReports/Rpt/FormE/FormE.rpt"), "FormE " + DateTime.Now.ToString("dd-MM-yyyy H:mm:ss"), sp7, true); }
+        }
+
+        public ActionResult FormEReferenceReport()
+        {
+            SchVsOprViewModel model = new ReportsService().GetFilter(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey);
+            return View("FormEReference", model);
+        }
+
+        public ActionResult FormEReferenceReportDownload(SchVsOprViewModel filters)
+        {
+            string key = ((EBusPrinciple)System.Threading.Thread.CurrentPrincipal).Properties.ConnKey.ToString().ToLower();
+            return DownloadFormEReference(filters, Server.MapPath("~/CrystalReports/Rpt/FormE/FormEReference.rpt"), "FormEReference " + DateTime.Now.ToString("dd-MM-yyyy H:mm:ss"), sp10);
         }
 
         #endregion

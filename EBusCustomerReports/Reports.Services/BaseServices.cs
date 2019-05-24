@@ -317,6 +317,7 @@ namespace Reports.Services
             table1.Columns.Add("companyName");//20
 
             table1.Columns.Add("DateSelected");//20
+            table1.Columns.Add("WayfarerRoute");//21
 
             return table1;
         }

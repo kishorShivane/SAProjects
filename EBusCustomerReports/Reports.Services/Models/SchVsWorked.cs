@@ -13,6 +13,7 @@ namespace Reports.Services
         public string int4_DutyId { get; set; }
         public string str4_JourneyNo { get; set; }
         public string DOTRouteNumber { get; set; }
+        public string WayfarerRoute { get; set; }
         public float float_Distance { get; set; }
         public string str7_Contract { get; set; }
         public string dat_StartTime { get; set; }

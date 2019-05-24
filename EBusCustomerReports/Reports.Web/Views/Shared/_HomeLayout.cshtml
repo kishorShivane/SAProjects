@@ -279,45 +279,51 @@
                                 <ul class="nav nav-second-level">
                                     @if (accessCodes.Contains("SVOS"))
                                     {
-                                    <li>
-                                        <a href="@Url.Action("FullDutySummary", "Report" )">Duty Scheduled Vs Operated Summary</a>
-                                    </li>
+                                        <li>
+                                            <a href="@Url.Action("FullDutySummary", "Report" )">Duty Scheduled Vs Operated Summary</a>
+                                        </li>
                                     }
                                     @if (accessCodes.Contains("SVOR"))
                                     {
-                                    <li>
-                                        <a href="@Url.Action("ScheduledVsOperatedReport", "Report" )">Duty Schedule Vs Operated</a>
-                                    </li>
+                                        <li>
+                                            <a href="@Url.Action("ScheduledVsOperatedReport", "Report" )">Duty Schedule Vs Operated</a>
+                                        </li>
                                     }
                                     @if (accessCodes.Contains("SNOR"))
                                     {
-                                    <li>
-                                        <a href="@Url.Action("ScheduledNotOperatedReport", "Report" )">Scheduled But Not Operated</a>
-                                    </li>
+                                        <li>
+                                            <a href="@Url.Action("ScheduledNotOperatedReport", "Report" )">Scheduled But Not Operated</a>
+                                        </li>
                                     }
                                     @if (accessCodes.Contains("NSBOR"))
                                     {
-                                    <li>
-                                        <a href="@Url.Action("NotScheduledButOperatedReport", "Report" )">Worked But Not Scheduled</a>
-                                    </li>
+                                        <li>
+                                            <a href="@Url.Action("NotScheduledButOperatedReport", "Report" )">Worked But Not Scheduled</a>
+                                        </li>
                                     }
                                     @if (accessCodes.Contains("FER"))
                                     {
-                                    <li>
-                                        <a href="@Url.Action("FormEReport", "Report" )">Form-E Summary</a>
-                                    </li>
+                                        <li>
+                                            <a href="@Url.Action("FormEReport", "Report" )">Form-E Summary</a>
+                                        </li>
+                                    }
+                                    @if (accessCodes.Contains("FERR"))
+                                    {
+                                        <li>
+                                            <a href="@Url.Action("FormEReferenceReport", "Report" )">Form-E Reference</a>
+                                        </li>
                                     }
                                     @if (accessCodes.Contains("FEDR"))
                                     {
-                                    <li>
-                                        <a href="@Url.Action("FormEDetailedReport", "Report" )">Form-E Detailed</a>
-                                    </li>
+                                        <li>
+                                            <a href="@Url.Action("FormEDetailedReport", "Report" )">Form-E Detailed</a>
+                                        </li>
                                     }
                                     @if (accessCodes.Contains("JASBSB"))
                                     {
-                                    <li>
-                                        <a href="@Url.Action("JourneyAnalysisSummaryBySubRouteReport", "Report" )">Journey Analysis Summary By SubRoute</a>
-                                    </li>
+                                        <li>
+                                            <a href="@Url.Action("JourneyAnalysisSummaryBySubRouteReport", "Report" )">Journey Analysis Summary By SubRoute</a>
+                                        </li>
                                     }
 
                                 </ul>
