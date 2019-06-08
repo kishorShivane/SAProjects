@@ -165,27 +165,33 @@
                                 <ul class="nav nav-second-level">
                                     @if (accessCodes.Contains("SMH"))
                                     {
-                                    <li>
-                                        <a href="@Url.Action("SmartCardHotlisting", "Report" )">Smart Card Hotlisting</a>
-                                    </li>
+                                        <li>
+                                            <a href="@Url.Action("SmartCardHotlisting", "Report" )">Smart Card Hotlisting</a>
+                                        </li>
                                     }
                                     @if (accessCodes.Contains("SM"))
                                     {
-                                    <li>
-                                        <a href="@Url.Action("Index", "StaffMaster" )">Staff Master</a>
-                                    </li>
+                                        <li>
+                                            <a href="@Url.Action("Index", "StaffMaster" )">Staff Master</a>
+                                        </li>
                                     }
                                     @if (accessCodes.Contains("EBUSUA"))
                                     {
-                                    <li>
-                                        <a href="@Url.Action("ViewUsers", "UserAdministration" )">User Administration</a>
-                                    </li>
+                                        <li>
+                                            <a href="@Url.Action("ViewUsers", "UserAdministration" )">User Administration</a>
+                                        </li>
                                     }
                                     @if (accessCodes.Contains("RM"))
                                     {
-                                    <li>
-                                        <a href="@Url.Action("Index", "RouteMaster" )">Route Master</a>
-                                    </li>
+                                        <li>
+                                            <a href="@Url.Action("Index", "RouteMaster" )">Route Master</a>
+                                        </li>
+                                    }
+                                    @if (accessCodes.Contains("SMCM"))
+                                    {
+                                        <li>
+                                            <a href="@Url.Action("Index", "SmartCard" )">Smartcard Master</a>
+                                        </li>
                                     }
                                 </ul>
                             </li>

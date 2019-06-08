@@ -205,6 +205,7 @@
     <Compile Include="Models\SubRoute.cs" />
     <Compile Include="Models\WorkSpace.cs" />
     <Compile Include="ServiceRequestService.cs" />
+    <Compile Include="SmartCardMasterService.cs" />
     <Compile Include="StaffMasterService.cs" />
     <Compile Include="UserAdministrationService.cs" />
     <Compile Include="UserService.cs" />

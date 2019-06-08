@@ -516,6 +516,7 @@
     </Content>
     <None Include="Properties\PublishProfiles\EbusDuty.pubxml" />
     <None Include="Scripts\JqueryVal\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\DataTable\datatables.min.js" />
     <Content Include="Scripts\dateHelper.js" />
     <Content Include="Scripts\DateTimePicker\bootstrap-datetimepicker.min.js" />
     <Content Include="Scripts\JqueryVal\jquery.unobtrusive-ajax.js" />
@@ -537,6 +538,7 @@
     <Content Include="Styles\Dashboard\metisMenu.min.css" />
     <Content Include="Styles\Dashboard\sb-admin-2.css" />
     <Content Include="Styles\Dashboard\timeline.css" />
+    <Content Include="Styles\DataTable\datatables.min.css" />
     <Content Include="Styles\DateTimePicker\bootstrap-datetimepicker-standalone.css" />
     <Content Include="Styles\DateTimePicker\bootstrap-datetimepicker.css" />
     <Content Include="Styles\DateTimePicker\bootstrap-datetimepicker.min.css" />
@@ -663,6 +665,7 @@
     <Content Include="Views\Report\SalesAnalysisByRouteSummary.cshtml" />
     <Content Include="Views\SmartCard\Index.cshtml" />
     <Content Include="Views\Report\FormEReference.cshtml" />
+    <Content Include="Views\SmartCard\_AddEditSmartCard.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

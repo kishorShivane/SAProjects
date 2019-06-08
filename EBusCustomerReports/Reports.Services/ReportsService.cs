@@ -716,12 +716,12 @@ namespace Reports.Services
             foreach (IGrouping<string, SchVsWorked> contract in groupByContract)
             {
                 IEnumerable<FormEData> groupByDot = from c in contract
-                                                    group c by c.DOTRouteNumber into grp
+                                                    group c by new { DOTRouteNumber = c.DOTRouteNumber, WayfarerRoute = c.WayfarerRoute } into grp
                                                     select new FormEData
                                                     {
-                                                        DOTRoute = grp.Key,
+                                                        DOTRoute = grp.Key.DOTRouteNumber?? string.Empty,
                                                         Contract = grp.Any() ? grp.FirstOrDefault().str7_Contract : string.Empty,
-                                                        WayfarerRoute = grp.Any() ? grp.FirstOrDefault().WayfarerRoute : string.Empty,
+                                                        WayfarerRoute = grp.Key.WayfarerRoute ?? string.Empty,
                                                         From = grp.Any() ? grp.FirstOrDefault().routeName : string.Empty,
                                                         To = grp.Any() ? grp.FirstOrDefault().routeName : string.Empty,
 
@@ -748,8 +748,41 @@ namespace Reports.Services
                                                         AvgRevenuePerTrip = grp.Any() ? grp.FirstOrDefault().str7_Contract : string.Empty
                                                     };
 
+                //listOfGroups.ForEach(x => {
+                //    groupByDot.Where(y => y.DOTRoute.Equals(x.DOTRoute)).FirstOrDefault();
+                //});
+
                 result.AddRange(groupByDot);
             }
+
+            var groupBy = result.GroupBy(y => y.DOTRoute).Where(grp => grp.Count() > 1);
+            groupBy.ToList().ForEach(grp =>
+            {
+                var count = false;
+
+                result.Where(z => z.DOTRoute.Equals(grp.Key)).ToList().ForEach(c => {
+                    if (count)
+                    {
+                        //c.Contract = string.Empty;
+                        c.From = string.Empty;
+                        c.To = string.Empty;
+                        c.ScheduledTrips = "0";
+                        c.OperatedTrips = "0";
+                        c.NotOperatedTrips = "0";
+                        c.Schedulekilometres = "0";
+                        c.OperatedKilometres = "0";
+                        c.Tickets = "0";
+                        c.Passes = "0";
+                        c.Transfers = "0";
+                        c.TotalPassengers = "0";
+                        c.Revenue = "0";
+                        c.NonRevenue = "0";
+                        c.AvgPassengerPerTrip = "0";
+                        c.AvgRevenuePerTrip = "0";
+                    }
+                    count = true;
+                });
+            });
 
 
             result = result.Where(s => !string.IsNullOrEmpty(s.Contract)).ToList();

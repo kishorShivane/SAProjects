@@ -1,8 +1,484 @@
-﻿@using Reports.Services.Models.SmartCard;
+﻿@model Reports.Services.Models.SmartCard.SmartCardData
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Smartcard Master";
     Layout = "~/Views/Shared/_HomeLayout.cshtml";
+    var accessCodes = ((Helpers.Security.EBusPrinciple)System.Threading.Thread.CurrentPrincipal).Properties.AccessCodes;
 }
+@section scripts
+{
+    <link rel="stylesheet" type="text/css" href="~/Styles/DataTable/datatables.min.css" />
+    <script type="text/javascript" src="~/Scripts/DataTable/datatables.min.js"></script>
+    <link href="~/Styles/Jquery/jquery-ui.css" rel="stylesheet" />
+    <style>
+        .funkyradio div {
+            /*clear: both;*/
+            overflow: hidden;
+        }
 
-<h2>Index</h2>
+        .funkyradio label {
+            width: 82%;
+            border-radius: 3px;
+            border: 1px solid #D1D3D4;
+            font-weight: normal;
+        }
 
+        .funkyradio input[type="radio"]:empty,
+        .funkyradio input[type="checkbox"]:empty {
+            display: none;
+        }
+
+            .funkyradio input[type="radio"]:empty ~ label,
+            .funkyradio input[type="checkbox"]:empty ~ label {
+                position: relative;
+                line-height: 2.0em;
+                text-indent: 3.25em;
+                /*margin-top: 2em;*/
+                cursor: pointer;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+            }
+
+                .funkyradio input[type="radio"]:empty ~ label:before,
+                .funkyradio input[type="checkbox"]:empty ~ label:before {
+                    position: absolute;
+                    display: block;
+                    top: 0;
+                    bottom: 0;
+                    left: 0;
+                    content: '';
+                    width: 2.5em;
+                    background: #D1D3D4;
+                    border-radius: 3px 0 0 3px;
+                }
+
+        .funkyradio input[type="radio"]:hover:not(:checked) ~ label,
+        .funkyradio input[type="checkbox"]:hover:not(:checked) ~ label {
+            color: #888;
+        }
+
+            .funkyradio input[type="radio"]:hover:not(:checked) ~ label:before,
+            .funkyradio input[type="checkbox"]:hover:not(:checked) ~ label:before {
+                content: '\2714';
+                text-indent: .9em;
+                color: #C2C2C2;
+            }
+
+        .funkyradio input[type="radio"]:checked ~ label,
+        .funkyradio input[type="checkbox"]:checked ~ label {
+            color: #777;
+        }
+
+            .funkyradio input[type="radio"]:checked ~ label:before,
+            .funkyradio input[type="checkbox"]:checked ~ label:before {
+                content: '\2714';
+                text-indent: .9em;
+                color: #333;
+                background-color: #ccc;
+            }
+
+        .funkyradio input[type="radio"]:focus ~ label:before,
+        .funkyradio input[type="checkbox"]:focus ~ label:before {
+            box-shadow: 0 0 0 3px #999;
+        }
+
+        .funkyradio-info input[type="radio"]:checked ~ label:before,
+        .funkyradio-info input[type="checkbox"]:checked ~ label:before {
+            color: #fff;
+            background-color: #5bc0de;
+        }
+
+        .form-group input[type="checkbox"] {
+            display: none;
+        }
+
+            .form-group input[type="checkbox"] + .btn-group > label span {
+                width: 20px;
+            }
+
+                .form-group input[type="checkbox"] + .btn-group > label span:first-child {
+                    display: none;
+                }
+
+                .form-group input[type="checkbox"] + .btn-group > label span:last-child {
+                    display: inline-block;
+                }
+
+            .form-group input[type="checkbox"]:checked + .btn-group > label span:first-child {
+                display: inline-block;
+            }
+
+            .form-group input[type="checkbox"]:checked + .btn-group > label span:last-child {
+                display: none;
+            }
+
+        .thead-inverse th {
+            color: #fff;
+            background-color: #373a3c;
+            text-align: center;
+        }
+
+        .table-striped td {
+            text-align: center;
+        }
+
+        .modal-lg {
+            min-width: 1250px;
+        }
+
+        .transaction {
+            min-width: 900px;
+        }
+
+        .linkEdit {
+            text-decoration: none;
+            cursor: pointer;
+            color: green;
+        }
+
+        .linkDeActivate {
+            text-decoration: none;
+            cursor: pointer;
+            color: red;
+        }
+
+        .linkView {
+            text-decoration: none;
+            cursor: pointer;
+            color: blue;
+        }
+
+        .tick {
+            text-decoration: none;
+            color: darkgreen;
+        }
+
+        .cross {
+            text-decoration: none;
+            color: darkred;
+        }
+
+        .modal-title {
+            margin: 0;
+            line-height: 1.428571;
+            font-size: medium;
+        }
+
+        .select2 {
+            float: left;
+        }
+
+        .btn {
+            padding: 0px 12px;
+            max-height: 30px;
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+            $("select.select2").select2({ width: "75%" });
+            $("select.select2Mini").select2({ width: "35%" });
+            $("select.select2Line").select2({ tags: true, width: "75%" });
+
+            $("#txtDateOfBirth").datepicker({
+                dateFormat: "dd-mm-yy",
+                maxDate: new Date,
+                beforeShow: function () {
+                    setTimeout(function () {
+                        $('.ui-datepicker').css('z-index', 99999999999999);
+                    }, 0);
+                }
+            });
+        });
+    </script>
+}
+<div class="container-fluid">
+    <div id="page-wrapper">
+        <div class="row">
+            <div class="col-lg-12">
+                <h2 class="page-header" style="margin: 10px; color: #337ab7 !important">Staff Master</h2>
+            </div>
+        </div>
+        <div class="row" id="divSmartCardEditor">
+            <div class="panel panel-info">
+                <div class="panel-heading" style="background-color: #337ab7 !important;background-image: none;">
+                    <a data-toggle="collapse" href="#pnlSearch" style="color:white;text-decoration:none;">Search Staff</a>
+                </div>
+                <div id="pnlSearch" class="panel-collapse collapse in">
+                    <div class="panel-body">
+                        <div class="row text-center">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon" style="min-width: 90px;">Smart Card Number</div>
+                                        @Html.TextBoxFor(m => m.SmartCardNumber, new { id = "txtSmartCardNumber", @class = "form-control", placeholder = "Smart Card Number", maxlength = "30" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon" style="min-width: 90px;">First Name</div>
+                                        @Html.TextBoxFor(m => m.FirstName, new { id = "txtFirstName", @class = "form-control", placeholder = "First Name", maxlength = "30" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <button type="button" class="btn btn-info" id="btnSearch">Search&nbsp;<i class="fa fa-1x fa-search"></i></button> &nbsp; &nbsp; &nbsp; &nbsp;
+                                <button type="button" class="btn btn-danger" id="btnClearSearch">Clear</button>
+                            </div>
+                        </div>
+                        <div class="row text-center">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm" style="min-width: 90px;">
+                                        <div class="input-group-addon">ID Number<font style="color:red">*</font></div>
+                                        @Html.TextBoxFor(m => m.IDNumber, new { id = "txtIDNumber", @class = "form-control", placeholder = "ID Number", maxlength = "30" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm" style="min-width: 90px;">
+                                        <div class="input-group-addon">Cell Phone Number<font style="color:red">*</font></div>
+                                        @Html.TextBoxFor(m => m.CellPhoneNumber, new { id = "txtCellPhoneNumber", @class = "form-control", placeholder = "Cell Phone Number", maxlength = "30" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="funkyradio">
+                            <div class="col-md-2">
+                                <div class="funkyradio-info">
+                                    <input type="radio" name="radio" id="chkActive" value="Active" class="SearchFilter" />
+                                    <label for="chkActive">Active</label>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="funkyradio-info">
+                                    <input type="radio" name="radio" id="chkInActive" value="InActive" class="SearchFilter" />
+                                    <label for="chkInActive">InActive</label>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="funkyradio-info">
+                                    <input type="radio" name="radio" id="chkBoth" value="Both" class="SearchFilter" />
+                                    <label for="chkBoth">Both</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <button type="button" class="btn btn-success" id="btnAddSmartCard">Add SmartCard&nbsp;<i class="fa fa-1x fa-plus"></i></button>
+                                &nbsp; &nbsp;
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel" id="divSearchResults">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table-responsive">
+                                <table class="display table table-striped" id="tblSmartCardResults">
+                                    <thead class="thead-inverse" style="background-color:black">
+                                        <tr>
+                                            <th>Smartcard Number</th>
+                                            <th>Initials</th>
+                                            <th>First Name</th>
+                                            <th>ID Number</th>
+                                            <th>Cell Phone No</th>
+                                            <th>Edit</th>
+                                            <th>Activate/De-activate</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @Html.Partial("_AddEditSmartCard", Model)
+            <input type="hidden" id="hdnIndexModelTitle" value="" />
+        </div>
+    </div>
+</div>
+<script>
+    var divAddEditSmartCard = $("div#divAddEditSmartCard");
+    var table = $('#tblSmartCardResults').DataTable({ searching: false, ordering: false });
+    $(document).ready(function () {
+        $("input#chkActive").prop("checked", true);
+        SearchSmartCards();
+        BindSmartCards(true,GetSelectedCheckBoxValue());
+        AddSmartCard();
+
+        $("input.SearchFilter").change(function () {
+            BindSmartCards(true, $(this).attr("value"));
+        });
+
+        $("button#btnClearSearch").click(function () {
+            ClearFormValuesInBlock($("div#pnlSearch"));
+            BindSmartCards(true, GetSelectedCheckBoxValue());
+        });
+        //$("div#tblSmartCardResults_info").hide();
+    });
+
+    $(document).on("click", "a#lnkSmartCardEdit", function () {
+        ClearFormValuesInBlock(divAddEditSmartCard);
+        var row = $(this).parent().parent();
+        BindSmartCardDetails(row, $(this).attr("value"));
+        SetPopupTitle(divAddEditSmartCard, "Edit SmartCard - ", divAddEditSmartCard.find("input#hdnModelTitle").attr("value"));
+        divAddEditSmartCard.modal('show');
+    });
+
+    $(document).on("click", "a#lnkSmartCardActivate", function () {
+        debugger;
+        var row = $(this).parent().parent();
+        var status = row.find("input#hdnSmartCardStatus").attr("value")== "true"? false: true;
+        SetSmartCardStatus(status, $(this).attr("value"));
+    });
+
+    function SetSmartCardStatus(status, smartCardID) {
+        debugger;
+
+            $.ajax({
+                async: false,
+                url: '@Url.Action("SetSmartCardStatus", "SmartCard")',
+                type: 'Post',
+                data: JSON.stringify({ status: status, StaffTypeID: smartCardID}),
+                dataType: 'json',
+                contentType: 'application/json',
+                error: function (xhr) {
+                    alert('Error: ' + xhr.statusText);
+                },
+                success: function (result) {
+                    //Now Process the data
+                    alert(result);
+                    BindSmartCards(true, GetSelectedCheckBoxValue());
+                }
+            }).done(function (result) {
+                return false;
+            });
+    }
+
+    function BindSmartCardDetails(row, value) {
+        debugger;
+        divAddEditSmartCard.find("input#txtSmartCardNumber").val(row.find("span#lblSmartCardNumber").html());
+        divAddEditSmartCard.find("input#txtInitials").val(row.find("span#lblInitials").html());
+        divAddEditSmartCard.find("input#txtFirstName").val(row.find("span#lblFirstName").html());
+        divAddEditSmartCard.find("input#txtIDNumber").val(row.find("span#lblIDNumber").html());
+        divAddEditSmartCard.find("input#txtCellPhoneNumber").val(row.find("span#lblCellPhoneNumber").html());
+        divAddEditSmartCard.find("input#txtTitle").val(row.find("input#hdnTitle").attr("value"));
+        divAddEditSmartCard.find("input#txtEmail").val(row.find("input#hdnEmail").attr("value"));
+        divAddEditSmartCard.find("input#txtAddress").val(row.find("input#hdnAddress").attr("value"));
+        divAddEditSmartCard.find("input#txtDateOfBirth").val(row.find("input#hdnDateOfBirth").attr("value"));
+        divAddEditSmartCard.find("input#txtSurname").val(row.find("input#hdnSurname").attr("value"));
+        divAddEditSmartCard.find("input#txtSmartCardStatus").val(row.find("input#hdnSmartCardStatus").attr("value"));
+        divAddEditSmartCard.find("select#ddlSmartCardTypes").val(row.find("input#hdnSmartCardTypeID").attr("value")).change();
+        divAddEditSmartCard.find("input#hdnSmartCardNumber").attr("value", value);
+
+        if (row.find("input#hdnSmartCardStatus").attr("value") == "true")
+            divAddEditSmartCard.find("input#chkSmartCardActive").prop("checked", true);
+        else
+            divAddEditSmartCard.find("input#chkSmartCardActive").removeProp("checked");
+        divAddEditSmartCard.find("input#hdnModelTitle").attr("value", row.find("span#lblFirstName").html() + "(" + row.find("span#lblSmartCardNumber").html()+")");
+    }
+
+    function SearchSmartCards() {
+        $("button#btnSearch").click(function () {
+            BindSmartCards(false, GetSelectedCheckBoxValue());
+        });
+    }
+
+    function BindSmartCards(isFromPageLoad, status) {
+        debugger;
+        table.destroy();
+        var smartCardNumber = $("input#txtSmartCardNumber").val();
+        var firstName = $("input#txtFirstName").val();
+        var idNumber = $("input#txtIDNumber").val();
+        var cellPhone = $("input#txtCellPhoneNumber").val();
+        var tableBody = $("table#tblSmartCardResults").find("tbody");
+        var rows = "";
+        if (!isFromPageLoad && smartCardNumber == "" && firstName == "" && idNumber == '' && cellPhone == '') {
+            alert("Please enter search criteria!!");
+            $("#txtSmartCardNumber").focus();
+            return false;
+        }
+        else {
+            if (status == "") { status = "Active"; }
+            $.ajax({
+                async: false,
+                url: '@Url.Action("SearchSmartCard", "SmartCard")',
+                type: 'Post',
+                data: JSON.stringify({ smartCardNumber: smartCardNumber, firstName: firstName, status: status, idNumber: idNumber, cellPhone: cellPhone}),
+                dataType: 'json',
+                contentType: 'application/json',
+                error: function (xhr) {
+                    alert('Error: ' + xhr.statusText);
+                },
+                success: function (result) {
+                    //Now Process the data
+                    tableBody.html();
+                    if (result.length == 0) {
+                        alert("No records found for the selected criteria!!");
+                        tableBody.html("");
+                    }
+                    else {
+                        $(result).each(function (index) {
+                            var CurrentItem = this;
+                            debugger;
+                            var actDeAct = "<td><a id='lnkSmartCardActivate' class='linkDeActivate' value='" + CurrentItem.ID + "'><span class='fa-stack fa-sm '><i class='fa fa-close fa-stack-1x'></i></span>De-Activate</a></td>"
+                            if (!CurrentItem.SmartCardStatus) {
+                                actDeAct = "<td><a id='lnkSmartCardActivate' class='linkEdit' value='" + CurrentItem.ID + "'><span class='fa-stack fa-sm '><i class='fa fa-check fa-stack-1x'></i></span>Activate</a></td>"
+                            }
+
+                            rows = rows + "<tr>";
+                            rows = rows + "<td><span id='lblSmartCardNumber'>" + CurrentItem.SmartCardNumber + "</span><input type='hidden' value=" + CurrentItem.Email + " id='hdnEmail'/></td>";
+                            rows = rows + "<td><span id='lblInitials'>" + CurrentItem.Initials + "</span><input type='hidden' value=" + CurrentItem.SmartCardTypeID + " id='hdnSmartCardTypeID'/><input type='hidden' value=" + CurrentItem.Address + " id='hdnAddress'/></td>";
+                            rows = rows + "<td><span id='lblFirstName'>" + CurrentItem.FirstName + "</span><input type='hidden' value=" + CurrentItem.DateOfBirth + " id='hdnDateOfBirth'/></td>";
+                            rows = rows + "<td><span id='lblIDNumber'>" + CurrentItem.IDNumber + "</span><input type='hidden' value=" + CurrentItem.Title + " id='hdnTitle'/></td>";
+                            rows = rows + "<td><span id='lblCellPhoneNumber'>" + CurrentItem.CellPhoneNumber + "</span><input type='hidden' value=" + CurrentItem.Surname + " id='hdnSurname'/></td>";
+                            rows = rows + "<td><a id='lnkSmartCardEdit' class='linkEdit' value='" + CurrentItem.ID + "'><span class='fa-stack fa-sm '><i class='fa fa-edit fa-stack-1x '></i></span></a><input type='hidden' value=" + CurrentItem.SmartCardStatus + " id='hdnSmartCardStatus'/></td>";
+                            rows = rows + actDeAct;
+                            rows = rows + "</tr>";
+                        });
+                        tableBody.html("").html(rows);
+                    }
+                }
+            }).done(function (result) {
+                return false;
+            });
+        }
+        table = $('#tblSmartCardResults').DataTable({ searching: false, ordering: false });
+    }
+
+    function SetPopupTitle(popup, title, nav) {
+        popup.find("div.modal-title").html("<span style='font-weight: bolder;text-align: right;font-size: larger;'>" + title + "</span>" + nav);
+    }
+
+    function AddSmartCard() {
+        $("button#btnAddSmartCard").click(function () {
+            ClearFormValuesInBlock(divAddEditSmartCard);
+            SetPopupTitle(divAddEditSmartCard, "Add SmartCard", "");
+            divAddEditSmartCard.find("input#chkSmartCardActive").prop("checked", true);
+            divAddEditSmartCard.modal('show');
+        });
+    }
+
+    function GetSelectedCheckBoxValue() {
+        var result = "Active";
+        $("div#divSmartCardEditor div.funkyradio").find("input.SearchFilter").each(function () {
+            if ($(this).is(":checked")) {
+                result = $(this).attr("value");
+            }
+        });
+        return result;
+    }
+
+</script>

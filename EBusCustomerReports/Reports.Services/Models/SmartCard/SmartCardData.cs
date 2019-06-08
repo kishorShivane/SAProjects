@@ -12,6 +12,7 @@ namespace Reports.Services.Models.SmartCard
         public SmartCardData()
         { SmartCardTypes = new List<SelectListItem>(); }
 
+        public string ID { get; set; }
         public string SmartCardNumber { get; set; }
         public int SmartCardTypeID { get; set; }
         public string SmartCardType { get; set; }

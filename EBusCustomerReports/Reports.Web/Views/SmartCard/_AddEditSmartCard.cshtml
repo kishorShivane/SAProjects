@@ -1,0 +1,224 @@
+﻿@model Reports.Services.Models.SmartCard.SmartCardData
+<!-- Modal Contents -->
+<div id="divAddEditSmartCard" class="modal fade ">
+    <!-- class modal and fade -->
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header modal-header-info">
+                <!-- modal header -->
+                <button type="button" class="close"
+                        data-dismiss="modal" aria-hidden="true">
+                    ×
+                </button>
+                <div class="modal-title">Add Edit SmartCard</div>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm" style="width: 82%;">
+                                        <div class="input-group-addon">SmartCard Number<font style="color:red">*</font></div>
+                                        @Html.TextBoxFor(m => m.SmartCardNumber, new { id = "txtSmartCardNumber", @class = "form-control", placeholder = "SmartCard Number", required = "true", style = "width: 74%;" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">SMartCard Type<font style="color:red">*</font></div>
+                                        @Html.DropDownList("SmartCard Type", Model.SmartCardTypes, new { id = "ddlSmartCardTypes", @class = "form-control select2", placeholder = "SmartCard Type", required = "true", style = "width:100%;" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm" style="width: 82%;">
+                                        <div class="input-group-addon">Title</div>
+                                        @Html.TextBoxFor(m => m.Title, new { id = "txtTitle", @class = "form-control", placeholder = "Title", style = "width: 74%;" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">Initial</div>
+                                        @Html.TextBoxFor(m => m.Initials, new { id = "txtInitials", @class = "form-control", placeholder = "Initials", style = "width: 74%;" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-1">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm" style="width: 82%;">
+                                        <div class="input-group-addon">First Name<font style="color:red">*</font></div>
+                                        @Html.TextBoxFor(m => m.FirstName, new { id = "txtFirstName", @class = "form-control", placeholder = "First Name", required = "true", style = "width: 74%;" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">Surname</div>
+                                        @Html.TextBoxFor(m => m.Surname, new { id = "txtSurname", @class = "form-control", placeholder = "Surname", style = "width: 74%;" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-1">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm" style="width: 82%;">
+                                        <div class="input-group-addon">ID Number</div>
+                                        @Html.TextBoxFor(m => m.IDNumber, new { id = "txtIDNumber", @class = "form-control", placeholder = "ID Number", style = "width: 74%;" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">Date Of Birth</div>
+                                        @Html.TextBoxFor(m => m.DateOfBirth, new { id = "txtDateOfBirth", @class = "form-control", placeholder = "Date Of Birth", style = "width: 74%;" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-1">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm" style="width: 82%;">
+                                        <div class="input-group-addon">Email</div>
+                                        @Html.TextBoxFor(m => m.Email, new { id = "txtEmail", @class = "form-control", placeholder = "Email", style = "width: 74%;" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-addon">Cell Phone Number</div>
+                                        @Html.TextBoxFor(m => m.CellPhoneNumber, new { id = "txtCellPhoneNumber", @class = "form-control", placeholder = "CellPhoneNumber", style = "width: 74%;" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-1">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm" style="width: 82%;">
+                                        <div class="input-group-addon">Address</div>
+                                        @Html.TextBoxFor(m => m.Address, new { id = "txtAddress", @class = "form-control", placeholder = "Address", style = "width: 74%;" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="funkyradio">
+                                    <div class="col-md-6">
+                                        <div class="funkyradio-info" style="margin-left: -15px;">
+                                            <input type="checkbox" name="radio" id="chkSmartCardActive" value="Active" />
+                                            <label for="chkSmartCardActive">Active</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="row text-center">
+                            <div class="col-md-12">
+                                <input type="hidden" id="hdnSmartCardNumber" value="0" />
+                                <input type="hidden" id="hdnModelTitle" value="" />
+                                <button type="submit" class="btn btn-info" id="btnSaveSmartCard"><i class="fa fa-1x fa-save"></i>&nbsp;Save</button>&nbsp;&nbsp;&nbsp;&nbsp;
+                                <button type="button" class="btn btn-danger" id="btnClear"><i class="fa fa-1x fa-close"></i>&nbsp;Clear</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <!-- modal footer -->
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+
+        </div> <!-- / .modal-content -->
+
+    </div> <!-- / .modal-dialog -->
+
+</div>
+<!-- / .modal -->
+<script>
+
+    $(document).ready(function () {
+        SaveSmartCard();
+        $("button#btnClear").click(function () {
+            ClearFormValuesInBlock(divAddEditSmartCard);
+        });
+    });
+
+    function SaveSmartCard() {
+        $("button#btnSaveSmartCard").click(function () {
+            debugger;
+            if (CheckMandatoryFieldsInBlock(divAddEditSmartCard, "") && CheckNumericFields(divAddEditSmartCard, "")) {
+                var ID = divAddEditSmartCard.find("input#hdnSmartCardNumber").attr("value");
+                var SmartCardNumber = divAddEditSmartCard.find("input#txtSmartCardNumber").val();
+                var Title = divAddEditSmartCard.find("input#txtTitle").val();
+                var SmartCardTypeID = divAddEditSmartCard.find("select#ddlSmartCardTypes").val();
+                var Initials = divAddEditSmartCard.find("input#txtInitials").val();
+                var FirstName = divAddEditSmartCard.find("input#txtFirstName").val();
+                var Surname = divAddEditSmartCard.find("input#txtSurname").val();
+                var IDNumber = divAddEditSmartCard.find("input#txtIDNumber").val();
+                var DateOfBirth = divAddEditSmartCard.find("input#txtDateOfBirth").val();
+                var Email = divAddEditSmartCard.find("input#txtEmail").val();
+                var CellPhoneNumber = divAddEditSmartCard.find("input#txtCellPhoneNumber").val();
+                var Address = divAddEditSmartCard.find("input#txtAddress").val();
+                var Status = divAddEditSmartCard.find("#chkSmartCardActive").is(":checked");
+
+                //TODO: start from here concatenation
+                $.ajax({
+                    async: false,
+                    url: '@Url.Action("InsertOrUpdateSmartCard", "SmartCard")',
+                    type: 'Post',
+                    data: JSON.stringify({
+                        ID: ID,SmartCardNumber: SmartCardNumber, Title: Title, SmartCardTypeID: SmartCardTypeID, Initials: Initials, FirstName: FirstName,
+                        SmartCardStatus: Status, Surname: Surname, IDNumber: IDNumber,
+                        DateOfBirth: DateOfBirth, Email: Email, CellPhoneNumber: CellPhoneNumber, Address: Address
+                    }),
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    error: function (xhr) {
+                        alert('Error: ' + xhr.statusText);
+                    },
+                    success: function (result) {
+                        //Now Process the data
+                        if (result == 1) {
+                            debugger;
+                            divAddEditSmartCard.modal("hide");
+                            alert("SmartCard Saved Successfully!!");
+                            BindSmartCards(true, GetSelectedCheckBoxValue());
+                        }
+                        else if (result == -1) {
+                            alert("There is already a smartcard with same smartcard number!!");
+                        }
+                    }
+                }).done(function (result) {
+                    return false;
+                });
+            }
+        });
+    }
+</script>
