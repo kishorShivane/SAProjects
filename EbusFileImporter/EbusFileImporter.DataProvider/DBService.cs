@@ -295,6 +295,7 @@ namespace EbusFileImporter.DataProvider
                         Logger.Info("AuditFileStatus Inserted: " + xmlDataToImport.AuditFileStatuss.Count().ToString());
                         Logger.Info("DiagnosticRecords Inserted: " + xmlDataToImport.DiagnosticRecords.Count().ToString());
                         Logger.Info("BusChecklistRecords Inserted: " + xmlDataToImport.BusChecklistRecords.Count().ToString());
+                        Logger.Info("GPSCoordinates Inserted: " + xmlDataToImport.GPSCoordinates.Count().ToString());
                         Logger.Info("Commited Changes");
                         Logger.Info("-------DB Transaction - End-------");
                     }

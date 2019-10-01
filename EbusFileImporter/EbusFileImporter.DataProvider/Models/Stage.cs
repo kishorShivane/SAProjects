@@ -18,4 +18,11 @@ namespace EbusFileImporter.DataProvider.Models
         public Nullable<System.DateTime> dat_RecordMod { get; set; }
         public Nullable<int> id_BatchNo { get; set; }
     }
+
+    public class TempStage
+    {
+        public int id_Stage { get; set; }
+        public string TSN { get; set; }
+        public string RecordedTime { get; set; }
+    }
 }

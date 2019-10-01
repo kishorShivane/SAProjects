@@ -9,9 +9,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace EbusFileImporter.Core
@@ -19,10 +17,11 @@ namespace EbusFileImporter.Core
     public class XmlImporter : IImporter
     {
         public static ILogService Logger { get; set; }
-        Helper helper = null;
-        EmailHelper emailHelper = null;
-        DBService dbService = null;
-        public static Object thisLock = new Object();
+
+        private Helper helper = null;
+        private EmailHelper emailHelper = null;
+        private DBService dbService = null;
+        public static object thisLock = new object();
         public XmlImporter(ILogService logger)
         {
             Logger = logger;
@@ -41,7 +40,11 @@ namespace EbusFileImporter.Core
         public bool PreImportProcessing(string filePath)
         {
             bool result = false;
-            if (ValidateFile(filePath)) result = true;
+            if (ValidateFile(filePath))
+            {
+                result = true;
+            }
+
             return result;
         }
 
@@ -49,10 +52,10 @@ namespace EbusFileImporter.Core
         {
             bool result = true;
             Thread.CurrentThread.CurrentCulture = new CultureInfo("en-GB");
-            var todayDate = DateTime.Now;
-            var batch = Convert.ToInt32(todayDate.Day.ToString().PadLeft(2, '0') + todayDate.Month.ToString().PadLeft(2, '0') + todayDate.Year.ToString());
-            var splitFilepath = filePath.Split('\\');
-            var dbName = splitFilepath[splitFilepath.Length - 3];
+            DateTime todayDate = DateTime.Now;
+            int batch = Convert.ToInt32(todayDate.Day.ToString().PadLeft(2, '0') + todayDate.Month.ToString().PadLeft(2, '0') + todayDate.Year.ToString());
+            string[] splitFilepath = filePath.Split('\\');
+            string dbName = splitFilepath[splitFilepath.Length - 3];
             try
             {
                 if (Constants.DetailedLogging)
@@ -64,15 +67,19 @@ namespace EbusFileImporter.Core
 
 
                 XDocument xdoc = XDocument.Load(filePath);
-                var nodes = xdoc.Root.Elements().ToList();
+                List<XElement> nodes = xdoc.Root.Elements().ToList();
 
                 #region Check for file completeness
-                var fileClosureNode = nodes.Where((x => x.Attribute("STXID").Value.Equals("82")));
+                IEnumerable<XElement> fileClosureNode = nodes.Where((x => x.Attribute("STXID").Value.Equals("82")));
                 if (fileClosureNode == null || !fileClosureNode.Any())
                 {
                     Logger.Info("No file closure found, Moving file to error folder");
                     helper.MoveErrorFile(filePath, dbName);
-                    if (Constants.EnableEmailTrigger) emailHelper.SendMail(filePath, dbName, "", EmailType.Error);
+                    if (Constants.EnableEmailTrigger)
+                    {
+                        emailHelper.SendMail(filePath, dbName, "", EmailType.Error);
+                    }
+
                     return false;
                 }
                 #endregion
@@ -80,32 +87,47 @@ namespace EbusFileImporter.Core
                 #region Check for validity of ExtendedWaybill date
                 if (Constants.DetailedLogging)
                 { Logger.Info("Check for validity of ExtendedWaybill date - Start"); }
-                var extendedWaybill = nodes.Where((x => x.Attribute("STXID").Value.Equals("122")));
-                var tempDutyDetail = nodes.Where((x => x.Attribute("STXID").Value.Equals("151"))).FirstOrDefault();
+                IEnumerable<XElement> extendedWaybill = nodes.Where((x => x.Attribute("STXID").Value.Equals("122")));
+                XElement tempDutyDetail = nodes.Where((x => x.Attribute("STXID").Value.Equals("151"))).FirstOrDefault();
                 if (tempDutyDetail != null && extendedWaybill != null && extendedWaybill.Any())
                 {
-                    var foundDataProblem = false;
-                    var dutyDate = helper.ConvertToInsertDateTimeString(tempDutyDetail.Element("DutyDate").Value, tempDutyDetail.Element("DutyTime").Value);
-                    var tempList = extendedWaybill.ToList();
-                    for (var i = 0; i <= tempList.Count() - 1; i++)
+                    bool foundDataProblem = false;
+                    DateTime dutyDate = helper.ConvertToInsertDateTimeString(tempDutyDetail.Element("DutyDate").Value, tempDutyDetail.Element("DutyTime").Value);
+                    List<XElement> tempList = extendedWaybill.ToList();
+                    for (int i = 0; i <= tempList.Count() - 1; i++)
                     {
                         DateTime? tempNextStartDate = null;
-                        var startDateTime = helper.ConvertToInsertDateTimeString(tempList[i].Element("StartDate").Value, tempList[i].Element("StartTime").Value);
-                        var stopDateTime = helper.ConvertToInsertDateTimeString(tempList[i].Element("StopDate").Value, tempList[i].Element("StopTime").Value);
+                        DateTime startDateTime = helper.ConvertToInsertDateTimeString(tempList[i].Element("StartDate").Value, tempList[i].Element("StartTime").Value);
+                        DateTime stopDateTime = helper.ConvertToInsertDateTimeString(tempList[i].Element("StopDate").Value, tempList[i].Element("StopTime").Value);
                         if ((i + 1) <= tempList.Count() - 1)
                         {
                             tempNextStartDate = helper.ConvertToInsertDateTimeString(tempList[i + 1].Element("StartDate").Value, tempList[i + 1].Element("StartTime").Value);
                         }
 
-                        if (DateTime.Compare(startDateTime, stopDateTime) >= 0) foundDataProblem = true;
-                        if (i == 0 && DateTime.Compare(startDateTime, dutyDate) >= 0) foundDataProblem = true;
-                        if (tempNextStartDate != null && DateTime.Compare(tempNextStartDate.Value, stopDateTime) >= 0) foundDataProblem = true;
+                        if (DateTime.Compare(startDateTime, stopDateTime) >= 0)
+                        {
+                            foundDataProblem = true;
+                        }
+
+                        if (i == 0 && DateTime.Compare(startDateTime, dutyDate) >= 0)
+                        {
+                            foundDataProblem = true;
+                        }
+
+                        if (tempNextStartDate != null && DateTime.Compare(tempNextStartDate.Value, stopDateTime) >= 0)
+                        {
+                            foundDataProblem = true;
+                        }
 
                         if (foundDataProblem)
                         {
                             Logger.Info("Date Problem found, Moving file to error folder.");
                             helper.MoveDateProblemFile(filePath, dbName);
-                            if (Constants.EnableEmailTrigger) emailHelper.SendMail(filePath, dbName, "", EmailType.DateProblem);
+                            if (Constants.EnableEmailTrigger)
+                            {
+                                emailHelper.SendMail(filePath, dbName, "", EmailType.DateProblem);
+                            }
+
                             return false;
                         }
                     }
@@ -115,16 +137,16 @@ namespace EbusFileImporter.Core
                 #endregion
 
                 #region Initialize Variables
-                var latestModuleID = 0;
-                var latestDutyID = 0;
-                var latestJourneyID = 0;
-                var latestStageID = 0;
-                var latestTransID = 0;
-                var latestPosTransID = 0;
-                var latestInspectorID = 0;
-                var latestAuditFileStatus = 0;
-                var latestdiagnosticRecord = 0;
-                var latestBusChecklistID = 0;
+                int latestModuleID = 0;
+                int latestDutyID = 0;
+                int latestJourneyID = 0;
+                int latestStageID = 0;
+                int latestTransID = 0;
+                int latestPosTransID = 0;
+                int latestInspectorID = 0;
+                int latestAuditFileStatus = 0;
+                int latestdiagnosticRecord = 0;
+                int latestBusChecklistID = 0;
 
                 Module moduleDetail = null;
                 List<Waybill> wayBillDetails = new List<Waybill>();
@@ -137,6 +159,8 @@ namespace EbusFileImporter.Core
                 List<Journey> journeyDetails = new List<Journey>();
                 List<Stage> stageDetails = new List<Stage>();
                 Stage stageDetail = null;
+                List<TempStage> tempStageDetails = new List<TempStage>();
+                TempStage tempStage = null;
                 Trans transDetail = null;
                 GPSCoordinate gPSCoordinate = null;
                 List<GPSCoordinate> gPSCoordinates = new List<GPSCoordinate>();
@@ -149,7 +173,7 @@ namespace EbusFileImporter.Core
                 BusChecklist busChecklistDetail = null;
                 #endregion
 
-                var way6OrTGXCheck = nodes.Where(x => x.Attribute("STXID").Value.Equals("18")).FirstOrDefault().Attribute("Position");
+                XAttribute way6OrTGXCheck = nodes.Where(x => x.Attribute("STXID").Value.Equals("18")).FirstOrDefault().Attribute("Position");
 
                 if (way6OrTGXCheck != null)
                 {
@@ -157,22 +181,24 @@ namespace EbusFileImporter.Core
 
                     #region Process Module Information
 
-                    var node18 = nodes.Where(x => x.Attribute("STXID").Value.Equals("18")).FirstOrDefault();
+                    XElement node18 = nodes.Where(x => x.Attribute("STXID").Value.Equals("18")).FirstOrDefault();
                     if (node18 != null)
                     {
-                        moduleDetail = new Module();
-                        moduleDetail.id_Module = latestModuleID;
-                        moduleDetail.str_LocationCode = null;
-                        moduleDetail.int4_ModuleID = (int)node18.Element("ModuleESN");
-                        moduleDetail.int4_SignOnID = (int)node18.Element("DriverNumber1");
-                        moduleDetail.int4_OnReaderID = (int)node18.Element("HomeDepotID");
-                        var date = helper.ConvertToInsertDateString((string)node18.Element("SignOnDate"));
+                        moduleDetail = new Module
+                        {
+                            id_Module = latestModuleID,
+                            str_LocationCode = null,
+                            int4_ModuleID = (int)node18.Element("ModuleESN"),
+                            int4_SignOnID = (int)node18.Element("DriverNumber1"),
+                            int4_OnReaderID = (int)node18.Element("HomeDepotID")
+                        };
+                        DateTime date = helper.ConvertToInsertDateString((string)node18.Element("SignOnDate"));
                         moduleDetail.dat_SignOnDate = date;
                         moduleDetail.dat_SignOnTime = helper.ConvertToInsertDateTimeString((string)node18.Element("SignOnDate"), (string)node18.Element("SignOnTime"));
                         moduleDetail.int4_OffReaderID = (int)node18.Element("HomeDepotID");
                         date = helper.ConvertToInsertDateString((string)node18.Element("SignOffDate"));
                         moduleDetail.dat_SignOffDate = date;
-                        var time = helper.ConvertToInsertDateTimeString((string)node18.Element("SignOffDate"), (string)node18.Element("SignOffTime"));
+                        DateTime time = helper.ConvertToInsertDateTimeString((string)node18.Element("SignOffDate"), (string)node18.Element("SignOffTime"));
                         moduleDetail.dat_SignOffTime = time;
                         moduleDetail.dat_TrafficDate = date;
                         moduleDetail.dat_ModuleOutDate = date;
@@ -196,12 +222,12 @@ namespace EbusFileImporter.Core
 
                     #region Process Waybill Information
 
-                    var nodes122 = nodes.Where(x => x.Attribute("STXID").Value.Equals("122"));
+                    IEnumerable<XElement> nodes122 = nodes.Where(x => x.Attribute("STXID").Value.Equals("122"));
                     if (nodes122 != null && nodes122.Any())
                     {
                         nodes122.ToList().ForEach(x =>
                         {
-                            var thisNode = x;
+                            XElement thisNode = x;
                             wayBillDetails.Add(new Waybill()
                             {
                                 ModuleID = (int)thisNode.Element("ModuleNumber"),
@@ -228,29 +254,31 @@ namespace EbusFileImporter.Core
 
                     #region Process Duty Information   
 
-                    var node151 = nodes.Where(x => x.Attribute("STXID").Value.Equals("151")).FirstOrDefault();
-                    var node122 = nodes.Where(x => x.Attribute("STXID").Value.Equals("122")).FirstOrDefault();
-                    var node154 = nodes.Where(x => x.Attribute("STXID").Value.Equals("154")).FirstOrDefault();
-                    var node155 = nodes.Where(x => x.Attribute("STXID").Value.Equals("155")).FirstOrDefault();
+                    XElement node151 = nodes.Where(x => x.Attribute("STXID").Value.Equals("151")).FirstOrDefault();
+                    XElement node122 = nodes.Where(x => x.Attribute("STXID").Value.Equals("122")).FirstOrDefault();
+                    XElement node154 = nodes.Where(x => x.Attribute("STXID").Value.Equals("154")).FirstOrDefault();
+                    XElement node155 = nodes.Where(x => x.Attribute("STXID").Value.Equals("155")).FirstOrDefault();
 
                     if (node151 != null && node154 != null && node155 != null)
                     {
-                        dutyDetail = new Duty();
-                        dutyDetail.id_Duty = latestDutyID;
-                        dutyDetail.id_Module = moduleDetail.id_Module;
-                        dutyDetail.int4_DutyID = (int)node151.Element("DutyNo");
-                        dutyDetail.int4_OperatorID = (int)node151.Element("DriverNumber");
-                        dutyDetail.str_ETMID = (string)node122?.Element("ETMNumber");
-                        dutyDetail.int4_GTValue = (int)node151.Element("ETMCashTotal");
-                        dutyDetail.int4_NextTicketNumber = (int)node151.Element("NextTicketNo");
-                        dutyDetail.int4_DutySeqNum = (int)node151.Element("DutySeqNo.");
-                        var date = helper.ConvertToInsertDateString((string)node151.Element("DutyDate"));
+                        dutyDetail = new Duty
+                        {
+                            id_Duty = latestDutyID,
+                            id_Module = moduleDetail.id_Module,
+                            int4_DutyID = (int)node151.Element("DutyNo"),
+                            int4_OperatorID = (int)node151.Element("DriverNumber"),
+                            str_ETMID = (string)node122?.Element("ETMNumber"),
+                            int4_GTValue = (int)node151.Element("ETMCashTotal"),
+                            int4_NextTicketNumber = (int)node151.Element("NextTicketNo"),
+                            int4_DutySeqNum = (int)node151.Element("DutySeqNo.")
+                        };
+                        DateTime date = helper.ConvertToInsertDateString((string)node151.Element("DutyDate"));
                         dutyDetail.dat_DutyStartDate = date;
                         dutyDetail.dat_DutyStartTime = helper.ConvertToInsertDateTimeStringWithOutSeconds((string)node151.Element("DutyDate"), (string)node151.Element("DutyTime"));
                         dutyDetail.dat_DutyStopDate = helper.ConvertToInsertDateString((string)node154.Element("SignOffDate"));
                         dutyDetail.dat_DutyStopTime = helper.ConvertToInsertDateTimeStringWithOutSeconds((string)node154.Element("SignOffDate"), (string)node154.Element("SignOffTime"));
                         dutyDetail.dat_TrafficDate = date;
-                        dutyDetail.str_BusID = (string)node151.Element("FleetID").Value.TrimStart('0') == "" ? "0" : (string)node151.Element("FleetID").Value.TrimStart('0');
+                        dutyDetail.str_BusID = node151.Element("FleetID").Value.TrimStart('0') == "" ? "0" : node151.Element("FleetID").Value.TrimStart('0');
                         dutyDetail.int4_DutyRevenue = (int)node154.Element("DutyCashTotal");
                         dutyDetail.int4_DutyTickets = (int)node154.Element("DutyTicketTotal");
                         dutyDetail.int4_DutyPasses = 0;
@@ -278,13 +306,13 @@ namespace EbusFileImporter.Core
 
                     #region Process AuditFileStatus Information
 
-                    var nodes125 = nodes.Where(x => x.Attribute("STXID").Value.Equals("125"));
+                    IEnumerable<XElement> nodes125 = nodes.Where(x => x.Attribute("STXID").Value.Equals("125"));
                     if (nodes125 != null && nodes125.Count() == 2)
                     {
                         auditFileDetail = new AuditFileStatus();
 
-                        var thisNode = nodes125.ToList()[0];
-                        var nextnode = nodes125.ToList()[1];
+                        XElement thisNode = nodes125.ToList()[0];
+                        XElement nextnode = nodes125.ToList()[1];
                         auditFileDetail.Id_Status = latestAuditFileStatus;
                         auditFileDetail.id_duty = dutyDetail.id_Duty;
                         auditFileDetail.DriverAuditStatus1 = (int)thisNode.Element("AuditStatus");
@@ -303,9 +331,9 @@ namespace EbusFileImporter.Core
                     else if (nodes125.Count() == 1)
                     {
                         auditFileDetail = new AuditFileStatus();
-                        var lastEndOfJourneyTime = nodes.Where(x => x.Attribute("STXID").Value.Equals("156")).LastOrDefault() == null ? "000000" : nodes.Where(x => x.Attribute("STXID").Value.Equals("156")).LastOrDefault().Element("JourneyStopTime").Value;
-                        var thisNode = nodes125.ToList()[0];
-                        var nextnode = nodes125.ToList()[0];
+                        string lastEndOfJourneyTime = nodes.Where(x => x.Attribute("STXID").Value.Equals("156")).LastOrDefault() == null ? "000000" : nodes.Where(x => x.Attribute("STXID").Value.Equals("156")).LastOrDefault().Element("JourneyStopTime").Value;
+                        XElement thisNode = nodes125.ToList()[0];
+                        XElement nextnode = nodes125.ToList()[0];
                         auditFileDetail.Id_Status = latestAuditFileStatus;
                         auditFileDetail.id_duty = dutyDetail.id_Duty;
                         auditFileDetail.DriverAuditStatus1 = (int)thisNode.Element("AuditStatus");
@@ -315,7 +343,7 @@ namespace EbusFileImporter.Core
                         auditFileDetail.DriverAuditStatus2 = 02;
                         auditFileDetail.DriverNumber2 = (int)nextnode.Element("DriverNumber");
                         auditFileDetail.DriverCardSerialNumber2 = (string)nextnode.Element("DriverCardSerialNo");
-                        auditFileDetail.DriverStatus2DateTime = helper.ConvertToInsertDateTimeString((string)node151.Element("DutyDate"), (string)lastEndOfJourneyTime);
+                        auditFileDetail.DriverStatus2DateTime = helper.ConvertToInsertDateTimeString((string)node151.Element("DutyDate"), lastEndOfJourneyTime);
                         auditFileDetail.DutySignOffMode = (int)node154.Element("SignOffMode");
                         auditFileDetail.RecordModified = todayDate;
                         auditFileDetail.AuditFileName = Path.GetFileName(filePath);
@@ -326,7 +354,11 @@ namespace EbusFileImporter.Core
                     {
                         Logger.Info("Error: No AuditFileStatus node found, Moving file to error folder");
                         helper.MoveErrorFile(filePath, dbName);
-                        if (Constants.EnableEmailTrigger) emailHelper.SendMail(filePath, dbName, "", EmailType.Error);
+                        if (Constants.EnableEmailTrigger)
+                        {
+                            emailHelper.SendMail(filePath, dbName, "", EmailType.Error);
+                        }
+
                         return false;
                     }
 
@@ -334,14 +366,13 @@ namespace EbusFileImporter.Core
 
                     #region Process Diagnostic Record
 
-                    var nodes50 = nodes.Where(x => x.Attribute("STXID").Value.Equals("50"));
+                    IEnumerable<XElement> nodes50 = nodes.Where(x => x.Attribute("STXID").Value.Equals("50"));
                     if (nodes50 != null && nodes50.Any())
                     {
-                        diagnosticRecord = new DiagnosticRecord();
-
                         nodes50.ToList().ForEach(x =>
                         {
-                            var thisRecord = x;
+                            diagnosticRecord = new DiagnosticRecord();
+                            XElement thisRecord = x;
                             diagnosticRecord.Id_DiagnosticRecord = latestdiagnosticRecord;
                             diagnosticRecord.Id_Status = latestAuditFileStatus;
                             diagnosticRecord.TSN = (string)thisRecord.Element("TSN");
@@ -358,33 +389,39 @@ namespace EbusFileImporter.Core
                     #region Process Journey Information
 
 
-                    var nodes156 = nodes.Where(x => x.Attribute("STXID").Value.Equals("156"));
-                    var nodes155 = nodes.Where(x => x.Attribute("STXID").Value.Equals("155"));
+                    IEnumerable<XElement> nodes156 = nodes.Where(x => x.Attribute("STXID").Value.Equals("156"));
+                    IEnumerable<XElement> nodes155 = nodes.Where(x => x.Attribute("STXID").Value.Equals("155"));
                     if (nodes156 != null && nodes155 != null)
                     {
                         nodes155.ToList().ForEach(x =>
                         {
-                            var startNode155 = x;
-                            var endNode156 = nodes156.Where(i => Convert.ToInt32(i.Attribute("Position").Value) > Convert.ToInt32(x.Attribute("Position").Value)).OrderBy(i => Convert.ToInt32(i.Attribute("Position").Value)).FirstOrDefault();
-                            var eachJourneyNodes = nodes.Where(i => Convert.ToInt32(i.Attribute("Position").Value) > Convert.ToInt32(startNode155.Attribute("Position").Value) && Convert.ToInt32(i.Attribute("Position").Value) < Convert.ToInt32(endNode156.Attribute("Position").Value)).ToList();
+                            XElement startNode155 = x;
+                            XElement endNode156 = nodes156.Where(i => Convert.ToInt32(i.Attribute("Position").Value) > Convert.ToInt32(x.Attribute("Position").Value)).OrderBy(i => Convert.ToInt32(i.Attribute("Position").Value)).FirstOrDefault();
+                            List<XElement> eachJourneyNodes = nodes.Where(i => Convert.ToInt32(i.Attribute("Position").Value) > Convert.ToInt32(startNode155.Attribute("Position").Value) && Convert.ToInt32(i.Attribute("Position").Value) < Convert.ToInt32(endNode156.Attribute("Position").Value)).ToList();
                             if (endNode156 == null)
                             {
                                 Logger.Info("Error: No end of journey node found for journey node with position-" + x.Attribute("Position").Value + ", Moving file to error folder");
                                 helper.MoveErrorFile(filePath, dbName);
-                                if (Constants.EnableEmailTrigger) emailHelper.SendMail(filePath, dbName, "", EmailType.Error);
+                                if (Constants.EnableEmailTrigger)
+                                {
+                                    emailHelper.SendMail(filePath, dbName, "", EmailType.Error);
+                                }
+
                                 return;
                             }
-                            journeyDetail = new Journey();
-                            journeyDetail.id_Journey = latestJourneyID;
-                            journeyDetail.id_Duty = dutyDetail.id_Duty;
-                            journeyDetail.id_Module = moduleDetail.id_Module;
-                            journeyDetail.str_RouteID = (string)startNode155.Element("RouteVariantNo");
-                            journeyDetail.int2_JourneyID = (short)startNode155.Element("JourneyNo");
-                            journeyDetail.int2_Direction = (short)startNode155.Element("Direction");
-                            var date = helper.ConvertToInsertDateString((string)startNode155.Element("StartDate"));
+                            journeyDetail = new Journey
+                            {
+                                id_Journey = latestJourneyID,
+                                id_Duty = dutyDetail.id_Duty,
+                                id_Module = moduleDetail.id_Module,
+                                str_RouteID = (string)startNode155.Element("RouteVariantNo"),
+                                int2_JourneyID = (short)startNode155.Element("JourneyNo"),
+                                int2_Direction = (short)startNode155.Element("Direction")
+                            };
+                            DateTime date = helper.ConvertToInsertDateString((string)startNode155.Element("StartDate"));
                             journeyDetail.dat_JourneyStartDate = date;
                             journeyDetail.dat_JourneyStartTime = helper.ConvertToInsertDateTimeString((string)startNode155.Element("StartDate"), (string)startNode155.Element("StartTime"));
-                            var jourDate = helper.ConvertToInsertDateString((string)endNode156.Element("JourneyStopDate"));
+                            DateTime jourDate = helper.ConvertToInsertDateString((string)endNode156.Element("JourneyStopDate"));
                             journeyDetail.dat_JourneyStopDate = jourDate;
                             journeyDetail.dat_JourneyStopTime = helper.ConvertToInsertDateTimeString((string)endNode156.Element("JourneyStopDate"), (string)endNode156.Element("JourneyStopTime"));
                             journeyDetail.dat_TrafficDate = date;
@@ -405,16 +442,17 @@ namespace EbusFileImporter.Core
 
                             #region Process Stage Information
 
-                            var nodes113 = eachJourneyNodes.Where(i => i.Attribute("STXID").Value.Equals("113"));
+                            IEnumerable<XElement> nodes113 = eachJourneyNodes.Where(i => i.Attribute("STXID").Value.Equals("113"));
 
                             if (nodes113 != null)
                             {
-                                var listNodes113 = nodes113.ToList();
-                                var count = listNodes113.Count();
+                                List<XElement> listNodes113 = nodes113.ToList();
+                                int count = listNodes113.Count();
                                 for (int i = 0; i < count; i++)
                                 {
-                                    var thisNode113 = listNodes113[i];
+                                    XElement thisNode113 = listNodes113[i];
                                     stageDetail = new Stage();
+                                    tempStage = new TempStage();
                                     stageDetail.id_Stage = latestStageID;
                                     stageDetail.id_Journey = journeyDetail.id_Journey;
                                     stageDetail.id_Duty = dutyDetail.id_Duty;
@@ -426,33 +464,43 @@ namespace EbusFileImporter.Core
                                     stageDetail.dat_RecordMod = todayDate;
                                     stageDetail.id_BatchNo = batch;
                                     stageDetails.Add(stageDetail);
+
+                                    tempStage.id_Stage = latestStageID;
+                                    tempStage.TSN = (string)thisNode113.Element("TSN");
+                                    tempStage.RecordedTime = (string)thisNode113.Element("Time");
+                                    tempStageDetails.Add(tempStage);
+
                                     latestStageID++;
 
                                     #region Process Trans Information
-                                    var nextPosition = 0;
+                                    int nextPosition = 0;
                                     if ((i + 1) < count)
+                                    {
                                         nextPosition = Convert.ToInt32(listNodes113[i + 1].Attribute("Position").Value);
+                                    }
                                     else
+                                    {
                                         nextPosition = Convert.ToInt32(endNode156.Attribute("Position").Value);
+                                    }
 
-                                    var eachStageNodes = eachJourneyNodes.Where(j => Convert.ToInt32(j.Attribute("Position").Value) > Convert.ToInt32(thisNode113.Attribute("Position").Value) && Convert.ToInt32(j.Attribute("Position").Value) < nextPosition).ToList();
+                                    List<XElement> eachStageNodes = eachJourneyNodes.Where(j => Convert.ToInt32(j.Attribute("Position").Value) > Convert.ToInt32(thisNode113.Attribute("Position").Value) && Convert.ToInt32(j.Attribute("Position").Value) < nextPosition).ToList();
 
-                                    var cashTransNodes = eachStageNodes.Where(j => j.Attribute("STXID").Value.Equals("157"));
-                                    var smartCardTransNodes = eachStageNodes.Where(j => j.Attribute("STXID").Value.Equals("188"));
+                                    IEnumerable<XElement> cashTransNodes = eachStageNodes.Where(j => j.Attribute("STXID").Value.Equals("157"));
+                                    IEnumerable<XElement> smartCardTransNodes = eachStageNodes.Where(j => j.Attribute("STXID").Value.Equals("188"));
 
                                     if ((cashTransNodes != null && cashTransNodes.Any()) || (smartCardTransNodes != null && smartCardTransNodes.Any()))
                                     {
                                         cashTransNodes.ToList().ForEach(t =>
                                         {
-                                            var thisTrans = t;
+                                            XElement thisTrans = t;
                                             transDetail = new Trans();
-                                            var ticketType = t.Element("TicketType").Value.Trim();
+                                            string ticketType = t.Element("TicketType").Value.Trim();
                                             transDetail.id_Trans = latestTransID;
                                             transDetail.id_Stage = stageDetail.id_Stage;
                                             transDetail.id_Journey = journeyDetail.id_Journey;
                                             transDetail.id_Duty = dutyDetail.id_Duty;
                                             transDetail.id_Module = moduleDetail.id_Module;
-                                            transDetail.str_LocationCode = dutyDetail.str_OperatorVersion.TrimStart('0');
+                                            transDetail.str_LocationCode = dutyDetail.str_OperatorVersion.TrimStart('0').Length >= 2 ? dutyDetail.str_OperatorVersion.TrimStart('0').Substring(0, 2) : dutyDetail.str_OperatorVersion.TrimStart('0'); ;
                                             transDetail.int2_BoardingStageID = stageDetail.int2_StageID;
                                             transDetail.int2_AlightingStageID = (short)thisTrans.Element("StageNo");
                                             transDetail.int2_Class = Convert.ToInt16(ticketType, 16);
@@ -476,10 +524,10 @@ namespace EbusFileImporter.Core
 
                                         smartCardTransNodes.ToList().ForEach(t =>
                                         {
-                                            var thisTrans = t;
+                                            XElement thisTrans = t;
                                             transDetail = new Trans();
-                                            var ticketType = t.Element("TicketType").Value.Trim();
-                                            var productData = (string)thisTrans.Element("Product1Data");
+                                            string ticketType = t.Element("TicketType").Value.Trim();
+                                            string productData = (string)thisTrans.Element("Product1Data");
                                             transDetail.id_Trans = latestTransID;
                                             transDetail.id_Stage = stageDetail.id_Stage;
                                             transDetail.id_Journey = journeyDetail.id_Journey;
@@ -491,7 +539,7 @@ namespace EbusFileImporter.Core
                                             //transDetail.int2_Class = Convert.ToInt16(ticketType, 16);
                                             transDetail.dat_TransDate = helper.ConvertToInsertDateString((string)thisTrans.Element("IssueDate"));
                                             transDetail.dat_TransTime = helper.ConvertToInsertDateTimeString((string)thisTrans.Element("IssueDate"), (string)thisTrans.Element("IssueTime"));
-                                            var serialNumber = (string)thisTrans.Element("ESN");
+                                            string serialNumber = (string)thisTrans.Element("ESN");
                                             transDetail.str_SerialNumber = serialNumber;
                                             //transDetail.int4_TripBal = Helper.GetTripBalanceFromProductData(productData);
                                             transDetail.int2_AnnulCount = null;
@@ -509,28 +557,30 @@ namespace EbusFileImporter.Core
                                                     latitude = latitude.TrimStart('0');
                                                     longitude = longitude.TrimStart('0');
                                                 }
-                                                gPSCoordinate = new GPSCoordinate();
-                                                gPSCoordinate.id_Trans = latestTransID;
-                                                gPSCoordinate.id_Stage = stageDetail.id_Stage;
-                                                gPSCoordinate.id_Journey = journeyDetail.id_Journey;
-                                                gPSCoordinate.id_Duty = dutyDetail.id_Duty;
-                                                gPSCoordinate.id_Module = moduleDetail.id_Module;
-                                                gPSCoordinate.Latitude = latitude;
-                                                gPSCoordinate.LatDegree = Convert.ToInt32(latitude.Substring(0,2));
-                                                gPSCoordinate.LatMinutes = Convert.ToInt32(latitude.Substring(2, 2));
-                                                gPSCoordinate.LatSeconds = (Convert.ToDecimal(latitude.Substring(5, 3))/1000)*60;
-                                                gPSCoordinate.LatDir = latitude.Substring(8, 1);
-                                                gPSCoordinate.Longitude = longitude;
-                                                gPSCoordinate.LongDegree = Convert.ToInt32(longitude.Substring(0, 2));
-                                                gPSCoordinate.LongMinutes = Convert.ToInt32(longitude.Substring(2, 2));
-                                                gPSCoordinate.LongSeconds = (Convert.ToDecimal(longitude.Substring(5, 3)) / 1000) * 60;
-                                                gPSCoordinate.LongDir = longitude.Substring(8, 1);
+                                                gPSCoordinate = new GPSCoordinate
+                                                {
+                                                    id_Trans = latestTransID,
+                                                    id_Stage = stageDetail.id_Stage,
+                                                    id_Journey = journeyDetail.id_Journey,
+                                                    id_Duty = dutyDetail.id_Duty,
+                                                    id_Module = moduleDetail.id_Module,
+                                                    Latitude = latitude,
+                                                    LatDegree = Convert.ToInt32(latitude.Substring(0, 2)),
+                                                    LatMinutes = Convert.ToInt32(latitude.Substring(2, 2)),
+                                                    LatSeconds = (Convert.ToDecimal(latitude.Substring(5, 3)) / 1000) * 60,
+                                                    LatDir = latitude.Substring(8, 1),
+                                                    Longitude = longitude,
+                                                    LongDegree = Convert.ToInt32(longitude.Substring(0, 2)),
+                                                    LongMinutes = Convert.ToInt32(longitude.Substring(2, 2)),
+                                                    LongSeconds = (Convert.ToDecimal(longitude.Substring(5, 3)) / 1000) * 60,
+                                                    LongDir = longitude.Substring(8, 1)
+                                                };
                                                 gPSCoordinates.Add(gPSCoordinate);
                                             }
                                             #endregion
 
                                             #region Process Ticket Type 
-                                            var nonRevenue = 0;
+                                            int nonRevenue = 0;
                                             switch (ticketType)
                                             {
                                                 case "2328":
@@ -571,6 +621,27 @@ namespace EbusFileImporter.Core
                                                         //Scholar MJ Transfer
                                                         nonRevenue = dbService.GetNonRevenueFromPosTransTable(serialNumber, dbName);
                                                         transDetail.int2_Class = 997;
+                                                        transDetail.int2_PassCount = 1;
+                                                        transDetail.int2_Transfers = 0;
+                                                    }
+                                                    transDetail.int4_NonRevenue = nonRevenue;
+                                                    break;
+                                                case "232B":
+                                                    //Disabled MJ Cancelation
+                                                    transDetail.int2_Class = 994;
+                                                    transDetail.int4_Revenue = 0;
+                                                    transDetail.int4_NonRevenue = 0;
+                                                    transDetail.int2_TicketCount = 0;
+                                                    transDetail.int2_PassCount = 0;
+                                                    transDetail.int2_Transfers = 1;
+                                                    transDetail.int4_RevenueBal = 0;
+                                                    transDetail.int4_TripBal = helper.GetTripBalanceFromProductData(productData);
+                                                    transDetail.SmartCardExipry = helper.GetSmartCardExipryFromProductDate(productData);
+                                                    if (!helper.IsTransferTransaction(productData))
+                                                    {
+                                                        //Disabled MJ Transfer
+                                                        nonRevenue = dbService.GetNonRevenueFromPosTransTable(serialNumber, dbName);
+                                                        transDetail.int2_Class = 993;
                                                         transDetail.int2_PassCount = 1;
                                                         transDetail.int2_Transfers = 0;
                                                     }
@@ -758,9 +829,54 @@ namespace EbusFileImporter.Core
                                                     posTransDetail.AmountRecharged = 0;
                                                     posTransDetail.TripsRecharged = helper.GetTripRechargedFromProductData(productData);
                                                     break;
+                                                case "2B18":
+                                                    //Adult MJ 48 Recharge
+                                                    transDetail.int2_Class = 718;
+                                                    transDetail.int4_Revenue = (int)thisTrans.Element("Fare");
+                                                    transDetail.int4_NonRevenue = 0;
+                                                    transDetail.int2_TicketCount = 1;
+                                                    transDetail.int2_PassCount = 0;
+                                                    transDetail.int2_Transfers = 0;
+                                                    transDetail.int4_RevenueBal = 0;
+                                                    transDetail.int4_TripBal = helper.GetTripBalanceFromProductData(productData);
+                                                    posTransDetail = MapTransToPosTrans(transDetail);
+                                                    posTransDetail.id_PosTrans = latestPosTransID;
+                                                    posTransDetail.AmountRecharged = 0;
+                                                    posTransDetail.TripsRecharged = helper.GetTripRechargedFromProductData(productData);
+                                                    break;
+                                                case "2B19":
+                                                    //Adult MJ 48 Recharge
+                                                    transDetail.int2_Class = 719;
+                                                    transDetail.int4_Revenue = (int)thisTrans.Element("Fare");
+                                                    transDetail.int4_NonRevenue = 0;
+                                                    transDetail.int2_TicketCount = 1;
+                                                    transDetail.int2_PassCount = 0;
+                                                    transDetail.int2_Transfers = 0;
+                                                    transDetail.int4_RevenueBal = 0;
+                                                    transDetail.int4_TripBal = helper.GetTripBalanceFromProductData(productData);
+                                                    posTransDetail = MapTransToPosTrans(transDetail);
+                                                    posTransDetail.id_PosTrans = latestPosTransID;
+                                                    posTransDetail.AmountRecharged = 0;
+                                                    posTransDetail.TripsRecharged = helper.GetTripRechargedFromProductData(productData);
+                                                    break;
                                                 case "2716":
                                                     //Scholar MJ 10 Recharge
                                                     transDetail.int2_Class = 721;
+                                                    transDetail.int4_Revenue = (int)thisTrans.Element("Fare");
+                                                    transDetail.int4_NonRevenue = 0;
+                                                    transDetail.int2_TicketCount = 1;
+                                                    transDetail.int2_PassCount = 0;
+                                                    transDetail.int2_Transfers = 0;
+                                                    transDetail.int4_RevenueBal = 0;
+                                                    transDetail.int4_TripBal = helper.GetTripBalanceFromProductData(productData);
+                                                    posTransDetail = MapTransToPosTrans(transDetail);
+                                                    posTransDetail.id_PosTrans = latestPosTransID;
+                                                    posTransDetail.AmountRecharged = 0;
+                                                    posTransDetail.TripsRecharged = helper.GetTripRechargedFromProductData(productData);
+                                                    break;
+                                                case "2717":
+                                                    //Scholar MJ 10 Recharge
+                                                    transDetail.int2_Class = 722;
                                                     transDetail.int4_Revenue = (int)thisTrans.Element("Fare");
                                                     transDetail.int4_NonRevenue = 0;
                                                     transDetail.int2_TicketCount = 1;
@@ -931,6 +1047,18 @@ namespace EbusFileImporter.Core
                                                     posTransDetail = MapTransToPosTrans(transDetail);
                                                     posTransDetail.id_PosTrans = latestPosTransID;
                                                     break;
+                                                case "2B17":
+                                                    transDetail.int2_Class = 751;
+                                                    transDetail.int4_Revenue = (int)thisTrans.Element("Fare");
+                                                    transDetail.int4_NonRevenue = 0;
+                                                    transDetail.int2_TicketCount = 1;
+                                                    transDetail.int2_PassCount = 0;
+                                                    transDetail.int2_Transfers = 0;
+                                                    transDetail.int4_RevenueBal = 0;
+                                                    transDetail.int4_TripBal = 0;
+                                                    posTransDetail = MapTransToPosTrans(transDetail);
+                                                    posTransDetail.id_PosTrans = latestPosTransID;
+                                                    break;
                                                 default:
                                                     break;
                                             }
@@ -965,11 +1093,13 @@ namespace EbusFileImporter.Core
                     if (!dbService.DoesRecordExist("Staff", "int4_StaffID", dutyDetail.int4_OperatorID.Value, dbName))
                     {
 
-                        var node125 = nodes.Where(x => x.Attribute("STXID").Value.Equals("125")).FirstOrDefault();
+                        XElement node125 = nodes.Where(x => x.Attribute("STXID").Value.Equals("125")).FirstOrDefault();
                         if (node151 != null && node125 != null)
                         {
-                            staffDetail = new Staff();
-                            staffDetail.int4_StaffID = dutyDetail.int4_OperatorID.Value;
+                            staffDetail = new Staff
+                            {
+                                int4_StaffID = dutyDetail.int4_OperatorID.Value
+                            };
                             staffDetail.str50_StaffName = "New Staff" + " - " + staffDetail.int4_StaffID;
                             staffDetail.bit_InUse = true;
                             staffDetail.int4_StaffTypeID = 1;
@@ -977,25 +1107,28 @@ namespace EbusFileImporter.Core
                             //var runningBoard = dutyDetail.str_OperatorVersion;
                             staffDetail.str4_LocationCode = "0001";//runningBoard.Substring(runningBoard.Length - 4, 4);
                             staffDetail.str2_LocationCode = null;
-                            var serialNumber = (string)node125.Element("DriverCardSerialNo");
+                            string serialNumber = (string)node125.Element("DriverCardSerialNo");
                             staffDetail.SerialNumber = Convert.ToInt32(serialNumber, 16).ToString();
                         }
                     }
                     #endregion
 
                     #region Process Inspector Information
-                    var nodes34 = nodes.Where(x => x.Attribute("STXID").Value.Equals("34"));
+                    IEnumerable<XElement> nodes34 = nodes.Where(x => x.Attribute("STXID").Value.Equals("34"));
                     if (nodes34 != null)
                     {
                         nodes34.ToList().ForEach(x =>
                         {
-                            var thisInspector = x;
-                            var inspectorStage = nodes.Where(i => i.Attribute("STXID").Value.Equals("113") && Convert.ToInt32(i.Attribute("Position").Value) < Convert.ToInt32(thisInspector.Attribute("Position").Value)).OrderBy(i => Convert.ToInt32(i.Attribute("Position").Value)).FirstOrDefault();
-                            inspectorDetail = new Inspector();
-                            inspectorDetail.id_Inspector = latestInspectorID;
-                            inspectorDetail.id_Stage = (int)inspectorStage.Element("BoardingStage");
-                            inspectorDetail.id_InspectorID = (int)thisInspector.Element("InspectorNo");
-                            var date = helper.ConvertToInsertDateString((string)node151.Element("DutyDate"));
+                            XElement thisInspector = x;
+                            XElement inspectorStage = nodes.Where(i => i.Attribute("STXID").Value.Equals("113") && Convert.ToInt32(i.Attribute("Position").Value) < Convert.ToInt32(thisInspector.Attribute("Position").Value)).OrderByDescending(i => Convert.ToInt32(i.Attribute("Position").Value)).FirstOrDefault();
+                            int tempStageID = tempStageDetails.Where(i => i.TSN.Equals(inspectorStage.Element("TSN").Value) && i.RecordedTime.Equals(inspectorStage.Element("Time").Value)).FirstOrDefault().id_Stage;
+                            inspectorDetail = new Inspector
+                            {
+                                id_Inspector = latestInspectorID,
+                                id_Stage = tempStageID,
+                                id_InspectorID = (int)thisInspector.Element("InspectorNo")
+                            };
+                            DateTime date = helper.ConvertToInsertDateString((string)node151.Element("DutyDate"));
                             inspectorDetail.datTimeStamp = helper.ConvertToInsertDateTimeString((string)node151.Element("DutyDate"), (string)thisInspector.Element("Time"));
                             inspectorDetails.Add(inspectorDetail);
                             latestInspectorID++;
@@ -1010,22 +1143,24 @@ namespace EbusFileImporter.Core
                     #region Way6 file processing
 
                     #region Process Module Information
-                    var node18 = nodes.Where(x => x.Attribute("STXID").Value.Equals("18")).FirstOrDefault();
+                    XElement node18 = nodes.Where(x => x.Attribute("STXID").Value.Equals("18")).FirstOrDefault();
                     if (node18 != null)
                     {
-                        moduleDetail = new Module();
-                        moduleDetail.id_Module = latestModuleID;
-                        moduleDetail.str_LocationCode = null;
-                        moduleDetail.int4_ModuleID = (int)node18.Element("ModuleESN");
-                        moduleDetail.int4_SignOnID = (int)node18.Element("DriverNumber1");
-                        moduleDetail.int4_OnReaderID = (int)node18.Element("HomeDepotID");
-                        var date = helper.ConvertToInsertDateString((string)node18.Element("SignOnDate"));
+                        moduleDetail = new Module
+                        {
+                            id_Module = latestModuleID,
+                            str_LocationCode = null,
+                            int4_ModuleID = (int)node18.Element("ModuleESN"),
+                            int4_SignOnID = (int)node18.Element("DriverNumber1"),
+                            int4_OnReaderID = (int)node18.Element("HomeDepotID")
+                        };
+                        DateTime date = helper.ConvertToInsertDateString((string)node18.Element("SignOnDate"));
                         moduleDetail.dat_SignOnDate = date;
                         moduleDetail.dat_SignOnTime = helper.ConvertToInsertDateTimeString((string)node18.Element("SignOnDate"), (string)node18.Element("SignOnTime"));
                         moduleDetail.int4_OffReaderID = (int)node18.Element("HomeDepotID");
                         date = helper.ConvertToInsertDateString((string)node18.Element("SignOffDate"));
                         moduleDetail.dat_SignOffDate = date;
-                        var time = helper.ConvertToInsertDateTimeString((string)node18.Element("SignOffDate"), (string)node18.Element("SignOffTime"));
+                        DateTime time = helper.ConvertToInsertDateTimeString((string)node18.Element("SignOffDate"), (string)node18.Element("SignOffTime"));
                         moduleDetail.dat_SignOffTime = time;
                         moduleDetail.dat_TrafficDate = date;
                         moduleDetail.dat_ModuleOutDate = date;
@@ -1048,12 +1183,12 @@ namespace EbusFileImporter.Core
                     #endregion
 
                     #region Process Waybill Information
-                    var nodes122 = nodes.Where(x => x.Attribute("STXID").Value.Equals("122"));
+                    IEnumerable<XElement> nodes122 = nodes.Where(x => x.Attribute("STXID").Value.Equals("122"));
                     if (nodes122 != null && nodes122.Any())
                     {
                         nodes122.ToList().ForEach(x =>
                         {
-                            var thisNode = x;
+                            XElement thisNode = x;
                             wayBillDetails.Add(new Waybill()
                             {
                                 ModuleID = (int)thisNode.Element("OperatorNumber"),
@@ -1079,29 +1214,31 @@ namespace EbusFileImporter.Core
                     #endregion
 
                     #region Process Duty Information   
-                    var node151 = nodes.Where(x => x.Attribute("STXID").Value.Equals("151")).FirstOrDefault();
-                    var node122 = nodes.Where(x => x.Attribute("STXID").Value.Equals("122")).FirstOrDefault();
-                    var node154 = nodes.Where(x => x.Attribute("STXID").Value.Equals("154")).FirstOrDefault();
-                    var node155 = nodes.Where(x => x.Attribute("STXID").Value.Equals("155")).FirstOrDefault();
+                    XElement node151 = nodes.Where(x => x.Attribute("STXID").Value.Equals("151")).FirstOrDefault();
+                    XElement node122 = nodes.Where(x => x.Attribute("STXID").Value.Equals("122")).FirstOrDefault();
+                    XElement node154 = nodes.Where(x => x.Attribute("STXID").Value.Equals("154")).FirstOrDefault();
+                    XElement node155 = nodes.Where(x => x.Attribute("STXID").Value.Equals("155")).FirstOrDefault();
 
                     if (node151 != null && node154 != null && node155 != null)
                     {
-                        dutyDetail = new Duty();
-                        dutyDetail.id_Duty = latestDutyID;
-                        dutyDetail.id_Module = moduleDetail.id_Module;
-                        dutyDetail.int4_DutyID = (int)node151.Element("DutyNo");
-                        dutyDetail.int4_OperatorID = (int)node151.Element("DriverNumber");
-                        dutyDetail.str_ETMID = (string)node122?.Element("ETMNumber");
-                        dutyDetail.int4_GTValue = (int)node151.Element("ETMCashTotal");
-                        dutyDetail.int4_NextTicketNumber = (int)node151.Element("NextTicketNo");
-                        dutyDetail.int4_DutySeqNum = (int)node151.Element("DutySeqNo.");
-                        var date = helper.ConvertToInsertDateString((string)node151.Element("DutyDate"));
+                        dutyDetail = new Duty
+                        {
+                            id_Duty = latestDutyID,
+                            id_Module = moduleDetail.id_Module,
+                            int4_DutyID = (int)node151.Element("DutyNo"),
+                            int4_OperatorID = (int)node151.Element("DriverNumber"),
+                            str_ETMID = (string)node122?.Element("ETMNumber"),
+                            int4_GTValue = (int)node151.Element("ETMCashTotal"),
+                            int4_NextTicketNumber = (int)node151.Element("NextTicketNo"),
+                            int4_DutySeqNum = (int)node151.Element("DutySeqNo.")
+                        };
+                        DateTime date = helper.ConvertToInsertDateString((string)node151.Element("DutyDate"));
                         dutyDetail.dat_DutyStartDate = date;
                         dutyDetail.dat_DutyStartTime = helper.ConvertToInsertDateTimeStringWithOutSeconds((string)node151.Element("DutyDate"), (string)node151.Element("DutyTime"));
                         dutyDetail.dat_DutyStopDate = helper.ConvertToInsertDateString((string)node154.Element("SignOffDate"));
                         dutyDetail.dat_DutyStopTime = helper.ConvertToInsertDateTimeStringWithOutSeconds((string)node154.Element("SignOffDate"), (string)node154.Element("SignOffTime"));
                         dutyDetail.dat_TrafficDate = date;
-                        dutyDetail.str_BusID = (string)node151.Element("FleetID").Value.TrimStart('0') == "" ? "0" : (string)node151.Element("FleetID").Value.TrimStart('0');
+                        dutyDetail.str_BusID = node151.Element("FleetID").Value.TrimStart('0') == "" ? "0" : node151.Element("FleetID").Value.TrimStart('0');
                         dutyDetail.int4_DutyRevenue = (int)node154.Element("DutyCashTotal");
                         dutyDetail.int4_DutyTickets = (int)node154.Element("DutyTicketTotal");
                         dutyDetail.int4_DutyPasses = 0;
@@ -1128,13 +1265,13 @@ namespace EbusFileImporter.Core
                     #endregion
 
                     #region Process AuditFileStatus Information
-                    var nodes125 = nodes.Where(x => x.Attribute("STXID").Value.Equals("125"));
+                    IEnumerable<XElement> nodes125 = nodes.Where(x => x.Attribute("STXID").Value.Equals("125"));
                     if (nodes125 != null && nodes125.Count() == 2)
                     {
                         auditFileDetail = new AuditFileStatus();
 
-                        var thisNode = nodes125.ToList()[0];
-                        var nextnode = nodes125.ToList()[1];
+                        XElement thisNode = nodes125.ToList()[0];
+                        XElement nextnode = nodes125.ToList()[1];
                         auditFileDetail.Id_Status = latestAuditFileStatus;
                         auditFileDetail.id_duty = dutyDetail.id_Duty;
                         auditFileDetail.DriverAuditStatus1 = (int)thisNode.Element("AuditStatus");
@@ -1153,9 +1290,9 @@ namespace EbusFileImporter.Core
                     else if (nodes125.Count() == 1)
                     {
                         auditFileDetail = new AuditFileStatus();
-                        var lastEndOfJourneyTime = nodes.Where(x => x.Attribute("STXID").Value.Equals("156")).LastOrDefault() == null ? "000000" : nodes.Where(x => x.Attribute("STXID").Value.Equals("156")).LastOrDefault().Element("JourneyStopTime").Value;
-                        var thisNode = nodes125.ToList()[0];
-                        var nextnode = nodes125.ToList()[0];
+                        string lastEndOfJourneyTime = nodes.Where(x => x.Attribute("STXID").Value.Equals("156")).LastOrDefault() == null ? "000000" : nodes.Where(x => x.Attribute("STXID").Value.Equals("156")).LastOrDefault().Element("JourneyStopTime").Value;
+                        XElement thisNode = nodes125.ToList()[0];
+                        XElement nextnode = nodes125.ToList()[0];
                         auditFileDetail.Id_Status = latestAuditFileStatus;
                         auditFileDetail.id_duty = dutyDetail.id_Duty;
                         auditFileDetail.DriverAuditStatus1 = (int)thisNode.Element("AuditStatus");
@@ -1165,7 +1302,7 @@ namespace EbusFileImporter.Core
                         auditFileDetail.DriverAuditStatus2 = 02;
                         auditFileDetail.DriverNumber2 = (int)nextnode.Element("DriverNumber");
                         auditFileDetail.DriverCardSerialNumber2 = (string)nextnode.Element("DriverCardSerialNo");
-                        auditFileDetail.DriverStatus2DateTime = helper.ConvertToInsertDateTimeString((string)node151.Element("DutyDate"), (string)lastEndOfJourneyTime);
+                        auditFileDetail.DriverStatus2DateTime = helper.ConvertToInsertDateTimeString((string)node151.Element("DutyDate"), lastEndOfJourneyTime);
                         auditFileDetail.DutySignOffMode = (int)node154.Element("SignOffMode");
                         auditFileDetail.RecordModified = todayDate;
                         auditFileDetail.AuditFileName = Path.GetFileName(filePath);
@@ -1176,7 +1313,11 @@ namespace EbusFileImporter.Core
                     {
                         Logger.Info("Error: No AuditFileStatus node found, Moving file to error folder");
                         helper.MoveErrorFile(filePath, dbName);
-                        if (Constants.EnableEmailTrigger) emailHelper.SendMail(filePath, dbName, "", EmailType.Error);
+                        if (Constants.EnableEmailTrigger)
+                        {
+                            emailHelper.SendMail(filePath, dbName, "", EmailType.Error);
+                        }
+
                         return false;
                     }
 
@@ -1184,14 +1325,14 @@ namespace EbusFileImporter.Core
 
                     #region Process Diagnostic Record
 
-                    var nodes50 = nodes.Where(x => x.Attribute("STXID").Value.Equals("50"));
+                    IEnumerable<XElement> nodes50 = nodes.Where(x => x.Attribute("STXID").Value.Equals("50"));
                     if (nodes50 != null && nodes50.Any())
                     {
                         diagnosticRecord = new DiagnosticRecord();
 
                         nodes50.ToList().ForEach(x =>
                         {
-                            var thisRecord = x;
+                            XElement thisRecord = x;
                             diagnosticRecord.Id_DiagnosticRecord = latestdiagnosticRecord;
                             diagnosticRecord.Id_Status = latestAuditFileStatus;
                             diagnosticRecord.TSN = (string)thisRecord.Element("TSN");
@@ -1207,34 +1348,40 @@ namespace EbusFileImporter.Core
 
                     #region Process Journey Information
 
-                    var nodes156 = nodes.Where(x => x.Attribute("STXID").Value.Equals("156"));
-                    var nodes155 = nodes.Where(x => x.Attribute("STXID").Value.Equals("155"));
+                    IEnumerable<XElement> nodes156 = nodes.Where(x => x.Attribute("STXID").Value.Equals("156"));
+                    IEnumerable<XElement> nodes155 = nodes.Where(x => x.Attribute("STXID").Value.Equals("155"));
                     if (nodes156 != null && nodes155 != null)
                     {
                         nodes155.ToList().ForEach(x =>
                         {
-                            var startNode155 = x;
-                            var endNode156 = nodes156.Where(i => Convert.ToInt32(i.Element("TSN").Value) > Convert.ToInt32(x.Element("TSN").Value)).OrderBy(i => Convert.ToInt32(i.Element("TSN").Value)).FirstOrDefault();
-                            var nodesWithOutModules = nodes.Where(i => !i.Attribute("STXID").Value.Equals("18"));
-                            var eachJourneyNodes = nodesWithOutModules.Where(i => Convert.ToInt32(i.Element("TSN").Value) > Convert.ToInt32(startNode155.Element("TSN").Value) && Convert.ToInt32(i.Element("TSN").Value) < Convert.ToInt32(endNode156.Element("TSN").Value)).ToList();
+                            XElement startNode155 = x;
+                            XElement endNode156 = nodes156.Where(i => Convert.ToInt32(i.Element("TSN").Value) > Convert.ToInt32(x.Element("TSN").Value)).OrderBy(i => Convert.ToInt32(i.Element("TSN").Value)).FirstOrDefault();
+                            IEnumerable<XElement> nodesWithOutModules = nodes.Where(i => !i.Attribute("STXID").Value.Equals("18"));
+                            List<XElement> eachJourneyNodes = nodesWithOutModules.Where(i => Convert.ToInt32(i.Element("TSN").Value) > Convert.ToInt32(startNode155.Element("TSN").Value) && Convert.ToInt32(i.Element("TSN").Value) < Convert.ToInt32(endNode156.Element("TSN").Value)).ToList();
                             if (endNode156 == null)
                             {
                                 Logger.Info("Error: No end of journey node found for journey node with TSN-" + x.Element("TSN").Value + ", Moving file to error folder");
                                 helper.MoveErrorFile(filePath, dbName);
-                                if (Constants.EnableEmailTrigger) emailHelper.SendMail(filePath, dbName, "", EmailType.Error);
+                                if (Constants.EnableEmailTrigger)
+                                {
+                                    emailHelper.SendMail(filePath, dbName, "", EmailType.Error);
+                                }
+
                                 return;
                             }
-                            journeyDetail = new Journey();
-                            journeyDetail.id_Journey = latestJourneyID;
-                            journeyDetail.id_Duty = dutyDetail.id_Duty;
-                            journeyDetail.id_Module = moduleDetail.id_Module;
-                            journeyDetail.str_RouteID = (string)startNode155.Element("RouteVariantNo");
-                            journeyDetail.int2_JourneyID = (short)startNode155.Element("JourneyNo");
-                            journeyDetail.int2_Direction = (short)startNode155.Element("Direction");
-                            var date = helper.ConvertToInsertDateString((string)startNode155.Element("StartDate"));
+                            journeyDetail = new Journey
+                            {
+                                id_Journey = latestJourneyID,
+                                id_Duty = dutyDetail.id_Duty,
+                                id_Module = moduleDetail.id_Module,
+                                str_RouteID = (string)startNode155.Element("RouteVariantNo"),
+                                int2_JourneyID = (short)startNode155.Element("JourneyNo"),
+                                int2_Direction = (short)startNode155.Element("Direction")
+                            };
+                            DateTime date = helper.ConvertToInsertDateString((string)startNode155.Element("StartDate"));
                             journeyDetail.dat_JourneyStartDate = date;
                             journeyDetail.dat_JourneyStartTime = helper.ConvertToInsertDateTimeString((string)startNode155.Element("StartDate"), (string)startNode155.Element("StartTime"));
-                            var jourDate = helper.ConvertToInsertDateString((string)endNode156.Element("JourneyStopDate"));
+                            DateTime jourDate = helper.ConvertToInsertDateString((string)endNode156.Element("JourneyStopDate"));
                             journeyDetail.dat_JourneyStopDate = jourDate;
                             journeyDetail.dat_JourneyStopTime = helper.ConvertToInsertDateTimeString((string)endNode156.Element("JourneyStopDate"), (string)endNode156.Element("JourneyStopTime"));
                             journeyDetail.dat_TrafficDate = date;
@@ -1255,54 +1402,68 @@ namespace EbusFileImporter.Core
 
                             #region Process Stage Information
 
-                            var nodes113 = eachJourneyNodes.Where(i => i.Attribute("STXID").Value.Equals("113"));
+                            IEnumerable<XElement> nodes113 = eachJourneyNodes.Where(i => i.Attribute("STXID").Value.Equals("113"));
 
                             if (nodes113 != null)
                             {
-                                var listNodes113 = nodes113.ToList();
-                                var count = listNodes113.Count();
+                                List<XElement> listNodes113 = nodes113.ToList();
+                                int count = listNodes113.Count();
                                 for (int i = 0; i < count; i++)
                                 {
-                                    var thisNode113 = listNodes113[i];
-                                    stageDetail = new Stage();
-                                    stageDetail.id_Stage = latestStageID;
-                                    stageDetail.id_Journey = journeyDetail.id_Journey;
-                                    stageDetail.id_Duty = dutyDetail.id_Duty;
-                                    stageDetail.id_Module = moduleDetail.id_Module;
-                                    stageDetail.int2_StageID = (short)thisNode113.Element("BoardingStage");
+                                    XElement thisNode113 = listNodes113[i];
+                                    stageDetail = new Stage
+                                    {
+                                        id_Stage = latestStageID,
+                                        id_Journey = journeyDetail.id_Journey,
+                                        id_Duty = dutyDetail.id_Duty,
+                                        id_Module = moduleDetail.id_Module,
+                                        int2_StageID = (short)thisNode113.Element("BoardingStage")
+                                    };
                                     date = helper.ConvertToInsertDateString((string)startNode155.Element("StartDate"));
                                     stageDetail.dat_StageDate = date;
                                     stageDetail.dat_StageTime = helper.ConvertToInsertDateTimeString((string)startNode155.Element("StartDate"), (string)thisNode113.Element("Time"));
                                     stageDetail.dat_RecordMod = todayDate;
                                     stageDetail.id_BatchNo = batch;
                                     stageDetails.Add(stageDetail);
+
+                                    tempStage = new TempStage
+                                    {
+                                        TSN = (string)thisNode113.Element("TSN"),
+                                        RecordedTime = (string)thisNode113.Element("Time"),
+                                        id_Stage = latestStageID
+                                    };
+                                    tempStageDetails.Add(tempStage);
                                     latestStageID++;
 
                                     #region Process Trans Information
-                                    var nextPosition = 0;
+                                    int nextPosition = 0;
                                     if ((i + 1) < count)
+                                    {
                                         nextPosition = Convert.ToInt32(listNodes113[i + 1].Element("TSN").Value);
+                                    }
                                     else
+                                    {
                                         nextPosition = Convert.ToInt32(endNode156.Element("TSN").Value);
+                                    }
 
-                                    var eachStageNodes = eachJourneyNodes.Where(j => Convert.ToInt32(j.Element("TSN").Value) > Convert.ToInt32(thisNode113.Element("TSN").Value) && Convert.ToInt32(j.Element("TSN").Value) < nextPosition).ToList();
+                                    List<XElement> eachStageNodes = eachJourneyNodes.Where(j => Convert.ToInt32(j.Element("TSN").Value) > Convert.ToInt32(thisNode113.Element("TSN").Value) && Convert.ToInt32(j.Element("TSN").Value) < nextPosition).ToList();
 
-                                    var cashTransNodes = eachStageNodes.Where(j => j.Attribute("STXID").Value.Equals("157"));
-                                    var smartCardTransNodes = eachStageNodes.Where(j => j.Attribute("STXID").Value.Equals("188"));
-                                    var groupTransNodes = eachStageNodes.Where(j => j.Attribute("STXID").Value.Equals("170"));
+                                    IEnumerable<XElement> cashTransNodes = eachStageNodes.Where(j => j.Attribute("STXID").Value.Equals("157"));
+                                    IEnumerable<XElement> smartCardTransNodes = eachStageNodes.Where(j => j.Attribute("STXID").Value.Equals("188"));
+                                    IEnumerable<XElement> groupTransNodes = eachStageNodes.Where(j => j.Attribute("STXID").Value.Equals("170"));
                                     if ((cashTransNodes != null && cashTransNodes.Any()) || (smartCardTransNodes != null && smartCardTransNodes.Any()))
                                     {
                                         cashTransNodes.ToList().ForEach(t =>
                                         {
-                                            var thisTrans = t;
+                                            XElement thisTrans = t;
                                             transDetail = new Trans();
-                                            var ticketType = t.Element("TicketType").Value.Trim();
+                                            string ticketType = t.Element("TicketType").Value.Trim();
                                             transDetail.id_Trans = latestTransID;
                                             transDetail.id_Stage = stageDetail.id_Stage;
                                             transDetail.id_Journey = journeyDetail.id_Journey;
                                             transDetail.id_Duty = dutyDetail.id_Duty;
                                             transDetail.id_Module = moduleDetail.id_Module;
-                                            transDetail.str_LocationCode = dutyDetail.str_OperatorVersion.TrimStart('0');
+                                            transDetail.str_LocationCode = dutyDetail.str_OperatorVersion.TrimStart('0').Length >= 2 ? dutyDetail.str_OperatorVersion.TrimStart('0').Substring(0, 2) : dutyDetail.str_OperatorVersion.TrimStart('0'); ;
                                             transDetail.int2_BoardingStageID = stageDetail.int2_StageID;
                                             transDetail.int2_AlightingStageID = (short)thisTrans.Element("StageNo");
                                             transDetail.int2_Class = Convert.ToInt16(ticketType, 16);
@@ -1336,23 +1497,25 @@ namespace EbusFileImporter.Core
 
                                         groupTransNodes.ToList().ForEach(t =>
                                         {
-                                            var thisTrans = t;
-                                            var class1 = (int)t.Element("Class1");
-                                            var class2 = (int)t.Element("Class2");
-                                            var count1 = (int)t.Element("Count1");
-                                            var count2 = (int)t.Element("Count2");
+                                            XElement thisTrans = t;
+                                            int class1 = (int)t.Element("Class1");
+                                            int class2 = (int)t.Element("Class2");
+                                            int count1 = (int)t.Element("Count1");
+                                            int count2 = (int)t.Element("Count2");
                                             if (class1 != 0 & count1 != 0)
                                             {
-                                                transDetail = new Trans();
-                                                transDetail.id_Stage = stageDetail.id_Stage;
-                                                transDetail.id_Journey = journeyDetail.id_Journey;
-                                                transDetail.id_Duty = dutyDetail.id_Duty;
-                                                transDetail.id_Module = moduleDetail.id_Module;
-                                                transDetail.str_LocationCode = dutyDetail.str_OperatorVersion.TrimStart('0');
-                                                transDetail.int2_BoardingStageID = stageDetail.int2_StageID;
-                                                transDetail.int2_AlightingStageID = (short)thisTrans.Element("AlightingStage");
-                                                transDetail.int2_Class = Convert.ToInt16(class1.ToString(), 16);
-                                                transDetail.int4_Revenue = (int)thisTrans.Element("Fare1");
+                                                transDetail = new Trans
+                                                {
+                                                    id_Stage = stageDetail.id_Stage,
+                                                    id_Journey = journeyDetail.id_Journey,
+                                                    id_Duty = dutyDetail.id_Duty,
+                                                    id_Module = moduleDetail.id_Module,
+                                                    str_LocationCode = dutyDetail.str_OperatorVersion.TrimStart('0').Substring(0, 2),
+                                                    int2_BoardingStageID = stageDetail.int2_StageID,
+                                                    int2_AlightingStageID = (short)thisTrans.Element("AlightingStage"),
+                                                    int2_Class = Convert.ToInt16(class1.ToString(), 16),
+                                                    int4_Revenue = (int)thisTrans.Element("Fare1")
+                                                };
                                                 switch (transDetail.int4_Revenue)
                                                 {
                                                     case 0:
@@ -1377,9 +1540,9 @@ namespace EbusFileImporter.Core
                                                 transDetail.int4_AnnulCash = null;
                                                 //transDetail.id_SCTrans = null;
                                                 transDetail.int4_TicketSerialNumber = (int)thisTrans.Element("TicketSerialNo");
-                                                for (var rec = 0; rec < count1; rec++)
+                                                for (int rec = 0; rec < count1; rec++)
                                                 {
-                                                    var newTrans = new Trans();
+                                                    Trans newTrans = new Trans();
                                                     CopyPropertyValues(transDetail, newTrans);
                                                     newTrans.id_Trans = latestTransID;
                                                     transDetails.Add(newTrans);
@@ -1389,17 +1552,19 @@ namespace EbusFileImporter.Core
 
                                             if (class2 != 0 & count2 != 0)
                                             {
-                                                transDetail = new Trans();
-                                                transDetail.id_Trans = latestTransID;
-                                                transDetail.id_Stage = stageDetail.id_Stage;
-                                                transDetail.id_Journey = journeyDetail.id_Journey;
-                                                transDetail.id_Duty = dutyDetail.id_Duty;
-                                                transDetail.id_Module = moduleDetail.id_Module;
-                                                transDetail.str_LocationCode = dutyDetail.str_OperatorVersion.TrimStart('0');
-                                                transDetail.int2_BoardingStageID = stageDetail.int2_StageID;
-                                                transDetail.int2_AlightingStageID = (short)thisTrans.Element("AlightingStage");
-                                                transDetail.int2_Class = Convert.ToInt16(class2.ToString(), 16);
-                                                transDetail.int4_Revenue = (int)thisTrans.Element("Fare2");
+                                                transDetail = new Trans
+                                                {
+                                                    id_Trans = latestTransID,
+                                                    id_Stage = stageDetail.id_Stage,
+                                                    id_Journey = journeyDetail.id_Journey,
+                                                    id_Duty = dutyDetail.id_Duty,
+                                                    id_Module = moduleDetail.id_Module,
+                                                    str_LocationCode = dutyDetail.str_OperatorVersion.TrimStart('0').Substring(0, 2),
+                                                    int2_BoardingStageID = stageDetail.int2_StageID,
+                                                    int2_AlightingStageID = (short)thisTrans.Element("AlightingStage"),
+                                                    int2_Class = Convert.ToInt16(class2.ToString(), 16),
+                                                    int4_Revenue = (int)thisTrans.Element("Fare2")
+                                                };
                                                 switch (transDetail.int4_Revenue)
                                                 {
                                                     case 0:
@@ -1424,9 +1589,9 @@ namespace EbusFileImporter.Core
                                                 transDetail.int4_AnnulCash = null;
                                                 //transDetail.id_SCTrans = null;
                                                 transDetail.int4_TicketSerialNumber = (int)thisTrans.Element("TicketSerialNo");
-                                                for (var rec = 0; rec < count2; rec++)
+                                                for (int rec = 0; rec < count2; rec++)
                                                 {
-                                                    var newTrans = new Trans();
+                                                    Trans newTrans = new Trans();
                                                     CopyPropertyValues(transDetail, newTrans);
                                                     newTrans.id_Trans = latestTransID;
                                                     transDetails.Add(newTrans);
@@ -1437,10 +1602,10 @@ namespace EbusFileImporter.Core
 
                                         smartCardTransNodes.ToList().ForEach(t =>
                                         {
-                                            var thisTrans = t;
+                                            XElement thisTrans = t;
                                             transDetail = new Trans();
-                                            var ticketType = t.Element("TicketType").Value.Trim();
-                                            var productData = (string)thisTrans.Element("Product1Data");
+                                            string ticketType = t.Element("TicketType").Value.Trim();
+                                            string productData = (string)thisTrans.Element("Product1Data");
                                             transDetail.id_Trans = latestTransID;
                                             transDetail.id_Stage = stageDetail.id_Stage;
                                             transDetail.id_Journey = journeyDetail.id_Journey;
@@ -1452,7 +1617,7 @@ namespace EbusFileImporter.Core
                                             //transDetail.int2_Class = Convert.ToInt16(ticketType, 16);
                                             transDetail.dat_TransDate = helper.ConvertToInsertDateString((string)thisTrans.Element("IssueDate"));
                                             transDetail.dat_TransTime = helper.ConvertToInsertDateTimeString((string)thisTrans.Element("IssueDate"), (string)thisTrans.Element("IssueTime"));
-                                            var serialNumber = (string)thisTrans.Element("ESN");
+                                            string serialNumber = (string)thisTrans.Element("ESN");
                                             transDetail.str_SerialNumber = serialNumber;
                                             //transDetail.int4_TripBal = Helper.GetTripBalanceFromProductData(productData);
                                             transDetail.int2_AnnulCount = null;
@@ -1461,7 +1626,7 @@ namespace EbusFileImporter.Core
                                             transDetail.int4_TicketSerialNumber = (int)thisTrans.Element("TicketSerialNo");
 
                                             #region Process Ticket Type 
-                                            var nonRevenue = 0;
+                                            int nonRevenue = 0;
                                             switch (ticketType)
                                             {
                                                 case "2328":
@@ -1502,6 +1667,27 @@ namespace EbusFileImporter.Core
                                                         //Scholar MJ Transfer
                                                         nonRevenue = dbService.GetNonRevenueFromPosTransTable(serialNumber, dbName);
                                                         transDetail.int2_Class = 997;
+                                                        transDetail.int2_PassCount = 1;
+                                                        transDetail.int2_Transfers = 0;
+                                                    }
+                                                    transDetail.int4_NonRevenue = nonRevenue;
+                                                    break;
+                                                case "232B":
+                                                    //Disabled MJ Cancelation
+                                                    transDetail.int2_Class = 994;
+                                                    transDetail.int4_Revenue = 0;
+                                                    transDetail.int4_NonRevenue = 0;
+                                                    transDetail.int2_TicketCount = 0;
+                                                    transDetail.int2_PassCount = 0;
+                                                    transDetail.int2_Transfers = 1;
+                                                    transDetail.int4_RevenueBal = 0;
+                                                    transDetail.int4_TripBal = helper.GetTripBalanceFromProductData(productData);
+                                                    transDetail.SmartCardExipry = helper.GetSmartCardExipryFromProductDate(productData);
+                                                    if (!helper.IsTransferTransaction(productData))
+                                                    {
+                                                        //Disabled MJ Transfer
+                                                        nonRevenue = dbService.GetNonRevenueFromPosTransTable(serialNumber, dbName);
+                                                        transDetail.int2_Class = 993;
                                                         transDetail.int2_PassCount = 1;
                                                         transDetail.int2_Transfers = 0;
                                                     }
@@ -1689,9 +1875,54 @@ namespace EbusFileImporter.Core
                                                     posTransDetail.AmountRecharged = 0;
                                                     posTransDetail.TripsRecharged = helper.GetTripRechargedFromProductData(productData);
                                                     break;
+                                                case "2B18":
+                                                    //Adult MJ 48 Recharge
+                                                    transDetail.int2_Class = 718;
+                                                    transDetail.int4_Revenue = (int)thisTrans.Element("Fare");
+                                                    transDetail.int4_NonRevenue = 0;
+                                                    transDetail.int2_TicketCount = 1;
+                                                    transDetail.int2_PassCount = 0;
+                                                    transDetail.int2_Transfers = 0;
+                                                    transDetail.int4_RevenueBal = 0;
+                                                    transDetail.int4_TripBal = helper.GetTripBalanceFromProductData(productData);
+                                                    posTransDetail = MapTransToPosTrans(transDetail);
+                                                    posTransDetail.id_PosTrans = latestPosTransID;
+                                                    posTransDetail.AmountRecharged = 0;
+                                                    posTransDetail.TripsRecharged = helper.GetTripRechargedFromProductData(productData);
+                                                    break;
+                                                case "2B19":
+                                                    //Adult MJ 48 Recharge
+                                                    transDetail.int2_Class = 719;
+                                                    transDetail.int4_Revenue = (int)thisTrans.Element("Fare");
+                                                    transDetail.int4_NonRevenue = 0;
+                                                    transDetail.int2_TicketCount = 1;
+                                                    transDetail.int2_PassCount = 0;
+                                                    transDetail.int2_Transfers = 0;
+                                                    transDetail.int4_RevenueBal = 0;
+                                                    transDetail.int4_TripBal = helper.GetTripBalanceFromProductData(productData);
+                                                    posTransDetail = MapTransToPosTrans(transDetail);
+                                                    posTransDetail.id_PosTrans = latestPosTransID;
+                                                    posTransDetail.AmountRecharged = 0;
+                                                    posTransDetail.TripsRecharged = helper.GetTripRechargedFromProductData(productData);
+                                                    break;
                                                 case "2716":
                                                     //Scholar MJ 10 Recharge
                                                     transDetail.int2_Class = 721;
+                                                    transDetail.int4_Revenue = (int)thisTrans.Element("Fare");
+                                                    transDetail.int4_NonRevenue = 0;
+                                                    transDetail.int2_TicketCount = 1;
+                                                    transDetail.int2_PassCount = 0;
+                                                    transDetail.int2_Transfers = 0;
+                                                    transDetail.int4_RevenueBal = 0;
+                                                    transDetail.int4_TripBal = helper.GetTripBalanceFromProductData(productData);
+                                                    posTransDetail = MapTransToPosTrans(transDetail);
+                                                    posTransDetail.id_PosTrans = latestPosTransID;
+                                                    posTransDetail.AmountRecharged = 0;
+                                                    posTransDetail.TripsRecharged = helper.GetTripRechargedFromProductData(productData);
+                                                    break;
+                                                case "2717":
+                                                    //Scholar MJ 10 Recharge
+                                                    transDetail.int2_Class = 722;
                                                     transDetail.int4_Revenue = (int)thisTrans.Element("Fare");
                                                     transDetail.int4_NonRevenue = 0;
                                                     transDetail.int2_TicketCount = 1;
@@ -1862,6 +2093,18 @@ namespace EbusFileImporter.Core
                                                     posTransDetail = MapTransToPosTrans(transDetail);
                                                     posTransDetail.id_PosTrans = latestPosTransID;
                                                     break;
+                                                case "2B17":
+                                                    transDetail.int2_Class = 751;
+                                                    transDetail.int4_Revenue = (int)thisTrans.Element("Fare");
+                                                    transDetail.int4_NonRevenue = 0;
+                                                    transDetail.int2_TicketCount = 1;
+                                                    transDetail.int2_PassCount = 0;
+                                                    transDetail.int2_Transfers = 0;
+                                                    transDetail.int4_RevenueBal = 0;
+                                                    transDetail.int4_TripBal = 0;
+                                                    posTransDetail = MapTransToPosTrans(transDetail);
+                                                    posTransDetail.id_PosTrans = latestPosTransID;
+                                                    break;
                                                 default:
                                                     break;
                                             }
@@ -1895,11 +2138,13 @@ namespace EbusFileImporter.Core
 
                     if (!dbService.DoesRecordExist("Staff", "int4_StaffID", dutyDetail.int4_OperatorID.Value, dbName))
                     {
-                        var node125 = nodes.Where(x => x.Attribute("STXID").Value.Equals("125")).FirstOrDefault();
+                        XElement node125 = nodes.Where(x => x.Attribute("STXID").Value.Equals("125")).FirstOrDefault();
                         if (node151 != null && node125 != null)
                         {
-                            staffDetail = new Staff();
-                            staffDetail.int4_StaffID = dutyDetail.int4_OperatorID.Value;
+                            staffDetail = new Staff
+                            {
+                                int4_StaffID = dutyDetail.int4_OperatorID.Value
+                            };
                             staffDetail.str50_StaffName = "New Staff" + " - " + staffDetail.int4_StaffID;
                             staffDetail.bit_InUse = true;
                             staffDetail.int4_StaffTypeID = 1;
@@ -1907,25 +2152,28 @@ namespace EbusFileImporter.Core
                             //var runningBoard = dutyDetail.str_OperatorVersion;
                             staffDetail.str4_LocationCode = "0001";//runningBoard.Substring(runningBoard.Length - 4, 4);
                             staffDetail.str2_LocationCode = null;
-                            var serialNumber = (string)node125.Element("DriverCardSerialNo");
+                            string serialNumber = (string)node125.Element("DriverCardSerialNo");
                             staffDetail.SerialNumber = Convert.ToInt32(serialNumber, 16).ToString();
                         }
                     }
                     #endregion
 
                     #region Process Inspector Information
-                    var nodes34 = nodes.Where(x => x.Attribute("STXID").Value.Equals("34"));
+                    IEnumerable<XElement> nodes34 = nodes.Where(x => x.Attribute("STXID").Value.Equals("34"));
                     if (nodes34 != null)
                     {
                         nodes34.ToList().ForEach(x =>
                         {
-                            var thisInspector = x;
-                            var inspectorStage = nodes.Where(i => i.Attribute("STXID").Value.Equals("113") && Convert.ToInt32(i.Element("TSN").Value) < Convert.ToInt32(thisInspector.Element("TSN").Value)).OrderBy(i => Convert.ToInt32(i.Element("TSN").Value)).FirstOrDefault();
-                            inspectorDetail = new Inspector();
-                            inspectorDetail.id_Inspector = latestInspectorID;
-                            inspectorDetail.id_Stage = (int)inspectorStage.Element("BoardingStage");
-                            inspectorDetail.id_InspectorID = (int)thisInspector.Element("InspectorNo");
-                            var date = helper.ConvertToInsertDateString((string)node151.Element("DutyDate"));
+                            XElement thisInspector = x;
+                            XElement inspectorStage = nodes.Where(i => i.Attribute("STXID").Value.Equals("113") && Convert.ToInt32(i.Element("TSN").Value) < Convert.ToInt32(thisInspector.Element("TSN").Value)).OrderBy(i => Convert.ToInt32(i.Element("TSN").Value)).FirstOrDefault();
+                            int tempStageID = tempStageDetails.Where(i => i.TSN.Equals(inspectorStage.Element("TSN").Value) && i.RecordedTime.Equals(inspectorStage.Element("Time").Value)).FirstOrDefault().id_Stage;
+                            inspectorDetail = new Inspector
+                            {
+                                id_Inspector = latestInspectorID,
+                                id_Stage = tempStageID,
+                                id_InspectorID = (int)thisInspector.Element("InspectorNo")
+                            };
+                            DateTime date = helper.ConvertToInsertDateString((string)node151.Element("DutyDate"));
                             inspectorDetail.datTimeStamp = helper.ConvertToInsertDateTimeString((string)node151.Element("DutyDate"), (string)thisInspector.Element("Time"));
                             inspectorDetails.Add(inspectorDetail);
                             latestInspectorID++;
@@ -1936,17 +2184,19 @@ namespace EbusFileImporter.Core
 
                     #region Process Bus Defect/Bus Checklist
 
-                    var nodes208 = nodes.Where(x => x.Attribute("STXID").Value.Equals("208")).ToList();
+                    List<XElement> nodes208 = nodes.Where(x => x.Attribute("STXID").Value.Equals("208")).ToList();
                     if (nodes208 != null)
                     {
                         if (nodes208.Count() > 1)
                         {
-                            var thisBusChecklist = nodes208[0];
-                            var lastBusChecklist = nodes208[1];
-                            busChecklistDetail = new BusChecklist();
-                            busChecklistDetail.id_Duty = dutyDetail.id_Duty;
-                            busChecklistDetail.id_Module = moduleDetail.id_Module;
-                            var checklistItems = thisBusChecklist.Element("CheckItems")?.Elements("CheckItem");
+                            XElement thisBusChecklist = nodes208[0];
+                            XElement lastBusChecklist = nodes208[1];
+                            busChecklistDetail = new BusChecklist
+                            {
+                                id_Duty = dutyDetail.id_Duty,
+                                id_Module = moduleDetail.id_Module
+                            };
+                            IEnumerable<XElement> checklistItems = thisBusChecklist.Element("CheckItems")?.Elements("CheckItem");
                             if (checklistItems != null)
                             {
                                 checklistItems.ToList().ForEach(x =>
@@ -1986,7 +2236,11 @@ namespace EbusFileImporter.Core
                             {
                                 Logger.Info("Error: No checklist node found in bus checklist, Moving file to error folder");
                                 helper.MoveErrorFile(filePath, dbName);
-                                if (Constants.EnableEmailTrigger) emailHelper.SendMail(filePath, dbName, "", EmailType.Error);
+                                if (Constants.EnableEmailTrigger)
+                                {
+                                    emailHelper.SendMail(filePath, dbName, "", EmailType.Error);
+                                }
+
                                 return false;
                             }
 
@@ -2032,7 +2286,11 @@ namespace EbusFileImporter.Core
                             {
                                 Logger.Info("Error: No checklist node found in bus checklist, Moving file to error folder");
                                 helper.MoveErrorFile(filePath, dbName);
-                                if (Constants.EnableEmailTrigger) emailHelper.SendMail(filePath, dbName, "", EmailType.Error);
+                                if (Constants.EnableEmailTrigger)
+                                {
+                                    emailHelper.SendMail(filePath, dbName, "", EmailType.Error);
+                                }
+
                                 return false;
                             }
 
@@ -2067,7 +2325,7 @@ namespace EbusFileImporter.Core
 
                 if (moduleDetail != null && dutyDetail != null)
                 {
-                    var dutyDetails = new List<Duty>() { dutyDetail };
+                    List<Duty> dutyDetails = new List<Duty>() { dutyDetail };
                     moduleDetail.int4_ModulePasses = dutyDetails.Where(i => i.id_Module == moduleDetail.id_Module).Sum(i => i.int4_DutyPasses ?? 0);
                     moduleDetail.int4_ModuleNonRevenue = dutyDetails.Where(i => i.id_Module == moduleDetail.id_Module).Sum(i => i.int4_DutyNonRevenue ?? 0);
                     moduleDetail.int4_ModuleTransfer = dutyDetails.Where(i => i.id_Module == moduleDetail.id_Module).Sum(i => i.int4_DutyTransfer ?? 0);
@@ -2096,14 +2354,18 @@ namespace EbusFileImporter.Core
                     latestAuditFileStatus = dbService.GetLatestIDUsed("AuditFileStatus", "Id_Status", dbName);
                     latestdiagnosticRecord = dbService.GetLatestIDUsed("DiagnosticRecord", "Id_DiagnosticRecord", dbName);
                     if (latestBusChecklistID > 0)
+                    {
                         latestBusChecklistID = dbService.GetLatestIDUsed("BusChecklist", "Id_BusChecklist", dbName);
+                    }
 
                     #region Update Actual ID's
                     moduleDetail.id_Module = moduleDetail.id_Module + latestModuleID;
                     dutyDetail.id_Module = dutyDetail.id_Module + latestModuleID;
                     dutyDetail.id_Duty = dutyDetail.id_Duty + latestDutyID;
                     if (busChecklistDetail != null)
+                    {
                         busChecklistDetail.id_BusChecklist = busChecklistDetail.id_BusChecklist + latestBusChecklistID;
+                    }
 
                     wayBillDetails.ForEach(x =>
                     {
@@ -2154,6 +2416,7 @@ namespace EbusFileImporter.Core
 
                     inspectorDetails.ForEach(x =>
                     {
+                        x.id_Stage = x.id_Stage + latestStageID;
                         x.id_Inspector = x.id_Inspector + latestInspectorID;
                     });
 
@@ -2170,7 +2433,7 @@ namespace EbusFileImporter.Core
                     });
                     #endregion
 
-                    var xmlDataToImport = new XmlDataToImport()
+                    XmlDataToImport xmlDataToImport = new XmlDataToImport()
                     {
                         Modules = moduleDetail != null ? new List<Module>() { moduleDetail } : new List<Module>(),
                         Duties = dutyDetail != null ? new List<Duty>() { dutyDetail } : new List<Duty>(),
@@ -2195,7 +2458,7 @@ namespace EbusFileImporter.Core
             }
             catch (Exception ex)
             {
-                var exception = JsonConvert.SerializeObject(ex).ToString();
+                string exception = JsonConvert.SerializeObject(ex).ToString();
                 if (Constants.DetailedLogging)
                 {
                     Logger.Error("Failed in XML ProcessFile");
@@ -2203,7 +2466,11 @@ namespace EbusFileImporter.Core
                 }
                 Logger.Error("Exception:" + exception);
                 helper.MoveErrorFile(filePath, dbName);
-                if (Constants.EnableEmailTrigger) emailHelper.SendMail(filePath, dbName, exception, EmailType.Error);
+                if (Constants.EnableEmailTrigger)
+                {
+                    emailHelper.SendMail(filePath, dbName, exception, EmailType.Error);
+                }
+
                 return result;
             }
             return result;
@@ -2211,11 +2478,11 @@ namespace EbusFileImporter.Core
 
         public void CopyPropertyValues(object source, object destination)
         {
-            var destProperties = destination.GetType().GetProperties();
+            System.Reflection.PropertyInfo[] destProperties = destination.GetType().GetProperties();
 
-            foreach (var sourceProperty in source.GetType().GetProperties())
+            foreach (System.Reflection.PropertyInfo sourceProperty in source.GetType().GetProperties())
             {
-                foreach (var destProperty in destProperties)
+                foreach (System.Reflection.PropertyInfo destProperty in destProperties)
                 {
                     if (destProperty.Name == sourceProperty.Name &&
                 destProperty.PropertyType.IsAssignableFrom(sourceProperty.PropertyType))

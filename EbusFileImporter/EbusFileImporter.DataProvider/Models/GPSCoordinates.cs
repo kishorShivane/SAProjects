@@ -8,11 +8,12 @@ namespace EbusFileImporter.DataProvider.Models
     public class GPSCoordinate
     {
         //public int ID { get; set; }
-        public int id_Trans { get; set; }
-        public int id_Stage { get; set; }
-        public int id_Journey { get; set; }
-        public int id_Duty { get; set; }
+       
         public int id_Module { get; set; }
+        public int id_Duty { get; set; }
+        public int id_Journey { get; set; }
+        public int id_Stage { get; set; }
+        public int id_Trans { get; set; }
         public string Latitude { get; set; }
         public string Longitude { get; set; }
         public int LatDegree { get; set; }
