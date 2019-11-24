@@ -65,7 +65,7 @@
 
 </div><!-- / .modal -->
 <script>
-    debugger;
+    
     var addBookingAllowed = "@accessCodes.Contains("SSMAB")";
     $(document).ready(function () {
         AddBooking();
@@ -114,7 +114,7 @@
     });
 
     function BookingPopupTitleText(row) {
-        debugger;
+        
         var booking = "BookOnTime: " + row.find("span#lblBookOnTimeHour").html() + ":" + row.find("span#lblBookOnTimeMinute").html() +
            " BookOffTime: " + row.find("span#lblBookOffTimeHour").html() + ":" + row.find("span#lblBookOffTimeMinute").html();
         divDutyBookings.find("input#hdnModelTitle").attr("value", divDutyOperatedDays.find("input#hdnModelTitle").attr("value") + ", Booking: " + booking);
@@ -146,7 +146,7 @@
     }
 
     function GetBookingsForOperatedDay(operatedDaysID) {
-        debugger;
+        
         var result = true;
         var table = divDutyBookings.find("table#tblDutyBookingResults");
         var tableBody = table.find("tbody");
@@ -198,7 +198,7 @@
                         }
                         rows = rows + "<td><span id='lblPlaceOn' value='" + CurrentItem.PlaceOnID + "'>" + CurrentItem.PlaceOn + "</span></td>";
                         rows = rows + "<td><span id='lblPlaceOff' value='" + CurrentItem.PlaceOffID + "'>" + CurrentItem.PlaceOff + "</span></td>";
-                        debugger;
+                        
                         if (addBookingAllowed != "False")
                         { rows = rows + "<td><button type='button' class='btn btn-info' style='padding: 0px 10px;height: 25px !important;' id='btnAddBookingToBelow' value=''><i class='fa fa-arrow-down' aria-hidden='true'></i>&nbsp;Add Booking</button></td>"; }                        
                         rows = rows + " <td><a id='lnkDutyBookingEdit' class='linkEdit' value='" + CurrentItem.ID + "'><span class='fa-stack fa-sm '><i class='fa fa-edit fa-stack-1x '></i></span></a></td>"

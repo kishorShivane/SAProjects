@@ -260,7 +260,7 @@
                     }
                     else {
                         $(result).each(function (index) {
-                            debugger;
+                            
                             var CurrentItem = this;
                             var stages = JSON.stringify(CurrentItem.RouteStages).replace(/\"/g, "##");
                             rows = rows + "<tr><td><span id='lblRouteNumber'>" + CurrentItem.RouteNumber + "</span></td><td><span id='lblRouteDetail'>" + CurrentItem.RouteDetail + "</span></td>";
@@ -283,7 +283,7 @@
     }
 
     function ConvertToHtml(jsonString) {
-        debugger;
+        
         var stages = JSON.parse(jsonString.replace(/\##/g, "\""));
         var mainRouteStages = "";
         mainRouteStages = mainRouteStages + "<table class='table table-striped' id='tblMainRouteStages'><thead class='thead-inverse'><tr style='padding:0px;' ><th style='padding: 4px;'>Order</th><th style='padding: 4px;'>Stage</th><th style='padding: 4px;'>Stage Name</th><th style='padding: 4px;border-right: 2px solid;'></th><th style='padding: 4px;'>Order</th><th style='padding: 4px;'>Stage</th><th style='padding: 4px;'>Stage Name</th></tr></thead><tbody>";

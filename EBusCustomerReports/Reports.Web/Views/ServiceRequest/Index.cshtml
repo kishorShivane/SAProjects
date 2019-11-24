@@ -325,7 +325,7 @@
 
     function CreateServiceRequest() {
         $("button#btnCreateServiceRequest").click(function () {
-            debugger;
+            
             ClearFormValuesInBlock(divAddEditServiceRequest);
             SetPopupTitle(divAddEditServiceRequest, "Add Service Request", "");
             setDropDownValueByText("ddlRequestStatus", "Created");
@@ -380,7 +380,7 @@
                     else {
                         $(result).each(function (index) {
                             var CurrentItem = this;
-                            debugger;
+                            
                             rows = rows + "<tr>";
                             rows = rows + "<td class='showAudit'><span id='lblRequestID'>" + CurrentItem.ServiceRequestID + "</span></td>";
                             rows = rows + "<td class='showAudit'><span id='lblRequestedBy'>" + CurrentItem.LastModifiedBy + "</span><input type='hidden' value=" + CurrentItem.Priority + " id='hdnPriority'/></td>";
@@ -424,7 +424,7 @@
                 else {
                     $(result).each(function (index) {
                         var CurrentItem = this;
-                        debugger;
+                        
                         rows = rows + "<tr>";
                         rows = rows + "<td>" + CurrentItem.ServiceRequestID + "</td>";
                         rows = rows + "<td>" + CurrentItem.Descrption + "</td>";

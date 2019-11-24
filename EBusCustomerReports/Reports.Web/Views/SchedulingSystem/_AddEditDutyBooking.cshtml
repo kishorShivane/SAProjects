@@ -166,7 +166,7 @@
     }
 
     function CheckBookingDependency(bookingID) {
-        debugger;
+        
         var ret = false;
         $.ajax({
             async: false,
@@ -189,7 +189,7 @@
     }
 
     function DeleteDutyBooking(bookingID) {
-        debugger;
+        
         if (!CheckBookingDependency(bookingID)) {
             $.ajax({
                 async: false,
@@ -217,7 +217,7 @@
 
     function SaveBooking() {
         $("button#btnSaveBooking").click(function () {
-            debugger;
+            
             if (CheckMandatoryFieldsInBlock(divAddEditDutyBookings, "") && CheckNumericFields(divAddEditDutyBookings, "") && ValidateBookingTime(divAddEditDutyBookings)) {
                 var BookOnTimeHour = divAddEditDutyBookings.find("select#ddlBookOnTimeHours").val();
                 var BookOnTimeMinute = divAddEditDutyBookings.find("select#ddlBookOnTimeMinutes").val();

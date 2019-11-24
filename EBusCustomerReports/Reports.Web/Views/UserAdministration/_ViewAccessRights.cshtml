@@ -58,7 +58,7 @@
 <script>
     $(document).ready(function () {
         $('.expand').click(function () {
-            debugger;
+            
             var checkBox = $(this)
             var parentUL = $('ul', checkBox.parent()).eq(0);
 
@@ -73,7 +73,7 @@
         });
 
         $('.expandLink').click(function () {
-            debugger;
+            
             var parentUL = $('ul', $(this).parent()).eq(0);
             if (parentUL.css("display") == "none") {
                 parentUL.css("display", "block");

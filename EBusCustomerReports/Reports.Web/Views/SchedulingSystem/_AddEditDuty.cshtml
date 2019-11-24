@@ -82,7 +82,7 @@
     });
 
     function CheckDutyDependency(dutyID) {
-        debugger;
+        
         var ret = false;
         $.ajax({
             async: false,
@@ -105,7 +105,7 @@
     }
 
     function DeleteDuty(dutyID) {
-        debugger;
+        
         if (!CheckDutyDependency(dutyID)) {
             $.ajax({
                 async: false,
@@ -133,7 +133,7 @@
 
     function SaveDuty() {
         $("button#btnSaveDuty").click(function () {
-            debugger;
+            
             if (CheckMandatoryFieldsInBlock(divAddEditDuty, "") && CheckNumericFields(divAddEditDuty, "")) {
                 var referenceDutyID = divAddEditDuty.find("input#txtReferenceDutyID").val();
                 var description = divAddEditDuty.find("input#txtDescription").val();

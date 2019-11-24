@@ -363,7 +363,7 @@
     }
 
     function BindStaffDetails(row, staffID) {
-        debugger;
+        
         divAddEditStaff.find("div#divPIN").show();
         divAddEditStaff.find("input#txtStaffNumber").val(row.find("span#lblStaffNumber").html());
         divAddEditStaff.find("input#txtStaffName").val(row.find("span#lblStaffName").html());
@@ -481,7 +481,7 @@
                     else {
                         $(result).each(function (index) {
                             var CurrentItem = this;
-                            debugger;
+                            
                             if (CurrentItem.StaffName.indexOf("New Driver") >= 0) { rows = rows + "<tr style='background-color:bisque'>"; }
                             else { rows = rows + "<tr>"; }
                             rows = rows + "<td><span id='lblStaffName'>" + CurrentItem.StaffName + "</span></td>";

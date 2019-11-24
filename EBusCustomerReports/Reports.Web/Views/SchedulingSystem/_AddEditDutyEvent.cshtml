@@ -179,7 +179,7 @@
 
     function SaveEvent() {
         $("button#btnSaveEvent").click(function () {
-            debugger;
+            
             if (CheckMandatoryFieldsInBlock(divAddEditDutyEvents, "") && CheckNumericFields(divAddEditDutyEvents,"") && ValidateTripEventTime(divAddEditDutyEvents,"Event")) {
                 var eventID = divAddEditDutyEvents.find("input#hdnDutyEventID").attr("value");
                 var bookingID = divAddEditDutyEvents.find("input#hdnDutyBookingID").attr("value");

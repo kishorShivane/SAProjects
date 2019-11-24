@@ -110,7 +110,7 @@
 
     function SaveUser() {
         $("button#btnSaveUser").click(function () {
-            debugger;
+            
             if (CheckMandatoryFieldsInBlock(divAddEditUser, "") && CheckNumericFields(divAddEditUser, "")) {
                 var userName = divAddEditUser.find("input#UserName").val();
                 var password = divAddEditUser.find("input#Password").val();

@@ -107,7 +107,7 @@
     }
 
     function BindOperatedDayDetails(row, operatedDayID) {
-        debugger;
+        
         divAddEditDutyOperatedDays.find("input#hdnDutyID").attr("value", divDutyOperatedDays.find("input#hdnDutyID").attr("value"));
         divAddEditDutyOperatedDays.find("input#hdnDutyOperatedDayID").attr("value", operatedDayID);
 
@@ -161,7 +161,7 @@
     }
 
     function GetOperatedDaysForDuty(dutyID) {
-        debugger;
+        
         var table = divDutyOperatedDays.find("table#tblDutyOperatedDaysResults");
         var tableBody = table.find("tbody");
         var rows = "";

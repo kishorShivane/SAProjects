@@ -338,14 +338,14 @@
     });
 
     $(document).on("click", "a#lnkSmartCardActivate", function () {
-        debugger;
+        
         var row = $(this).parent().parent();
         var status = row.find("input#hdnSmartCardStatus").attr("value")== "true"? false: true;
         SetSmartCardStatus(status, $(this).attr("value"));
     });
 
     function SetSmartCardStatus(status, smartCardID) {
-        debugger;
+        
 
             $.ajax({
                 async: false,
@@ -368,7 +368,7 @@
     }
 
     function BindSmartCardDetails(row, value) {
-        debugger;
+        
         divAddEditSmartCard.find("input#txtSmartCardNumber").val(row.find("span#lblSmartCardNumber").html());
         divAddEditSmartCard.find("input#txtInitials").val(row.find("span#lblInitials").html());
         divAddEditSmartCard.find("input#txtFirstName").val(row.find("span#lblFirstName").html());
@@ -397,7 +397,7 @@
     }
 
     function BindSmartCards(isFromPageLoad, status) {
-        debugger;
+        
         table.destroy();
         var smartCardNumber = $("input#txtSmartCardNumber").val();
         var firstName = $("input#txtFirstName").val();
@@ -432,7 +432,7 @@
                     else {
                         $(result).each(function (index) {
                             var CurrentItem = this;
-                            debugger;
+                            
                             var actDeAct = "<td><a id='lnkSmartCardActivate' class='linkDeActivate' value='" + CurrentItem.ID + "'><span class='fa-stack fa-sm '><i class='fa fa-close fa-stack-1x'></i></span>De-Activate</a></td>"
                             if (!CurrentItem.SmartCardStatus) {
                                 actDeAct = "<td><a id='lnkSmartCardActivate' class='linkEdit' value='" + CurrentItem.ID + "'><span class='fa-stack fa-sm '><i class='fa fa-check fa-stack-1x'></i></span>Activate</a></td>"

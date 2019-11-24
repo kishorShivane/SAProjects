@@ -225,7 +225,7 @@
 
     //Funcions to delete
     $(document).on("click", "a#lnkDutyDelete", function () {
-        debugger;
+        
         var status = confirm("You are about to delete this Duty!");
         if (status) {
             DeleteDuty($(this).attr("value"));
@@ -286,7 +286,7 @@
     }
 
     function BindDutyDetails(row, dutyID, workspaceID) {
-        debugger;
+        
         ClearFormValuesInBlock(divAddEditDuty);
         var locationID = row.find("input#hdnLocationID").attr("value").split(',');
         divAddEditDuty.find("input#txtReferenceDutyID").val(row.find("span#lblReferenceDutyID").html());

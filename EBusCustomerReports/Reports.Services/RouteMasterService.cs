@@ -217,7 +217,7 @@ namespace Reports.Services
                 };
 
                 cmd.Parameters.Add(new SqlParameter("@MainRouteNumber", SubRouteMaster.MainRouteNumber));
-                cmd.Parameters.Add(new SqlParameter("@SubRouteNumber", SubRouteMaster.SubRouteNumber));
+                cmd.Parameters.Add(new SqlParameter("@SubRouteNumber", SubRouteMaster.SubRouteNumber.PadLeft(4,'0')));
                 cmd.Parameters.Add(new SqlParameter("@StartStage", SubRouteMaster.StartStage));
                 cmd.Parameters.Add(new SqlParameter("@SubRouteName", SubRouteMaster.SubRouteName));
                 cmd.Parameters.Add(new SqlParameter("@EndStage", SubRouteMaster.EndStage));
@@ -263,7 +263,7 @@ namespace Reports.Services
                 };
 
                 cmd.Parameters.Add(new SqlParameter("@SubRouteNumber", subRouteNumber));
-                cmd.Parameters.Add(new SqlParameter("@RouteNumber", subRouteNumber));
+                cmd.Parameters.Add(new SqlParameter("@RouteNumber", routeNumber));
 
                 cmd.CommandTimeout = 500000;
                 myConnection.Open();

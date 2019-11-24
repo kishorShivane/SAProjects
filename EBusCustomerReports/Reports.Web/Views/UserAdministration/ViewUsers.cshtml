@@ -189,7 +189,7 @@
 
     // Functions to open edit window
     $(document).on("click", "a#lnkUserEdit", function () {
-        debugger;
+        
         ClearFormValuesInBlock(divAddEditUser);
         $("input#hdnIndexModelTitle").attr("value", "User Name: " + $(this).parent().parent().find("span#lblUserName").html());
         BindUserDetails($(this).parent().parent(), $(this).attr("value"));
@@ -199,7 +199,7 @@
 
     //Funcions to delete
     $(document).on("click", "a#lnkUserDelete", function () {
-        debugger;
+        
         var status = confirm("You are about to delete this User!");
         if (status) {
             DeleteUser($(this).attr("value"));
@@ -240,7 +240,7 @@
     }
 
     function BindUserDetails(row, userID) {
-        debugger;
+        
         ClearFormValuesInBlock(divAddEditUser);
         var accessCodes = row.find("input#hdnAccessCodes").attr("value");
         divAddEditUser.find("input#UserName").val(row.find("span#lblUserName").html());
@@ -296,7 +296,7 @@
                         }
                         else {
                             $(result).each(function (index) {
-                                debugger;
+                                
                                 var CurrentItem = this;
                                 rows = rows + "<tr><td><span id='lblUserName'>" + CurrentItem.UserName + "</span></td>";
                                 rows = rows + "<td><span id='lblRole'>" + CurrentItem.Role + "</span><input type='hidden' value=" + CurrentItem.Password + " id='hdnPassword'/></td>";

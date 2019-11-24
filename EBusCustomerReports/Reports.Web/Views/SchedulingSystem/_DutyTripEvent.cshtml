@@ -192,7 +192,7 @@
 
 
     function GetTripsForBooking(bookingID) {
-        debugger;
+        
         var tripState = true;
         var tableTrip = divDutyTripsEvents.find("table#tblDutyTripsResults");
         var tableTripBody = tableTrip.find("tbody");
@@ -218,7 +218,7 @@
                 else {
                     $(result).each(function (index) {
                         var CurrentItem = this;
-                        debugger;
+                        
                         rows = rows + "<tr>";
                         if (index == 0) {
                             if (result.length > 1) {
@@ -241,7 +241,7 @@
                             rows = rows + "<td><span id='lblStartTimeHour'>" + CurrentItem.StartTimeHour + "</span>:<span id='lblStartTimeMinute'>" + CurrentItem.StartTimeMinute + "</span><input type='hidden' id='hdnNextStartTimeHour' value='" + NextItem.StartTimeHour + "'/><input type='hidden' id='hdnNextStartTimeMinute' value='" + NextItem.StartTimeMinute + "'/></td>";
                             rows = rows + "<td><span id='lblEndTimeHour'>" + CurrentItem.EndTimeHour + "</span>:<span id='lblEndTimeMinute'>" + CurrentItem.EndTimeMinute + "</span></span><input type='hidden' id='hdnPrevEndTimeHour' value='" + PreviousItem.EndTimeHour + "'/><input type='hidden' id='hdnPrevEndTimeMinute' value='" + PreviousItem.EndTimeMinute + "'/></td>";
                         }
-                        debugger;
+                        
                         if (CurrentItem.Position)
                         { rows = rows + "<td><span id='lblTripType'>Dead</span></td>"; }
                         else
@@ -346,7 +346,7 @@
     }
 
     function BindTripDetails(row, tripID) {
-        debugger;
+        
         var route = "";
         var position = true;
         if (row.find("input#hdnPosition").attr("value") == "true") {

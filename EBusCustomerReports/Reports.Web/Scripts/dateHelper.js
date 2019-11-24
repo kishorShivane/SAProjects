@@ -153,7 +153,7 @@ function daysInMonth(month, year) {
 
 $(document).ready(function () {
     $("#ddshortcuts").find("a").click(function () {
-        debugger;
+        
         var option = $(this).text();
         var sd = $("#StartDate");
         var ed = $("#EndDate");

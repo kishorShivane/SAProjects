@@ -130,7 +130,7 @@
 
     function SaveServiceRequest() {
         $("button#btnSaveServiceRequest").click(function () {
-            debugger;
+            
             if (CheckMandatoryFieldsInBlock(divAddEditServiceRequest, "") && CheckNumericFields(divAddEditServiceRequest, "")) {
 
                 var email = divAddEditServiceRequest.find("input#txtEmail").val();

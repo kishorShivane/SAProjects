@@ -234,7 +234,7 @@
 
     function BindDefaultContractAndDistance() {
         divAddEditDutyTrips.find("select#ddlRoutes").change(function () {
-            debugger;
+            
             if ($(this).val() != "0" && $(this).val() != undefined && $(this).val() != null) {
                 var splitStr = $(this).val().split("-");
                 var defaultContract = splitStr[4];
@@ -274,7 +274,7 @@
 
     function SaveTrip() {
         $("button#btnSaveTrip").click(function () {
-            debugger;
+            
             if (CheckMandatoryFieldsInBlock(divAddEditDutyTrips, "") && CheckNumericFields(divAddEditDutyTrips, "") && ValidateTripEventTime(divAddEditDutyTrips, "Trip")) {
                 var tripID = divAddEditDutyTrips.find("input#hdnDutyTripID").attr("value");
                 var bookingID = divAddEditDutyTrips.find("input#hdnDutyBookingID").attr("value");

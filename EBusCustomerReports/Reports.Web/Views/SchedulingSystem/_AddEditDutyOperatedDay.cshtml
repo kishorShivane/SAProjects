@@ -213,7 +213,7 @@
     }
 
     function CheckOperatedDayDependency(operatedDayID) {
-        debugger;
+        
         var ret = false;
         $.ajax({
             async: false,
@@ -263,7 +263,7 @@
 
     function SaveOperatedDay() {
         $("button#btnSaveOperatedDay").click(function () {
-            debugger;
+            
             if (CheckMandatoryFieldsInBlock(divAddEditDutyOperatedDays, "") && CheckNumericFields(divAddEditDutyOperatedDays,"")) {
                 LoadOperatedDayBitMaskAndString();
                 var dutyID = divAddEditDutyOperatedDays.find("input#hdnDutyID").attr("value");

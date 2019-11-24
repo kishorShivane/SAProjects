@@ -94,7 +94,7 @@
 
     function AddSubRoute() {
         $("button#btnAddSubRoute").click(function () {
-            debugger;
+            
             ClearFormValuesInBlock(divAddEditSubRoute);
             divAddEditSubRoute.find("#lblMainRouteNumber").html(divSubRoute.find("input#hdnRouteNumber").attr("value"));
             var nextSubRouteNumber = GetLastSubRouteNumber(divSubRoute.find("input#hdnRouteNumber").attr("value"));
@@ -159,7 +159,7 @@
     }
 
     function LoadMainRouteStages() {
-        debugger;
+        
         var jsonData = divSubRoute.find("input#hdnMainRoutesStages").attr("value");
         var startStage = divAddEditSubRoute.find("select#ddlFromStage").val();
         var endStage = divAddEditSubRoute.find("select#ddlToStage").val();

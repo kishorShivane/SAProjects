@@ -172,7 +172,7 @@
 
     function SaveSmartCard() {
         $("button#btnSaveSmartCard").click(function () {
-            debugger;
+            
             if (CheckMandatoryFieldsInBlock(divAddEditSmartCard, "") && CheckNumericFields(divAddEditSmartCard, "")) {
                 var ID = divAddEditSmartCard.find("input#hdnSmartCardNumber").attr("value");
                 var SmartCardNumber = divAddEditSmartCard.find("input#txtSmartCardNumber").val();
@@ -206,7 +206,7 @@
                     success: function (result) {
                         //Now Process the data
                         if (result == 1) {
-                            debugger;
+                            
                             divAddEditSmartCard.modal("hide");
                             alert("SmartCard Saved Successfully!!");
                             BindSmartCards(true, GetSelectedCheckBoxValue());
