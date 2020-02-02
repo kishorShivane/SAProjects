@@ -147,6 +147,8 @@
                                             <th>User Name</th>
                                             <th>Role</th>
                                             <th>Company</th>
+                                            <th>Warning Date</th>
+                                            <th>Last Date</th>
                                             <th>Edit</th>
                                             <th>Delete</th>
                                         </tr>
@@ -245,6 +247,8 @@
         var accessCodes = row.find("input#hdnAccessCodes").attr("value");
         divAddEditUser.find("input#UserName").val(row.find("span#lblUserName").html());
         divAddEditUser.find("input#Password").val(row.find("input#hdnPassword").attr("value"));
+        divAddEditUser.find("input#WarningDate").val(row.find("input#hdnWarningDate").attr("value"));
+        divAddEditUser.find("input#LastDate").val(row.find("input#hdnLastDate").attr("value"));
         setDropDownValueByText("ddlCompany", row.find("span#lblCompany").html());
         setDropDownValueByText("ddlApplicationRoles", row.find("span#lblRole").html());
         divAddEditUser.find("input#hdnUserID").attr("value", userID);
@@ -299,8 +303,10 @@
                                 
                                 var CurrentItem = this;
                                 rows = rows + "<tr><td><span id='lblUserName'>" + CurrentItem.UserName + "</span></td>";
-                                rows = rows + "<td><span id='lblRole'>" + CurrentItem.Role + "</span><input type='hidden' value=" + CurrentItem.Password + " id='hdnPassword'/></td>";
-                                rows = rows + "<td><span id='lblCompany'>" + CurrentItem.Company + "</span><input type='hidden' value='" + CurrentItem.AccessCodes + "' id='hdnAccessCodes'/></td>";
+                                rows = rows + "<td><span id='lblRole'>" + CurrentItem.Role + "</span><input type='hidden' value=" + CurrentItem.Password + " id='hdnPassword'/><input type='hidden' value=" + CurrentItem.WarningDate + " id='hdnWarningDate'/></td>";
+                                rows = rows + "<td><span id='lblCompany'>" + CurrentItem.Company + "</span><input type='hidden' value='" + CurrentItem.AccessCodes + "' id='hdnAccessCodes'/><input type='hidden' value=" + CurrentItem.LastDate + " id='hdnLastDate'/></td>";
+                                rows = rows + "<td><span id='lblWarningDate'>" + CurrentItem.WarningDate + "</span></td>";
+                                rows = rows + "<td><span id='lblLastDate'>" + CurrentItem.LastDate + "</span></td>";
                                 rows = rows + "<td><a id='lnkUserEdit' class='linkEdit' value='" + CurrentItem.ID + "'><span class='fa-stack fa-sm '><i class='fa fa-edit fa-stack-1x '></i></span></a>";
                                 rows = rows + "<td><a id='lnkUserDelete' class='linkDelete' value='" + CurrentItem.ID + "'><span class='fa-stack fa-sm '><i class='fa fa-shopping-basket fa-stack-1x '></i></span></a></td>";
                             });

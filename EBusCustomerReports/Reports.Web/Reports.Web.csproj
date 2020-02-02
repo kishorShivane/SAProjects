@@ -666,6 +666,8 @@
     <Content Include="Views\SmartCard\Index.cshtml" />
     <Content Include="Views\Report\FormEReference.cshtml" />
     <Content Include="Views\SmartCard\_AddEditSmartCard.cshtml" />
+    <Content Include="Views\Shared\_ExpiredUserWarning.cshtml" />
+    <Content Include="Views\Shared\_UserExpiryWarning.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

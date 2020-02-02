@@ -4,6 +4,7 @@
     var date = DateTime.Now.Date.AddDays(-1).ToString("dd-MMM-yyyy");
     var key = ((Helpers.Security.EBusPrinciple)System.Threading.Thread.CurrentPrincipal).Properties.ConnKey;
     ViewBag.Title = "Home";
+    var userExpiredWarning = Convert.ToBoolean(@TempData["userExpiredWarning"]) == true ? "True" : "False";
 }
 
 @section scripts
@@ -62,7 +63,7 @@
                 multiTooltipTemplate: "R " + "<%= value %>",
                 tooltipTemplate: "R " + "<%= value %>",
                 //onAnimationComplete: function () {
-                //    
+                //
                 //    var ctx = this.chart.ctx;
                 //    ctx.font = this.scale.font;
                 //    ctx.fillStyle = "#000"
@@ -259,3 +260,14 @@
         </div>
     </div>
 </div>
+@Html.Partial("_UserExpiryWarning")
+<script>
+
+    var divUserExpiryWarning = $("div#divUserExpiryWarning");
+    $(document).ready(function () {
+        debugger;
+        if ("@userExpiredWarning" == "True") {
+            divUserExpiryWarning.modal('show');
+        }
+        });
+</script>

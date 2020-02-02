@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Web.Mvc;
 using System.ComponentModel.DataAnnotations;
+using System;
 
 namespace ViewModels
 {
@@ -13,5 +14,7 @@ namespace ViewModels
         public string ConnKey { get; set; }
         public List<string> AccessCodes { get; set; }
         public int RoleID { get; set; }
+        public Nullable<DateTime> WarningDate{ get; set; }
+        public Nullable<DateTime> LastDate { get; set; }
     }
 }

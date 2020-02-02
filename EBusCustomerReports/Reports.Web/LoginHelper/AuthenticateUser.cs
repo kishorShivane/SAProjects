@@ -20,10 +20,10 @@ namespace LoginHelper
 
             var formsCookie = new HttpCookie(FormsAuthentication.FormsCookieName, encryptedTkt);
             System.Web.HttpContext.Current.Response.Cookies.Add(formsCookie);
-            SetUserInformation(viewModel.CompanyName, viewModel.ConnKey,viewModel.AccessCodes,viewModel.RoleID);
+            SetUserInformation(viewModel.CompanyName, viewModel.ConnKey,viewModel.AccessCodes,viewModel.RoleID,viewModel.WarningDate,viewModel.LastDate);
         }
 
-        public void SetUserInformation(string companyName, string ConnKey, List<string> accessCodes, int roleID)
+        public void SetUserInformation(string companyName, string ConnKey, List<string> accessCodes, int roleID,DateTime? warningDate, DateTime? LastDate)
         {
             var authCookie = System.Web.HttpContext.Current.Response.Cookies[FormsAuthentication.FormsCookieName];
             var ticket = FormsAuthentication.Decrypt(authCookie.Value);
@@ -33,7 +33,9 @@ namespace LoginHelper
                 CompanyName = companyName,
                 ConnKey = ConnKey,
                 AccessCodes = accessCodes,
-                RoleID = roleID
+                RoleID = roleID,
+                WarningDate = warningDate,
+                LastDate = LastDate
             };
 
             var newTicket = SetPrinciple(ticket, properties);

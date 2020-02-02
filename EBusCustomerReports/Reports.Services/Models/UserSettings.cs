@@ -13,6 +13,8 @@ namespace Reports.Services.Models
         public string Username { get; set; }
         public List<string> AccessCodes { get; set; }
         public int RoleID { get; set; }
+        public Nullable<DateTime> WarningDate { get; set; }
+        public Nullable<DateTime> LastDate { get; set; }
 
     }
 }

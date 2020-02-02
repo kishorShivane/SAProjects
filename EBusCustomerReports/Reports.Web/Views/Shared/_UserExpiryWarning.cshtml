@@ -1,0 +1,55 @@
+﻿@{
+    var userExpiredDate = Convert.ToDateTime(@TempData["LastDate"]).ToShortDateString();
+    TimeSpan t = Convert.ToDateTime(@TempData["LastDate"]) - DateTime.Now;
+    var dateDiff = t.Days;
+    var user = @TempData["UserName"];
+}
+<div id="divUserExpiryWarning" class="modal fade ">
+    <!-- class modal and fade -->
+    <div class="modal-dialog modal-md transaction">
+        <div class="modal-content">
+            <div class="modal-header btn-warning">
+                <!-- modal header -->
+                <button type="button" class="close"
+                        data-dismiss="modal" aria-hidden="true">
+                    ×
+                </button>
+                <div class="modal-title">Warning</div>
+            </div>
+            <div class="modal-body">
+                <div class="panel-body">
+                    <p>
+                        <b>
+                            Your access to Online Reporting System will expire on @userExpiredDate.
+                        </b>
+                    </p>
+                    <p>
+                        <b>
+                            You have @dateDiff days remaining to renew your license.
+                        </b>
+                    </p>
+                    <p>
+                        <b>
+                            Please contact <a href="mailTo:admin@ebussupplies.co.za">admin@ebussupplies.co.za</a> to renew your Account.
+                        </b>
+                    </p>
+                    <br />
+                    <p>
+                        <b>
+                            User Account: &nbsp;@user
+                        </b>
+                    </p>
+                    </br>
+                </div>
+            </div>
+            <div class="modal-footer" style="text-align: center;">
+                <!-- modal footer -->
+                <button type="button" class="btn btn-info" data-dismiss="modal">OK</button>
+            </div>
+
+        </div> <!-- / .modal-content -->
+
+    </div> <!-- / .modal-dialog -->
+
+</div>
+<!-- / .modal -->

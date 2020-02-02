@@ -31,6 +31,14 @@ namespace Reports.Web.Controllers
         //Home
         public ActionResult Index()
         {
+            UserSettings userset = GetUserSettings();
+            TempData["userExpiredWarning"] = false;
+            if (userset.WarningDate.HasValue && DateTime.Compare(userset.WarningDate.Value, DateTime.Now) <= 0)
+            {
+                TempData["userExpiredWarning"] = true;
+                TempData["LastDate"] = userset.LastDate.Value.ToShortDateString();
+                TempData["UserName"] = userset.Username;
+            }
             string conKey = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey;
             HomeViewModel model = new ReportsService().GetHomeScreenData(conKey);
             return View(model);
@@ -2109,7 +2117,9 @@ namespace Reports.Web.Controllers
             {
                 ConnectionKey = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey,
                 CompanyName = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.CompanyName,
-                Username = HttpContext.User.Identity.Name
+                Username = HttpContext.User.Identity.Name,
+                WarningDate = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.WarningDate,
+                LastDate = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.LastDate,
             };
             return res;
         }

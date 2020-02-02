@@ -20,6 +20,8 @@ namespace Reports.Services.AdministrationDB
         public int RoleID { get; set; }
         public int CompanyID { get; set; }
         public string AccessCodes { get; set; }
+        public Nullable<System.DateTime> WarningDate { get; set; }
+        public Nullable<System.DateTime> LastDate { get; set; }
         public System.DateTime CreatedOn { get; set; }
         public string CreatedBy { get; set; }
         public System.DateTime ModifiedOn { get; set; }

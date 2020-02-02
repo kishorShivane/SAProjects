@@ -1,5 +1,35 @@
 ﻿@model Reports.Services.Models.UserAdministration.UserAdministration
 <!-- Modal Contents -->
+
+<link href="~/Styles/Jquery/jquery.ui.theme.css" rel="stylesheet" />
+<link href="~/Styles/Jquery/jquery.ui.dialog.css" rel="stylesheet" />
+<link href="~/Styles/Jquery/jquery.ui.button.css" rel="stylesheet" />
+<link href="~/Styles/Jquery/jquery.ui.core.css" rel="stylesheet" />
+<link href="~/Styles/Jquery/jquery.ui.base.css" rel="stylesheet" />
+<link href="~/Styles/Jquery/jquery.ui.all.css" rel="stylesheet" />
+<link href="~/Styles/Jquery/jquery-ui.css" rel="stylesheet" />
+<script>
+
+    $(document).ready(function () {
+        $("#WarningDate").datepicker({
+            dateFormat: "dd-mm-yy",
+            beforeShow: function () {
+                setTimeout(function () {
+                    $('.ui-datepicker').css('z-index', 99999999999999);
+                }, 0);
+            }
+        });
+
+        $("#LastDate").datepicker({
+            dateFormat: "dd-mm-yy",
+            beforeShow: function () {
+                setTimeout(function () {
+                    $('.ui-datepicker').css('z-index', 99999999999999);
+                }, 0);
+            }
+        });
+    });
+</script>
 <div id="divAddEditUser" class="modal fade ">
     <!-- class modal and fade -->
     <div class="modal-dialog modal-lg transaction">
@@ -47,6 +77,24 @@
                                     <div class="input-group input-group-sm" style="width: 100%;">
                                         <div class="input-group-addon">Request Status:<font style="color:red">*</font></div>
                                         @Html.DropDownList("Role", Model.ApplicationRoles, new { id = "ddlApplicationRoles", @class = "form-control select2", placeholder = "Application Roles", required = "true", style = "width:100%;" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm" style="width: 100%;">
+                                        <div class="input-group-addon">Warning Date:</div>
+                                        @Html.TextBox("WarningDate", new { @class = "form-control zindex", @placeholder = "Warning Date" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group" id="divRequestStatus">
+                                    <div class="input-group input-group-sm" style="width: 100%;">
+                                        <div class="input-group-addon">Last Date:</div>
+                                        @Html.TextBox("LastDate", new { @class = "form-control zindex", @placeholder = "Last Date" })
                                     </div>
                                 </div>
                             </div>
@@ -110,10 +158,13 @@
 
     function SaveUser() {
         $("button#btnSaveUser").click(function () {
-            
+
             if (CheckMandatoryFieldsInBlock(divAddEditUser, "") && CheckNumericFields(divAddEditUser, "")) {
+                debugger;
                 var userName = divAddEditUser.find("input#UserName").val();
                 var password = divAddEditUser.find("input#Password").val();
+                var warnDate = divAddEditUser.find("input#WarningDate").val();
+                var lstDate = divAddEditUser.find("input#LastDate").val();
                 var userID = divAddEditUser.find("input#hdnUserID").attr("value");
                 var company = divAddEditUser.find("select#ddlCompany").val();
                 var role = divAddEditUser.find("select#ddlApplicationRoles").val();
@@ -134,7 +185,7 @@
                     async: false,
                     url: '@Url.Action("InsertOrUpdateUserInfo", "UserAdministration")',
                     type: 'Post',
-                    data: JSON.stringify({ UserName: userName, Password: password, ID: userID, RoleID: role, CompanyID: company, AccessCodes: accessCodes }),
+                    data: JSON.stringify({ UserName: userName, Password: password, WarningDate: warnDate, LastDate: lstDate, ID: userID, RoleID: role, CompanyID: company, AccessCodes: accessCodes }),
                     dataType: 'json',
                     contentType: 'application/json',
                     error: function (xhr) {

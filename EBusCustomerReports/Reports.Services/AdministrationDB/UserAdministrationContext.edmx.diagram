@@ -5,17 +5,17 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="8931580a42be470285c00c1285df62a5" Name="Diagram1">
-        <EntityTypeShape EntityType="EBusReportUserAdministrationModel.ApplicationFunctionality" Width="1.5" PointX="10.25" PointY="1.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="EBusReportUserAdministrationModel.ApplicationMenu" Width="1.5" PointX="5.75" PointY="1.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="EBusReportUserAdministrationModel.ApplicationRole" Width="1.5" PointX="0.75" PointY="1.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="EBusReportUserAdministrationModel.ApplicationScreen" Width="1.5" PointX="8" PointY="1" IsExpanded="true" />
-        <EntityTypeShape EntityType="EBusReportUserAdministrationModel.Company" Width="1.5" PointX="0.75" PointY="5.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="EBusReportUserAdministrationModel.sysdiagram" Width="1.5" PointX="2.75" PointY="5.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="EBusReportUserAdministrationModel.UserInfo" Width="1.5" PointX="3" PointY="1" IsExpanded="true" />
-        <AssociationConnector Association="EBusReportUserAdministrationModel.FK_ApplicationFunctionality_ApplicationScreen" ManuallyRouted="false" />
-        <AssociationConnector Association="EBusReportUserAdministrationModel.FK_ApplicationScreen_ApplicationMenu" ManuallyRouted="false" />
-        <AssociationConnector Association="EBusReportUserAdministrationModel.FK_UserInfo_ApplicationRole" ManuallyRouted="false" />
-        <AssociationConnector Association="EBusReportUserAdministrationModel.FK_UserInfo_Company" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="EBusReportUserAdministrationModel.ApplicationFunctionality" Width="1.5" PointX="10.25" PointY="1.125" />
+        <EntityTypeShape EntityType="EBusReportUserAdministrationModel.ApplicationMenu" Width="1.5" PointX="5.75" PointY="1.125" />
+        <EntityTypeShape EntityType="EBusReportUserAdministrationModel.ApplicationRole" Width="1.5" PointX="0.75" PointY="1.625" />
+        <EntityTypeShape EntityType="EBusReportUserAdministrationModel.ApplicationScreen" Width="1.5" PointX="8" PointY="1" />
+        <EntityTypeShape EntityType="EBusReportUserAdministrationModel.Company" Width="1.5" PointX="0.75" PointY="5.625" />
+        <EntityTypeShape EntityType="EBusReportUserAdministrationModel.sysdiagram" Width="1.5" PointX="2.75" PointY="5.75" />
+        <EntityTypeShape EntityType="EBusReportUserAdministrationModel.UserInfo" Width="1.5" PointX="3" PointY="1" />
+        <AssociationConnector Association="EBusReportUserAdministrationModel.FK_ApplicationFunctionality_ApplicationScreen" />
+        <AssociationConnector Association="EBusReportUserAdministrationModel.FK_ApplicationScreen_ApplicationMenu" />
+        <AssociationConnector Association="EBusReportUserAdministrationModel.FK_UserInfo_ApplicationRole" />
+        <AssociationConnector Association="EBusReportUserAdministrationModel.FK_UserInfo_Company" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

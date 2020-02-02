@@ -1,23 +1,27 @@
-﻿using System;
+﻿using LoginHelper;
+using Reports.Services;
+using System;
+using System.Linq;
 using System.Web.Mvc;
 using System.Web.Security;
-using System.Linq;
-using System.Xml.Linq;
-using LoginHelper;
 using ViewModels;
-using Reports.Services;
 
 namespace ProductTracking.Web.Controllers
 {
     public class LoginController : Controller
     {
-        UserAdministrationService userAdministrationService = new UserAdministrationService();
+        private UserAdministrationService userAdministrationService = new UserAdministrationService();
 
         [HttpGet]
         [AllowAnonymous]
         public ActionResult Login()
         {
-            var viewModel = new LoginViewModel();
+            if (TempData["UserExpired"] == null)
+            {
+                TempData["UserExpired"] = false;
+            }
+
+            LoginViewModel viewModel = new LoginViewModel();
             return View();
         }
 
@@ -33,8 +37,18 @@ namespace ProductTracking.Web.Controllers
         {
             if (ValidateUserCredentials(viewModel))
             {
-                new AuthenticateUser().SetAuthenticationCookie(viewModel);
-                return RedirectToAction("Index", "Report");
+                if (viewModel.LastDate == null || DateTime.Compare(viewModel.LastDate.Value, DateTime.Now) >= 0)
+                {
+                    new AuthenticateUser().SetAuthenticationCookie(viewModel);
+                    return RedirectToAction("Index", "Report");
+                }
+                else
+                {
+                    TempData["UserExpired"] = true;
+                    TempData["LastDate"] = viewModel.LastDate;
+                    TempData["UserName"] = viewModel.UserName;
+                    return RedirectToAction("Login", "Login");
+                }
             }
             return RedirectToAction("Login", "Login");
         }
@@ -42,7 +56,7 @@ namespace ProductTracking.Web.Controllers
 
         private bool ValidateUserCredentials(LoginViewModel viewModel)
         {
-            var isValidUser = false;
+            bool isValidUser = false;
             if (viewModel.UserName != null && viewModel.Password != null && viewModel.UserName.Length > 0 && viewModel.Password.Length > 0)
             {
                 isValidUser = IsUserValid(viewModel);
@@ -60,9 +74,9 @@ namespace ProductTracking.Web.Controllers
 
         private bool IsUserValid(LoginViewModel viewModel)
         {
-            var valid = false;
+            bool valid = false;
 
-            var userDetails = userAdministrationService.ValidateUser(viewModel.UserName,viewModel.Password);
+            Reports.Services.Models.UserAdministration.UserInformation userDetails = userAdministrationService.ValidateUser(viewModel.UserName, viewModel.Password);
 
             //string usersXmlPath = Server.MapPath("~/XML_Files/ApplicationsUsersList.xml");
 
@@ -77,6 +91,8 @@ namespace ProductTracking.Web.Controllers
                 viewModel.ConnKey = userDetails.ConnectionKey;
                 viewModel.RoleID = userDetails.RoleID;
                 viewModel.AccessCodes = userDetails.AccessCodes.Split(',').ToList();
+                viewModel.WarningDate = Convert.ToDateTime(userDetails.WarningDate);
+                viewModel.LastDate = Convert.ToDateTime(userDetails.LastDate);
                 valid = true;
             }
 

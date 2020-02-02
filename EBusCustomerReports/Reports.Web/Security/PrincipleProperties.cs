@@ -12,7 +12,7 @@ namespace Helpers.Security
 
         public PrincipleProperties(string data)
         {
-            var d = data.Split('|');
+            string[] d = data.Split('|');
             if (d.Length > 0)
             {
                 CompanyName = d[0];
@@ -29,6 +29,14 @@ namespace Helpers.Security
             {
                 RoleID = Convert.ToInt32(d[3]);
             }
+            if (d.Length > 4)
+            {
+                WarningDate = Convert.ToDateTime(d[4]);
+            }
+            if (d.Length > 5)
+            {
+                LastDate = Convert.ToDateTime(d[5]);
+            }
         }
 
         public string CompanyName { get; set; }
@@ -37,11 +45,14 @@ namespace Helpers.Security
 
         public List<string> AccessCodes { get; set; }
 
+        public Nullable<DateTime> WarningDate { get; set; }
+        public Nullable<DateTime> LastDate { get; set; }
+
         public int RoleID { get; set; }
 
         public string Serialize()
         {
-            return string.Concat(CompanyName, "|", ConnKey,"|", string.Join(",", AccessCodes),"|",RoleID.ToString());
+            return string.Concat(CompanyName, "|", ConnKey, "|", string.Join(",", AccessCodes), "|", RoleID.ToString(), "|", WarningDate.Value.ToShortDateString(), "|", LastDate.Value.ToShortDateString());
         }
     }
 }

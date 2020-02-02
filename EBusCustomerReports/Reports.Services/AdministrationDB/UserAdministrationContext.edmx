@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="EBusReportUserAdministrationModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="EBusReportUserAdministrationModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="ApplicationFunctionality">
           <Key>
             <PropertyRef Name="ID" />
@@ -92,6 +92,8 @@
           <Property Name="RoleID" Type="int" Nullable="false" />
           <Property Name="CompanyID" Type="int" Nullable="false" />
           <Property Name="AccessCodes" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="WarningDate" Type="date" />
+          <Property Name="LastDate" Type="date" />
           <Property Name="CreatedOn" Type="datetime" Nullable="false" />
           <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="ModifiedOn" Type="datetime" Nullable="false" />
@@ -171,53 +173,77 @@
             <End Role="UserInfo" EntitySet="UserInfo" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="EBusReportUserAdministrationModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="EBusReportUserAdministrationContext" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="ApplicationFunctionalities" EntityType="EBusReportUserAdministrationModel.ApplicationFunctionality" />
+          <EntitySet Name="ApplicationMenus" EntityType="EBusReportUserAdministrationModel.ApplicationMenu" />
+          <EntitySet Name="ApplicationRoles" EntityType="EBusReportUserAdministrationModel.ApplicationRole" />
+          <EntitySet Name="ApplicationScreens" EntityType="EBusReportUserAdministrationModel.ApplicationScreen" />
+          <EntitySet Name="Companies" EntityType="EBusReportUserAdministrationModel.Company" />
+          <EntitySet Name="sysdiagrams" EntityType="EBusReportUserAdministrationModel.sysdiagram" />
+          <EntitySet Name="UserInfoes" EntityType="EBusReportUserAdministrationModel.UserInfo" />
+          <AssociationSet Name="FK_ApplicationFunctionality_ApplicationScreen" Association="EBusReportUserAdministrationModel.FK_ApplicationFunctionality_ApplicationScreen">
+            <End Role="ApplicationScreen" EntitySet="ApplicationScreens" />
+            <End Role="ApplicationFunctionality" EntitySet="ApplicationFunctionalities" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ApplicationScreen_ApplicationMenu" Association="EBusReportUserAdministrationModel.FK_ApplicationScreen_ApplicationMenu">
+            <End Role="ApplicationMenu" EntitySet="ApplicationMenus" />
+            <End Role="ApplicationScreen" EntitySet="ApplicationScreens" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserInfo_ApplicationRole" Association="EBusReportUserAdministrationModel.FK_UserInfo_ApplicationRole">
+            <End Role="ApplicationRole" EntitySet="ApplicationRoles" />
+            <End Role="UserInfo" EntitySet="UserInfoes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserInfo_Company" Association="EBusReportUserAdministrationModel.FK_UserInfo_Company">
+            <End Role="Company" EntitySet="Companies" />
+            <End Role="UserInfo" EntitySet="UserInfoes" />
+          </AssociationSet>
+        </EntityContainer>
         <EntityType Name="ApplicationFunctionality">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ScreenID" Type="Int32" Nullable="false" />
-          <Property Name="FunctionalityName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="FunctionalityCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="FunctionalityName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="FunctionalityCode" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CreatedOn" Type="DateTime" Precision="3" />
           <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
           <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="Boolean" />
-          <NavigationProperty Name="ApplicationScreen" Relationship="Self.FK_ApplicationFunctionality_ApplicationScreen" FromRole="ApplicationFunctionality" ToRole="ApplicationScreen" />
+          <NavigationProperty Name="ApplicationScreen" Relationship="EBusReportUserAdministrationModel.FK_ApplicationFunctionality_ApplicationScreen" FromRole="ApplicationFunctionality" ToRole="ApplicationScreen" />
         </EntityType>
         <EntityType Name="ApplicationMenu">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ApplicationMenu1" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="ApplicationMenuCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ApplicationMenu1" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ApplicationMenuCode" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CreatedOn" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ModifiedOn" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ModifiedBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="ApplicationScreens" Relationship="Self.FK_ApplicationScreen_ApplicationMenu" FromRole="ApplicationMenu" ToRole="ApplicationScreen" />
+          <NavigationProperty Name="ApplicationScreens" Relationship="EBusReportUserAdministrationModel.FK_ApplicationScreen_ApplicationMenu" FromRole="ApplicationMenu" ToRole="ApplicationScreen" />
         </EntityType>
         <EntityType Name="ApplicationRole">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="RoleDiscription" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="DisplayText" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="RoleDiscription" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DisplayText" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CreatedOn" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ModifiedOn" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ModifiedBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="UserInfoes" Relationship="Self.FK_UserInfo_ApplicationRole" FromRole="ApplicationRole" ToRole="UserInfo" />
+          <NavigationProperty Name="UserInfoes" Relationship="EBusReportUserAdministrationModel.FK_UserInfo_ApplicationRole" FromRole="ApplicationRole" ToRole="UserInfo" />
         </EntityType>
         <EntityType Name="ApplicationScreen">
           <Key>
@@ -225,35 +251,35 @@
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="MenuID" Type="Int32" Nullable="false" />
-          <Property Name="ScreenName" Type="String" MaxLength="500" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="ScreenCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ScreenName" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="ScreenCode" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CreatedOn" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ModifiedOn" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ModifiedBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="ApplicationFunctionalities" Relationship="Self.FK_ApplicationFunctionality_ApplicationScreen" FromRole="ApplicationScreen" ToRole="ApplicationFunctionality" />
-          <NavigationProperty Name="ApplicationMenu" Relationship="Self.FK_ApplicationScreen_ApplicationMenu" FromRole="ApplicationScreen" ToRole="ApplicationMenu" />
+          <NavigationProperty Name="ApplicationFunctionalities" Relationship="EBusReportUserAdministrationModel.FK_ApplicationFunctionality_ApplicationScreen" FromRole="ApplicationScreen" ToRole="ApplicationFunctionality" />
+          <NavigationProperty Name="ApplicationMenu" Relationship="EBusReportUserAdministrationModel.FK_ApplicationScreen_ApplicationMenu" FromRole="ApplicationScreen" ToRole="ApplicationMenu" />
         </EntityType>
         <EntityType Name="Company">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="CompanyName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="ConnectionKey" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CompanyName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ConnectionKey" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CreatedOn" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ModifiedOn" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ModifiedBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="UserInfoes" Relationship="Self.FK_UserInfo_Company" FromRole="Company" ToRole="UserInfo" />
+          <NavigationProperty Name="UserInfoes" Relationship="EBusReportUserAdministrationModel.FK_UserInfo_Company" FromRole="Company" ToRole="UserInfo" />
         </EntityType>
         <EntityType Name="sysdiagram">
           <Key>
             <PropertyRef Name="diagram_id" />
           </Key>
-          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="principal_id" Type="Int32" Nullable="false" />
           <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="version" Type="Int32" />
@@ -264,22 +290,24 @@
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="UserName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="UserName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Password" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="RoleID" Type="Int32" Nullable="false" />
           <Property Name="CompanyID" Type="Int32" Nullable="false" />
-          <Property Name="AccessCodes" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="AccessCodes" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="WarningDate" Type="DateTime" Precision="0" />
+          <Property Name="LastDate" Type="DateTime" Precision="0" />
           <Property Name="CreatedOn" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ModifiedOn" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ModifiedBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="ApplicationRole" Relationship="Self.FK_UserInfo_ApplicationRole" FromRole="UserInfo" ToRole="ApplicationRole" />
-          <NavigationProperty Name="Company" Relationship="Self.FK_UserInfo_Company" FromRole="UserInfo" ToRole="Company" />
+          <NavigationProperty Name="ApplicationRole" Relationship="EBusReportUserAdministrationModel.FK_UserInfo_ApplicationRole" FromRole="UserInfo" ToRole="ApplicationRole" />
+          <NavigationProperty Name="Company" Relationship="EBusReportUserAdministrationModel.FK_UserInfo_Company" FromRole="UserInfo" ToRole="Company" />
         </EntityType>
         <Association Name="FK_ApplicationFunctionality_ApplicationScreen">
-          <End Role="ApplicationScreen" Type="Self.ApplicationScreen" Multiplicity="1" />
-          <End Role="ApplicationFunctionality" Type="Self.ApplicationFunctionality" Multiplicity="*" />
+          <End Type="EBusReportUserAdministrationModel.ApplicationScreen" Role="ApplicationScreen" Multiplicity="1" />
+          <End Type="EBusReportUserAdministrationModel.ApplicationFunctionality" Role="ApplicationFunctionality" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="ApplicationScreen">
               <PropertyRef Name="ID" />
@@ -290,8 +318,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ApplicationScreen_ApplicationMenu">
-          <End Role="ApplicationMenu" Type="Self.ApplicationMenu" Multiplicity="1" />
-          <End Role="ApplicationScreen" Type="Self.ApplicationScreen" Multiplicity="*" />
+          <End Type="EBusReportUserAdministrationModel.ApplicationMenu" Role="ApplicationMenu" Multiplicity="1" />
+          <End Type="EBusReportUserAdministrationModel.ApplicationScreen" Role="ApplicationScreen" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="ApplicationMenu">
               <PropertyRef Name="ID" />
@@ -302,8 +330,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_UserInfo_ApplicationRole">
-          <End Role="ApplicationRole" Type="Self.ApplicationRole" Multiplicity="1" />
-          <End Role="UserInfo" Type="Self.UserInfo" Multiplicity="*" />
+          <End Type="EBusReportUserAdministrationModel.ApplicationRole" Role="ApplicationRole" Multiplicity="1" />
+          <End Type="EBusReportUserAdministrationModel.UserInfo" Role="UserInfo" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="ApplicationRole">
               <PropertyRef Name="ID" />
@@ -314,8 +342,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_UserInfo_Company">
-          <End Role="Company" Type="Self.Company" Multiplicity="1" />
-          <End Role="UserInfo" Type="Self.UserInfo" Multiplicity="*" />
+          <End Type="EBusReportUserAdministrationModel.Company" Role="Company" Multiplicity="1" />
+          <End Type="EBusReportUserAdministrationModel.UserInfo" Role="UserInfo" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Company">
               <PropertyRef Name="ID" />
@@ -325,31 +353,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="EBusReportUserAdministrationContext" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="ApplicationFunctionalities" EntityType="Self.ApplicationFunctionality" />
-          <EntitySet Name="ApplicationMenus" EntityType="Self.ApplicationMenu" />
-          <EntitySet Name="ApplicationRoles" EntityType="Self.ApplicationRole" />
-          <EntitySet Name="ApplicationScreens" EntityType="Self.ApplicationScreen" />
-          <EntitySet Name="Companies" EntityType="Self.Company" />
-          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
-          <EntitySet Name="UserInfoes" EntityType="Self.UserInfo" />
-          <AssociationSet Name="FK_ApplicationFunctionality_ApplicationScreen" Association="Self.FK_ApplicationFunctionality_ApplicationScreen">
-            <End Role="ApplicationScreen" EntitySet="ApplicationScreens" />
-            <End Role="ApplicationFunctionality" EntitySet="ApplicationFunctionalities" />
-          </AssociationSet>
-          <AssociationSet Name="FK_ApplicationScreen_ApplicationMenu" Association="Self.FK_ApplicationScreen_ApplicationMenu">
-            <End Role="ApplicationMenu" EntitySet="ApplicationMenus" />
-            <End Role="ApplicationScreen" EntitySet="ApplicationScreens" />
-          </AssociationSet>
-          <AssociationSet Name="FK_UserInfo_ApplicationRole" Association="Self.FK_UserInfo_ApplicationRole">
-            <End Role="ApplicationRole" EntitySet="ApplicationRoles" />
-            <End Role="UserInfo" EntitySet="UserInfoes" />
-          </AssociationSet>
-          <AssociationSet Name="FK_UserInfo_Company" Association="Self.FK_UserInfo_Company">
-            <End Role="Company" EntitySet="Companies" />
-            <End Role="UserInfo" EntitySet="UserInfoes" />
-          </AssociationSet>
-        </EntityContainer>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -359,100 +362,102 @@
           <EntitySetMapping Name="ApplicationFunctionalities">
             <EntityTypeMapping TypeName="EBusReportUserAdministrationModel.ApplicationFunctionality">
               <MappingFragment StoreEntitySet="ApplicationFunctionality">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="ScreenID" ColumnName="ScreenID" />
-                <ScalarProperty Name="FunctionalityName" ColumnName="FunctionalityName" />
-                <ScalarProperty Name="FunctionalityCode" ColumnName="FunctionalityCode" />
-                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
-                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="FunctionalityCode" ColumnName="FunctionalityCode" />
+                <ScalarProperty Name="FunctionalityName" ColumnName="FunctionalityName" />
+                <ScalarProperty Name="ScreenID" ColumnName="ScreenID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="ApplicationMenus">
             <EntityTypeMapping TypeName="EBusReportUserAdministrationModel.ApplicationMenu">
               <MappingFragment StoreEntitySet="ApplicationMenu">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="ApplicationMenu1" ColumnName="ApplicationMenu" />
-                <ScalarProperty Name="ApplicationMenuCode" ColumnName="ApplicationMenuCode" />
-                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
-                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="ApplicationMenuCode" ColumnName="ApplicationMenuCode" />
+                <ScalarProperty Name="ApplicationMenu1" ColumnName="ApplicationMenu" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="ApplicationRoles">
             <EntityTypeMapping TypeName="EBusReportUserAdministrationModel.ApplicationRole">
               <MappingFragment StoreEntitySet="ApplicationRole">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="RoleDiscription" ColumnName="RoleDiscription" />
-                <ScalarProperty Name="DisplayText" ColumnName="DisplayText" />
-                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
-                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="DisplayText" ColumnName="DisplayText" />
+                <ScalarProperty Name="RoleDiscription" ColumnName="RoleDiscription" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="ApplicationScreens">
             <EntityTypeMapping TypeName="EBusReportUserAdministrationModel.ApplicationScreen">
               <MappingFragment StoreEntitySet="ApplicationScreen">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="MenuID" ColumnName="MenuID" />
-                <ScalarProperty Name="ScreenName" ColumnName="ScreenName" />
-                <ScalarProperty Name="ScreenCode" ColumnName="ScreenCode" />
-                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
-                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="ScreenCode" ColumnName="ScreenCode" />
+                <ScalarProperty Name="ScreenName" ColumnName="ScreenName" />
+                <ScalarProperty Name="MenuID" ColumnName="MenuID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Companies">
             <EntityTypeMapping TypeName="EBusReportUserAdministrationModel.Company">
               <MappingFragment StoreEntitySet="Company">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="CompanyName" ColumnName="CompanyName" />
-                <ScalarProperty Name="ConnectionKey" ColumnName="ConnectionKey" />
-                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
-                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="ConnectionKey" ColumnName="ConnectionKey" />
+                <ScalarProperty Name="CompanyName" ColumnName="CompanyName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="sysdiagrams">
             <EntityTypeMapping TypeName="EBusReportUserAdministrationModel.sysdiagram">
               <MappingFragment StoreEntitySet="sysdiagrams">
-                <ScalarProperty Name="name" ColumnName="name" />
-                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
-                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
-                <ScalarProperty Name="version" ColumnName="version" />
                 <ScalarProperty Name="definition" ColumnName="definition" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="name" ColumnName="name" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="UserInfoes">
             <EntityTypeMapping TypeName="EBusReportUserAdministrationModel.UserInfo">
               <MappingFragment StoreEntitySet="UserInfo">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="UserName" ColumnName="UserName" />
-                <ScalarProperty Name="Password" ColumnName="Password" />
-                <ScalarProperty Name="RoleID" ColumnName="RoleID" />
-                <ScalarProperty Name="CompanyID" ColumnName="CompanyID" />
-                <ScalarProperty Name="AccessCodes" ColumnName="AccessCodes" />
-                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
-                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="LastDate" ColumnName="LastDate" />
+                <ScalarProperty Name="WarningDate" ColumnName="WarningDate" />
+                <ScalarProperty Name="AccessCodes" ColumnName="AccessCodes" />
+                <ScalarProperty Name="CompanyID" ColumnName="CompanyID" />
+                <ScalarProperty Name="RoleID" ColumnName="RoleID" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

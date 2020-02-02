@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Reports.Services.Models.UserAdministration
 {
@@ -17,6 +13,8 @@ namespace Reports.Services.Models.UserAdministration
         public string Company { get; set; }
         public string ConnectionKey { get; set; }
         public string AccessCodes { get; set; }
+        public string WarningDate { get; set; }
+        public string LastDate { get; set; }
         public DateTime CreatedOn { get; set; }
         public string CreatedBy { get; set; }
         public DateTime ModifiedOn { get; set; }
