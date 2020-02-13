@@ -487,6 +487,7 @@ namespace Reports.Services
                      {
                          c.str4_JourneyNo,
                          //c.int4_OperatorID,
+                         c.dat_JourneyStartTime,
                          c.int4_DutyId,
                          c.dateSelected
                      } into grp
