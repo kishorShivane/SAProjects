@@ -904,6 +904,21 @@ namespace EbusFileImporter.Core
                                                     posTransDetail.AmountRecharged = 0;
                                                     posTransDetail.TripsRecharged = helper.GetTripRechargedFromProductData(productData);
                                                     break;
+                                                case "2729":
+                                                    //SV 5 Recharge
+                                                    transDetail.int2_Class = 752;
+                                                    transDetail.int4_Revenue = helper.GetHalfProductData(productData, true);
+                                                    transDetail.int4_NonRevenue = 0;
+                                                    transDetail.int2_TicketCount = 1;
+                                                    transDetail.int2_PassCount = 0;
+                                                    transDetail.int2_Transfers = 0;
+                                                    transDetail.int4_RevenueBal = helper.GetHalfProductData(productData, false);
+                                                    transDetail.int4_TripBal = 0;
+                                                    posTransDetail = MapTransToPosTrans(transDetail);
+                                                    posTransDetail.id_PosTrans = latestPosTransID;
+                                                    posTransDetail.AmountRecharged = helper.GetHalfProductData(productData, true); ;
+                                                    posTransDetail.TripsRecharged = 0;
+                                                    break;
                                                 case "2726":
                                                     //SV 10 Recharge
                                                     transDetail.int2_Class = 741;
@@ -949,8 +964,53 @@ namespace EbusFileImporter.Core
                                                     posTransDetail.AmountRecharged = helper.GetHalfProductData(productData, true); ;
                                                     posTransDetail.TripsRecharged = 0;
                                                     break;
+                                                case "272A":
+                                                    //SV 65 Recharge
+                                                    transDetail.int2_Class = 753;
+                                                    transDetail.int4_Revenue = helper.GetHalfProductData(productData, true);
+                                                    transDetail.int4_NonRevenue = 0;
+                                                    transDetail.int2_TicketCount = 1;
+                                                    transDetail.int2_PassCount = 0;
+                                                    transDetail.int2_Transfers = 0;
+                                                    transDetail.int4_RevenueBal = helper.GetHalfProductData(productData, false);
+                                                    transDetail.int4_TripBal = 0;
+                                                    posTransDetail = MapTransToPosTrans(transDetail);
+                                                    posTransDetail.id_PosTrans = latestPosTransID;
+                                                    posTransDetail.AmountRecharged = helper.GetHalfProductData(productData, true); ;
+                                                    posTransDetail.TripsRecharged = 0;
+                                                    break;
+                                                case "2721":
+                                                    //SV 80 Recharge
+                                                    transDetail.int2_Class = 748;
+                                                    transDetail.int4_Revenue = helper.GetHalfProductData(productData, true);
+                                                    transDetail.int4_NonRevenue = 0;
+                                                    transDetail.int2_TicketCount = 1;
+                                                    transDetail.int2_PassCount = 0;
+                                                    transDetail.int2_Transfers = 0;
+                                                    transDetail.int4_RevenueBal = helper.GetHalfProductData(productData, false);
+                                                    transDetail.int4_TripBal = 0;
+                                                    posTransDetail = MapTransToPosTrans(transDetail);
+                                                    posTransDetail.id_PosTrans = latestPosTransID;
+                                                    posTransDetail.AmountRecharged = helper.GetHalfProductData(productData, true); ;
+                                                    posTransDetail.TripsRecharged = 0;
+                                                    break;
                                                 case "2710":
                                                     //SV 100 Recharge
+                                                    transDetail.int2_Class = 744;
+                                                    transDetail.int4_Revenue = helper.GetHalfProductData(productData, true);
+                                                    transDetail.int4_NonRevenue = 0;
+                                                    transDetail.int2_TicketCount = 1;
+                                                    transDetail.int2_PassCount = 0;
+                                                    transDetail.int2_Transfers = 0;
+                                                    transDetail.int4_RevenueBal = helper.GetHalfProductData(productData, false);
+                                                    transDetail.int4_TripBal = 0;
+                                                    posTransDetail = MapTransToPosTrans(transDetail);
+                                                    posTransDetail.id_PosTrans = latestPosTransID;
+                                                    posTransDetail.AmountRecharged = helper.GetHalfProductData(productData, true); ;
+                                                    posTransDetail.TripsRecharged = 0;
+                                                    break;
+                                                case "271F":
+                                                    //SV 150 Recharge
                                                     transDetail.int2_Class = 744;
                                                     transDetail.int4_Revenue = helper.GetHalfProductData(productData, true);
                                                     transDetail.int4_NonRevenue = 0;
@@ -997,6 +1057,21 @@ namespace EbusFileImporter.Core
                                                 case "2713":
                                                     //SV 400 Recharge
                                                     transDetail.int2_Class = 747;
+                                                    transDetail.int4_Revenue = helper.GetHalfProductData(productData, true);
+                                                    transDetail.int4_NonRevenue = 0;
+                                                    transDetail.int2_TicketCount = 1;
+                                                    transDetail.int2_PassCount = 0;
+                                                    transDetail.int2_Transfers = 0;
+                                                    transDetail.int4_RevenueBal = helper.GetHalfProductData(productData, false);
+                                                    transDetail.int4_TripBal = 0;
+                                                    posTransDetail = MapTransToPosTrans(transDetail);
+                                                    posTransDetail.id_PosTrans = latestPosTransID;
+                                                    posTransDetail.AmountRecharged = helper.GetHalfProductData(productData, true); ;
+                                                    posTransDetail.TripsRecharged = 0;
+                                                    break;
+                                                case "2720":
+                                                    //SV 500 Recharge
+                                                    transDetail.int2_Class = 750;
                                                     transDetail.int4_Revenue = helper.GetHalfProductData(productData, true);
                                                     transDetail.int4_NonRevenue = 0;
                                                     transDetail.int2_TicketCount = 1;

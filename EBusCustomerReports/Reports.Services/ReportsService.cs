@@ -1589,9 +1589,9 @@ namespace Reports.Services
             DataTable table1 = DailyAuditDataset();
             ds.Tables.Add(table1);
 
-            filter.StaffsSelected = null;
+            //filter.StaffsSelected = null;
             filter.StaffTypesSelected = null;
-            filter.StaffTypesSelected = null;
+            //filter.StaffTypesSelected = null;
 
             return GetDailyAuditReport(connKey, filter, companyName, true);
         }

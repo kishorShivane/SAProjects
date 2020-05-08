@@ -4,10 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web.Mvc;
 
 namespace Reports.Services
@@ -16,16 +13,16 @@ namespace Reports.Services
     {
         public DataSet GetSmartCardTransDataSet(string connKey, SmartCardTransFilter filter, string companyName)
         {
-            var ds = new DataSet();
-            var table1 = SmartCardDataset();
-            var filterDateRange = string.Format("{0} :  {1} to {2}", "Date Range", filter.StartDate, filter.EndDate);
-            var amountRechargedClass = "741,742,743,744,745,746";
-            var tripsRechargedClass = "711,712,713,715,717,721,722";
-            var result = GetSmartCardTransData(connKey, filter);
+            DataSet ds = new DataSet();
+            DataTable table1 = SmartCardDataset();
+            string filterDateRange = string.Format("{0} :  {1} to {2}", "Date Range", filter.StartDate, filter.EndDate);
+            string amountRechargedClass = "741,742,743,744,745,746";
+            string tripsRechargedClass = "711,712,713,715,717,721,722";
+            List<SmartCardTransData> result = GetSmartCardTransData(connKey, filter);
 
             if (result.Any())
             {
-                foreach (var item in result)
+                foreach (SmartCardTransData item in result)
                 {
                     item.CardIdFilter = "Smart Card : " + filter.SmartCardNumber + " (" + item.SerialNumber + ")";
                     item.DateRangeFilter = filterDateRange;
@@ -72,13 +69,12 @@ namespace Reports.Services
 
         private List<SmartCardTransData> GetSmartCardTransData(string connKey, SmartCardTransFilter filter)
         {
-            var result = new List<SmartCardTransData>();
+            List<SmartCardTransData> result = new List<SmartCardTransData>();
 
-            var myConnection = new SqlConnection(GetConnectionString(connKey));
+            SqlConnection myConnection = new SqlConnection(GetConnectionString(connKey));
 
-            Int64 val = 0;
 
-            Int64.TryParse(filter.SmartCardNumber, out val);
+            long.TryParse(filter.SmartCardNumber, out long val);
 
 
             if (val == 0)
@@ -88,7 +84,7 @@ namespace Reports.Services
 
             try
             {
-                var cmd = new SqlCommand("EbusSmartCardTrans", myConnection)
+                SqlCommand cmd = new SqlCommand("EbusSmartCardTrans", myConnection)
                 {
                     CommandType = CommandType.StoredProcedure
                 };
@@ -103,7 +99,7 @@ namespace Reports.Services
 
                 while (dr.Read())
                 {
-                    var sch = new SmartCardTransData();
+                    SmartCardTransData sch = new SmartCardTransData();
 
                     if (dr["ClassID"] != null && dr["ClassID"].ToString() != string.Empty)
                     {
@@ -229,15 +225,15 @@ namespace Reports.Services
             {
                 userInput = "0000000" + userInput;
             }
-            var len = userInput.Length;
+            int len = userInput.Length;
             if (len < 8) { return userInput; }
             return userInput.Substring(len - 2, 2) + userInput.Substring(len - 4, 2) + userInput.Substring(len - 6, 2) + userInput.Substring(len - 8, 2);
         }
 
         public SmartCardHotList SaveSmartCardHolistingRequest(string connKey, SmartCardHotList model)
         {
-            var result = IsDuplicateRequest(model.SmartCardNubmer.Trim(), connKey);
-            var myConnection = new SqlConnection(GetConnectionString(connKey));
+            SmartCardHotList result = IsDuplicateRequest(model.SmartCardNubmer.Trim(), connKey);
+            SqlConnection myConnection = new SqlConnection(GetConnectionString(connKey));
 
             if (result.IsDuplicate == true)
             {
@@ -246,7 +242,7 @@ namespace Reports.Services
 
             try
             {
-                var cmd = new SqlCommand()
+                SqlCommand cmd = new SqlCommand()
                 {
                     CommandType = CommandType.Text,
                     Connection = myConnection
@@ -276,13 +272,15 @@ namespace Reports.Services
 
         public SmartCardHotList IsDuplicateRequest(string cardNum, string connKey)
         {
-            var myConnection = new SqlConnection(GetConnectionString(connKey));
-            var result = new SmartCardHotList();
-            result.IsDuplicate = false;
+            SqlConnection myConnection = new SqlConnection(GetConnectionString(connKey));
+            SmartCardHotList result = new SmartCardHotList
+            {
+                IsDuplicate = false
+            };
 
             try
             {
-                var cmd = new SqlCommand()
+                SqlCommand cmd = new SqlCommand()
                 {
                     CommandType = CommandType.Text,
                     Connection = myConnection
@@ -328,7 +326,7 @@ namespace Reports.Services
 
         public DataSet GetSmartCardUsageData(string connKey, string companyName, int usedCount, string startDate, string endDate)
         {
-            var result = new DataSet();
+            DataSet result = new DataSet();
 
             SqlConnection myConnection = new SqlConnection(GetConnectionString(connKey));
             try
@@ -350,23 +348,29 @@ namespace Reports.Services
                     }
                 }
 
-                var newColumn = new DataColumn("CompanyName", typeof(string));
-                newColumn.DefaultValue = companyName;
+                DataColumn newColumn = new DataColumn("CompanyName", typeof(string))
+                {
+                    DefaultValue = companyName
+                };
                 result.Tables[0].Columns.Add(newColumn);
 
-                newColumn = new DataColumn("DateSelected", typeof(string));
-                newColumn.DefaultValue = "Date Range : " + startDate + " to " + endDate;
+                newColumn = new DataColumn("DateSelected", typeof(string))
+                {
+                    DefaultValue = "Date Range : " + startDate + " to " + endDate
+                };
                 result.Tables[0].Columns.Add(newColumn);
 
-                newColumn = new DataColumn("UsedCount", typeof(string));
-                newColumn.DefaultValue = "No Of Time Used : " + usedCount;
+                newColumn = new DataColumn("UsedCount", typeof(string))
+                {
+                    DefaultValue = "No Of Time Used : " + usedCount
+                };
                 result.Tables[0].Columns.Add(newColumn);
 
                 if (result.Tables[0] != null && result.Tables[0].Rows.Count > 0)
                 {
                     for (int i = 0; i < result.Tables[0].Rows.Count; i++)
                     {
-                        var hexVal = result.Tables[0].Rows[i]["str_SerialNumber"].ToString();
+                        string hexVal = result.Tables[0].Rows[i]["str_SerialNumber"].ToString();
 
                         if (!string.IsNullOrEmpty(hexVal))
                         {
@@ -375,8 +379,8 @@ namespace Reports.Services
                                 hexVal = hexVal.PadLeft(8, '0');
                             }
 
-                            var littleIndian = LittleEndian(hexVal);
-                            var decValue = Convert.ToInt64(littleIndian, 16);
+                            string littleIndian = LittleEndian(hexVal);
+                            long decValue = Convert.ToInt64(littleIndian, 16);
                             //result.Tables[0].Rows[i]["str_SerialNumber"] = Math.Abs(int.Parse(hexVal.ToString(), System.Globalization.NumberStyles.HexNumber));
                             //result.Tables[0].Rows[i]["str_SerialNumber"] = Convert.ToInt32(hexVal, 16);
                             result.Tables[0].Rows[i]["str_SerialNumber"] = decValue;
@@ -397,8 +401,8 @@ namespace Reports.Services
 
         private string LittleEndian(string num)
         {
-            var chars = num.Reverse().ToList();
-            var littleIndian = "";
+            List<char> chars = num.Reverse().ToList();
+            string littleIndian = "";
             for (int i = 0; i < 8; i += 2)
             {
                 littleIndian = littleIndian + chars[i + 1].ToString() + chars[i].ToString();
@@ -408,14 +412,16 @@ namespace Reports.Services
 
         public List<SelectListItem> GetAllHotlistReasons(string connKey)
         {
-            var res = new List<SelectListItem>();
-            res.Add(new SelectListItem { Text = "Select", Selected = true, Value = "" });
+            List<SelectListItem> res = new List<SelectListItem>
+            {
+                new SelectListItem { Text = "Select", Selected = true, Value = "" }
+            };
 
-            var myConnection = new SqlConnection(GetConnectionString(connKey));
+            SqlConnection myConnection = new SqlConnection(GetConnectionString(connKey));
 
             try
             {
-                var cmd = new SqlCommand()
+                SqlCommand cmd = new SqlCommand()
                 {
                     CommandType = CommandType.Text,
                     Connection = myConnection
@@ -429,7 +435,7 @@ namespace Reports.Services
 
                 while (dr.Read())
                 {
-                    var obj = new SelectListItem();
+                    SelectListItem obj = new SelectListItem();
 
                     if (dr["ID"] != null && dr["ID"].ToString() != string.Empty)
                     {
@@ -454,13 +460,13 @@ namespace Reports.Services
 
         public List<SelectListItem> GetAllDriverRoutes(string connKey)
         {
-            var res = new List<SelectListItem>();
+            List<SelectListItem> res = new List<SelectListItem>();
 
-            var myConnection = new SqlConnection(GetConnectionString(connKey));
+            SqlConnection myConnection = new SqlConnection(GetConnectionString(connKey));
 
             try
             {
-                var cmd = new SqlCommand()
+                SqlCommand cmd = new SqlCommand()
                 {
                     CommandType = CommandType.Text,
                     Connection = myConnection
@@ -474,7 +480,7 @@ namespace Reports.Services
 
                 while (dr.Read())
                 {
-                    var obj = new SelectListItem();
+                    SelectListItem obj = new SelectListItem();
 
                     if (dr["str4_RouteNumber"] != null && dr["str4_RouteNumber"].ToString() != string.Empty)
                     {
@@ -499,14 +505,14 @@ namespace Reports.Services
 
         public DataSet GetCashVsSmartCardUsageByRouteDataSet(string connKey, string RoutesSelected, string StartDate, string EndDate, string companyName)
         {
-            var ds = new DataSet();
-            var table1 = GetCashVsSmartCardUsageByRouteDataTable();
-            var filterDateRange = string.Format("{0} :  {1} to {2}", "Date Range", StartDate, EndDate);
-            var filterRoutes = string.Format("{0} :  {1} ", "Routes", RoutesSelected);
+            DataSet ds = new DataSet();
+            DataTable table1 = GetCashVsSmartCardUsageByRouteDataTable();
+            string filterDateRange = string.Format("{0} :  {1} to {2}", "Date Range", StartDate, EndDate);
+            string filterRoutes = string.Format("{0} :  {1} ", "Routes", RoutesSelected);
 
-            var data = GetCashVsSmartCardUsageByRouteData(connKey, RoutesSelected, StartDate, EndDate);
+            List<CashVsSmartCardUsageByRouteData> data = GetCashVsSmartCardUsageByRouteData(connKey, RoutesSelected, StartDate, EndDate);
 
-            foreach (var item in data)
+            foreach (CashVsSmartCardUsageByRouteData item in data)
             {
 
                 table1.Rows.Add(
@@ -532,12 +538,12 @@ namespace Reports.Services
 
         public List<CashVsSmartCardUsageByRouteData> GetCashVsSmartCardUsageByRouteData(string connKey, string RoutesSelected, string StartDate, string EndDate)
         {
-            var result = new List<CashVsSmartCardUsageByRouteData>();
-            var myConnection = new SqlConnection(GetConnectionString(connKey));
+            List<CashVsSmartCardUsageByRouteData> result = new List<CashVsSmartCardUsageByRouteData>();
+            SqlConnection myConnection = new SqlConnection(GetConnectionString(connKey));
 
             try
             {
-                var cmd = new SqlCommand("GetCashVsSmartCardUsageByRouteData", myConnection)
+                SqlCommand cmd = new SqlCommand("GetCashVsSmartCardUsageByRouteData", myConnection)
                 {
                     CommandType = CommandType.StoredProcedure
                 };
@@ -551,7 +557,7 @@ namespace Reports.Services
 
                 while (dr.Read())
                 {
-                    var sch = new CashVsSmartCardUsageByRouteData();
+                    CashVsSmartCardUsageByRouteData sch = new CashVsSmartCardUsageByRouteData();
 
                     if (dr["int4_JourneyPasses"] != null && dr["int4_JourneyPasses"].ToString() != string.Empty)
                     {
@@ -609,7 +615,7 @@ namespace Reports.Services
 
         public DataSet GetCashierSummaryReportDataset(string connKey, string companyName, CashierReportSummaryFilter filter)
         {
-            var result = new DataSet();
+            DataSet result = new DataSet();
 
             SqlConnection myConnection = new SqlConnection(GetConnectionString(connKey));
             try
@@ -634,24 +640,34 @@ namespace Reports.Services
                     }
                 }
 
-                var newColumn = new DataColumn("CompanyName", typeof(string));
-                newColumn.DefaultValue = companyName;
+                DataColumn newColumn = new DataColumn("CompanyName", typeof(string))
+                {
+                    DefaultValue = companyName
+                };
                 result.Tables[0].Columns.Add(newColumn);
 
-                newColumn = new DataColumn("DateSelected", typeof(string));
-                newColumn.DefaultValue = "Date Range : " + filter.StartDate + " to " + filter.EndDate;
+                newColumn = new DataColumn("DateSelected", typeof(string))
+                {
+                    DefaultValue = "Date Range : " + filter.StartDate + " to " + filter.EndDate
+                };
                 result.Tables[0].Columns.Add(newColumn);
 
-                newColumn = new DataColumn("Cashiers", typeof(string));
-                newColumn.DefaultValue = string.Format("Cashiers : {0} ", filter.CashiersSelected != null ? string.Join(",", filter.CashiersSelected) : "All");
+                newColumn = new DataColumn("Cashiers", typeof(string))
+                {
+                    DefaultValue = string.Format("Cashiers : {0} ", filter.CashiersSelected != null ? string.Join(",", filter.CashiersSelected) : "All")
+                };
                 result.Tables[0].Columns.Add(newColumn);
 
-                newColumn = new DataColumn("Locations", typeof(string));
-                newColumn.DefaultValue = string.Format("Locations : {0} ", filter.LocationsSelected != null ? string.Join(",", filter.LocationsSelected) : "All");
+                newColumn = new DataColumn("Locations", typeof(string))
+                {
+                    DefaultValue = string.Format("Locations : {0} ", filter.LocationsSelected != null ? string.Join(",", filter.LocationsSelected) : "All")
+                };
                 result.Tables[0].Columns.Add(newColumn);
 
-                newColumn = new DataColumn("Terminals", typeof(string));
-                newColumn.DefaultValue = string.Format("Terminals : {0} ", filter.TerminalsSelected != null ? string.Join(",", filter.TerminalsSelected) : "All");
+                newColumn = new DataColumn("Terminals", typeof(string))
+                {
+                    DefaultValue = string.Format("Terminals : {0} ", filter.TerminalsSelected != null ? string.Join(",", filter.TerminalsSelected) : "All")
+                };
                 result.Tables[0].Columns.Add(newColumn);
 
                 newColumn = new DataColumn("Difference", typeof(decimal));
@@ -664,7 +680,7 @@ namespace Reports.Services
                     for (int i = 0; i < result.Tables[0].Rows.Count; i++)
                     {
                         decimal vall = 0;
-                        var ress = result.Tables[0].Rows[i]["Overs"];
+                        object ress = result.Tables[0].Rows[i]["Overs"];
 
                         if (!string.IsNullOrEmpty(ress.ToString()) && Convert.ToDecimal(ress) != 0)
                         {
@@ -695,11 +711,11 @@ namespace Reports.Services
 
         public DataSet GetCashierReconciliationReportDataset(string connKey, string company, CashierReportSummaryFilter filter)
         {
-            var result = new List<CashierReconciliationData>();
-            var ds = new DataSet();
-            var filterDateRange = string.Format("{0} :  {1} to {2}", "Date Range", filter.StartDate, filter.EndDate);
-            var staffs = string.Format("Staff Selected : {0} ", filter.StaffSelected != null ? string.Join(",", filter.StaffSelected) : "All");
-            var locationsSelected = string.Format("Location Selected : {0} ", filter.LocationsSelected != null ? string.Join(",", filter.LocationsSelected) : "All");
+            List<CashierReconciliationData> result = new List<CashierReconciliationData>();
+            DataSet ds = new DataSet();
+            string filterDateRange = string.Format("{0} :  {1} to {2}", "Date Range", filter.StartDate, filter.EndDate);
+            string staffs = string.Format("Staff Selected : {0} ", filter.StaffSelected != null ? string.Join(",", filter.StaffSelected) : "All");
+            string locationsSelected = string.Format("Location Selected : {0} ", filter.LocationsSelected != null ? string.Join(",", filter.LocationsSelected) : "All");
             SqlConnection myConnection = new SqlConnection(GetConnectionString(connKey));
             try
             {
@@ -719,7 +735,7 @@ namespace Reports.Services
 
                     while (dr.Read())
                     {
-                        var sch = new CashierReconciliationData();
+                        CashierReconciliationData sch = new CashierReconciliationData();
                         //StaffNumber	Date	Time	Revenue	str50_StaffName dateFilter
                         if (dr["StaffNumber"] != null && dr["StaffNumber"].ToString() != string.Empty)
                         {
@@ -760,10 +776,10 @@ namespace Reports.Services
                     }
                 }
 
-                var table1 = CashierReconciliationSummay();
+                DataTable table1 = CashierReconciliationSummay();
                 if (result.Any())
                 {
-                    foreach (var item in result)
+                    foreach (CashierReconciliationData item in result)
                     {
                         table1.Rows.Add(
                             item.StaffNumber,
@@ -803,30 +819,30 @@ namespace Reports.Services
 
         public DataSet GetDailyAuditByCashierTerminalDataset(string connKey, CashierReportSummaryFilter filter, string companyName)
         {
-            var result = GetDailyAuditByCashierTerminalData(connKey, filter);
+            List<DailyAuditData> result = GetDailyAuditByCashierTerminalData(connKey, filter);
 
             //filter details
-            var filterDateRange = string.Format("{0}: {1} to {2}", "Date Range", filter.StartDate, filter.EndDate);
-            var casherSelected = string.Format("Cashiers : {0} ", filter.CashiersSelected != null ? string.Join(",", filter.CashiersSelected) : "All");
-            var staffSelected = string.Format("Staffs : {0} ", filter.StaffSelected != null ? string.Join(",", filter.StaffSelected) : "All");
-            var locationSelected = string.Format("Locations : {0} ", filter.LocationsSelected != null ? string.Join(",", filter.LocationsSelected) : "All");
-            var terminalsSelected = string.Format("Terminals : {0} ", filter.TerminalsSelected != null ? string.Join(",", filter.TerminalsSelected) : "All");
+            string filterDateRange = string.Format("{0}: {1} to {2}", "Date Range", filter.StartDate, filter.EndDate);
+            string casherSelected = string.Format("Cashiers : {0} ", filter.CashiersSelected != null ? string.Join(",", filter.CashiersSelected) : "All");
+            string staffSelected = string.Format("Staffs : {0} ", filter.StaffSelected != null ? string.Join(",", filter.StaffSelected) : "All");
+            string locationSelected = string.Format("Locations : {0} ", filter.LocationsSelected != null ? string.Join(",", filter.LocationsSelected) : "All");
+            string terminalsSelected = string.Format("Terminals : {0} ", filter.TerminalsSelected != null ? string.Join(",", filter.TerminalsSelected) : "All");
 
-            var ds = new DataSet();
-            var table1 = DailyAuditByCashierTerminalDataset();
+            DataSet ds = new DataSet();
+            DataTable table1 = DailyAuditByCashierTerminalDataset();
 
-            var filteredResult = new List<DailyAuditData>();
+            List<DailyAuditData> filteredResult = new List<DailyAuditData>();
 
             result.ForEach(s =>
             {
 
-                var multiplePairExistRes = result.Where(r => r.FirstJourney == s.FirstJourney
+                int multiplePairExistRes = result.Where(r => r.FirstJourney == s.FirstJourney
                     && r.EmployeeNo == s.EmployeeNo
                     && r.DutyDate == s.DutyDate).Count();
 
                 if (multiplePairExistRes > 1)
                 {
-                    var multiplePairExistFil = filteredResult.Where(r => r.FirstJourney == s.FirstJourney
+                    int multiplePairExistFil = filteredResult.Where(r => r.FirstJourney == s.FirstJourney
                     && r.EmployeeNo == s.EmployeeNo
                     && r.DutyDate == s.DutyDate).Count();
 
@@ -837,7 +853,7 @@ namespace Reports.Services
                                         && r.DutyDate == s.DutyDate
                                         && r.TotalPs == 0); //remove all zero
 
-                        var multiplePairExistFilNonZeroPsg = filteredResult.Where(r => r.FirstJourney == s.FirstJourney
+                        int multiplePairExistFilNonZeroPsg = filteredResult.Where(r => r.FirstJourney == s.FirstJourney
                                         && r.EmployeeNo == s.EmployeeNo
                                         && r.DutyDate == s.DutyDate).Count();
                         if (multiplePairExistFilNonZeroPsg > 0 && s.TotalPs <= 0)
@@ -862,7 +878,7 @@ namespace Reports.Services
 
             if (filteredResult.Any())
             {
-                foreach (var res in filteredResult)
+                foreach (DailyAuditData res in filteredResult)
                 {
                     table1.Rows.Add(
                         res.EmployeeNo,
@@ -911,30 +927,30 @@ namespace Reports.Services
 
         public DataSet GetDailyAuditByCashierTerminalDatasetSummary(string connKey, CashierReportSummaryFilter filter, string companyName)
         {
-            var result = GetDailyAuditByCashierTerminalDataSummary(connKey, filter);
+            List<DailyAuditData> result = GetDailyAuditByCashierTerminalDataSummary(connKey, filter);
 
             //filter details
-            var filterDateRange = string.Format("{0}: {1} to {2}", "Date Range", filter.StartDate, filter.EndDate);
-            var casherSelected = string.Format("Cashiers : {0} ", filter.CashiersSelected != null ? string.Join(",", filter.CashiersSelected) : "All");
-            var staffSelected = string.Format("Staffs : {0} ", filter.StaffSelected != null ? string.Join(",", filter.StaffSelected) : "All");
-            var locationSelected = string.Format("Locations : {0} ", filter.LocationsSelected != null ? string.Join(",", filter.LocationsSelected) : "All");
-            var terminalsSelected = string.Format("Terminals : {0} ", filter.TerminalsSelected != null ? string.Join(",", filter.TerminalsSelected) : "All");
+            string filterDateRange = string.Format("{0}: {1} to {2}", "Date Range", filter.StartDate, filter.EndDate);
+            string casherSelected = string.Format("Cashiers : {0} ", filter.CashiersSelected != null ? string.Join(",", filter.CashiersSelected) : "All");
+            string staffSelected = string.Format("Staffs : {0} ", filter.StaffSelected != null ? string.Join(",", filter.StaffSelected) : "All");
+            string locationSelected = string.Format("Locations : {0} ", filter.LocationsSelected != null ? string.Join(",", filter.LocationsSelected) : "All");
+            string terminalsSelected = string.Format("Terminals : {0} ", filter.TerminalsSelected != null ? string.Join(",", filter.TerminalsSelected) : "All");
 
-            var ds = new DataSet();
-            var table1 = DailyAuditByCashierTerminalDataset();
+            DataSet ds = new DataSet();
+            DataTable table1 = DailyAuditByCashierTerminalDataset();
 
-            var filteredResult = new List<DailyAuditData>();
+            List<DailyAuditData> filteredResult = new List<DailyAuditData>();
 
             result.ForEach(s =>
             {
 
-                var multiplePairExistRes = result.Where(r => r.FirstJourney == s.FirstJourney
+                int multiplePairExistRes = result.Where(r => r.FirstJourney == s.FirstJourney
                     && r.EmployeeNo == s.EmployeeNo
                     && r.DutyDate == s.DutyDate).Count();
 
                 if (multiplePairExistRes > 1)
                 {
-                    var multiplePairExistFil = filteredResult.Where(r => r.FirstJourney == s.FirstJourney
+                    int multiplePairExistFil = filteredResult.Where(r => r.FirstJourney == s.FirstJourney
                     && r.EmployeeNo == s.EmployeeNo
                     && r.DutyDate == s.DutyDate).Count();
 
@@ -945,7 +961,7 @@ namespace Reports.Services
                                         && r.DutyDate == s.DutyDate
                                         && r.TotalPs == 0); //remove all zero
 
-                        var multiplePairExistFilNonZeroPsg = filteredResult.Where(r => r.FirstJourney == s.FirstJourney
+                        int multiplePairExistFilNonZeroPsg = filteredResult.Where(r => r.FirstJourney == s.FirstJourney
                                         && r.EmployeeNo == s.EmployeeNo
                                         && r.DutyDate == s.DutyDate).Count();
                         if (multiplePairExistFilNonZeroPsg > 0 && s.TotalPs <= 0)
@@ -968,12 +984,12 @@ namespace Reports.Services
                 }
             });
 
-            var eachEmployee = filteredResult.Select(x => x.EmployeeName).Distinct().ToList();
-            var bindlist = new List<DailyAuditData>();
-            foreach (var emp in eachEmployee)
+            List<string> eachEmployee = filteredResult.Select(x => x.EmployeeName).Distinct().ToList();
+            List<DailyAuditData> bindlist = new List<DailyAuditData>();
+            foreach (string emp in eachEmployee)
             {
-                var item = new DailyAuditData();
-                foreach (var res in filteredResult.OrderBy(x => x.DutyDate))
+                DailyAuditData item = new DailyAuditData();
+                foreach (DailyAuditData res in filteredResult.OrderBy(x => x.DutyDate))
                 {
                     if (res.EmployeeName == emp)
                     {
@@ -1045,7 +1061,7 @@ namespace Reports.Services
 
             if (bindlist.Any())
             {
-                foreach (var res in bindlist)
+                foreach (DailyAuditData res in bindlist)
                 {
                     table1.Rows.Add(
                         res.EmployeeNo,
@@ -1094,28 +1110,28 @@ namespace Reports.Services
 
         public DataSet GetDailyAuditAtamelangReportDataset(string connKey, CashierReportSummaryFilter filter, string companyName)
         {
-            var result = GetDailyAuditAtamelangReportDataset(connKey, filter);
+            List<DailyAuditData> result = GetDailyAuditAtamelangReportDataset(connKey, filter);
 
             //filter details
-            var filterDateRange = string.Format("{0}: {1}", "Date ", filter.StartDate);
-            var staffSelected = string.Format("Staffs : {0} ", filter.StaffSelected != null ? string.Join(",", filter.StaffSelected) : "All");
-            var locationSelected = string.Format("Locations : {0} ", filter.LocationsSelected != null ? string.Join(",", filter.LocationsSelected) : "All");
+            string filterDateRange = string.Format("{0}: {1}", "Date ", filter.StartDate);
+            string staffSelected = string.Format("Staffs : {0} ", filter.StaffSelected != null ? string.Join(",", filter.StaffSelected) : "All");
+            string locationSelected = string.Format("Locations : {0} ", filter.LocationsSelected != null ? string.Join(",", filter.LocationsSelected) : "All");
 
-            var ds = new DataSet();
-            var table1 = DailyAuditByCashierTerminalDataset();
+            DataSet ds = new DataSet();
+            DataTable table1 = DailyAuditByCashierTerminalDataset();
 
-            var filteredResult = new List<DailyAuditData>();
+            List<DailyAuditData> filteredResult = new List<DailyAuditData>();
 
             result.ForEach(s =>
             {
 
-                var multiplePairExistRes = result.Where(r => r.FirstJourney == s.FirstJourney
+                int multiplePairExistRes = result.Where(r => r.FirstJourney == s.FirstJourney
                     && r.EmployeeNo == s.EmployeeNo
                     && r.DutyDate == s.DutyDate).Count();
 
                 if (multiplePairExistRes > 1)
                 {
-                    var multiplePairExistFil = filteredResult.Where(r => r.FirstJourney == s.FirstJourney
+                    int multiplePairExistFil = filteredResult.Where(r => r.FirstJourney == s.FirstJourney
                     && r.EmployeeNo == s.EmployeeNo
                     && r.DutyDate == s.DutyDate).Count();
 
@@ -1126,7 +1142,7 @@ namespace Reports.Services
                                         && r.DutyDate == s.DutyDate
                                         && r.TotalPs == 0); //remove all zero
 
-                        var multiplePairExistFilNonZeroPsg = filteredResult.Where(r => r.FirstJourney == s.FirstJourney
+                        int multiplePairExistFilNonZeroPsg = filteredResult.Where(r => r.FirstJourney == s.FirstJourney
                                         && r.EmployeeNo == s.EmployeeNo
                                         && r.DutyDate == s.DutyDate).Count();
                         if (multiplePairExistFilNonZeroPsg > 0 && s.TotalPs <= 0)
@@ -1151,7 +1167,7 @@ namespace Reports.Services
 
             if (filteredResult.Any())
             {
-                foreach (var res in filteredResult)
+                foreach (DailyAuditData res in filteredResult)
                 {
                     table1.Rows.Add(
                         res.EmployeeNo,
@@ -1200,30 +1216,30 @@ namespace Reports.Services
 
         public DataSet GetDailyAuditMatatieleReportDataset(string connKey, CashierReportSummaryFilter filter, string companyName)
         {
-            var result = GetDailyAuditMatatieleReportDataset(connKey, filter);
+            List<DailyAuditData> result = GetDailyAuditMatatieleReportDataset(connKey, filter);
 
             //filter details
-            var filterDateRange = string.Format("{0}: {1}", "Date ", filter.StartDate);
-            var staffSelected = string.Format("Staffs : {0} ", filter.StaffSelected != null ? string.Join(",", filter.StaffSelected) : "All");
-            var locationSelected = string.Format("Locations : {0} ", filter.LocationsSelected != null ? string.Join(",", filter.LocationsSelected) : "All");
-            var classesSelected = string.Format("Classes : {0} ", filter.ClassesSelected != null ? string.Join(",", filter.ClassesSelected) : "All");
-            var classTypesSelected = string.Format("ClassTypes : {0} ", filter.ClassTypesSelected != null ? string.Join(",", filter.ClassTypesSelected) : "All");
+            string filterDateRange = string.Format("{0}: {1}", "Date ", filter.StartDate);
+            string staffSelected = string.Format("Staffs : {0} ", filter.StaffSelected != null ? string.Join(",", filter.StaffSelected) : "All");
+            string locationSelected = string.Format("Locations : {0} ", filter.LocationsSelected != null ? string.Join(",", filter.LocationsSelected) : "All");
+            string classesSelected = string.Format("Classes : {0} ", filter.ClassesSelected != null ? string.Join(",", filter.ClassesSelected) : "All");
+            string classTypesSelected = string.Format("ClassTypes : {0} ", filter.ClassTypesSelected != null ? string.Join(",", filter.ClassTypesSelected) : "All");
 
-            var ds = new DataSet();
-            var table1 = DailyAuditByCashierTerminalDataset();
+            DataSet ds = new DataSet();
+            DataTable table1 = DailyAuditByCashierTerminalDataset();
 
-            var filteredResult = new List<DailyAuditData>();
+            List<DailyAuditData> filteredResult = new List<DailyAuditData>();
 
             result.ForEach(s =>
             {
 
-                var multiplePairExistRes = result.Where(r => r.FirstJourney == s.FirstJourney
+                int multiplePairExistRes = result.Where(r => r.FirstJourney == s.FirstJourney
                     && r.EmployeeNo == s.EmployeeNo
                     && r.DutyDate == s.DutyDate).Count();
 
                 if (multiplePairExistRes > 1)
                 {
-                    var multiplePairExistFil = filteredResult.Where(r => r.FirstJourney == s.FirstJourney
+                    int multiplePairExistFil = filteredResult.Where(r => r.FirstJourney == s.FirstJourney
                     && r.EmployeeNo == s.EmployeeNo
                     && r.DutyDate == s.DutyDate).Count();
 
@@ -1234,7 +1250,7 @@ namespace Reports.Services
                                         && r.DutyDate == s.DutyDate
                                         && r.TotalPs == 0); //remove all zero
 
-                        var multiplePairExistFilNonZeroPsg = filteredResult.Where(r => r.FirstJourney == s.FirstJourney
+                        int multiplePairExistFilNonZeroPsg = filteredResult.Where(r => r.FirstJourney == s.FirstJourney
                                         && r.EmployeeNo == s.EmployeeNo
                                         && r.DutyDate == s.DutyDate).Count();
                         if (multiplePairExistFilNonZeroPsg > 0 && s.TotalPs <= 0)
@@ -1259,7 +1275,7 @@ namespace Reports.Services
 
             if (filteredResult.Any())
             {
-                foreach (var res in filteredResult)
+                foreach (DailyAuditData res in filteredResult)
                 {
                     table1.Rows.Add(
                         res.EmployeeNo,
@@ -1270,7 +1286,7 @@ namespace Reports.Services
                         res.DutySignOn,
                         res.DutySignOff,
                         res.BusNumber,
-                        res.EquipmentNumber.PadLeft(6, '0'),
+                        res.EquipmentNumber != null ? res.EquipmentNumber.PadLeft(6, '0') : "",
                         res.FirstRoute,
                         res.FirstJourney,
                         res.Revenue,
@@ -1313,12 +1329,12 @@ namespace Reports.Services
 
         public List<DailyAuditData> GetDailyAuditByCashierTerminalData(string connKey, CashierReportSummaryFilter filter)
         {
-            var schs = new List<DailyAuditData>();
-            var myConnection = new SqlConnection(GetConnectionString(connKey));
+            List<DailyAuditData> schs = new List<DailyAuditData>();
+            SqlConnection myConnection = new SqlConnection(GetConnectionString(connKey));
 
             try
             {
-                var cmd = new SqlCommand("DailyAuditByCashierTerminal", myConnection)
+                SqlCommand cmd = new SqlCommand("DailyAuditByCashierTerminal", myConnection)
                 {
                     CommandType = CommandType.StoredProcedure
                 };
@@ -1336,7 +1352,7 @@ namespace Reports.Services
 
                 while (dr.Read())
                 {
-                    var sch = new DailyAuditData();
+                    DailyAuditData sch = new DailyAuditData();
 
                     if (dr["EmployeeNo"] != null && dr["EmployeeNo"].ToString() != string.Empty)
                     {
@@ -1345,9 +1361,9 @@ namespace Reports.Services
 
                     if (dr["DutyDate"] != null && dr["DutyDate"].ToString() != string.Empty)
                     {
-                        var datePart = dr["DutyDate"].ToString().Split(' ')[0];
-                        var date = datePart.Split('/');
-                        var mont = (date[0].Length == 1 ? "0" + date[0] : date[0]).Trim();
+                        string datePart = dr["DutyDate"].ToString().Split(' ')[0];
+                        string[] date = datePart.Split('/');
+                        string mont = (date[0].Length == 1 ? "0" + date[0] : date[0]).Trim();
 
                         sch.DutyDate = (date[1].Length == 1 ? "0" + date[1] : date[1]).Trim() + "/" + mont + "/" + date[2].Trim();
                     }
@@ -1476,12 +1492,12 @@ namespace Reports.Services
 
         public List<DailyAuditData> GetDailyAuditByCashierTerminalDataSummary(string connKey, CashierReportSummaryFilter filter)
         {
-            var schs = new List<DailyAuditData>();
-            var myConnection = new SqlConnection(GetConnectionString(connKey));
+            List<DailyAuditData> schs = new List<DailyAuditData>();
+            SqlConnection myConnection = new SqlConnection(GetConnectionString(connKey));
 
             try
             {
-                var cmd = new SqlCommand("DailyAuditByCashierTerminalSummary", myConnection)
+                SqlCommand cmd = new SqlCommand("DailyAuditByCashierTerminalSummary", myConnection)
                 {
                     CommandType = CommandType.StoredProcedure
                 };
@@ -1499,7 +1515,7 @@ namespace Reports.Services
 
                 while (dr.Read())
                 {
-                    var sch = new DailyAuditData();
+                    DailyAuditData sch = new DailyAuditData();
 
                     if (dr["EmployeeNo"] != null && dr["EmployeeNo"].ToString() != string.Empty)
                     {
@@ -1508,9 +1524,9 @@ namespace Reports.Services
 
                     if (dr["DutyDate"] != null && dr["DutyDate"].ToString() != string.Empty)
                     {
-                        var datePart = dr["DutyDate"].ToString().Split(' ')[0];
-                        var date = datePart.Split('/');
-                        var mont = (date[0].Length == 1 ? "0" + date[0] : date[0]).Trim();
+                        string datePart = dr["DutyDate"].ToString().Split(' ')[0];
+                        string[] date = datePart.Split('/');
+                        string mont = (date[0].Length == 1 ? "0" + date[0] : date[0]).Trim();
 
                         sch.DutyDate = (date[1].Length == 1 ? "0" + date[1] : date[1]).Trim() + "/" + mont + "/" + date[2].Trim();
                     }
@@ -1647,12 +1663,12 @@ namespace Reports.Services
 
         public List<DailyAuditData> GetDailyAuditAtamelangReportDataset(string connKey, CashierReportSummaryFilter filter)
         {
-            var schs = new List<DailyAuditData>();
-            var myConnection = new SqlConnection(GetConnectionString(connKey));
+            List<DailyAuditData> schs = new List<DailyAuditData>();
+            SqlConnection myConnection = new SqlConnection(GetConnectionString(connKey));
 
             try
             {
-                var cmd = new SqlCommand("DailyAuditByCashierTerminalSummary", myConnection)
+                SqlCommand cmd = new SqlCommand("DailyAuditByCashierTerminalSummary", myConnection)
                 {
                     CommandType = CommandType.StoredProcedure
                 };
@@ -1670,7 +1686,7 @@ namespace Reports.Services
 
                 while (dr.Read())
                 {
-                    var sch = new DailyAuditData();
+                    DailyAuditData sch = new DailyAuditData();
 
                     if (dr["EmployeeNo"] != null && dr["EmployeeNo"].ToString() != string.Empty)
                     {
@@ -1679,9 +1695,9 @@ namespace Reports.Services
 
                     if (dr["DutyDate"] != null && dr["DutyDate"].ToString() != string.Empty)
                     {
-                        var datePart = dr["DutyDate"].ToString().Split(' ')[0];
-                        var date = datePart.Split('/');
-                        var mont = (date[0].Length == 1 ? "0" + date[0] : date[0]).Trim();
+                        string datePart = dr["DutyDate"].ToString().Split(' ')[0];
+                        string[] date = datePart.Split('/');
+                        string mont = (date[0].Length == 1 ? "0" + date[0] : date[0]).Trim();
 
                         sch.DutyDate = (date[1].Length == 1 ? "0" + date[1] : date[1]).Trim() + "/" + mont + "/" + date[2].Trim();
                     }
@@ -1818,12 +1834,12 @@ namespace Reports.Services
 
         public List<DailyAuditData> GetDailyAuditMatatieleReportDataset(string connKey, CashierReportSummaryFilter filter)
         {
-            var schs = new List<DailyAuditData>();
-            var myConnection = new SqlConnection(GetConnectionString(connKey));
+            List<DailyAuditData> schs = new List<DailyAuditData>();
+            SqlConnection myConnection = new SqlConnection(GetConnectionString(connKey));
 
             try
             {
-                var cmd = new SqlCommand("DailyAuditForMatatiele", myConnection)
+                SqlCommand cmd = new SqlCommand("DailyAuditForMatatiele", myConnection)
                 {
                     CommandType = CommandType.StoredProcedure
                 };
@@ -1841,7 +1857,7 @@ namespace Reports.Services
 
                 while (dr.Read())
                 {
-                    var sch = new DailyAuditData();
+                    DailyAuditData sch = new DailyAuditData();
 
                     if (dr["EmployeeNo"] != null && dr["EmployeeNo"].ToString() != string.Empty)
                     {
@@ -1850,9 +1866,9 @@ namespace Reports.Services
 
                     if (dr["DutyDate"] != null && dr["DutyDate"].ToString() != string.Empty)
                     {
-                        var datePart = dr["DutyDate"].ToString().Split(' ')[0];
-                        var date = datePart.Split('/');
-                        var mont = (date[0].Length == 1 ? "0" + date[0] : date[0]).Trim();
+                        string datePart = dr["DutyDate"].ToString().Split(' ')[0];
+                        string[] date = datePart.Split('/');
+                        string mont = (date[0].Length == 1 ? "0" + date[0] : date[0]).Trim();
 
                         sch.DutyDate = (date[1].Length == 1 ? "0" + date[1] : date[1]).Trim() + "/" + mont + "/" + date[2].Trim();
                     }

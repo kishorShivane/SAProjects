@@ -45,6 +45,13 @@
                 nonSelectedText: 'Select Locations'
             });
 
+            $("#StaffsSelected").multiselect({
+                buttonWidth: '100%',
+                enableFiltering: true,
+                includeSelectAllOption: true,
+                nonSelectedText: 'Select Staff'
+            });
+
             $("#dnPdf").click(function () {
                 $("#ExcelOrPDF").val(true);
             });
@@ -101,14 +108,14 @@
                     <label class="lblFont" for="Website">Locations</label>
                     @Html.DropDownListFor(s => s.LocationsSelected, Model.Locations, new { @class = "multiselect form-control", multiple = "multiple" })
                 </div>
-                <div class="col-md-1 hidden-xs hidden-sm">
+                <div align="left" class="col-md-3 col-sm-12 ">
+                    <label class="lblFont" for="Website">Staff</label>
+                    @Html.DropDownListFor(s => s.StaffsSelected, Model.AllStaffs, new { @class = "multiselect form-control", multiple = "multiple" })
                 </div>
                 <div align="left" class="col-md-3 col-sm-12 pad0px">
                     <label class="lblFont" for="Location">From Date</label>
                     @Html.TextBoxFor(s => s.StartDate, new { @class = "form-control zindex", @placeholder = "From Date" })
                     @Html.ValidationMessageFor(m => m.StartDate)
-                </div>
-                <div class="col-md-1 hidden-xs hidden-sm">
                 </div>
                 <div align="left" class="col-md-3 col-sm-12 pad0px">
                     <label class="lblFont" for="Pincode">Till Date</label>
