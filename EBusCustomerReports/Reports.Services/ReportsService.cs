@@ -720,7 +720,7 @@ namespace Reports.Services
                                                     group c by new { DOTRouteNumber = c.DOTRouteNumber, WayfarerRoute = c.WayfarerRoute } into grp
                                                     select new FormEData
                                                     {
-                                                        DOTRoute = grp.Key.DOTRouteNumber?? string.Empty,
+                                                        DOTRoute = grp.Key.DOTRouteNumber ?? string.Empty,
                                                         Contract = grp.Any() ? grp.FirstOrDefault().str7_Contract : string.Empty,
                                                         WayfarerRoute = grp.Key.WayfarerRoute ?? string.Empty,
                                                         From = grp.Any() ? grp.FirstOrDefault().routeName : string.Empty,
@@ -756,12 +756,13 @@ namespace Reports.Services
                 result.AddRange(groupByDot);
             }
 
-            var groupBy = result.GroupBy(y => y.DOTRoute).Where(grp => grp.Count() > 1);
+            IEnumerable<IGrouping<string, FormEData>> groupBy = result.GroupBy(y => y.DOTRoute).Where(grp => grp.Count() > 1);
             groupBy.ToList().ForEach(grp =>
             {
-                var count = false;
+                bool count = false;
 
-                result.Where(z => z.DOTRoute.Equals(grp.Key)).ToList().ForEach(c => {
+                result.Where(z => z.DOTRoute.Equals(grp.Key)).ToList().ForEach(c =>
+                {
                     if (count)
                     {
                         //c.Contract = string.Empty;
@@ -1635,8 +1636,16 @@ namespace Reports.Services
 
             List<DailyAuditData> filteredResult = new List<DailyAuditData>();
 
+
+            int[] mjClasses = { 994, 997, 999 };
+            int[] svClasses = { 701, 703, 702, 704, 705, 706, 707 };
+
             result.ForEach(s =>
             {
+                s.MJPasses = mjClasses.Contains(s.Class) ? s.Passes : "0";
+                s.MJNonRevenue = mjClasses.Contains(s.Class) ? s.NonRevenue : "0";
+                s.SVPasses = svClasses.Contains(s.Class) ? s.Passes : "0";
+                s.SVNonRevenue = svClasses.Contains(s.Class) ? s.NonRevenue : "0";
 
                 int multiplePairExistRes = result.Where(r => r.FirstJourney == s.FirstJourney
                     && r.EmployeeNo == s.EmployeeNo
@@ -1683,8 +1692,11 @@ namespace Reports.Services
 
             if (newfilteredResult.Any())
             {
-                foreach (DailyAuditData res in newfilteredResult)
+                var group = newfilteredResult.GroupBy(x => new { x.EmployeeNo, x.FirstJourney, x.DutyDate });
+                group.ToList().ForEach(x =>
                 {
+                    DailyAuditData res = x.FirstOrDefault();
+
                     table1.Rows.Add(
                         res.EmployeeNo,
                         res.EmployeeName,
@@ -1699,7 +1711,7 @@ namespace Reports.Services
                         res.FirstJourney,
                         res.Revenue,
                         res.Tickets,
-                        res.Passes,
+                        x.Sum(y => Convert.ToDouble(y.Passes)),
                         res.Transfers,
                         res.modulesignoff,
                         res.modulesignon,
@@ -1708,8 +1720,44 @@ namespace Reports.Services
                         filterStaffsSelected,
                         filterStaffTypesSelected,
                         res.TotalPs,
-                        filterLocation);
-                }
+                        filterLocation,
+                       x.Sum(y=>Convert.ToDouble(y.MJNonRevenue)), //res.MJNonRevenue
+                       x.Sum(y => Convert.ToDouble(y.MJPasses)),//res.MJPasses,
+                       x.Sum(y => Convert.ToDouble(y.SVNonRevenue)),//res.SVNonRevenue,
+                       x.Sum(y => Convert.ToDouble(y.SVPasses))//res.SVPasses
+                       );
+                });
+                //foreach (DailyAuditData res in newfilteredResult)
+                //{
+                //    table1.Rows.Add(
+                //        res.EmployeeNo,
+                //        res.EmployeeName,
+                //        res.Module,
+                //        res.Duty,
+                //        res.DutyDate,
+                //        res.DutySignOn,
+                //        res.DutySignOff,
+                //        res.BusNumber,
+                //        res.EquipmentNumber,
+                //        res.FirstRoute,
+                //        res.FirstJourney,
+                //        res.Revenue,
+                //        res.Tickets,
+                //        res.Passes,
+                //        res.Transfers,
+                //        res.modulesignoff,
+                //        res.modulesignon,
+                //        companyName,
+                //        filterDateRange,
+                //        filterStaffsSelected,
+                //        filterStaffTypesSelected,
+                //        res.TotalPs,
+                //        filterLocation,
+                //        mjClasses.Contains(res.Class)?res.Passes:"0",
+                //        mjClasses.Contains(res.Class)?res.NonRevenue:"0",
+                //        svClasses.Contains(res.Class) ? res.Passes : "0",
+                //        svClasses.Contains(res.Class) ? res.NonRevenue : "0");
+                //}
             }
             else
             {
@@ -1847,6 +1895,15 @@ namespace Reports.Services
                         sch.modulesignon = Convert.ToDateTime(dr["modulesignon"].ToString().Trim()).ToString("dd/MM/yyyy HH:mm");
                     }
 
+                    if (dr["Class"] != null && dr["Class"].ToString() != string.Empty)
+                    {
+                        sch.Class = Convert.ToInt32(dr["Class"].ToString());
+                    }
+
+                    if (dr["NonRevenue"] != null && dr["NonRevenue"].ToString() != string.Empty)
+                    {
+                        sch.NonRevenue = dr["NonRevenue"].ToString().Trim();
+                    }
                     schs.Add(sch);
                 }
             }

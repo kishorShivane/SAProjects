@@ -1907,6 +1907,14 @@ namespace Reports.Web.CrystalReports.Datasets
 
             private global::System.Data.DataColumn columnLocationSelected;
 
+            private global::System.Data.DataColumn columnMJNonRevenue;
+
+            private global::System.Data.DataColumn columnMJPasses;
+
+            private global::System.Data.DataColumn columnSVNonRevenue;
+
+            private global::System.Data.DataColumn columnSVPasses;
+
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
             public DailyAuditDataTable()
@@ -2178,6 +2186,46 @@ namespace Reports.Web.CrystalReports.Datasets
 
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public global::System.Data.DataColumn MJNonRevenueColumn
+            {
+                get
+                {
+                    return this.columnMJNonRevenue;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public global::System.Data.DataColumn MJPassesColumn
+            {
+                get
+                {
+                    return this.columnMJPasses;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public global::System.Data.DataColumn SVNonRevenueColumn
+            {
+                get
+                {
+                    return this.columnSVNonRevenue;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public global::System.Data.DataColumn SVPassesColumn
+            {
+                get
+                {
+                    return this.columnSVPasses;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count
             {
@@ -2241,7 +2289,11 @@ namespace Reports.Web.CrystalReports.Datasets
                         string StaffsSelected,
                         string StaffTypesSelected,
                         int TotalPs,
-                        string LocationSelected)
+                        string LocationSelected,
+                        double MJNonRevenue,
+                        double MJPasses,
+                        double SVNonRevenue,
+                        double SVPasses)
             {
                 DailyAuditRow rowDailyAuditRow = ((DailyAuditRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
@@ -2267,7 +2319,11 @@ namespace Reports.Web.CrystalReports.Datasets
                         StaffsSelected,
                         StaffTypesSelected,
                         TotalPs,
-                        LocationSelected};
+                        LocationSelected,
+                        MJNonRevenue,
+                        MJPasses,
+                        SVNonRevenue,
+                        SVPasses};
                 rowDailyAuditRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowDailyAuditRow);
                 return rowDailyAuditRow;
@@ -2316,6 +2372,10 @@ namespace Reports.Web.CrystalReports.Datasets
                 this.columnStaffTypesSelected = base.Columns["StaffTypesSelected"];
                 this.columnTotalPs = base.Columns["TotalPs"];
                 this.columnLocationSelected = base.Columns["LocationSelected"];
+                this.columnMJNonRevenue = base.Columns["MJNonRevenue"];
+                this.columnMJPasses = base.Columns["MJPasses"];
+                this.columnSVNonRevenue = base.Columns["SVNonRevenue"];
+                this.columnSVPasses = base.Columns["SVPasses"];
             }
 
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -2368,6 +2428,14 @@ namespace Reports.Web.CrystalReports.Datasets
                 base.Columns.Add(this.columnTotalPs);
                 this.columnLocationSelected = new global::System.Data.DataColumn("LocationSelected", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnLocationSelected);
+                this.columnMJNonRevenue = new global::System.Data.DataColumn("MJNonRevenue", typeof(double), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnMJNonRevenue);
+                this.columnMJPasses = new global::System.Data.DataColumn("MJPasses", typeof(double), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnMJPasses);
+                this.columnSVNonRevenue = new global::System.Data.DataColumn("SVNonRevenue", typeof(double), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnSVNonRevenue);
+                this.columnSVPasses = new global::System.Data.DataColumn("SVPasses", typeof(double), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnSVPasses);
             }
 
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -15988,6 +16056,90 @@ namespace Reports.Web.CrystalReports.Datasets
 
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public double MJNonRevenue
+            {
+                get
+                {
+                    try
+                    {
+                        return ((double)(this[this.tableDailyAudit.MJNonRevenueColumn]));
+                    }
+                    catch (global::System.InvalidCastException e)
+                    {
+                        throw new global::System.Data.StrongTypingException("The value for column \'MJNonRevenue\' in table \'DailyAudit\' is DBNull.", e);
+                    }
+                }
+                set
+                {
+                    this[this.tableDailyAudit.MJNonRevenueColumn] = value;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public double MJPasses
+            {
+                get
+                {
+                    try
+                    {
+                        return ((double)(this[this.tableDailyAudit.MJPassesColumn]));
+                    }
+                    catch (global::System.InvalidCastException e)
+                    {
+                        throw new global::System.Data.StrongTypingException("The value for column \'MJPasses\' in table \'DailyAudit\' is DBNull.", e);
+                    }
+                }
+                set
+                {
+                    this[this.tableDailyAudit.MJPassesColumn] = value;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public double SVNonRevenue
+            {
+                get
+                {
+                    try
+                    {
+                        return ((double)(this[this.tableDailyAudit.SVNonRevenueColumn]));
+                    }
+                    catch (global::System.InvalidCastException e)
+                    {
+                        throw new global::System.Data.StrongTypingException("The value for column \'SVNonRevenue\' in table \'DailyAudit\' is DBNull.", e);
+                    }
+                }
+                set
+                {
+                    this[this.tableDailyAudit.SVNonRevenueColumn] = value;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public double SVPasses
+            {
+                get
+                {
+                    try
+                    {
+                        return ((double)(this[this.tableDailyAudit.SVPassesColumn]));
+                    }
+                    catch (global::System.InvalidCastException e)
+                    {
+                        throw new global::System.Data.StrongTypingException("The value for column \'SVPasses\' in table \'DailyAudit\' is DBNull.", e);
+                    }
+                }
+                set
+                {
+                    this[this.tableDailyAudit.SVPassesColumn] = value;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
             public bool IsEmployeeNoNull()
             {
                 return this.IsNull(this.tableDailyAudit.EmployeeNoColumn);
@@ -16306,6 +16458,62 @@ namespace Reports.Web.CrystalReports.Datasets
             public void SetLocationSelectedNull()
             {
                 this[this.tableDailyAudit.LocationSelectedColumn] = global::System.Convert.DBNull;
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public bool IsMJNonRevenueNull()
+            {
+                return this.IsNull(this.tableDailyAudit.MJNonRevenueColumn);
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public void SetMJNonRevenueNull()
+            {
+                this[this.tableDailyAudit.MJNonRevenueColumn] = global::System.Convert.DBNull;
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public bool IsMJPassesNull()
+            {
+                return this.IsNull(this.tableDailyAudit.MJPassesColumn);
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public void SetMJPassesNull()
+            {
+                this[this.tableDailyAudit.MJPassesColumn] = global::System.Convert.DBNull;
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public bool IsSVNonRevenueNull()
+            {
+                return this.IsNull(this.tableDailyAudit.SVNonRevenueColumn);
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public void SetSVNonRevenueNull()
+            {
+                this[this.tableDailyAudit.SVNonRevenueColumn] = global::System.Convert.DBNull;
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public bool IsSVPassesNull()
+            {
+                return this.IsNull(this.tableDailyAudit.SVPassesColumn);
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public void SetSVPassesNull()
+            {
+                this[this.tableDailyAudit.SVPassesColumn] = global::System.Convert.DBNull;
             }
         }
 

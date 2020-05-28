@@ -202,6 +202,14 @@ namespace Reports.Services
             table1.Columns.Add("TotalPs");//21
             table1.Columns[21].DataType = typeof(Int32);
             table1.Columns.Add("LocationSelected");//22
+            table1.Columns.Add("MJNonRevenue");//23
+            table1.Columns[23].DataType = typeof(double);
+            table1.Columns.Add("MJPasses");//24
+            table1.Columns[24].DataType = typeof(double);
+            table1.Columns.Add("SVNonRevenue");//25
+            table1.Columns[25].DataType = typeof(double);
+            table1.Columns.Add("SVPasses");//26
+            table1.Columns[26].DataType = typeof(double);
 
             return table1;
         }

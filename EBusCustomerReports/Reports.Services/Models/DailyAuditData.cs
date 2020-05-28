@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Reports.Services.Models
+﻿namespace Reports.Services.Models
 {
     public class DailyAuditData
     {
@@ -31,12 +25,17 @@ namespace Reports.Services.Models
         public string CashierName { get; set; }
         public string CashierNum { get; set; }
         public string str4_LocationCode { get; set; }
-        public string LocationID{ get; set; }
+        public string LocationID { get; set; }
         public string Terminal { get; set; }
         public string DateRangeFilter { get; set; }
 
         public string Cashsignon { get; set; }
         public string Cashsignoff { get; set; }
         public string TransactionDatetime { get; set; }
+        public int Class { get; set; }
+        public string MJNonRevenue { get; set; }
+        public string MJPasses { get; set; }
+        public string SVNonRevenue { get; set; }
+        public string SVPasses { get; set; }
     }
 }
