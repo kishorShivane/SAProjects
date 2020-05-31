@@ -1709,17 +1709,17 @@ namespace Reports.Services
                         res.EquipmentNumber,
                         res.FirstRoute,
                         res.FirstJourney,
-                        res.Revenue,
-                        res.Tickets,
+                        x.Sum(y => Convert.ToDouble(y.Revenue)),
+                        x.Sum(y => Convert.ToDouble(y.Tickets)),
                         x.Sum(y => Convert.ToDouble(y.Passes)),
-                        res.Transfers,
+                        x.Sum(y => Convert.ToDouble(y.Transfers)),
                         res.modulesignoff,
                         res.modulesignon,
                         companyName,
                         filterDateRange,
                         filterStaffsSelected,
                         filterStaffTypesSelected,
-                        res.TotalPs,
+                        x.Sum(y => Convert.ToDouble(y.TotalPs)),
                         filterLocation,
                        x.Sum(y=>Convert.ToDouble(y.MJNonRevenue)), //res.MJNonRevenue
                        x.Sum(y => Convert.ToDouble(y.MJPasses)),//res.MJPasses,
@@ -1727,37 +1727,6 @@ namespace Reports.Services
                        x.Sum(y => Convert.ToDouble(y.SVPasses))//res.SVPasses
                        );
                 });
-                //foreach (DailyAuditData res in newfilteredResult)
-                //{
-                //    table1.Rows.Add(
-                //        res.EmployeeNo,
-                //        res.EmployeeName,
-                //        res.Module,
-                //        res.Duty,
-                //        res.DutyDate,
-                //        res.DutySignOn,
-                //        res.DutySignOff,
-                //        res.BusNumber,
-                //        res.EquipmentNumber,
-                //        res.FirstRoute,
-                //        res.FirstJourney,
-                //        res.Revenue,
-                //        res.Tickets,
-                //        res.Passes,
-                //        res.Transfers,
-                //        res.modulesignoff,
-                //        res.modulesignon,
-                //        companyName,
-                //        filterDateRange,
-                //        filterStaffsSelected,
-                //        filterStaffTypesSelected,
-                //        res.TotalPs,
-                //        filterLocation,
-                //        mjClasses.Contains(res.Class)?res.Passes:"0",
-                //        mjClasses.Contains(res.Class)?res.NonRevenue:"0",
-                //        svClasses.Contains(res.Class) ? res.Passes : "0",
-                //        svClasses.Contains(res.Class) ? res.NonRevenue : "0");
-                //}
             }
             else
             {
@@ -1769,9 +1738,7 @@ namespace Reports.Services
                 dr["LocationSelected"] = filterLocation;
                 table1.Rows.Add(dr);
             }
-
-
-
+                       
             ds.Tables.Add(table1);
             return ds;
         }
