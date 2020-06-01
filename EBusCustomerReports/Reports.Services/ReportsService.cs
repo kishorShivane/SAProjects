@@ -1398,6 +1398,7 @@ namespace Reports.Services
                                                                   select g).ToList();
 
             List<RevenueByDuty> result = new List<RevenueByDuty>();
+            int[] svTransferClass = { 701, 703, 702, 704, 705, 706, 707 };
             //then group by Journey
             foreach (IGrouping<string, RevenueByDuty> contract in groupByDuty)
             {
@@ -1411,17 +1412,19 @@ namespace Reports.Services
                                                             Value = Math.Round(grp.Sum(s => Convert.ToDouble(s.NonRevenue) == 0 ? 0 : Convert.ToDouble(s.NonRevenue) / 100), 4),
                                                             AdultRevenue = grp.Where(s => s.NonRevenue.Equals(0)).Count(s => s.Class.Equals(17)),
                                                             ChildRevenue = grp.Where(s => s.NonRevenue.Equals(0)).Count(s => s.Class.Equals(33)),
+                                                            OtherRevenue = grp.Where(s => s.Tickets.Equals(1)).Count(s => !(s.Class.Equals(33) || s.Class.Equals(17))),
                                                             AdultNonRevenue = grp.Where(s => s.Revenue.Equals(0)).Count(s => s.Class.Equals(999)),
                                                             SchlorNonRevenue = grp.Where(s => s.Revenue.Equals(0)).Count(s => s.Class.Equals(997)),
                                                             AdultTransfer = grp.Where(s => s.Transfers.Equals(1)).Count(s => s.Class.Equals(995)),
                                                             ScholarTransfer = grp.Where(s => s.Transfers.Equals(1)).Count(s => s.Class.Equals(996)),
+                                                            StoredvalueTransfer = grp.Where(s=> s.Passes.Equals(1)).Count(s=>svTransferClass.Contains(s.Class))
                                                         };
                 result.AddRange(groupByDot);
             }
 
             result.ForEach(x => x.Total = Math.Round((Convert.ToDouble(result.Where(q => q.DutyID.Equals(x.DutyID)).Sum(e => (e.Cash)))) + (Convert.ToDouble(result.Where(q => q.DutyID.Equals(x.DutyID)).Sum(e => (e.Value)))), 4));
 
-            IOrderedEnumerable<RevenueByDuty> ordered = result.OrderBy(s => s.DutyID);
+            IOrderedEnumerable<RevenueByDuty> ordered = result.OrderBy(s => s.JourneyID);
 
             if (ordered.Any())
             {
@@ -1444,7 +1447,9 @@ namespace Reports.Services
                             res.companyName,
                             res.DateRangeFilter,
                             res.DutyFilter,
-                            res.Total
+                            res.Total,
+                            res.OtherRevenue,
+                            res.StoredvalueTransfer
                         );
                 }
             }
@@ -1572,6 +1577,16 @@ namespace Reports.Services
                     if (dr["int2_Class"] != null && dr["int2_Class"].ToString() != string.Empty)
                     {
                         sch.Class = Convert.ToInt32(dr["int2_Class"]);
+                    }
+
+                    if (dr["int2_PassCount"] != null && dr["int2_PassCount"].ToString() != string.Empty)
+                    {
+                        sch.Passes = Convert.ToInt32(dr["int2_PassCount"]);
+                    }
+
+                    if (dr["int2_TicketCount"] != null && dr["int2_TicketCount"].ToString() != string.Empty)
+                    {
+                        sch.Tickets = Convert.ToInt32(dr["int2_TicketCount"]);
                     }
 
                     schs.Add(sch);
@@ -1721,7 +1736,7 @@ namespace Reports.Services
                         filterStaffTypesSelected,
                         x.Sum(y => Convert.ToDouble(y.TotalPs)),
                         filterLocation,
-                       x.Sum(y=>Convert.ToDouble(y.MJNonRevenue)), //res.MJNonRevenue
+                       x.Sum(y => Convert.ToDouble(y.MJNonRevenue)), //res.MJNonRevenue
                        x.Sum(y => Convert.ToDouble(y.MJPasses)),//res.MJPasses,
                        x.Sum(y => Convert.ToDouble(y.SVNonRevenue)),//res.SVNonRevenue,
                        x.Sum(y => Convert.ToDouble(y.SVPasses))//res.SVPasses
@@ -1738,7 +1753,7 @@ namespace Reports.Services
                 dr["LocationSelected"] = filterLocation;
                 table1.Rows.Add(dr);
             }
-                       
+
             ds.Tables.Add(table1);
             return ds;
         }

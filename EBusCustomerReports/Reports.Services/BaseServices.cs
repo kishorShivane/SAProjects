@@ -104,6 +104,10 @@ namespace Reports.Services
             table1.Columns.Add("filterDuties");//12
             table1.Columns.Add("Total"); //13
             table1.Columns[13].DataType = typeof(double);
+            table1.Columns.Add("OtherRevenue"); //14
+            table1.Columns[14].DataType = typeof(double);
+            table1.Columns.Add("StoredValue"); //15
+            table1.Columns[15].DataType = typeof(int);
             return table1;
         }
 

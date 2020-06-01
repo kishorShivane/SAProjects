@@ -13640,6 +13640,10 @@ namespace Reports.Web.CrystalReports.Datasets
 
             private global::System.Data.DataColumn columnTotal;
 
+            private global::System.Data.DataColumn columnOtherRevenue;
+
+            private global::System.Data.DataColumn columnStoredValue;
+
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
             public RevByDutyDataTable()
@@ -13831,6 +13835,26 @@ namespace Reports.Web.CrystalReports.Datasets
 
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public global::System.Data.DataColumn OtherRevenueColumn
+            {
+                get
+                {
+                    return this.columnOtherRevenue;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public global::System.Data.DataColumn StoredValueColumn
+            {
+                get
+                {
+                    return this.columnStoredValue;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count
             {
@@ -13871,7 +13895,24 @@ namespace Reports.Web.CrystalReports.Datasets
 
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
-            public RevByDutyRow AddRevByDutyRow(string dateSelected, double int4_DutyId, string str4_JourneyNo, double Cash, double Value, double AdultRevenue, double ChildRevenue, double AdultNonRevenue, double ScholorNonRevenue, int AdultTransfer, int ScholorTransfer, string companyName, string DateRangeFilter, string filterDuties, double Total)
+            public RevByDutyRow AddRevByDutyRow(
+                        string dateSelected,
+                        double int4_DutyId,
+                        string str4_JourneyNo,
+                        double Cash,
+                        double Value,
+                        double AdultRevenue,
+                        double ChildRevenue,
+                        double AdultNonRevenue,
+                        double ScholorNonRevenue,
+                        int AdultTransfer,
+                        int ScholorTransfer,
+                        string companyName,
+                        string DateRangeFilter,
+                        string filterDuties,
+                        double Total,
+                        double OtherRevenue,
+                        int StoredValue)
             {
                 RevByDutyRow rowRevByDutyRow = ((RevByDutyRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
@@ -13889,7 +13930,9 @@ namespace Reports.Web.CrystalReports.Datasets
                         companyName,
                         DateRangeFilter,
                         filterDuties,
-                        Total};
+                        Total,
+                        OtherRevenue,
+                        StoredValue};
                 rowRevByDutyRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowRevByDutyRow);
                 return rowRevByDutyRow;
@@ -13930,6 +13973,8 @@ namespace Reports.Web.CrystalReports.Datasets
                 this.columnDateRangeFilter = base.Columns["DateRangeFilter"];
                 this.columnfilterDuties = base.Columns["filterDuties"];
                 this.columnTotal = base.Columns["Total"];
+                this.columnOtherRevenue = base.Columns["OtherRevenue"];
+                this.columnStoredValue = base.Columns["StoredValue"];
             }
 
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -13966,6 +14011,10 @@ namespace Reports.Web.CrystalReports.Datasets
                 base.Columns.Add(this.columnfilterDuties);
                 this.columnTotal = new global::System.Data.DataColumn("Total", typeof(double), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnTotal);
+                this.columnOtherRevenue = new global::System.Data.DataColumn("OtherRevenue", typeof(double), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnOtherRevenue);
+                this.columnStoredValue = new global::System.Data.DataColumn("StoredValue", typeof(int), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnStoredValue);
             }
 
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -30511,6 +30560,48 @@ namespace Reports.Web.CrystalReports.Datasets
 
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public double OtherRevenue
+            {
+                get
+                {
+                    try
+                    {
+                        return ((double)(this[this.tableRevByDuty.OtherRevenueColumn]));
+                    }
+                    catch (global::System.InvalidCastException e)
+                    {
+                        throw new global::System.Data.StrongTypingException("The value for column \'OtherRevenue\' in table \'RevByDuty\' is DBNull.", e);
+                    }
+                }
+                set
+                {
+                    this[this.tableRevByDuty.OtherRevenueColumn] = value;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public int StoredValue
+            {
+                get
+                {
+                    try
+                    {
+                        return ((int)(this[this.tableRevByDuty.StoredValueColumn]));
+                    }
+                    catch (global::System.InvalidCastException e)
+                    {
+                        throw new global::System.Data.StrongTypingException("The value for column \'StoredValue\' in table \'RevByDuty\' is DBNull.", e);
+                    }
+                }
+                set
+                {
+                    this[this.tableRevByDuty.StoredValueColumn] = value;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
             public bool IsdateSelectedNull()
             {
                 return this.IsNull(this.tableRevByDuty.dateSelectedColumn);
@@ -30717,6 +30808,34 @@ namespace Reports.Web.CrystalReports.Datasets
             public void SetTotalNull()
             {
                 this[this.tableRevByDuty.TotalColumn] = global::System.Convert.DBNull;
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public bool IsOtherRevenueNull()
+            {
+                return this.IsNull(this.tableRevByDuty.OtherRevenueColumn);
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public void SetOtherRevenueNull()
+            {
+                this[this.tableRevByDuty.OtherRevenueColumn] = global::System.Convert.DBNull;
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public bool IsStoredValueNull()
+            {
+                return this.IsNull(this.tableRevByDuty.StoredValueColumn);
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public void SetStoredValueNull()
+            {
+                this[this.tableRevByDuty.StoredValueColumn] = global::System.Convert.DBNull;
             }
         }
 
