@@ -1662,44 +1662,46 @@ namespace Reports.Services
                 s.SVPasses = svClasses.Contains(s.Class) ? s.Passes : "0";
                 s.SVNonRevenue = svClasses.Contains(s.Class) ? s.NonRevenue : "0";
 
-                int multiplePairExistRes = result.Where(r => r.FirstJourney == s.FirstJourney
-                    && r.EmployeeNo == s.EmployeeNo
-                    && r.DutyDate == s.DutyDate).Count();
+                filteredResult.Add(s);
 
-                if (multiplePairExistRes > 1)
-                {
-                    int multiplePairExistFil = filteredResult.Where(r => r.FirstJourney == s.FirstJourney
-                    && r.EmployeeNo == s.EmployeeNo
-                    && r.DutyDate == s.DutyDate).Count();
+                //int multiplePairExistRes = result.Where(r => r.FirstJourney == s.FirstJourney
+                //    && r.EmployeeNo == s.EmployeeNo
+                //    && r.DutyDate == s.DutyDate).Count();
 
-                    if (multiplePairExistRes > 1)
-                    {
-                        filteredResult.RemoveAll(r => r.FirstJourney == s.FirstJourney
-                                        && r.EmployeeNo == s.EmployeeNo
-                                        && r.DutyDate == s.DutyDate
-                                        && r.TotalPs == 0); //remove all zero
+                //if (multiplePairExistRes > 1)
+                //{
+                //    int multiplePairExistFil = filteredResult.Where(r => r.FirstJourney == s.FirstJourney
+                //    && r.EmployeeNo == s.EmployeeNo
+                //    && r.DutyDate == s.DutyDate).Count();
 
-                        int multiplePairExistFilNonZeroPsg = filteredResult.Where(r => r.FirstJourney == s.FirstJourney
-                                && r.EmployeeNo == s.EmployeeNo
-                                && r.DutyDate == s.DutyDate).Count();
-                        if (multiplePairExistFilNonZeroPsg > 0 && s.TotalPs <= 0)
-                        {
-                            //there is already non zero object so ignore current zero object
-                        }
-                        else
-                        {
-                            filteredResult.Add(s);
-                        }
-                    }
-                    else
-                    {
-                        filteredResult.Add(s);
-                    }
-                }
-                else
-                {
-                    filteredResult.Add(s);
-                }
+                //    if (multiplePairExistRes > 1)
+                //    {
+                //        filteredResult.RemoveAll(r => r.FirstJourney == s.FirstJourney
+                //                        && r.EmployeeNo == s.EmployeeNo
+                //                        && r.DutyDate == s.DutyDate
+                //                        && r.TotalPs == 0); //remove all zero
+
+                //        int multiplePairExistFilNonZeroPsg = filteredResult.Where(r => r.FirstJourney == s.FirstJourney
+                //                && r.EmployeeNo == s.EmployeeNo
+                //                && r.DutyDate == s.DutyDate).Count();
+                //        if (multiplePairExistFilNonZeroPsg > 0 && s.TotalPs <= 0)
+                //        {
+                //            //there is already non zero object so ignore current zero object
+                //        }
+                //        else
+                //        {
+                //            filteredResult.Add(s);
+                //        }
+                //    }
+                //    else
+                //    {
+                //        filteredResult.Add(s);
+                //    }
+                //}
+                //else
+                //{
+                //    filteredResult.Add(s);
+                //}
             });
 
             List<DailyAuditData> newfilteredResult = filteredResult.Where(s => s.Duty == 8000).ToList();
@@ -1707,7 +1709,7 @@ namespace Reports.Services
 
             if (newfilteredResult.Any())
             {
-                var group = newfilteredResult.GroupBy(x => new { x.EmployeeNo, x.FirstJourney, x.DutyDate });
+                var group = newfilteredResult.GroupBy(x => new { x.EmployeeNo, x.FirstJourney, x.DutyDate, x.DutySignOn, x.DutySignOff, x.Duty });
                 group.ToList().ForEach(x =>
                 {
                     DailyAuditData res = x.FirstOrDefault();
