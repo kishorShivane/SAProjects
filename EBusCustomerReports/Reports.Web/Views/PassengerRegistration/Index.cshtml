@@ -1,6 +1,6 @@
-﻿@model Reports.Services.Models.SmartCard.SmartCardData
+﻿@model Reports.Services.Models.Passenger.PassengerData
 @{
-    ViewBag.Title = "Smartcard Master";
+    ViewBag.Title = "Passenger Registration";
     Layout = "~/Views/Shared/_HomeLayout.cshtml";
     var accessCodes = ((Helpers.Security.EBusPrinciple)System.Threading.Thread.CurrentPrincipal).Properties.AccessCodes;
 }
@@ -89,6 +89,12 @@
             background-color: #5bc0de;
         }
 
+        .funkyradio-success input[type="radio"]:checked ~ label:before,
+        .funkyradio-success input[type="checkbox"]:checked ~ label:before {
+            color: #fff;
+            background-color: #5cb85c;
+        }
+        
         .form-group input[type="checkbox"] {
             display: none;
         }
@@ -196,13 +202,13 @@
     <div id="page-wrapper">
         <div class="row">
             <div class="col-lg-12">
-                <h2 class="page-header" style="margin: 10px; color: #337ab7 !important">Staff Master</h2>
+                <h2 class="page-header" style="margin: 10px; color: #337ab7 !important">Passenger Registration</h2>
             </div>
         </div>
-        <div class="row" id="divSmartCardEditor">
+        <div class="row" id="divPassengerEditor">
             <div class="panel panel-info">
                 <div class="panel-heading" style="background-color: #337ab7 !important;background-image: none;">
-                    <a data-toggle="collapse" href="#pnlSearch" style="color:white;text-decoration:none;">Search Staff</a>
+                    <a data-toggle="collapse" href="#pnlSearch" style="color:white;text-decoration:none;">Search Passenger</a>
                 </div>
                 <div id="pnlSearch" class="panel-collapse collapse in">
                     <div class="panel-body">
@@ -256,45 +262,74 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="funkyradio">
+                            <div class="col-md-3">
+                                <div class="funkyradio-success">
+                                    <input type="radio" name="passengerRadio" id="chkAll" value="" class="SearchPassengerFilter" />
+                                    <label for="chkAll">All Passengers</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="funkyradio-success">
+                                    <input type="radio" name="passengerRadio" id="chkCashOnly" value="Cash" class="SearchPassengerFilter" />
+                                    <label for="chkCashOnly">Cash Passengers</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="funkyradio-success">
+                                    <input type="radio" name="passengerRadio" id="chkSmartcardOnly" value="Smartcard" class="SearchPassengerFilter" />
+                                    <label for="chkSmartcardOnly">Smartcard Passengers</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="funkyradio">
                             <div class="col-md-2">
                                 <div class="funkyradio-info">
-                                    <input type="radio" name="radio" id="chkActive" value="Active" class="SearchFilter" />
+                                    <input type="radio" name="statusRadio" id="chkActive" checked="checked" value="Active" class="SearchStatusFilter" />
                                     <label for="chkActive">Active</label>
                                 </div>
                             </div>
                             <div class="col-md-2">
                                 <div class="funkyradio-info">
-                                    <input type="radio" name="radio" id="chkInActive" value="InActive" class="SearchFilter" />
+                                    <input type="radio" name="statusRadio" id="chkInActive" value="InActive" class="SearchStatusFilter" />
                                     <label for="chkInActive">InActive</label>
                                 </div>
                             </div>
                             <div class="col-md-2">
                                 <div class="funkyradio-info">
-                                    <input type="radio" name="radio" id="chkBoth" value="Both" class="SearchFilter" />
+                                    <input type="radio" name="statusRadio" id="chkBoth" value="Both" class="SearchStatusFilter" />
                                     <label for="chkBoth">Both</label>
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <button type="button" class="btn btn-success" id="btnAddSmartCard">Add SmartCard&nbsp;<i class="fa fa-1x fa-plus"></i></button>
+                                <button type="button" class="btn btn-success" id="btnAddPassenger">Add Passenger&nbsp;<i class="fa fa-1x fa-plus"></i></button>
                                 &nbsp; &nbsp;
                             </div>
                         </div>
                     </div>
                 </div>
+                <hr />
                 <div class="panel" id="divSearchResults">
                     <div class="row">
                         <div class="col-md-12">
                             <div class="table-responsive">
-                                <table class="display table table-striped" id="tblSmartCardResults">
+                                <table class="display table table-striped" id="tblPassengerResults">
                                     <thead class="thead-inverse" style="background-color:black">
                                         <tr>
-                                            <th>Smartcard Number</th>
-                                            <th>Initials</th>
+                                            <th>Passenger Type</th>
                                             <th>First Name</th>
-                                            <th>ID Number</th>
+                                            <th>Sur Name</th>
+                                            <th>Smartcard Number</th>
                                             <th>Cell Phone No</th>
                                             <th>Edit</th>
-                                            <th>Activate/De-activate</th>
+                                            @*<th>Activate/De-activate</th>*@
                                         </tr>
                                     </thead>
                                     <tbody></tbody>
@@ -304,54 +339,59 @@
                     </div>
                 </div>
             </div>
-            @Html.Partial("_AddEditSmartCard", Model)
+            @Html.Partial("_AddEditPassenger", Model)
             <input type="hidden" id="hdnIndexModelTitle" value="" />
         </div>
     </div>
 </div>
 <script>
-    var divAddEditSmartCard = $("div#divAddEditSmartCard");
-    var table = $('#tblSmartCardResults').DataTable({ searching: false, ordering: false });
+    var divAddEditPassenger = $("div#divAddEditPassenger");
+    var table = $('#tblPassengerResults').DataTable({ searching: false, ordering: false });
     $(document).ready(function () {
         $("input#chkActive").prop("checked", true);
-        SearchSmartCards();
-        BindSmartCards(true,GetSelectedCheckBoxValue());
-        AddSmartCard();
+        $("input#chkAll").prop("checked", true);
+        SearchPassengers();
+        BindPassengers(true, GetSelectedCheckBoxValue("SearchStatusFilter"), GetSelectedCheckBoxValue("SearchPassengerFilter"));
+        AddPassenger();
 
-        $("input.SearchFilter").change(function () {
-            BindSmartCards(true, $(this).attr("value"));
+        $("input.SearchStatusFilter").change(function () {
+            BindPassengers(true, $(this).attr("value"), GetSelectedCheckBoxValue("SearchPassengerFilter"));
+        });
+
+        $("input.SearchPassengerFilter").change(function () {
+            BindPassengers(true, GetSelectedCheckBoxValue("SearchStatusFilter"), $(this).attr("value"));
         });
 
         $("button#btnClearSearch").click(function () {
             ClearFormValuesInBlock($("div#pnlSearch"));
-            BindSmartCards(true, GetSelectedCheckBoxValue());
+            BindPassengers(true, GetSelectedCheckBoxValue("SearchStatusFilter"), GetSelectedCheckBoxValue("SearchPassengerFilter"));
         });
-        //$("div#tblSmartCardResults_info").hide();
+        //$("div#tblPassengerResults_info").hide();
     });
 
-    $(document).on("click", "a#lnkSmartCardEdit", function () {
-        ClearFormValuesInBlock(divAddEditSmartCard);
+    $(document).on("click", "a#lnkPassengerEdit", function () {
+        ClearFormValuesInBlock(divAddEditPassenger);
         var row = $(this).parent().parent();
-        BindSmartCardDetails(row, $(this).attr("value"));
-        SetPopupTitle(divAddEditSmartCard, "Edit SmartCard - ", divAddEditSmartCard.find("input#hdnModelTitle").attr("value"));
-        divAddEditSmartCard.modal('show');
+        BindPassengerDetails(row, $(this).attr("value"));
+        SetPopupTitle(divAddEditPassenger, "Edit Passenger - ", divAddEditPassenger.find("input#hdnModelTitle").attr("value"));
+        divAddEditPassenger.modal('show');
     });
 
-    $(document).on("click", "a#lnkSmartCardActivate", function () {
-        
+    $(document).on("click", "a#lnkPassengerActivate", function () {
+
         var row = $(this).parent().parent();
-        var status = row.find("input#hdnSmartCardStatus").attr("value")== "true"? false: true;
-        SetSmartCardStatus(status, $(this).attr("value"));
+        var status = row.find("input#hdnPassengerStatus").attr("value")== "true"? false: true;
+        SetPassengerStatus(status, $(this).attr("value"));
     });
 
-    function SetSmartCardStatus(status, smartCardID) {
-        
+    function SetPassengerStatus(status, passengerID) {
+
 
             $.ajax({
                 async: false,
-                url: '@Url.Action("SetSmartCardStatus", "SmartCard")',
+                url: '@Url.Action("SetPassengerStatus", "PassengerRegistration")',
                 type: 'Post',
-                data: JSON.stringify({ status: status, StaffTypeID: smartCardID}),
+                data: JSON.stringify({ status: status, passengerID: passengerID}),
                 dataType: 'json',
                 contentType: 'application/json',
                 error: function (xhr) {
@@ -360,50 +400,58 @@
                 success: function (result) {
                     //Now Process the data
                     alert(result);
-                    BindSmartCards(true, GetSelectedCheckBoxValue());
+                    BindPassengers(true, GetSelectedCheckBoxValue("SearchStatusFilter"), GetSelectedCheckBoxValue("SearchPassengerFilter"));
                 }
             }).done(function (result) {
                 return false;
             });
     }
 
-    function BindSmartCardDetails(row, value) {
-        
-        divAddEditSmartCard.find("input#txtSmartCardNumber").val(row.find("span#lblSmartCardNumber").html());
-        divAddEditSmartCard.find("input#txtInitials").val(row.find("span#lblInitials").html());
-        divAddEditSmartCard.find("input#txtFirstName").val(row.find("span#lblFirstName").html());
-        divAddEditSmartCard.find("input#txtIDNumber").val(row.find("span#lblIDNumber").html());
-        divAddEditSmartCard.find("input#txtCellPhoneNumber").val(row.find("span#lblCellPhoneNumber").html());
-        divAddEditSmartCard.find("input#txtTitle").val(row.find("input#hdnTitle").attr("value"));
-        divAddEditSmartCard.find("input#txtEmail").val(row.find("input#hdnEmail").attr("value"));
-        divAddEditSmartCard.find("input#txtAddress").val(row.find("input#hdnAddress").attr("value"));
-        divAddEditSmartCard.find("input#txtDateOfBirth").val(row.find("input#hdnDateOfBirth").attr("value"));
-        divAddEditSmartCard.find("input#txtSurname").val(row.find("input#hdnSurname").attr("value"));
-        divAddEditSmartCard.find("input#txtSmartCardStatus").val(row.find("input#hdnSmartCardStatus").attr("value"));
-        divAddEditSmartCard.find("select#ddlSmartCardTypes").val(row.find("input#hdnSmartCardTypeID").attr("value")).change();
-        divAddEditSmartCard.find("input#hdnSmartCardNumber").attr("value", value);
+    function BindPassengerDetails(row, value) {
 
-        if (row.find("input#hdnSmartCardStatus").attr("value") == "true")
-            divAddEditSmartCard.find("input#chkSmartCardActive").prop("checked", true);
+        divAddEditPassenger.find("input#txtSmartCardNumber").val(row.find("span#lblSmartCardNumber").html());
+        divAddEditPassenger.find("input#txtInitials").val(row.find("input#hdnInitials").attr("value"));
+        divAddEditPassenger.find("input#txtFirstName").val(row.find("span#lblFirstName").html());
+        divAddEditPassenger.find("input#txtIDNumber").val(row.find("input#hdnIDNumber").attr("value"));
+        divAddEditPassenger.find("input#txtCellPhoneNumber").val(row.find("span#lblCellPhoneNumber").html());
+        divAddEditPassenger.find("input#txtAlternativePhoneNumber").val(row.find("input#hdnAlternativePhoneNumber").attr("value"));
+        divAddEditPassenger.find("input#txtTitle").val(row.find("input#hdnTitle").attr("value"));
+        divAddEditPassenger.find("input#txtEmail").val(row.find("input#hdnEmail").attr("value"));
+        divAddEditPassenger.find("input#txtAddress").val(row.find("input#hdnAddress").attr("value"));
+        divAddEditPassenger.find("input#txtDateOfBirth").val(row.find("input#hdnDateOfBirth").attr("value"));
+        divAddEditPassenger.find("input#txtSurname").val(row.find("span#lblSurname").html());
+        divAddEditPassenger.find("input#txtStatus").val(row.find("input#hdnStatus").attr("value"));
+        divAddEditPassenger.find("select#ddlSmartCardTypes").val(row.find("input#hdnSmartCardTypeID").attr("value")).change();
+        divAddEditPassenger.find("select#ddlPassengerType").val(row.find("span#lblPassengerType").html()).change();
+        divAddEditPassenger.find("input#hdnPassengerID").attr("value", value);
+
+        if (row.find("input#hdnStatus").attr("value") == "true")
+            divAddEditPassenger.find("input#chkPassengerActive").prop("checked", true);
         else
-            divAddEditSmartCard.find("input#chkSmartCardActive").removeProp("checked");
-        divAddEditSmartCard.find("input#hdnModelTitle").attr("value", row.find("span#lblFirstName").html() + "(" + row.find("span#lblSmartCardNumber").html()+")");
+            divAddEditPassenger.find("input#chkPassengerActive").removeProp("checked");
+
+        var titleText = "";
+        if (row.find("span#lblSmartCardNumber").html() != "")
+            titleText = row.find("span#lblFirstName").html() + "(" + row.find("span#lblSmartCardNumber").html() + ")";
+        else
+            titleText = row.find("span#lblFirstName").html();
+        divAddEditPassenger.find("input#hdnModelTitle").attr("value", titleText);
     }
 
-    function SearchSmartCards() {
+    function SearchPassengers() {
         $("button#btnSearch").click(function () {
-            BindSmartCards(false, GetSelectedCheckBoxValue());
+            BindPassengers(false, GetSelectedCheckBoxValue("SearchStatusFilter"), GetSelectedCheckBoxValue("SearchPassengerFilter"));
         });
     }
 
-    function BindSmartCards(isFromPageLoad, status) {
-        
+    function BindPassengers(isFromPageLoad, status, passengerType) {
+
         table.destroy();
         var smartCardNumber = $("input#txtSmartCardNumber").val();
         var firstName = $("input#txtFirstName").val();
         var idNumber = $("input#txtIDNumber").val();
         var cellPhone = $("input#txtCellPhoneNumber").val();
-        var tableBody = $("table#tblSmartCardResults").find("tbody");
+        var tableBody = $("table#tblPassengerResults").find("tbody");
         var rows = "";
         if (!isFromPageLoad && smartCardNumber == "" && firstName == "" && idNumber == '' && cellPhone == '') {
             alert("Please enter search criteria!!");
@@ -414,9 +462,9 @@
             if (status == "") { status = "Active"; }
             $.ajax({
                 async: false,
-                url: '@Url.Action("SearchSmartCard", "SmartCard")',
+                url: '@Url.Action("SearchPassenger", "PassengerRegistration")',
                 type: 'Post',
-                data: JSON.stringify({ smartCardNumber: smartCardNumber, firstName: firstName, status: status, idNumber: idNumber, cellPhone: cellPhone}),
+                data: JSON.stringify({ smartCardNumber: smartCardNumber, firstName: firstName, status: status, idNumber: idNumber, cellPhone: cellPhone, passengerType: passengerType}),
                 dataType: 'json',
                 contentType: 'application/json',
                 error: function (xhr) {
@@ -432,20 +480,20 @@
                     else {
                         $(result).each(function (index) {
                             var CurrentItem = this;
-                            
-                            var actDeAct = "<td><a id='lnkSmartCardActivate' class='linkDeActivate' value='" + CurrentItem.ID + "'><span class='fa-stack fa-sm '><i class='fa fa-close fa-stack-1x'></i></span>De-Activate</a></td>"
-                            if (!CurrentItem.SmartCardStatus) {
-                                actDeAct = "<td><a id='lnkSmartCardActivate' class='linkEdit' value='" + CurrentItem.ID + "'><span class='fa-stack fa-sm '><i class='fa fa-check fa-stack-1x'></i></span>Activate</a></td>"
+
+                            var actDeAct = "<td><a id='lnkPassengerActivate' class='linkDeActivate' value='" + CurrentItem.ID + "'><span class='fa-stack fa-sm '><i class='fa fa-close fa-stack-1x'></i></span>De-Activate</a></td>"
+                            if (!CurrentItem.Status) {
+                                actDeAct = "<td><a id='lnkPassengerActivate' class='linkEdit' value='" + CurrentItem.ID + "'><span class='fa-stack fa-sm '><i class='fa fa-check fa-stack-1x'></i></span>Activate</a></td>"
                             }
 
                             rows = rows + "<tr>";
-                            rows = rows + "<td><span id='lblSmartCardNumber'>" + CurrentItem.SmartCardNumber + "</span><input type='hidden' value=" + CurrentItem.Email + " id='hdnEmail'/></td>";
-                            rows = rows + "<td><span id='lblInitials'>" + CurrentItem.Initials + "</span><input type='hidden' value=" + CurrentItem.SmartCardTypeID + " id='hdnSmartCardTypeID'/><input type='hidden' value=" + CurrentItem.Address + " id='hdnAddress'/></td>";
-                            rows = rows + "<td><span id='lblFirstName'>" + CurrentItem.FirstName + "</span><input type='hidden' value=" + CurrentItem.DateOfBirth + " id='hdnDateOfBirth'/></td>";
-                            rows = rows + "<td><span id='lblIDNumber'>" + CurrentItem.IDNumber + "</span><input type='hidden' value=" + CurrentItem.Title + " id='hdnTitle'/></td>";
-                            rows = rows + "<td><span id='lblCellPhoneNumber'>" + CurrentItem.CellPhoneNumber + "</span><input type='hidden' value=" + CurrentItem.Surname + " id='hdnSurname'/></td>";
-                            rows = rows + "<td><a id='lnkSmartCardEdit' class='linkEdit' value='" + CurrentItem.ID + "'><span class='fa-stack fa-sm '><i class='fa fa-edit fa-stack-1x '></i></span></a><input type='hidden' value=" + CurrentItem.SmartCardStatus + " id='hdnSmartCardStatus'/></td>";
-                            rows = rows + actDeAct;
+                            rows = rows + "<td><span id='lblPassengerType'>" + CurrentItem.PassengerType + "</span><input type='hidden' value='" + CurrentItem.IDNumber  + "' id='hdnIDNumber'/><input type='hidden' value='" + CurrentItem.Email + "' id='hdnEmail'/></td>";
+                            rows = rows + "<td><span id='lblFirstName'>" + CurrentItem.FirstName + "</span><input type='hidden' value='" + CurrentItem.DateOfBirth + "' id='hdnDateOfBirth'/></td>";
+                            rows = rows + "<td><span id='lblSurname'>" + CurrentItem.Surname + "</span><input type='hidden' value='" + CurrentItem.Initials + "' id='hdnInitials'/><input type='hidden' value='" + CurrentItem.SmartCardTypeID + "' id='hdnSmartCardTypeID'/></td>";
+                            rows = rows + "<td><span id='lblSmartCardNumber'>" + CurrentItem.SmartCardNumber+ "</span><input type='hidden' value='" + CurrentItem.Title + "' id='hdnTitle'/><input type='hidden' value='" + CurrentItem.AlternativePhoneNumber + "' id='hdnAlternativePhoneNumber'/></td>";
+                            rows = rows + "<td><span id='lblCellPhoneNumber'>" + CurrentItem.CellPhoneNumber + "</span><input type='hidden' value='" + CurrentItem.Address + "' id='hdnAddress'/></td>";
+                            rows = rows + "<td><a id='lnkPassengerEdit' class='linkEdit' value='" + CurrentItem.ID + "'><span class='fa-stack fa-sm '><i class='fa fa-edit fa-stack-1x '></i></span></a><input type='hidden' value='" + CurrentItem.Status + "' id='hdnStatus'/></td>";
+                            //rows = rows + actDeAct;
                             rows = rows + "</tr>";
                         });
                         tableBody.html("").html(rows);
@@ -455,25 +503,25 @@
                 return false;
             });
         }
-        table = $('#tblSmartCardResults').DataTable({ searching: false, ordering: false });
+        table = $('#tblPassengerResults').DataTable({ searching: false, ordering: false });
     }
 
     function SetPopupTitle(popup, title, nav) {
         popup.find("div.modal-title").html("<span style='font-weight: bolder;text-align: right;font-size: larger;'>" + title + "</span>" + nav);
     }
 
-    function AddSmartCard() {
-        $("button#btnAddSmartCard").click(function () {
-            ClearFormValuesInBlock(divAddEditSmartCard);
-            SetPopupTitle(divAddEditSmartCard, "Add SmartCard", "");
-            divAddEditSmartCard.find("input#chkSmartCardActive").prop("checked", true);
-            divAddEditSmartCard.modal('show');
+    function AddPassenger() {
+        $("button#btnAddPassenger").click(function () {
+            ClearFormValuesInBlock(divAddEditPassenger);
+            SetPopupTitle(divAddEditPassenger, "Add Passenger", "");
+            divAddEditPassenger.find("input#chkPassengerActive").prop("checked", true);
+            divAddEditPassenger.modal('show');
         });
     }
 
-    function GetSelectedCheckBoxValue() {
+    function GetSelectedCheckBoxValue(filterClass) {
         var result = "Active";
-        $("div#divSmartCardEditor div.funkyradio").find("input.SearchFilter").each(function () {
+        $("div#divPassengerEditor div.funkyradio").find("input." + filterClass).each(function () {
             if ($(this).is(":checked")) {
                 result = $(this).attr("value");
             }

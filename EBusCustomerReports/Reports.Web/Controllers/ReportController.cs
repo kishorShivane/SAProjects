@@ -990,7 +990,7 @@ namespace Reports.Web.Controllers
             //sets the table border, cell spacing, border color, font of the text, background, foreground, font height
             htmlcontent.Append("<Table>");
             htmlcontent.Append("<tr><td style='width:100px;'</td><td style='width:100px;'</td><td style='width:100px;'</td><td style='width:100px;'</td><td style='width:50px;'</td><td style='width:100px;'</td><td style='width:100px;'</td><td style='width:100px;'</td></tr>");
-            htmlcontent.Append("<tr><td colspan='6' align='center' style='width:550px;'><b> REVENUE BY DUTY</b></td><td rowspan='6' colspan='2' style='width:200px;' align='right'><img src='http://41.76.211.195/EBusBackOffice/Images/logo_comp1.png' /></td></tr>");
+            htmlcontent.Append("<tr><td colspan='6' align='center' style='width:550px;'><b> REVENUE BY DUTY</b></td><td rowspan='6' colspan='2' style='width:200px;' align='right'><img src='~/Images/logo_comp1.png' /></td></tr>");
             htmlcontent.Append("<tr><td colspan='6' align='center' style='width:550px;'><b>" + customer + "</b></td></tr>");
             htmlcontent.Append("<tr><td colspan='6' style='width:550px;'><b>" + filterdate + "</b></td></tr>");
             htmlcontent.Append("<tr><td colspan='6' style='width:550px;'><b>" + duties + "</b></td></tr>");
@@ -1111,7 +1111,7 @@ namespace Reports.Web.Controllers
             //sets the table border, cell spacing, border color, font of the text, background, foreground, font height
             htmlcontent.Append("<Table>");
             htmlcontent.Append("<tr><td style='width:100px;'</td><td style='width:100px;'</td><td style='width:100px;'</td><td style='width:100px;'</td><td style='width:100px;'</td><td style='width:100px;'</td><td style='width:100px;'</td><td style='width:100px;'</td><td style='width:100px;'</td></tr>");
-            htmlcontent.Append("<tr><td colspan='7' align='center' style='width:700px;'><b>Cashier Report</b></td><td rowspan='6' colspan='2' style='width:200px;' align='right'><img src='http://41.76.211.195/EBusBackOffice/Images/logo_comp1.png' /></td></tr>");
+            htmlcontent.Append("<tr><td colspan='7' align='center' style='width:700px;'><b>Cashier Report</b></td><td rowspan='6' colspan='2' style='width:200px;' align='right'><img src='~/Images/logo_comp1.png' /></td></tr>");
             htmlcontent.Append("<tr><td colspan='7' align='center' style='width:700px;'><b>" + customer + "</b></td></tr>");
             htmlcontent.Append("<tr><td colspan='7' style='width:700px;'><b>" + cashiers + "</b></td></tr>");
             htmlcontent.Append("<tr><td colspan='7' style='width:700px;'><b>" + dateRange + "</b></td></tr>");

@@ -188,7 +188,7 @@
     <Compile Include="Controllers\RouteMasterController.cs" />
     <Compile Include="Controllers\SchedulingSystemController.cs" />
     <Compile Include="Controllers\ServiceRequestController.cs" />
-    <Compile Include="Controllers\SmartCardController.cs" />
+    <Compile Include="Controllers\PassengerRegistrationController.cs" />
     <Compile Include="Controllers\StaffMasterController.cs" />
     <Compile Include="Controllers\UserAdministrationController.cs" />
     <Compile Include="Controllers\UserController.cs" />
@@ -663,9 +663,9 @@
     <Content Include="Views\Report\DailyAuditMatatiele.cshtml" />
     <Content Include="Views\Report\JourneyAnalysisSummaryBySubRoute.cshtml" />
     <Content Include="Views\Report\SalesAnalysisByRouteSummary.cshtml" />
-    <Content Include="Views\SmartCard\Index.cshtml" />
+    <Content Include="Views\PassengerRegistration\Index.cshtml" />
     <Content Include="Views\Report\FormEReference.cshtml" />
-    <Content Include="Views\SmartCard\_AddEditSmartCard.cshtml" />
+    <Content Include="Views\PassengerRegistration\_AddEditPassenger.cshtml" />
     <Content Include="Views\Shared\_ExpiredUserWarning.cshtml" />
     <Content Include="Views\Shared\_UserExpiryWarning.cshtml" />
   </ItemGroup>
