@@ -1,14 +1,9 @@
-﻿using Reports.Services.Helpers;
-using Reports.Services.Models;
-using Reports.Services.Models.Passenger;
+﻿using Reports.Services.Models.Passenger;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web.Mvc;
 
 namespace Reports.Services
@@ -17,12 +12,12 @@ namespace Reports.Services
     {
         public List<PassengerData> GetPassenger(string connectionKey, string smartCardNumber, string firstName, string status, string idNumber, string cellPhone, string passengerType)
         {
-            var result = new List<PassengerData>();
-            var myConnection = new SqlConnection(GetConnectionString(connectionKey));
+            List<PassengerData> result = new List<PassengerData>();
+            SqlConnection myConnection = new SqlConnection(GetConnectionString(connectionKey));
 
             try
             {
-                var cmd = new SqlCommand("eBusPassengerMaster_GetPassengerDetails", myConnection)
+                SqlCommand cmd = new SqlCommand("eBusPassengerMaster_GetPassengerDetails", myConnection)
                 {
                     CommandType = CommandType.StoredProcedure
                 };
@@ -38,22 +33,24 @@ namespace Reports.Services
 
                 while (dr.Read())
                 {
-                    var item = new PassengerData();
-                    item.ID = dr["ID"].ToString();
-                    item.PassengerType = dr["PassengerType"].ToString();
-                    item.SmartCardNumber = dr["SmartCardNumber"].ToString();
-                    item.SmartCardTypeID = Convert.ToInt32(dr["SmartCardTypeID"]);
-                    item.Title = dr["Title"].ToString();
-                    item.Initials = dr["Initials"].ToString();
-                    item.FirstName = dr["FirstName"].ToString();
-                    item.Surname = dr["Surname"].ToString();
-                    item.IDNumber = dr["IDNumber"].ToString();
-                    item.DateOfBirth = dr["DateOfBirth"] == DBNull.Value ? "" : Convert.ToDateTime(dr["DateOfBirth"]).ToShortDateString();
-                    item.Email = dr["Email"].ToString();
-                    item.CellPhoneNumber = dr["CellPhoneNumber"].ToString();
-                    item.AlternativePhoneNumber = dr["AlternativePhoneNumber"].ToString();
-                    item.Address = dr["Address"].ToString();
-                    item.Status = Convert.ToBoolean(dr["Status"]);
+                    PassengerData item = new PassengerData
+                    {
+                        ID = dr["ID"].ToString(),
+                        PassengerType = dr["PassengerType"].ToString(),
+                        SmartCardNumber = dr["SmartCardNumber"].ToString(),
+                        SmartCardTypeID = Convert.ToInt32(dr["SmartCardTypeID"]),
+                        Title = dr["Title"].ToString(),
+                        Initials = dr["Initials"].ToString(),
+                        FirstName = dr["FirstName"].ToString().ToUpper(),
+                        Surname = dr["Surname"].ToString().ToUpper(),
+                        IDNumber = dr["IDNumber"].ToString(),
+                        DateOfBirth = (dr["DateOfBirth"] == DBNull.Value && dr["DateOfBirth"].ToString() == "") ? "" : Convert.ToDateTime(dr["DateOfBirth"]).ToString("dd-MM-yyyy"),
+                        Email = dr["Email"].ToString(),
+                        CellPhoneNumber = dr["CellPhoneNumber"].ToString(),
+                        AlternativePhoneNumber = dr["AlternativePhoneNumber"].ToString(),
+                        Address = dr["Address"].ToString(),
+                        Status = Convert.ToBoolean(dr["Status"])
+                    };
                     result.Add(item);
                 }
             }
@@ -72,12 +69,12 @@ namespace Reports.Services
 
         public List<SelectListItem> GetSmartCardType(string connectionKey)
         {
-            var result = new List<SelectListItem>();
-            var myConnection = new SqlConnection(GetConnectionString(connectionKey));
+            List<SelectListItem> result = new List<SelectListItem>();
+            SqlConnection myConnection = new SqlConnection(GetConnectionString(connectionKey));
 
             try
             {
-                var cmd = new SqlCommand("eBusPassengerMaster_GetSmartCardTypes", myConnection)
+                SqlCommand cmd = new SqlCommand("eBusPassengerMaster_GetSmartCardTypes", myConnection)
                 {
                     CommandType = CommandType.StoredProcedure
                 };
@@ -87,9 +84,11 @@ namespace Reports.Services
 
                 while (dr.Read())
                 {
-                    var item = new SelectListItem();
-                    item.Value = dr["ID"].ToString();
-                    item.Text = dr["Description"].ToString();
+                    SelectListItem item = new SelectListItem
+                    {
+                        Value = dr["ID"].ToString(),
+                        Text = dr["Description"].ToString()
+                    };
                     result.Add(item);
                 }
             }
@@ -103,12 +102,12 @@ namespace Reports.Services
 
         public int InsertOrUpdatePassenger(PassengerData passengerData, string conKey)
         {
-            var Status = 1;
-            var myConnection = new SqlConnection(GetConnectionString(conKey));
-
+            int Status = 1;
+            SqlConnection myConnection = new SqlConnection(GetConnectionString(conKey));
+            string dob = !string.IsNullOrEmpty(passengerData.DateOfBirth) ? passengerData.DateOfBirth.Split('-')[1] + "/" + passengerData.DateOfBirth.Split('-')[0] + '/' + passengerData.DateOfBirth.Split('-')[2] : "";
             try
             {
-                var cmd = new SqlCommand("eBusPassengerMaster_InsertOrUpdatePassenger", myConnection)
+                SqlCommand cmd = new SqlCommand("eBusPassengerMaster_InsertOrUpdatePassenger", myConnection)
                 {
                     CommandType = CommandType.StoredProcedure
                 };
@@ -123,7 +122,7 @@ namespace Reports.Services
                 cmd.Parameters.Add(new SqlParameter("@FirstName", passengerData.FirstName));
                 cmd.Parameters.Add(new SqlParameter("@Surname", passengerData.Surname));
                 cmd.Parameters.Add(new SqlParameter("@IDNumber", passengerData.IDNumber));
-                cmd.Parameters.Add(new SqlParameter("@DateOfBirth", passengerData.DateOfBirth));
+                cmd.Parameters.Add(new SqlParameter("@DateOfBirth", dob));
                 cmd.Parameters.Add(new SqlParameter("@Email", passengerData.Email));
                 cmd.Parameters.Add(new SqlParameter("@CellPhoneNumber", passengerData.CellPhoneNumber));
                 cmd.Parameters.Add(new SqlParameter("@AlternativePhoneNumber", passengerData.AlternativePhoneNumber));
@@ -137,7 +136,7 @@ namespace Reports.Services
                     Status = Convert.ToInt32(dr["Status"]);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -148,14 +147,14 @@ namespace Reports.Services
 
             return Status;
         }
-        public bool SetPassengerStatus(bool status,string passengerID, string conKey)
+        public bool SetPassengerStatus(bool status, string passengerID, string conKey)
         {
-            var result = false;
-            var myConnection = new SqlConnection(GetConnectionString(conKey));
+            bool result = false;
+            SqlConnection myConnection = new SqlConnection(GetConnectionString(conKey));
 
             try
             {
-                var cmd = new SqlCommand("eBusPassengerMaster_SetPassengerStatus", myConnection)
+                SqlCommand cmd = new SqlCommand("eBusPassengerMaster_SetPassengerStatus", myConnection)
                 {
                     CommandType = CommandType.StoredProcedure
                 };

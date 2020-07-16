@@ -33,16 +33,16 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <div class="input-group input-group-sm" style="width: 82%;">
-                                        <div class="input-group-addon">SmartCard Number<font id="reqStar" style="color:red">*</font></div>
-                                        @Html.TextBoxFor(m => m.SmartCardNumber, new { id = "txtSmartCardNumber", @class = "form-control", placeholder = "SmartCard Number", required = "true", style = "width: 100%;" })
+                                        <div class="input-group-addon">Smartcard Number<font id="reqStar" style="color:red">*</font></div>
+                                        @Html.TextBoxFor(m => m.SmartCardNumber, new { id = "txtSmartCardNumber", @class = "form-control", placeholder = "SmartCard Number", required = "true", maxLength = 10, style = "width: 100%;" })
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <div class="input-group input-group-sm">
-                                        <div class="input-group-addon">SmartCard Type<font id="reqStar" style="color:red">*</font></div>
-                                        @Html.DropDownList("SmartCard Type", Model.SmartCardTypes, new { id = "ddlSmartCardTypes", @class = "form-control select2", placeholder = "SmartCard Type", required = "true", style = "width:100%;" })
+                                        <div class="input-group-addon">Smartcard Type<font id="reqStar" style="color:red">*</font></div>
+                                        @Html.DropDownList("Smartcard Type", Model.SmartCardTypes, new { id = "ddlSmartCardTypes", @class = "form-control select2", placeholder = "Smartcard Type", required = "true", style = "width:100%;" })
                                     </div>
                                 </div>
                             </div>
@@ -120,7 +120,7 @@
                                 <div class="form-group">
                                     <div class="input-group input-group-sm">
                                         <div class="input-group-addon">Cell Phone Number</div>
-                                        @Html.TextBoxFor(m => m.CellPhoneNumber, new { id = "txtCellPhoneNumber", @class = "form-control", placeholder = "Cell Phone Number", style = "width: 78%;" })
+                                        @Html.TextBoxFor(m => m.CellPhoneNumber, new { id = "txtCellPhoneNumber", @class = "form-control", placeholder = "Cell Phone Number", maxLength=10, style = "width: 78%;" })
                                     </div>
                                 </div>
                             </div>
@@ -130,7 +130,7 @@
                                 <div class="form-group">
                                     <div class="input-group input-group-sm">
                                         <div class="input-group-addon">Alternative Phone Number</div>
-                                        @Html.TextBoxFor(m => m.AlternativePhoneNumber, new { id = "txtAlternativePhoneNumber", @class = "form-control", placeholder = "Alternative Phone Number", style = "width: 75%;" })
+                                        @Html.TextBoxFor(m => m.AlternativePhoneNumber, new { id = "txtAlternativePhoneNumber", @class = "form-control", placeholder = "Alternative Phone Number", maxLength = 10, style = "width: 75%;" })
                                     </div>
                                 </div>
                             </div>
