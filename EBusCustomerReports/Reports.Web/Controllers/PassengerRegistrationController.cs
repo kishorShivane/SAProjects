@@ -11,7 +11,7 @@ namespace Reports.Web.Controllers
     [Authorize]
     public class PassengerRegistrationController : Controller
     {
-        private PassengerRegistrationService passengerService = new PassengerRegistrationService();
+        private PassengerService passengerService = new PassengerService();
 
         public string ConnectionKey
         {

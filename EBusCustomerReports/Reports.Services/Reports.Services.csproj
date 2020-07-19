@@ -176,10 +176,12 @@
     <Compile Include="Models\Asset.cs" />
     <Compile Include="Models\CashierReportMatatiele.cs" />
     <Compile Include="Models\JourneyAnalysisSummaryBySubRouteViewModel.cs" />
+    <Compile Include="Models\PassengerTransFilter.cs" />
     <Compile Include="Models\RevenueByDuty.cs" />
     <Compile Include="Models\JourneyAnalysisSummaryBySubRoute.cs" />
     <Compile Include="Models\ServiceRequest\ServiceRequest.cs" />
     <Compile Include="Models\Passenger\PassengerData.cs" />
+    <Compile Include="Models\PassengerTransData.cs" />
     <Compile Include="Models\StaffMaster\StaffMaster.cs" />
     <Compile Include="Models\UserAdministration\ApplicationFunctionality.cs" />
     <Compile Include="Models\UserAdministration\ApplicationMenu.cs" />
@@ -205,7 +207,7 @@
     <Compile Include="Models\SubRoute.cs" />
     <Compile Include="Models\WorkSpace.cs" />
     <Compile Include="ServiceRequestService.cs" />
-    <Compile Include="PassengerRegistrationService.cs" />
+    <Compile Include="PassengerService.cs" />
     <Compile Include="StaffMasterService.cs" />
     <Compile Include="UserAdministrationService.cs" />
     <Compile Include="UserService.cs" />

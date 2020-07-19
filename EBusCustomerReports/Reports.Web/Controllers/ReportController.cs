@@ -1700,6 +1700,59 @@ namespace Reports.Web.Controllers
 
         #endregion
 
+        #region Passenger Transactions
+
+        public ActionResult PassengerTransactions()
+        {
+            return View("PassengerTransactions", new PassengerTransFilter());
+        }
+
+        public ActionResult DownloadPassengerTrans(PassengerTransFilter filters)
+        {
+            string conKey = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey;
+            string comp = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.CompanyName;
+
+            PassengerService service = new PassengerService();
+
+            DataSet ds = service.GetPassengerTransDataSet(conKey, filters, comp);
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                CrystalDecisions.Shared.ExportFormatType fileType = filters.ExcelOrPDF ? CrystalDecisions.Shared.ExportFormatType.PortableDocFormat : CrystalDecisions.Shared.ExportFormatType.Excel;
+
+                ReportClass rptH = new ReportClass
+                {
+                    FileName = Server.MapPath("~/CrystalReports/Rpt/PassengerTransactions/PassengerTransactions.rpt")
+                };
+
+                try
+                {
+                    rptH.Load();
+
+                    rptH.SetDataSource(ds.Tables[0]);
+
+                    rptH.ExportToHttpResponse(fileType, System.Web.HttpContext.Current.Response, true, "Passenger Trans " + DateTime.Now.ToString("dd-MM-yyyy H:mm:ss"));
+
+                    return new DownloadPdfResult(rptH, "Passenger Trans " + DateTime.Now.ToString("dd-MM-yyyy H:mm:ss"));
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+                finally
+                {
+                    rptH.Close();
+                    rptH.Dispose();
+                }
+            }
+            else
+            {
+                TempData["AlertMessage"] = "show";
+                return RedirectToAction("PassengerTransactions", "Report");
+            }
+        }
+
+        #endregion
+
         #region DailyInspectorReport
 
         public ActionResult DailyInspectorReport()

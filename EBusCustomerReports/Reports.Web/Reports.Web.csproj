@@ -165,6 +165,7 @@
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
@@ -346,6 +347,12 @@
     </Compile>
     <Compile Include="CrystalReports\Rpt\NotScheduledButOperatedAtamelangTGX.cs">
       <DependentUpon>NotScheduledButOperatedAtamelangTGX.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="CrystalReports\Rpt\PassengerTransactions\PassengerTransactions.cs">
+      <DependentUpon>PassengerTransactions.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
       <SubType>Component</SubType>
       <DesignTime>True</DesignTime>
@@ -668,6 +675,7 @@
     <Content Include="Views\PassengerRegistration\_AddEditPassenger.cshtml" />
     <Content Include="Views\Shared\_ExpiredUserWarning.cshtml" />
     <Content Include="Views\Shared\_UserExpiryWarning.cshtml" />
+    <Content Include="Views\Report\PassengerTransactions.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -797,6 +805,13 @@
     <EmbeddedResource Include="CrystalReports\Rpt\NotScheduledButOperatedAtamelangTGX.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>NotScheduledButOperatedAtamelangTGX.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CrystalReports\Rpt\PassengerTransactions\PassengerTransactions.resx">
+      <DependentUpon>PassengerTransactions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CrystalReports\Rpt\PassengerTransactions\PassengerTransactions.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>PassengerTransactions.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="CrystalReports\Rpt\RevenueByDutyAll.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>

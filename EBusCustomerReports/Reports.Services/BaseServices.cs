@@ -428,6 +428,44 @@ namespace Reports.Services
             return table1;
         }
 
+        public DataTable PassengerTransDataset()
+        {
+            var table1 = new DataTable("PassengerTransDataset");
+            table1.Columns.Add("SerialNumber"); //0
+            table1.Columns.Add("SerialNumberHex"); //1
+            table1.Columns.Add("FirstName"); //2
+            table1.Columns.Add("Surname"); //3
+            table1.Columns.Add("ID"); //4
+            table1.Columns.Add("PhoneNumber"); //5
+            table1.Columns.Add("Type"); //6
+            table1.Columns.Add("Duty"); //7
+            table1.Columns.Add("Route"); //8
+            table1.Columns.Add("Driver"); //9
+            table1.Columns.Add("BusID"); //10
+            table1.Columns.Add("TDate"); //11
+            table1.Columns.Add("TTime"); //12
+            table1.Columns.Add("Revenue"); //13
+            table1.Columns[13].DataType = typeof(double);
+            table1.Columns.Add("NonRevenue"); //14
+            table1.Columns[14].DataType = typeof(double);
+            table1.Columns.Add("RechargeQuantity"); //15
+            table1.Columns.Add("RevenueBalance"); //16
+            table1.Columns[16].DataType = typeof(double);
+            table1.Columns.Add("TripBalance"); //17
+            table1.Columns[17].DataType = typeof(double);
+            table1.Columns.Add("ExpiryDate"); //18
+            table1.Columns.Add("DateRangeFilter"); //19
+            table1.Columns.Add("CardIdFilter"); //20
+            table1.Columns.Add("FirstNameFilter"); //21
+            table1.Columns.Add("SurnameFilter"); //22
+            table1.Columns.Add("IDNumberFilter"); //23
+            table1.Columns.Add("CellNumberFilter"); //24
+            table1.Columns.Add("DutyFilter"); //25
+            table1.Columns.Add("BusFilter"); //26
+            table1.Columns.Add("CompanyName"); //27
+            return table1;
+        }
+
         public DataTable YearlyBreakDownDataset()
         {
             var table1 = new DataTable("yearly");
