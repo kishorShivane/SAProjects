@@ -116,6 +116,7 @@ namespace Reports.Services
                 cmd.Parameters.Add(new SqlParameter("@ID", passengerData.ID));
                 cmd.Parameters.Add(new SqlParameter("@PassengerType", passengerData.PassengerType));
                 cmd.Parameters.Add(new SqlParameter("@SmartCardNumber", passengerData.SmartCardNumber));
+                cmd.Parameters.Add(new SqlParameter("@SmartCardSerialNumber", string.IsNullOrEmpty(passengerData.SmartCardNumber) ? "" : ToLittleHex(Convert.ToInt64(passengerData.SmartCardNumber).ToString("X"))));
                 cmd.Parameters.Add(new SqlParameter("@SmartCardTypeID", passengerData.SmartCardTypeID));
                 cmd.Parameters.Add(new SqlParameter("@Status", passengerData.Status));
                 cmd.Parameters.Add(new SqlParameter("@Title", passengerData.Title));
@@ -189,8 +190,16 @@ namespace Reports.Services
 
             if (result.Any())
             {
+
                 foreach (PassengerTransData item in result)
                 {
+                    string serialNumber = "";
+                    if (!string.IsNullOrEmpty(item.SerialNumber))
+                    {
+                        string littleIndian = LittleEndian(item.SerialNumber);
+                        serialNumber = Convert.ToInt64(littleIndian, 16).ToString();
+                    }                    
+
                     item.CardIdFilter = "Smart Card : " + (string.IsNullOrEmpty(filter.SmartCardNumber)? "": filter.SmartCardNumber + " (" + item.SerialNumber + ")");
                     item.DateRangeFilter = filterDateRange;
                     item.FirstNameFilter = "Firstname : " + filter.FirstName;
@@ -200,11 +209,11 @@ namespace Reports.Services
                     item.DutyFilter = "Duty : " + filter.FirstName;
                     item.BusFilter = "Bus : " + filter.FirstName;
                     table1.Rows.Add(
-                                item.SerialNumber,
+                                serialNumber,
                                 item.SerialNumberHex,
                                 item.FirstName,
                                 item.Surname,
-                                item.ID,
+                                item.IDNumber,
                                 item.CellPhoneNumber,
                                 item.ClassName,
                                 item.Duty,
@@ -270,6 +279,17 @@ namespace Reports.Services
             return userInput.Substring(len - 2, 2) + userInput.Substring(len - 4, 2) + userInput.Substring(len - 6, 2) + userInput.Substring(len - 8, 2);
         }
 
+        private string LittleEndian(string num)
+        {
+            List<char> chars = num.Reverse().ToList();
+            string littleIndian = "";
+            for (int i = 0; i < 8; i += 2)
+            {
+                littleIndian = littleIndian + chars[i + 1].ToString() + chars[i].ToString();
+            }
+            return littleIndian;
+        }
+
         private List<PassengerTransData> GetPassengerTransData(string connKey, PassengerTransFilter filter)
         {
             List<PassengerTransData> result = new List<PassengerTransData>();
@@ -321,9 +341,9 @@ namespace Reports.Services
                         sch.Surname = dr["Surname"].ToString();
                     }
 
-                    if (dr["ID"] != null && dr["ID"].ToString() != string.Empty)
+                    if (dr["IDNumber"] != null && dr["IDNumber"].ToString() != string.Empty)
                     {
-                        sch.ID = dr["ID"].ToString();
+                        sch.IDNumber = dr["IDNumber"].ToString();
                     }
 
                     if (dr["CellPhoneNumber"] != null && dr["CellPhoneNumber"].ToString() != string.Empty)

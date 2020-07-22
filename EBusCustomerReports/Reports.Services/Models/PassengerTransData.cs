@@ -9,7 +9,7 @@ namespace Reports.Services.Models
         public string SerialNumberHex { get; set; }
         public string FirstName { get; set; }
         public string Surname { get; set; }
-        public string ID { get; set; }
+        public string IDNumber { get; set; }
         public string CellPhoneNumber { get; set; }
         public int ClassID { get; set; }
         public string ClassName { get; set; }

@@ -435,7 +435,7 @@ namespace Reports.Services
             table1.Columns.Add("SerialNumberHex"); //1
             table1.Columns.Add("FirstName"); //2
             table1.Columns.Add("Surname"); //3
-            table1.Columns.Add("ID"); //4
+            table1.Columns.Add("IDNumber"); //4
             table1.Columns.Add("PhoneNumber"); //5
             table1.Columns.Add("Type"); //6
             table1.Columns.Add("Duty"); //7

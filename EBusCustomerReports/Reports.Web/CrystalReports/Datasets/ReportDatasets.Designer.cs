@@ -14721,7 +14721,7 @@ namespace Reports.Web.CrystalReports.Datasets
 
             private global::System.Data.DataColumn columnSurname;
 
-            private global::System.Data.DataColumn columnID;
+            private global::System.Data.DataColumn columnIDNumber;
 
             private global::System.Data.DataColumn columnPhoneNumber;
 
@@ -14850,11 +14850,11 @@ namespace Reports.Web.CrystalReports.Datasets
 
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
-            public global::System.Data.DataColumn IDColumn
+            public global::System.Data.DataColumn IDNumberColumn
             {
                 get
                 {
-                    return this.columnID;
+                    return this.columnIDNumber;
                 }
             }
 
@@ -15135,7 +15135,7 @@ namespace Reports.Web.CrystalReports.Datasets
                         string SerialNumberHex,
                         string FirstName,
                         string Surname,
-                        string ID,
+                        string IDNumber,
                         string PhoneNumber,
                         string Type,
                         string Duty,
@@ -15166,7 +15166,7 @@ namespace Reports.Web.CrystalReports.Datasets
                         SerialNumberHex,
                         FirstName,
                         Surname,
-                        ID,
+                        IDNumber,
                         PhoneNumber,
                         Type,
                         Duty,
@@ -15219,7 +15219,7 @@ namespace Reports.Web.CrystalReports.Datasets
                 this.columnSerialNumberHex = base.Columns["SerialNumberHex"];
                 this.columnFirstName = base.Columns["FirstName"];
                 this.columnSurname = base.Columns["Surname"];
-                this.columnID = base.Columns["ID"];
+                this.columnIDNumber = base.Columns["IDNumber"];
                 this.columnPhoneNumber = base.Columns["PhoneNumber"];
                 this.columnType = base.Columns["Type"];
                 this.columnDuty = base.Columns["Duty"];
@@ -15257,8 +15257,8 @@ namespace Reports.Web.CrystalReports.Datasets
                 base.Columns.Add(this.columnFirstName);
                 this.columnSurname = new global::System.Data.DataColumn("Surname", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnSurname);
-                this.columnID = new global::System.Data.DataColumn("ID", typeof(string), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnID);
+                this.columnIDNumber = new global::System.Data.DataColumn("IDNumber", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnIDNumber);
                 this.columnPhoneNumber = new global::System.Data.DataColumn("PhoneNumber", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnPhoneNumber);
                 this.columnType = new global::System.Data.DataColumn("Type", typeof(string), null, global::System.Data.MappingType.Element);
@@ -15308,7 +15308,7 @@ namespace Reports.Web.CrystalReports.Datasets
                 this.columnSerialNumber.Caption = "DataColumn1";
                 this.columnFirstName.Caption = "ClassID";
                 this.columnSurname.Caption = "ClassName";
-                this.columnID.Caption = "TransDate";
+                this.columnIDNumber.Caption = "TransDate";
                 this.columnPhoneNumber.Caption = "SerialNumber";
                 this.columnType.Caption = "SerialNumberHex";
                 this.columnDuty.Caption = "RouteID";
@@ -32216,22 +32216,22 @@ namespace Reports.Web.CrystalReports.Datasets
 
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
-            public string ID
+            public string IDNumber
             {
                 get
                 {
                     try
                     {
-                        return ((string)(this[this.tablePassengerTrans.IDColumn]));
+                        return ((string)(this[this.tablePassengerTrans.IDNumberColumn]));
                     }
                     catch (global::System.InvalidCastException e)
                     {
-                        throw new global::System.Data.StrongTypingException("The value for column \'ID\' in table \'PassengerTrans\' is DBNull.", e);
+                        throw new global::System.Data.StrongTypingException("The value for column \'IDNumber\' in table \'PassengerTrans\' is DBNull.", e);
                     }
                 }
                 set
                 {
-                    this[this.tablePassengerTrans.IDColumn] = value;
+                    this[this.tablePassengerTrans.IDNumberColumn] = value;
                 }
             }
 
@@ -32776,16 +32776,16 @@ namespace Reports.Web.CrystalReports.Datasets
 
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
-            public bool IsIDNull()
+            public bool IsIDNumberNull()
             {
-                return this.IsNull(this.tablePassengerTrans.IDColumn);
+                return this.IsNull(this.tablePassengerTrans.IDNumberColumn);
             }
 
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
-            public void SetIDNull()
+            public void SetIDNumberNull()
             {
-                this[this.tablePassengerTrans.IDColumn] = global::System.Convert.DBNull;
+                this[this.tablePassengerTrans.IDNumberColumn] = global::System.Convert.DBNull;
             }
 
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
