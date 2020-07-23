@@ -193,21 +193,16 @@ namespace Reports.Services
 
                 foreach (PassengerTransData item in result)
                 {
-                    string serialNumber = "";
-                    if (!string.IsNullOrEmpty(item.SerialNumber))
-                    {
-                        string littleIndian = LittleEndian(item.SerialNumber);
-                        serialNumber = Convert.ToInt64(littleIndian, 16).ToString();
-                    }                    
+                    string serialNumber = GetSerialNumberForSmartCard(item.SerialNumber);
 
                     item.CardIdFilter = "Smart Card : " + (string.IsNullOrEmpty(filter.SmartCardNumber)? "": filter.SmartCardNumber + " (" + item.SerialNumber + ")");
                     item.DateRangeFilter = filterDateRange;
                     item.FirstNameFilter = "Firstname : " + filter.FirstName;
-                    item.SurnameFilter = "Surname : " + filter.FirstName;
-                    item.IDNumberFilter = "ID Number : " + filter.FirstName;
-                    item.CellNumberFilter = "CellPhoneNumber : " + filter.FirstName;
-                    item.DutyFilter = "Duty : " + filter.FirstName;
-                    item.BusFilter = "Bus : " + filter.FirstName;
+                    item.SurnameFilter = "Surname : " + filter.SurName;
+                    item.IDNumberFilter = "ID Number : " + filter.IDNumber;
+                    item.CellNumberFilter = "CellPhoneNumber : " + filter.CellPhoneNumber;
+                    item.DutyFilter = "Duty : " + filter.DutyNumber;
+                    item.BusFilter = "Bus : " + filter.BusNumber;
                     table1.Rows.Add(
                                 serialNumber,
                                 item.SerialNumberHex,
@@ -243,13 +238,31 @@ namespace Reports.Services
             else
             {
                 DataRow dr = table1.NewRow();
+                dr["CardIdFilter"] = "Smart Card : " + (string.IsNullOrEmpty(filter.SmartCardNumber) ? "" : filter.SmartCardNumber + " (" + ToLittleHex(Convert.ToInt64(filter.SmartCardNumber).ToString("X")) + ")");
                 dr["DateRangeFilter"] = filterDateRange;
-                dr["CardIdFilter"] = "Smart Card : " + filter.SmartCardNumber;
+                dr["FirstNameFilter"] = "Firstname : " + filter.FirstName;
+                dr["SurnameFilter"] = "Surname : " + filter.SurName;
+                dr["IDNumberFilter"] = "ID Number : " + filter.IDNumber;
+                dr["CellNumberFilter"] = "CellPhoneNumber : " + filter.CellPhoneNumber;
+                dr["DutyFilter"] = "Duty : " + filter.DutyNumber;
+                dr["BusFilter"] = "Bus : " + filter.BusNumber;
+                dr["CompanyName"] = companyName;
                 table1.Rows.Add(dr);
             }
 
             ds.Tables.Add(table1);
             return ds;
+        }
+
+        private string GetSerialNumberForSmartCard(string smartCardNumber)
+        {
+            string serialNumber = "";
+            if (!string.IsNullOrEmpty(smartCardNumber))
+            {
+                string littleIndian = LittleEndian(smartCardNumber);
+                serialNumber = Convert.ToInt64(littleIndian, 16).ToString();
+            }
+            return serialNumber;
         }
 
         public static string ToLittleHex(string userInput)
