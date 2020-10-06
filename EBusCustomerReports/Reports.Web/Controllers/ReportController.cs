@@ -857,7 +857,7 @@ namespace Reports.Web.Controllers
                             Sheet.Cells[$"D{currColumn}"].Value = scheduledTrip;
                             Sheet.Cells[$"E{currColumn}"].Value = operatedTrips;
                             Sheet.Cells[$"F{currColumn}"].Value = notOperatedTrips;
-                            Sheet.Cells[$"G{currColumn}"].Value = scheduledKilometers;
+                            Sheet.Cells[$"G{currColumn}"].Value = scheduledKilometers.ToString(".00");
                             Sheet.Cells[$"H{currColumn}"].Value = operatedKilometers;
                             Sheet.Cells[$"I{currColumn}"].Value = cashTickets;
                             Sheet.Cells[$"J{currColumn}"].Value = passes;
@@ -866,8 +866,8 @@ namespace Reports.Web.Controllers
                             Sheet.Cells[$"M{currColumn}"].Value = "R " + cashRevenue;
                             Sheet.Cells[$"N{currColumn}"].Value = "R " + nonRevenue;
                             Sheet.Cells[$"O{currColumn}"].Value = "R " + totalRevenue;
-                            Sheet.Cells[$"P{currColumn}"].Value = averagePassenger / perContractRowCount;
-                            Sheet.Cells[$"Q{currColumn}"].Value = "R " + averageRevenue / perContractRowCount;
+                            Sheet.Cells[$"P{currColumn}"].Value = (averagePassenger / perContractRowCount).ToString(".00");
+                            Sheet.Cells[$"Q{currColumn}"].Value = "R " + (averageRevenue / perContractRowCount).ToString(".00");
                             Sheet.Cells[$"A{currColumn}:Q{currColumn}"].Style.Font.Bold = true;
                             Sheet.Cells[$"A{currColumn}:Q{currColumn}"].Style.Font.Size = 12;
                             Sheet.Cells[$"D{currColumn}:Q{currColumn}"].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
@@ -952,7 +952,7 @@ namespace Reports.Web.Controllers
                 Sheet.Cells[$"D{currColumn}"].Value = scheduledTrip;
                 Sheet.Cells[$"E{currColumn}"].Value = operatedTrips;
                 Sheet.Cells[$"F{currColumn}"].Value = notOperatedTrips;
-                Sheet.Cells[$"G{currColumn}"].Value = scheduledKilometers;
+                Sheet.Cells[$"G{currColumn}"].Value = scheduledKilometers.ToString(".00");
                 Sheet.Cells[$"H{currColumn}"].Value = operatedKilometers;
                 Sheet.Cells[$"I{currColumn}"].Value = cashTickets;
                 Sheet.Cells[$"J{currColumn}"].Value = passes;
@@ -961,8 +961,8 @@ namespace Reports.Web.Controllers
                 Sheet.Cells[$"M{currColumn}"].Value = "R " + cashRevenue;
                 Sheet.Cells[$"N{currColumn}"].Value = "R " + nonRevenue;
                 Sheet.Cells[$"O{currColumn}"].Value = "R " + totalRevenue;
-                Sheet.Cells[$"P{currColumn}"].Value = averagePassenger / perContractRowCount;
-                Sheet.Cells[$"Q{currColumn}"].Value = "R " + (averageRevenue / perContractRowCount);
+                Sheet.Cells[$"P{currColumn}"].Value = (averagePassenger / perContractRowCount).ToString(".00");
+                Sheet.Cells[$"Q{currColumn}"].Value = "R " + (averageRevenue / perContractRowCount).ToString(".00");
                 Sheet.Cells[$"A{currColumn}:Q{currColumn}"].Style.Font.Bold = true;
                 Sheet.Cells[$"A{currColumn}:Q{currColumn}"].Style.Font.Size = 12;
                 Sheet.Cells[$"D{currColumn}:Q{currColumn}"].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
@@ -984,7 +984,7 @@ namespace Reports.Web.Controllers
                 Sheet.Cells[$"D{currColumn}"].Value = scheduledTripTotal;
                 Sheet.Cells[$"E{currColumn}"].Value = operatedTripsTotal;
                 Sheet.Cells[$"F{currColumn}"].Value = notOperatedTripsTotal;
-                Sheet.Cells[$"G{currColumn}"].Value = scheduledKilometersTotal;
+                Sheet.Cells[$"G{currColumn}"].Value = scheduledKilometersTotal.ToString(".00");
                 Sheet.Cells[$"H{currColumn}"].Value = operatedKilometersTotal;
                 Sheet.Cells[$"I{currColumn}"].Value = cashTicketsTotal;
                 Sheet.Cells[$"J{currColumn}"].Value = passesTotal;
