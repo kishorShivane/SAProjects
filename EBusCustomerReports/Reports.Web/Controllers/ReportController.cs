@@ -909,7 +909,7 @@ namespace Reports.Web.Controllers
                     Sheet.Cells[$"A{currColumn}"].Value = row["DOTRoute"];
                     Sheet.Cells[$"B{currColumn}"].Value = row["From"];
                     Sheet.Cells[$"C{currColumn}"].Value = row["To"];
-                    Sheet.Cells[$"D{currColumn}"].Value = row["ScheduledTrips"];
+                    Sheet.Cells[$"D{currColumn}"].Value = Convert.ToDouble(row["ScheduledTrips"]).ToString(".00");
                     Sheet.Cells[$"E{currColumn}"].Value = row["OperatedTrips"];
                     Sheet.Cells[$"F{currColumn}"].Value = row["NotOperatedTrips"];
                     Sheet.Cells[$"G{currColumn}"].Value = row["Schedulekilometres"];
@@ -922,7 +922,7 @@ namespace Reports.Web.Controllers
                     Sheet.Cells[$"N{currColumn}"].Value = "R " + row["NonRevenue"];
                     Sheet.Cells[$"O{currColumn}"].Value = "R " + row["TotalRevenue"];
                     Sheet.Cells[$"P{currColumn}"].Value = row["AvgPassengerPerTrip"];
-                    Sheet.Cells[$"Q{currColumn}"].Value = "R " + row["AvgRevenuePerTrip"];
+                    Sheet.Cells[$"Q{currColumn}"].Value = "R " + Convert.ToDouble(row["AvgRevenuePerTrip"]).ToString(".00"); 
 
                     scheduledTrip += Convert.ToInt32(row["ScheduledTrips"]);
                     operatedTrips += Convert.ToInt32(row["OperatedTrips"]);
