@@ -166,7 +166,7 @@ namespace Reports.Services
 
         public List<SchVsWorked> GetListData(string connKey, SchVsOprViewModel filter, string spName, bool isFormE = false, bool isHomeScreen = false)
         {
-            List<SchVsWorked> result = GetScheduledVsOperatedData(connKey, filter, spName, isFormE, isHomeScreen);
+            List<SchVsWorked> result = GetScheduledVsOperatedDataHomeScreen(connKey, filter, spName, isFormE, isHomeScreen);
             List<SchVsWorked> filteredResult = new List<SchVsWorked>();
 
             result.ForEach(s =>
@@ -458,7 +458,8 @@ namespace Reports.Services
                                 companyName,
                                 filterDateRange,
                                 filterContractsRange,
-                                filterDuties
+                                filterDuties,
+                                res.Id_InspectorID
                         );
                 }
             }
@@ -2043,10 +2044,165 @@ namespace Reports.Services
                         sch.str_BusNr = dr["str_BusNr"].ToString().Trim();
                     }
 
-                    //if (dr["IsPosition"] != null && dr["IsPosition"].ToString() != string.Empty)
-                    //{
-                    //    sch.IsPosition = Convert.ToBoolean(dr["IsPosition"]);
-                    //}
+                    if (dr["Id_InspectorID"] != null && dr["Id_InspectorID"].ToString() != string.Empty)
+                    {
+                        sch.Id_InspectorID= dr["Id_InspectorID"].ToString();
+                    }
+
+                    schs.Add(sch);
+                }
+            }
+            finally
+            {
+                myConnection.Close();
+            }
+            return schs;
+        }
+
+        public List<SchVsWorked> GetScheduledVsOperatedDataHomeScreen(string connKey, SchVsOprViewModel filter, string spName, bool isformE = false, bool isHomeScreen = false)
+        {
+            List<SchVsWorked> schs = new List<SchVsWorked>();
+            SqlConnection myConnection = new SqlConnection(GetConnectionString(connKey));
+
+            try
+            {
+                SqlCommand cmd = new SqlCommand(spName, myConnection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+
+                cmd.Parameters.AddWithValue("@DutyId", filter.DutiesSelected == null ? "" : string.Join(",", filter.DutiesSelected));
+                cmd.Parameters.AddWithValue("@Contracts", filter.ContractsSelected == null ? "" : string.Join(",", string.Join(",", filter.ContractsSelected)));
+
+                string dateRangeString = GetDateRangeString(filter.StartDate, filter.EndDate);
+
+                if (dateRangeString == string.Empty)
+                {
+                    return new List<SchVsWorked>();
+                }
+
+                cmd.Parameters.AddWithValue("@datet", dateRangeString);
+                cmd.CommandTimeout = 500000;
+
+                myConnection.Open();
+                SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+
+                while (dr.Read())
+                {
+                    SchVsWorked sch = new SchVsWorked();
+
+
+                    if (dr["dateSelected"] != null && dr["dateSelected"].ToString() != string.Empty)
+                    {
+                        string datePart = dr["dateSelected"].ToString().Split(' ')[0];
+                        string[] date = datePart.Split('/');
+                        string mont = (date[0].Length == 1 ? "0" + date[0] : date[0]).Trim();
+
+                        sch.dateSelected = (date[1].Length == 1 ? "0" + date[1] : date[1]).Trim() + "/" + mont + "/" + date[2].Trim();
+                    }
+
+                    if (dr["int4_DutyId"] != null && dr["int4_DutyId"].ToString() != string.Empty)
+                    {
+                        sch.int4_DutyId = dr["int4_DutyId"].ToString();
+                    }
+
+                    if (isHomeScreen)
+                    {
+                        if (dr["bit_ReveOrDead"] != null && dr["bit_ReveOrDead"].ToString() != string.Empty)
+                        {
+                            sch.bit_ReveOrDead = Convert.ToBoolean(dr["bit_ReveOrDead"]);
+                        }
+                    }
+
+                    if (dr["str4_JourneyNo"] != null && dr["str4_JourneyNo"].ToString() != string.Empty)
+                    {
+                        sch.str4_JourneyNo = dr["str4_JourneyNo"].ToString();
+                    }
+
+                    if (dr["DOTRouteNumber"] != null && dr["DOTRouteNumber"].ToString() != string.Empty)
+                    {
+                        sch.DOTRouteNumber = dr["DOTRouteNumber"].ToString();
+                    }
+
+                    if (dr["float_Distance"] != null && dr["float_Distance"].ToString() != string.Empty)
+                    {
+                        sch.float_Distance = float.Parse(dr["float_Distance"].ToString(), CultureInfo.InvariantCulture.NumberFormat);
+                    }
+
+                    if (dr["str7_Contract"] != null && dr["str7_Contract"].ToString() != string.Empty)
+                    {
+                        sch.str7_Contract = dr["str7_Contract"].ToString();
+                    }
+
+                    if (dr["dat_StartTime"] != null && dr["dat_StartTime"].ToString() != string.Empty) //from schedule table => sched time
+                    {
+                        sch.dat_StartTime = dr["dat_StartTime"].ToString();
+                    }
+
+                    if (dr["dat_EndTime"] != null && dr["dat_EndTime"].ToString() != string.Empty)
+                    {
+                        sch.dat_EndTime = dr["dat_EndTime"].ToString();
+                    }
+
+                    if (dr["int4_OperatorID"] != null && dr["int4_OperatorID"].ToString() != string.Empty)
+                    {
+                        sch.int4_OperatorID = dr["int4_OperatorID"].ToString();
+                    }
+
+                    if (dr["dat_JourneyStartTime"] != null && dr["dat_JourneyStartTime"].ToString() != string.Empty) //from operated table=>used as book on
+                    {
+                        sch.dat_JourneyStartTime = dr["dat_JourneyStartTime"].ToString();
+                    }
+
+                    if (dr["dat_JourneyStopTime"] != null && dr["dat_JourneyStopTime"].ToString() != string.Empty)
+                    {
+                        sch.dat_JourneyStopTime = dr["dat_JourneyStopTime"].ToString();
+                    }
+
+                    if (dr["int4_JourneyRevenue"] != null && dr["int4_JourneyRevenue"].ToString() != string.Empty)
+                    {
+                        sch.int4_JourneyRevenue = dr["int4_JourneyRevenue"].ToString();
+                    }
+
+                    if (dr["int4_JourneyTickets"] != null && dr["int4_JourneyTickets"].ToString() != string.Empty)
+                    {
+                        sch.int4_JourneyTickets = dr["int4_JourneyTickets"].ToString();
+                    }
+
+                    if (dr["int4_JourneyPasses"] != null && dr["int4_JourneyPasses"].ToString() != string.Empty)
+                    {
+                        sch.int4_JourneyPasses = dr["int4_JourneyPasses"].ToString();
+                    }
+
+                    if (dr["int4_JourneyNonRevenue"] != null && dr["int4_JourneyNonRevenue"].ToString() != string.Empty)
+                    {
+                        sch.int4_JourneyNonRevenue = dr["int4_JourneyNonRevenue"].ToString();
+                    }
+
+                    if (dr["int4_JourneyTransfer"] != null && dr["int4_JourneyTransfer"].ToString() != string.Empty)
+                    {
+                        sch.int4_JourneyTransfer = dr["int4_JourneyTransfer"].ToString();
+                    }
+
+                    if (dr["TripStatus"] != null && dr["TripStatus"].ToString() != string.Empty)
+                    {
+                        sch.TripStatus = dr["TripStatus"].ToString();
+                    }
+
+                    if (isformE && dr["routeName"] != null && dr["routeName"].ToString() != string.Empty)//only for Form-E
+                    {
+                        sch.routeName = dr["routeName"].ToString();
+                    }
+
+                    if (dr["Int_TotalPassengers"] != null && dr["Int_TotalPassengers"].ToString() != string.Empty)
+                    {
+                        sch.Int_TotalPassengers = Convert.ToInt64(dr["Int_TotalPassengers"].ToString());
+                    }
+
+                    if (dr["str_BusNr"] != null && dr["str_BusNr"].ToString() != string.Empty)
+                    {
+                        sch.str_BusNr = dr["str_BusNr"].ToString().Trim();
+                    }
 
                     schs.Add(sch);
                 }

@@ -76,7 +76,6 @@ namespace Reports.Web.Controllers
 
         #endregion
 
-
         #region DailyAuditByCashierTerminal
         public ActionResult DailyAuditByCashierTerminal()
         {
@@ -1865,7 +1864,6 @@ namespace Reports.Web.Controllers
             }
         }
         #endregion
-
 
         #region FormEDetailed
 

@@ -1178,7 +1178,7 @@ namespace Reports.Services
                         res.DutySignOn,
                         res.DutySignOff,
                         res.BusNumber,
-                        res.EquipmentNumber.PadLeft(6, '0'),
+                        (res.EquipmentNumber != null)? res.EquipmentNumber.PadLeft(6, '0'): string.Empty,
                         res.FirstRoute,
                         res.FirstJourney,
                         res.Revenue,

@@ -161,8 +161,8 @@ namespace Reports.Services
             table1.Columns.Add("DateRangeFilter");//21 
             table1.Columns.Add("filterContractsRange");//22
             table1.Columns.Add("filterDuties");//23 
-            table1.Columns.Add("filterTimeSelected");//24
-
+            table1.Columns.Add("Id_InspectorID");//24
+            table1.Columns.Add("filterTimeSelected");//25
             return table1;
         }
 

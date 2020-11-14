@@ -20,6 +20,7 @@ namespace Reports.Services
         public string dat_EndTime { get; set; }
         public string int4_OperatorID { get; set; }
         public string dat_JourneyStartTime { get; set; }
+        public string Id_InspectorID { get; set; } = string.Empty;
 
         public DateTime? dat_StartTime_
         {
