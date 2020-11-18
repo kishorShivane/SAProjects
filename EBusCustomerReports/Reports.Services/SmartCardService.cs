@@ -829,6 +829,7 @@ namespace Reports.Services
                 using (SqlCommand cmd = new SqlCommand())
                 {
                     cmd.Connection = myConnection;
+                    cmd.CommandTimeout = 0;
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.CommandText = "EbusTGXCashierReconcillationSummaryReport";
 
