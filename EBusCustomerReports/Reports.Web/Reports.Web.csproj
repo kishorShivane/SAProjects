@@ -207,6 +207,12 @@
     <Compile Include="CrystalReports\Datasets\ReportDatasets.designer.cs">
       <DependentUpon>ReportDatasets.cs</DependentUpon>
     </Compile>
+    <Compile Include="CrystalReports\Rpt\Cashier\TGXCashierReconciliationSummay.cs">
+      <DependentUpon>TGXCashierReconciliationSummay.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="CrystalReports\Rpt\Cashier\CashierReconciliationSummay.cs">
       <DependentUpon>CashierReconciliationSummay.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -682,6 +688,7 @@
     <Content Include="Views\Shared\_ExpiredUserWarning.cshtml" />
     <Content Include="Views\Shared\_UserExpiryWarning.cshtml" />
     <Content Include="Views\Report\PassengerTransactions.cshtml" />
+    <Content Include="Views\Report\TGXCashierReconciliationReport.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -712,6 +719,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="CrystalReports\Rpt\Cashier\TGXCashierReconciliationSummay.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>TGXCashierReconciliationSummay.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="CrystalReports\Rpt\Cashier\CashierReconciliationSummay.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>CashierReconciliationSummay.cs</LastGenOutput>

@@ -252,6 +252,35 @@ namespace Reports.Web.Controllers
 
         #endregion
 
+        #region TGX Cahier Reconciliation report
+
+        public ActionResult TGXCashierReconciliation()
+        {
+            CashierReportSummaryFilter model = new CashierReportSummaryFilter();
+            InspectorReportService service = new InspectorReportService();
+            List<OperatorDetails> staff = service.GetAllSatffDetails(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey);
+            model.StaffList = staff.Where(s => s.OperatorType.ToLower() == "driver".ToLower().Trim() || s.OperatorType.ToLower() == "seller".ToLower().Trim()).Select(s => new SelectListItem { Text = s.OperatorName + " - " + s.OperatorID, Value = s.OperatorID }).OrderBy(s => Convert.ToInt32(s.Value)).ToList();
+            return View("TGXCashierReconciliationReport", model);
+        }
+
+        public ActionResult DownloadTGXCashierReconciliationReport(CashierReportSummaryFilter filter)
+        {
+            UserSettings userset = GetUserSettings();
+            DataSet ds = new SmartCardService().GetTGXCashierReconciliationReportDataset(userset.ConnectionKey, userset.CompanyName, filter);
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                return DownLoadReportByDataSet(filter.ExcelOrPDF, "~/CrystalReports/Rpt/Cashier/TGXCashierReconciliationSummay.rpt", ds, "CashierReconciliation ");
+            }
+            else
+            {
+                TempData["AlertMessage"] = "show";
+                return RedirectToAction("CashierReconciliation", "Report");
+            }
+
+        }
+
+        #endregion
+
         #region EarlyLateRunning
 
         public ActionResult EarlyLateRunning()

@@ -817,6 +817,104 @@ namespace Reports.Services
             return ds;
         }
 
+        public DataSet GetTGXCashierReconciliationReportDataset(string connKey, string company, CashierReportSummaryFilter filter)
+        {
+            List<CashierReconciliationData> result = new List<CashierReconciliationData>();
+            DataSet ds = new DataSet();
+            string filterDateRange = string.Format("{0} :  {1} to {2}", "Date Range", filter.StartDate, filter.EndDate);
+            string staffs = string.Format("Staff Selected : {0} ", filter.StaffSelected != null ? string.Join(",", filter.StaffSelected) : "All");
+            SqlConnection myConnection = new SqlConnection(GetConnectionString(connKey));
+            try
+            {
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    cmd.Connection = myConnection;
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = "EbusTGXCashierReconcillationSummaryReport";
+
+                    cmd.Parameters.AddWithValue("@StartDate", CustomDateTime.ConvertStringToDateSaFormat(filter.StartDate));
+                    cmd.Parameters.AddWithValue("@EndDate", CustomDateTime.ConvertStringToDateSaFormat(filter.EndDate));
+                    cmd.Parameters.AddWithValue("@StaffNumber", filter.StaffSelected != null ? string.Join(",", filter.StaffSelected) : "");
+
+                    myConnection.Open();
+                    SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+
+                    while (dr.Read())
+                    {
+                        CashierReconciliationData sch = new CashierReconciliationData();
+                        //StaffNumber	Date	Time	Revenue	str50_StaffName dateFilter
+                        if (dr["StaffNumber"] != null && dr["StaffNumber"].ToString() != string.Empty)
+                        {
+                            sch.StaffNumber = (dr["StaffNumber"].ToString());
+                        }
+
+                        if (dr["StaffName"] != null && dr["StaffName"].ToString() != string.Empty)
+                        {
+                            sch.StaffName = (dr["StaffName"].ToString());
+                        }
+
+                        if (dr["Cashier"] != null && dr["Cashier"].ToString() != string.Empty)
+                        {
+                            sch.Cashier = (dr["Cashier"].ToString());
+                        }
+
+                        if (dr["DutyRevenue"] != null && dr["DutyRevenue"].ToString() != string.Empty)
+                        {
+                            sch.DutyRevenue = (dr["DutyRevenue"].ToString());
+                        }
+
+                        if (dr["Difference"] != null && dr["Difference"].ToString() != string.Empty)
+                        {
+                            sch.Difference = (dr["Difference"].ToString());
+                        }
+
+                        if (dr["TransactionDatetime"] != null && dr["TransactionDatetime"].ToString() != string.Empty)
+                        {
+                            sch.TransactionDatetime = (Convert.ToDateTime(dr["TransactionDatetime"]).ToString("dd/MM/yyyy"));
+                        }
+                        result.Add(sch);
+                    }
+                }
+
+                DataTable table1 = CashierReconciliationSummay();
+                if (result.Any())
+                {
+                    foreach (CashierReconciliationData item in result)
+                    {
+                        table1.Rows.Add(
+                            item.StaffNumber,
+                            item.StaffName,
+                            item.Cashier,
+                            item.DutyRevenue,
+                            item.Difference,
+                            item.TransactionDatetime,
+                            staffs,
+                            filterDateRange,
+                            "", //Ignore these columns 
+                            "", //Ignore these columns 
+                            "", //Ignore these columns 
+                            company
+                       );
+                    }
+                }
+                else
+                {
+                    DataRow dr = table1.NewRow();
+                    dr["StaffSelected"] = staffs;
+                    dr["DateFilterSelected"] = filterDateRange;
+                    table1.Rows.Add(dr);
+                }
+
+
+                ds.Tables.Add(table1);
+            }
+            finally
+            {
+                myConnection.Close();
+            }
+            return ds;
+        }
+
         public DataSet GetDailyAuditByCashierTerminalDataset(string connKey, CashierReportSummaryFilter filter, string companyName)
         {
             List<DailyAuditData> result = GetDailyAuditByCashierTerminalData(connKey, filter);

@@ -348,57 +348,63 @@
                                 <ul class="nav nav-second-level">
                                     @if (accessCodes.Contains("DARALL"))
                                     {
-                                    <li>
-                                        <a href="@Url.Action("DailyAuditReport", "Report" )">Daily Audit</a>
-                                    </li>
+                                        <li>
+                                            <a href="@Url.Action("DailyAuditReport", "Report" )">Daily Audit</a>
+                                        </li>
                                     }
                                     @if (accessCodes.Contains("CR"))
                                     {
-                                    <li>
-                                        <a href="@Url.Action("CashierReconciliation", "Report" )">Cashier Reconciliation</a>
-                                    </li>
+                                        <li>
+                                            <a href="@Url.Action("CashierReconciliation", "Report" )">Cashier Reconciliation</a>
+                                        </li>
+                                    }
+                                    @if (accessCodes.Contains("TGXCR"))
+                                    {
+                                        <li>
+                                            <a href="@Url.Action("TGXCashierReconciliation", "Report" )">Cashier Reconciliation</a>
+                                        </li>
                                     }
                                     @if (accessCodes.Contains("RBDR"))
                                     {
-                                    <li>
-                                        <a href="@Url.Action("RevenueByDuty", "Report" )">Revenue By Duty</a>
-                                    </li>
+                                        <li>
+                                            <a href="@Url.Action("RevenueByDuty", "Report" )">Revenue By Duty</a>
+                                        </li>
                                     }
                                     @if (accessCodes.Contains("RBDALL"))
                                     {
-                                    <li>
-                                        <a href="@Url.Action("RevenueByDutyAll", "Report" )">Revenue By Duty</a>
-                                    </li>
+                                        <li>
+                                            <a href="@Url.Action("RevenueByDutyAll", "Report" )">Revenue By Duty</a>
+                                        </li>
                                     }
                                     @if (accessCodes.Contains("DIR"))
                                     {
-                                    <li>
-                                        <a href="@Url.Action("DailyInspectorReport", "Report" )">Daily Inspector Report</a>
-                                    </li>
+                                        <li>
+                                            <a href="@Url.Action("DailyInspectorReport", "Report" )">Daily Inspector Report</a>
+                                        </li>
                                     }
                                     @if (accessCodes.Contains("DTDR"))
                                     {
-                                    <li>
-                                        <a href="@Url.Action("DriverDetails", "Report" )">Driver Transaction Detail Report</a>
-                                    </li>
+                                        <li>
+                                            <a href="@Url.Action("DriverDetails", "Report" )">Driver Transaction Detail Report</a>
+                                        </li>
                                     }
                                     @if (accessCodes.Contains("DSR"))
                                     {
-                                    <li>
-                                        <a href="@Url.Action("DutySheets", "Report" )">Duty Sheets</a>
-                                    </li>
+                                        <li>
+                                            <a href="@Url.Action("DutySheets", "Report" )">Duty Sheets</a>
+                                        </li>
                                     }
                                     @if (accessCodes.Contains("SDAR"))
                                     {
-                                    <li>
-                                        <a href="@Url.Action("SellersDailyAuditReport", "Report" )">Sellers Daily Audit</a>
-                                    </li>
+                                        <li>
+                                            <a href="@Url.Action("SellersDailyAuditReport", "Report" )">Sellers Daily Audit</a>
+                                        </li>
                                     }
                                     @if (accessCodes.Contains("TT"))
                                     {
-                                    <li>
-                                        <a href="@Url.Action("TimeTable", "Report" )">Time Table</a>
-                                    </li>
+                                        <li>
+                                            <a href="@Url.Action("TimeTable", "Report" )">Time Table</a>
+                                        </li>
                                     }
                                 </ul>
                             </li>
