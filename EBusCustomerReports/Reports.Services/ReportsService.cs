@@ -2044,9 +2044,12 @@ namespace Reports.Services
                         sch.str_BusNr = dr["str_BusNr"].ToString().Trim();
                     }
 
-                    if (dr["Id_InspectorID"] != null && dr["Id_InspectorID"].ToString() != string.Empty)
+                    if (spName.ToUpper() != "EbusScheduledbutnotWorked".ToUpper())
                     {
-                        sch.Id_InspectorID= dr["Id_InspectorID"].ToString();
+                        if (dr["Id_InspectorID"] != null && dr["Id_InspectorID"].ToString() != string.Empty)
+                        {
+                            sch.Id_InspectorID = dr["Id_InspectorID"].ToString();
+                        }
                     }
 
                     schs.Add(sch);
