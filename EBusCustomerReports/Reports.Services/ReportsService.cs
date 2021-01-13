@@ -2044,7 +2044,7 @@ namespace Reports.Services
                         sch.str_BusNr = dr["str_BusNr"].ToString().Trim();
                     }
 
-                    if (spName.ToUpper() != "EbusScheduledbutnotWorked".ToUpper())
+                    if (spName.ToUpper() != "EbusScheduledbutnotWorked".ToUpper() && spName.ToUpper() != "EbusNotScheduledbutWorked".ToUpper())
                     {
                         if (dr["Id_InspectorID"] != null && dr["Id_InspectorID"].ToString() != string.Empty)
                         {
