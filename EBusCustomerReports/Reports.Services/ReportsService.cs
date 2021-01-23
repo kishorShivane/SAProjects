@@ -538,14 +538,14 @@ namespace Reports.Services
             foreach (IGrouping<string, SchVsWorked> contract in groupByContract)
             {
                 IEnumerable<FormEData> groupByDot = from c in contract
-                                                    group c by c.DOTRouteNumber into grp
+                                                    group c by new { c.DOTRouteNumber, c.routeName } into grp
                                                     select new FormEData
                                                     {
-                                                        DOTRoute = grp.Key,
+                                                        DOTRoute = grp.Key.DOTRouteNumber,
                                                         Contract = grp.Any() ? grp.FirstOrDefault().str7_Contract : string.Empty,
 
-                                                        From = grp.Any() ? grp.FirstOrDefault().routeName : string.Empty,
-                                                        To = grp.Any() ? grp.FirstOrDefault().routeName : string.Empty,
+                                                        From = grp.Any() ? grp.Key.routeName : string.Empty,
+                                                        To = grp.Any() ? grp.Key.routeName : string.Empty,
 
                                                         //ScheduledTrips = grp.Any() ? grp.Where(s => s.TripStatus.ToLower() != "not scheduled, but worked").Count().ToString() : string.Empty,
                                                         //OperatedTrips = grp.Any() ? grp.Where(s => s.TripStatus.ToLower() == "worked").Count().ToString() : string.Empty,
@@ -891,16 +891,16 @@ namespace Reports.Services
                 foreach (IGrouping<string, SchVsWorked> contract in groupByContract)
                 {
                     IEnumerable<FormEData> groupByDot = from c in contract
-                                                        group c by c.DOTRouteNumber into grp
+                                                        group c by new { c.DOTRouteNumber, c.routeName } into grp
                                                         select new FormEData
                                                         {
 
                                                             DateSelected = date.Key,
-                                                            DOTRoute = grp.Key,
+                                                            DOTRoute = grp.Key.DOTRouteNumber,
                                                             Contract = grp.Any() ? grp.FirstOrDefault().str7_Contract : string.Empty,
 
-                                                            From = grp.Any() ? grp.FirstOrDefault().routeName : string.Empty,
-                                                            To = grp.Any() ? grp.FirstOrDefault().routeName : string.Empty,
+                                                            From = grp.Any() ? grp.Key.routeName : string.Empty,
+                                                            To = grp.Any() ? grp.Key.routeName : string.Empty,
 
                                                             ScheduledTrips = grp.Any() ? grp.Where(s => s.TripStatus.ToLower() != "not scheduled, but worked").Count().ToString() : string.Empty,
                                                             OperatedTrips = grp.Any() ? grp.Where(s => s.TripStatus.ToLower() == "worked").Count().ToString() : string.Empty,
