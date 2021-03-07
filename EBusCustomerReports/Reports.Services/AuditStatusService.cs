@@ -173,7 +173,7 @@ namespace Reports.Services
                     Connection = myConnection
                 };
 
-                cmd.CommandText = @"update BusNumberList SET int4_ReasonID = " + reasonID + " WHERE Bsu_ID = " + busID;
+                cmd.CommandText = @"update BusNumberList SET int4_ReasonID = " + reasonID + " WHERE Bus_ID = " + busID;
                 cmd.CommandTimeout = 500000;
 
                 myConnection.Open();

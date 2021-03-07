@@ -211,7 +211,6 @@ namespace EbusFileImporter.DataProvider
             SqlCommand cmd = null;
             try
             {
-
                 using (con = GetConnection(GetConnectionString(connectionKey)))
                 {
                     con.Open();
@@ -279,6 +278,8 @@ namespace EbusFileImporter.DataProvider
                     Logger.Info("Inserted BusChecklistRecords");
                     if (xmlDataToImport.GPSCoordinates.Any()) DbHelper.BulkCopyDataToTable<GPSCoordinate>("GPSCoordinates", xmlDataToImport.GPSCoordinates, con, transaction);
                     Logger.Info("Inserted GPS Coordinates");
+                    if (xmlDataToImport.BusNumberLists.Any()) DbHelper.BulkCopyDataToTable<BusNumberList>("BusNumberList", xmlDataToImport.BusNumberLists, con, transaction);
+                    Logger.Info("Inserted BusNumberList");
                     transaction.Commit();
 
                     if (Constants.DetailedLogging)
@@ -296,6 +297,7 @@ namespace EbusFileImporter.DataProvider
                         Logger.Info("DiagnosticRecords Inserted: " + xmlDataToImport.DiagnosticRecords.Count().ToString());
                         Logger.Info("BusChecklistRecords Inserted: " + xmlDataToImport.BusChecklistRecords.Count().ToString());
                         Logger.Info("GPSCoordinates Inserted: " + xmlDataToImport.GPSCoordinates.Count().ToString());
+                        Logger.Info("BusNumberList Inserted: " + xmlDataToImport.BusNumberLists.Count().ToString());
                         Logger.Info("Commited Changes");
                         Logger.Info("-------DB Transaction - End-------");
                     }

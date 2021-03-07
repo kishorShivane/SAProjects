@@ -51,6 +51,7 @@
     <Compile Include="DBService.cs" />
     <Compile Include="Helper\Constants.cs" />
     <Compile Include="Models\AuditFileStatus.cs" />
+    <Compile Include="Models\BusNumberList.cs" />
     <Compile Include="Models\Cashier.cs" />
     <Compile Include="Models\CashierDetail.cs" />
     <Compile Include="Models\CashierSignonSignoff.cs" />

@@ -171,6 +171,8 @@ namespace EbusFileImporter.Core
                 Inspector inspectorDetail = null;
                 List<Inspector> inspectorDetails = new List<Inspector>();
                 BusChecklist busChecklistDetail = null;
+                List<BusNumberList> busNumberLists = new List<BusNumberList>();
+                BusNumberList busNumberList = null;
                 #endregion
 
                 XAttribute way6OrTGXCheck = nodes.Where(x => x.Attribute("STXID").Value.Equals("18")).FirstOrDefault().Attribute("Position");
@@ -716,6 +718,28 @@ namespace EbusFileImporter.Core
                                                 case "042B":
                                                     //Stored Value Parcel 3
                                                     transDetail.int2_Class = 707;
+                                                    transDetail.int4_Revenue = 0;
+                                                    transDetail.int2_TicketCount = 0;
+                                                    transDetail.int2_PassCount = 1;
+                                                    transDetail.int2_Transfers = 0;
+                                                    transDetail.int4_TripBal = 0;
+                                                    transDetail.int4_NonRevenue = helper.GetNonRevenueFromProductData(productData);
+                                                    transDetail.int4_RevenueBal = helper.GetRevenueBalanceFromProductData(productData);
+                                                    break;
+                                                case "042F":
+                                                    //SV Penalty 1
+                                                    transDetail.int2_Class = 708;
+                                                    transDetail.int4_Revenue = 0;
+                                                    transDetail.int2_TicketCount = 0;
+                                                    transDetail.int2_PassCount = 1;
+                                                    transDetail.int2_Transfers = 0;
+                                                    transDetail.int4_TripBal = 0;
+                                                    transDetail.int4_NonRevenue = helper.GetNonRevenueFromProductData(productData);
+                                                    transDetail.int4_RevenueBal = helper.GetRevenueBalanceFromProductData(productData);
+                                                    break;
+                                                case "0430":
+                                                    //SV Penalty 2
+                                                    transDetail.int2_Class = 709;
                                                     transDetail.int4_Revenue = 0;
                                                     transDetail.int2_TicketCount = 0;
                                                     transDetail.int2_PassCount = 1;
@@ -1313,6 +1337,11 @@ namespace EbusFileImporter.Core
                         dutyDetail.dat_DutyStopDate = helper.ConvertToInsertDateString((string)node154.Element("SignOffDate"));
                         dutyDetail.dat_DutyStopTime = helper.ConvertToInsertDateTimeStringWithOutSeconds((string)node154.Element("SignOffDate"), (string)node154.Element("SignOffTime"));
                         dutyDetail.dat_TrafficDate = date;
+
+                        // Kishor to check if there is not data in BusNumberList if not exist insert the details.
+                        // Bus number, ETM_Type = (if int4_DutyID is 8000 it is Seller rest all is driver), Reason = (6)
+                        // If there is already a busnumber in BusNumberList ignore it.
+
                         dutyDetail.str_BusID = node151.Element("FleetID").Value.TrimStart('0') == "" ? "0" : node151.Element("FleetID").Value.TrimStart('0');
                         dutyDetail.int4_DutyRevenue = (int)node154.Element("DutyCashTotal");
                         dutyDetail.int4_DutyTickets = (int)node154.Element("DutyTicketTotal");
@@ -1337,6 +1366,16 @@ namespace EbusFileImporter.Core
                         helper.MoveDuplicateFile(filePath, dbName);
                         return false;
                     }
+
+                    if (!dbService.DoesRecordExist("BusNumberList","Bus_ID", dutyDetail.str_BusID, dbName))
+                    {
+                        busNumberList = new BusNumberList();
+                        busNumberList.Bus_ID = Convert.ToInt32(dutyDetail.str_BusID);
+                        busNumberList.ETMType = dutyDetail.int4_DutyID == 8000 ? "Seller" : "Driver";
+                        busNumberList.int4_ReasonID = 6;
+                        busNumberLists.Add(busNumberList);
+                    }
+
                     #endregion
 
                     #region Process AuditFileStatus Information
@@ -2522,7 +2561,8 @@ namespace EbusFileImporter.Core
                         AuditFileStatuss = auditFileDetails,
                         DiagnosticRecords = diagnosticRecords,
                         BusChecklistRecords = busChecklistDetail != null ? new List<BusChecklist>() { busChecklistDetail } : new List<BusChecklist>(),
-                        GPSCoordinates = gPSCoordinates
+                        GPSCoordinates = gPSCoordinates,
+                        BusNumberLists = busNumberLists
                     };
 
                     result = dbService.InsertXmlFileData(xmlDataToImport, dbName);
