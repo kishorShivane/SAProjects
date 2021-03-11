@@ -338,7 +338,7 @@ namespace EbusFileImporter.Core
                 Thread.CurrentThread.CurrentCulture = new CultureInfo("en-GB");
                 var todayDate = DateTime.Now;
                 string fileName = Path.GetFileName(filePath);
-                string newFile = fileName.Substring(0, 6);
+                string newFile = fileName.Split('.')[0];
 
                 var lines = File.ReadAllLines(filePath);
                 List<Cashier> cashierDetails = new List<Cashier>();

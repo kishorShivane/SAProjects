@@ -263,6 +263,13 @@ namespace EbusFileImporter.Core
 
                     if (node151 != null && node154 != null && node155 != null)
                     {
+                        //if ((int)node151.Element("DriverNumber") == 0)
+                        //{
+                        //    Logger.Info("Error: Driver Number is 0 in node with Position value: " + node151.Attribute("Position").Value);
+                        //    helper.MoveErrorFile(filePath, dbName);
+                        //    return false;
+                        //}
+
                         dutyDetail = new Duty
                         {
                             id_Duty = latestDutyID,
@@ -304,6 +311,18 @@ namespace EbusFileImporter.Core
                         helper.MoveDuplicateFile(filePath, dbName);
                         return false;
                     }
+
+                    if (!dbService.DoesRecordExist("BusNumberList", "Bus_ID", dutyDetail.str_BusID, dbName))
+                    {
+                        busNumberList = new BusNumberList
+                        {
+                            Bus_ID = Convert.ToInt32(dutyDetail.str_BusID),
+                            ETMType = dutyDetail.int4_DutyID == 8000 ? "Seller" : "Driver",
+                            int4_ReasonID = 6
+                        };
+                        busNumberLists.Add(busNumberList);
+                    }
+
                     #endregion
 
                     #region Process AuditFileStatus Information
@@ -390,27 +409,29 @@ namespace EbusFileImporter.Core
 
                     #region Process Journey Information
 
-
                     IEnumerable<XElement> nodes156 = nodes.Where(x => x.Attribute("STXID").Value.Equals("156"));
                     IEnumerable<XElement> nodes155 = nodes.Where(x => x.Attribute("STXID").Value.Equals("155"));
+
                     if (nodes156 != null && nodes155 != null)
                     {
-                        nodes155.ToList().ForEach(x =>
+                        foreach (XElement item in nodes155)
                         {
-                            XElement startNode155 = x;
-                            XElement endNode156 = nodes156.Where(i => Convert.ToInt32(i.Attribute("Position").Value) > Convert.ToInt32(x.Attribute("Position").Value)).OrderBy(i => Convert.ToInt32(i.Attribute("Position").Value)).FirstOrDefault();
-                            List<XElement> eachJourneyNodes = nodes.Where(i => Convert.ToInt32(i.Attribute("Position").Value) > Convert.ToInt32(startNode155.Attribute("Position").Value) && Convert.ToInt32(i.Attribute("Position").Value) < Convert.ToInt32(endNode156.Attribute("Position").Value)).ToList();
+                            XElement startNode155 = item;
+                            XElement endNode156 = nodes156.Where(i => Convert.ToInt32(i.Attribute("Position").Value) > Convert.ToInt32(item.Attribute("Position").Value)).OrderBy(i => Convert.ToInt32(i.Attribute("Position").Value)).FirstOrDefault();
+
                             if (endNode156 == null)
                             {
-                                Logger.Info("Error: No end of journey node found for journey node with position-" + x.Attribute("Position").Value + ", Moving file to error folder");
+                                Logger.Info("Error: No end of journey node found for journey node with position-" + item.Attribute("Position").Value + ", Moving file to error folder");
                                 helper.MoveErrorFile(filePath, dbName);
                                 if (Constants.EnableEmailTrigger)
                                 {
                                     emailHelper.SendMail(filePath, dbName, "", EmailType.Error);
                                 }
-
-                                return;
+                                return false;
                             }
+
+                            List<XElement> eachJourneyNodes = nodes.Where(i => Convert.ToInt32(i.Attribute("Position").Value) > Convert.ToInt32(startNode155.Attribute("Position").Value) && Convert.ToInt32(i.Attribute("Position").Value) < Convert.ToInt32(endNode156.Attribute("Position").Value)).ToList();
+
                             journeyDetail = new Journey
                             {
                                 id_Journey = latestJourneyID,
@@ -1183,7 +1204,7 @@ namespace EbusFileImporter.Core
                             #endregion
 
                             latestJourneyID++;
-                        });
+                        }
                     }
                     #endregion
 
@@ -1213,6 +1234,7 @@ namespace EbusFileImporter.Core
                     #endregion
 
                     #region Process Inspector Information
+
                     IEnumerable<XElement> nodes34 = nodes.Where(x => x.Attribute("STXID").Value.Equals("34"));
                     if (nodes34 != null)
                     {
@@ -1235,6 +1257,7 @@ namespace EbusFileImporter.Core
 
                     }
                     #endregion
+
                     #endregion
                 }
                 else
@@ -1337,11 +1360,6 @@ namespace EbusFileImporter.Core
                         dutyDetail.dat_DutyStopDate = helper.ConvertToInsertDateString((string)node154.Element("SignOffDate"));
                         dutyDetail.dat_DutyStopTime = helper.ConvertToInsertDateTimeStringWithOutSeconds((string)node154.Element("SignOffDate"), (string)node154.Element("SignOffTime"));
                         dutyDetail.dat_TrafficDate = date;
-
-                        // Kishor to check if there is not data in BusNumberList if not exist insert the details.
-                        // Bus number, ETM_Type = (if int4_DutyID is 8000 it is Seller rest all is driver), Reason = (6)
-                        // If there is already a busnumber in BusNumberList ignore it.
-
                         dutyDetail.str_BusID = node151.Element("FleetID").Value.TrimStart('0') == "" ? "0" : node151.Element("FleetID").Value.TrimStart('0');
                         dutyDetail.int4_DutyRevenue = (int)node154.Element("DutyCashTotal");
                         dutyDetail.int4_DutyTickets = (int)node154.Element("DutyTicketTotal");
@@ -1367,12 +1385,14 @@ namespace EbusFileImporter.Core
                         return false;
                     }
 
-                    if (!dbService.DoesRecordExist("BusNumberList","Bus_ID", dutyDetail.str_BusID, dbName))
+                    if (!dbService.DoesRecordExist("BusNumberList", "Bus_ID", dutyDetail.str_BusID, dbName))
                     {
-                        busNumberList = new BusNumberList();
-                        busNumberList.Bus_ID = Convert.ToInt32(dutyDetail.str_BusID);
-                        busNumberList.ETMType = dutyDetail.int4_DutyID == 8000 ? "Seller" : "Driver";
-                        busNumberList.int4_ReasonID = 6;
+                        busNumberList = new BusNumberList
+                        {
+                            Bus_ID = Convert.ToInt32(dutyDetail.str_BusID),
+                            ETMType = dutyDetail.int4_DutyID == 8000 ? "Seller" : "Driver",
+                            int4_ReasonID = 6
+                        };
                         busNumberLists.Add(busNumberList);
                     }
 
@@ -1466,22 +1486,22 @@ namespace EbusFileImporter.Core
                     IEnumerable<XElement> nodes155 = nodes.Where(x => x.Attribute("STXID").Value.Equals("155"));
                     if (nodes156 != null && nodes155 != null)
                     {
-                        nodes155.ToList().ForEach(x =>
+                        foreach (XElement item in nodes155)
                         {
-                            XElement startNode155 = x;
-                            XElement endNode156 = nodes156.Where(i => Convert.ToInt32(i.Element("TSN").Value) > Convert.ToInt32(x.Element("TSN").Value)).OrderBy(i => Convert.ToInt32(i.Element("TSN").Value)).FirstOrDefault();
+                            XElement startNode155 = item;
+                            XElement endNode156 = nodes156.Where(i => Convert.ToInt32(i.Element("TSN").Value) > Convert.ToInt32(item.Element("TSN").Value)).OrderBy(i => Convert.ToInt32(i.Element("TSN").Value)).FirstOrDefault();
                             IEnumerable<XElement> nodesWithOutModules = nodes.Where(i => !i.Attribute("STXID").Value.Equals("18"));
                             List<XElement> eachJourneyNodes = nodesWithOutModules.Where(i => Convert.ToInt32(i.Element("TSN").Value) > Convert.ToInt32(startNode155.Element("TSN").Value) && Convert.ToInt32(i.Element("TSN").Value) < Convert.ToInt32(endNode156.Element("TSN").Value)).ToList();
                             if (endNode156 == null)
                             {
-                                Logger.Info("Error: No end of journey node found for journey node with TSN-" + x.Element("TSN").Value + ", Moving file to error folder");
+                                Logger.Info("Error: No end of journey node found for journey node with TSN-" + item.Element("TSN").Value + ", Moving file to error folder");
                                 helper.MoveErrorFile(filePath, dbName);
                                 if (Constants.EnableEmailTrigger)
                                 {
                                     emailHelper.SendMail(filePath, dbName, "", EmailType.Error);
                                 }
 
-                                return;
+                                return false;
                             }
                             journeyDetail = new Journey
                             {
@@ -2244,7 +2264,7 @@ namespace EbusFileImporter.Core
                             #endregion
 
                             latestJourneyID++;
-                        });
+                        }
                     }
                     #endregion
 
