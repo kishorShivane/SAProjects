@@ -3364,6 +3364,8 @@ namespace Reports.Web.CrystalReports.Datasets
 
             private global::System.Data.DataColumn columnActiveProductExpiryDate;
 
+            private global::System.Data.DataColumn columnStage;
+
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
             public SmartCardTransDataTable()
@@ -3655,6 +3657,16 @@ namespace Reports.Web.CrystalReports.Datasets
 
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public global::System.Data.DataColumn StageColumn
+            {
+                get
+                {
+                    return this.columnStage;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count
             {
@@ -3720,7 +3732,8 @@ namespace Reports.Web.CrystalReports.Datasets
                         string CardIdFilter,
                         string CompanyName,
                         string RechargeQuantity,
-                        string ActiveProductExpiryDate)
+                        string ActiveProductExpiryDate,
+                        string Stage)
             {
                 SmartCardTransRow rowSmartCardTransRow = ((SmartCardTransRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
@@ -3748,7 +3761,8 @@ namespace Reports.Web.CrystalReports.Datasets
                         CardIdFilter,
                         CompanyName,
                         RechargeQuantity,
-                        ActiveProductExpiryDate};
+                        ActiveProductExpiryDate,
+                        Stage};
                 rowSmartCardTransRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowSmartCardTransRow);
                 return rowSmartCardTransRow;
@@ -3799,6 +3813,7 @@ namespace Reports.Web.CrystalReports.Datasets
                 this.columnCompanyName = base.Columns["CompanyName"];
                 this.columnRechargeQuantity = base.Columns["RechargeQuantity"];
                 this.columnActiveProductExpiryDate = base.Columns["ActiveProductExpiryDate"];
+                this.columnStage = base.Columns["Stage"];
             }
 
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -3855,6 +3870,8 @@ namespace Reports.Web.CrystalReports.Datasets
                 base.Columns.Add(this.columnRechargeQuantity);
                 this.columnActiveProductExpiryDate = new global::System.Data.DataColumn("ActiveProductExpiryDate", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnActiveProductExpiryDate);
+                this.columnStage = new global::System.Data.DataColumn("Stage", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnStage);
             }
 
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -18736,6 +18753,27 @@ namespace Reports.Web.CrystalReports.Datasets
 
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public string Stage
+            {
+                get
+                {
+                    try
+                    {
+                        return ((string)(this[this.tableSmartCardTrans.StageColumn]));
+                    }
+                    catch (global::System.InvalidCastException e)
+                    {
+                        throw new global::System.Data.StrongTypingException("The value for column \'Stage\' in table \'SmartCardTrans\' is DBNull.", e);
+                    }
+                }
+                set
+                {
+                    this[this.tableSmartCardTrans.StageColumn] = value;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
             public bool IsClassIDNull()
             {
                 return this.IsNull(this.tableSmartCardTrans.ClassIDColumn);
@@ -19082,6 +19120,20 @@ namespace Reports.Web.CrystalReports.Datasets
             public void SetActiveProductExpiryDateNull()
             {
                 this[this.tableSmartCardTrans.ActiveProductExpiryDateColumn] = global::System.Convert.DBNull;
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public bool IsStageNull()
+            {
+                return this.IsNull(this.tableSmartCardTrans.StageColumn);
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public void SetStageNull()
+            {
+                this[this.tableSmartCardTrans.StageColumn] = global::System.Convert.DBNull;
             }
         }
 

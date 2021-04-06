@@ -51,7 +51,8 @@ namespace Reports.Services
                                 item.CardIdFilter,
                                 companyName,
                                 (item.DutyID == "8000" ? (amountRechargedClass.Contains(item.ClassID.ToString().Trim()) ? "R " + (Convert.ToDouble(item.AmountRecharged) / 100).ToString() : tripsRechargedClass.Contains(item.ClassID.ToString().Trim()) ? item.TripsRecharged : "0") : "0"),
-                                string.IsNullOrEmpty(item.SmartCardExipry) ? "NILL" : item.SmartCardExipry
+                                string.IsNullOrEmpty(item.SmartCardExipry) ? "NILL" : item.SmartCardExipry,
+                                item.Stage
                         );
                 }
             }
@@ -190,6 +191,10 @@ namespace Reports.Services
                     if (dr["SmartCardExipry"] != null && dr["SmartCardExipry"].ToString() != string.Empty)
                     {
                         sch.SmartCardExipry = DateTime.Parse(dr["SmartCardExipry"].ToString()).ToString("dd/MM/yyyy");
+                    }
+                    if (dr["Stage"] != null && dr["Stage"].ToString() != string.Empty)
+                    {
+                        sch.Stage = dr["Stage"].ToString();
                     }
                     result.Add(sch);
                 }

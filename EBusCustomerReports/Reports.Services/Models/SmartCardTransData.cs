@@ -13,6 +13,7 @@ namespace Reports.Services.Models
         public string SerialNumber { get; set; }
         public string SerialNumberHex { get; set; }
         public string RouteID { get; set; }
+        public string Stage { get; set; }
         public string JourneyID { get; set; }
         public string OperatorID { get; set; }
         public string OperatorName { get; set; }

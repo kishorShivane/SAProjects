@@ -424,6 +424,7 @@ namespace Reports.Services
             table1.Columns.Add("CompanyName"); //22
             table1.Columns.Add("RechargeQuantity"); //23
             table1.Columns.Add("ActiveProductExpiryDate"); //24
+            table1.Columns.Add("Stage"); //25
 
             return table1;
         }
