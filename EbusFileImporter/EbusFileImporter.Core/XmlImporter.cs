@@ -191,7 +191,7 @@ namespace EbusFileImporter.Core
                             id_Module = latestModuleID,
                             str_LocationCode = null,
                             int4_ModuleID = (int)node18.Element("ModuleESN"),
-                            int4_SignOnID = (int)node18.Element("DriverNumber1"),
+                            int4_SignOnID = (int)node18.Element("DriverNumber"),
                             int4_OnReaderID = (int)node18.Element("HomeDepotID")
                         };
                         DateTime date = helper.ConvertToInsertDateString((string)node18.Element("SignOnDate"));
