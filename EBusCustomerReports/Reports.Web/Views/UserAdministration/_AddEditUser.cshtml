@@ -50,7 +50,7 @@
                                 <div class="form-group">
                                     <div class="input-group input-group-sm" style="width: 100%;">
                                         <div class="input-group-addon">User Name:</div>
-                                        @Html.TextBox("UserName", new { id = "txtUserName", @class = "form-control", placeholder = "UserName", maxlength = "100", style = "width: 100%;", required = "true" })
+                                        @Html.TextBox("UserName", new { id = "txtUserName", @class = "form-control", placeholder = "UserName", maxlength = "10", style = "width: 100%;", required = "true" })
                                     </div>
                                 </div>
                             </div>
@@ -170,6 +170,12 @@
                 var role = divAddEditUser.find("select#ddlApplicationRoles").val();
                 var accessCodes = '';
                 var checkBoxes = divAccessRights.find("input[type='checkbox']");
+
+                if (userName.length > 10) {
+                    alert("UserName should be less than or equal to 10 characters!!");
+                    return false;
+                }
+
                 if (checkBoxes.length > 0) {
                     checkBoxes.each(function (index) {
                         var curItem = $(this);
