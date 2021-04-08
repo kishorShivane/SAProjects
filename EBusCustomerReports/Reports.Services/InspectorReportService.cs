@@ -171,7 +171,7 @@ namespace Reports.Services
 
             var staff = GetAllSatffDetails(connKey);
 
-            model.Drivers = staff.Where(s => s.OperatorType.ToLower() == "Driver".ToLower().Trim()).Select(s => new SelectListItem { Text = string.Format("{0} - {1} ", s.OperatorName, s.OperatorID), Value = s.OperatorID }).OrderBy(s => Convert.ToInt32(s.Value)).ToList();
+            model.Drivers = staff.Select(s => new SelectListItem { Text = string.Format("{0} - {1} ", s.OperatorName, s.OperatorID), Value = s.OperatorID }).OrderBy(s => Convert.ToInt32(s.Value)).ToList();
             return model;
         }
 
