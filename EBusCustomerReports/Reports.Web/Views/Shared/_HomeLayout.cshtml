@@ -108,51 +108,57 @@
                                 <ul class="nav nav-second-level">
                                     @if (accessCodes.Contains("CSBCT"))
                                     {
-                                    <li>
-                                        <a href="@Url.Action("ClassSummaryByClassType", "Report" )">Class Summary By ClassType</a>
-                                    </li>
+                                        <li>
+                                            <a href="@Url.Action("ClassSummaryByClassType", "Report" )">Class Summary By ClassType</a>
+                                        </li>
                                     }
                                     @if (accessCodes.Contains("SABC"))
                                     {
-                                    <li>
-                                        <a href="@Url.Action("SalesAnalysisByClass", "Report" )">Sales Analysis By Class</a>
-                                    </li>
+                                        <li>
+                                            <a href="@Url.Action("SalesAnalysisByClass", "Report" )">Sales Analysis By Class</a>
+                                        </li>
+                                    }
+                                    @if (accessCodes.Contains("SABS"))
+                                    {
+                                        <li>
+                                            <a href="@Url.Action("SalesAnalysisBySeller", "Report" )">Sales Analysis By Seller</a>
+                                        </li>
                                     }
                                     @if (accessCodes.Contains("SABR"))
                                     {
-                                    <li>
-                                        <a href="@Url.Action("SalesAnalysisByRoute", "Report" )">Sales Analysis By Route</a>
-                                    </li>
+                                        <li>
+                                            <a href="@Url.Action("SalesAnalysisByRoute", "Report" )">Sales Analysis By Route</a>
+                                        </li>
                                     }
                                     @if (accessCodes.Contains("SABRS"))
                                     {
-                                    <li>
-                                        <a href="@Url.Action("SalesAnalysisByRouteSummary", "Report" )">Sales Analysis By Route Summary</a>
-                                    </li>
+                                        <li>
+                                            <a href="@Url.Action("SalesAnalysisByRouteSummary", "Report" )">Sales Analysis By Route Summary</a>
+                                        </li>
                                     }
                                     @if (accessCodes.Contains("OABR"))
                                     {
-                                    <li>
-                                        <a href="@Url.Action("OriginAnalysisByRoute", "Report" )">Origin Analysis By Route</a>
-                                    </li>
+                                        <li>
+                                            <a href="@Url.Action("OriginAnalysisByRoute", "Report" )">Origin Analysis By Route</a>
+                                        </li>
                                     }
                                     @if (accessCodes.Contains("YBDR"))
                                     {
-                                    <li>
-                                        <a href="@Url.Action("YearlyBreakDown", "Report" )">Yearly BreakDown Comparison</a>
-                                    </li>
+                                        <li>
+                                            <a href="@Url.Action("YearlyBreakDown", "Report" )">Yearly BreakDown Comparison</a>
+                                        </li>
                                     }
                                     @if (accessCodes.Contains("YBDBR"))
                                     {
-                                    <li>
-                                        <a href="@Url.Action("YearlyBreakDownByRoute", "Report" )">Yearly BreakDown Comparison By Route</a>
-                                    </li>
+                                        <li>
+                                            <a href="@Url.Action("YearlyBreakDownByRoute", "Report" )">Yearly BreakDown Comparison By Route</a>
+                                        </li>
                                     }
                                     @if (accessCodes.Contains("DAR"))
                                     {
-                                    <li>
-                                        <a href="@Url.Action("DailyAnalysisReport", "Report" )">Daily Analysis</a>
-                                    </li>
+                                        <li>
+                                            <a href="@Url.Action("DailyAnalysisReport", "Report" )">Daily Analysis</a>
+                                        </li>
                                     }
                                 </ul>
                             </li>

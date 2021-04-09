@@ -381,7 +381,7 @@ namespace Reports.Web.Controllers
         {
             YearlyBreakDownFilter model = new YearlyBreakDownFilter
             {
-                Classes = new SalesAnalysisService().GetAllCalsses(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey),
+                Classes = new SalesAnalysisService().GetAllClasses(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey),
                 RoutesList = new SalesAnalysisService().GetAllRoutes(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey)
             };
             return View(model);
@@ -408,7 +408,7 @@ namespace Reports.Web.Controllers
         {
             YearlyBreakDownFilter model = new YearlyBreakDownFilter
             {
-                Classes = new SalesAnalysisService().GetAllCalsses(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey)
+                Classes = new SalesAnalysisService().GetAllClasses(((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey)
             };
             return View(model);
         }
@@ -583,7 +583,7 @@ namespace Reports.Web.Controllers
         public ActionResult DriverDetails()
         {
             string conKey = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey;
-            DriverDetailsFilter model = new InspectorReportService().GetDriverDetailsReportFilter(conKey);
+            DriverDetailsFilter model = new InspectorReportService().GetStaffDetailsReportFilter(conKey);
             return View(model);
         }
 
@@ -2378,6 +2378,41 @@ namespace Reports.Web.Controllers
             {
                 TempData["AlertMessage"] = "show";
                 return RedirectToAction("SalesAnalysisByClass", "Report");
+            }
+
+        }
+
+        #endregion
+
+        #region Sales Analysis by Seller
+
+        public ActionResult SalesAnalysisBySeller()
+        {
+            SalesAnalysisService service = new SalesAnalysisService();
+            string conKey = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey;
+
+            SalesAnalysisFilter model = service.GetSalesAnalysisBySellerFilter(conKey);
+
+            return View("SalesAnalysisBySeller", model);
+        }
+
+        public ActionResult SalesAnalysisBySellerDownload(SalesAnalysisFilter filters)
+        {
+            UserSettings userset = GetUserSettings();
+            string conKey = userset.ConnectionKey;
+            string comp = userset.CompanyName;
+
+            SalesAnalysisService service = new SalesAnalysisService();
+
+            DataSet ds = service.GetSellerSummaryDataSet(conKey, filters, comp, "EbusSalesAnalysisBySeller");
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                return DownLoadReportByDataSet(filters.ExcelOrPDF, "~/CrystalReports/Rpt/ClassSummary/SalesAnalysisBySeller.rpt", ds, "Sales Analysis By Seller ");
+            }
+            else
+            {
+                TempData["AlertMessage"] = "show";
+                return RedirectToAction("SalesAnalysisBySeller", "Report");
             }
 
         }

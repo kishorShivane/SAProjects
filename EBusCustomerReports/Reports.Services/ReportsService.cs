@@ -114,7 +114,7 @@ namespace Reports.Services
             SalesAnalysisService salesAnalysisService = new SalesAnalysisService();
             InspectorReportService service = new InspectorReportService();
             List<string> allContracts = GetAllContacts(connKey);
-            res.Classes = salesAnalysisService.GetAllCalsses(connKey);
+            res.Classes = salesAnalysisService.GetAllClasses(connKey);
             res.Routes = salesAnalysisService.GetAllRoutes(connKey);
             res.ClassesTypes = service.GetAllClassTypes(connKey);
 

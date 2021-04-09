@@ -17,7 +17,8 @@ namespace Reports.Services.Models
             ClassGroups = new List<SelectListItem>();
             ExcelOrPDF = true; //PDF=true, EXCEL=false
             RouteTypes = new List<SelectListItem>();
-            ClassesTypes = new List<SelectListItem>();
+            ClassTypes = new List<SelectListItem>();
+            Staffs = new List<SelectListItem>();
             RouteTypes.Add(new SelectListItem { Text = "Driver", Selected = false, Value = "Driver" });
             RouteTypes.Add(new SelectListItem { Text = "Seller", Selected = false, Value = "Seller" });
         }
@@ -29,14 +30,17 @@ namespace Reports.Services.Models
         public string[] ClassesSelected { get; set; }
         public List<SelectListItem> Classes { get; set; }
 
-        public string[] ClassesTypesSelected { get; set; }
-        public List<SelectListItem> ClassesTypes { get; set; }
+        public string[] ClassTypesSelected { get; set; }
+        public List<SelectListItem> ClassTypes { get; set; }
 
         public string[] RoutesSelected { get; set; }
         public List<SelectListItem> Routes { get; set; }
 
         public string[] ClassGroupsSelected { get; set; }
         public List<SelectListItem> ClassGroups { get; set; }
+
+        public string[] StaffsSelected { get; set; }
+        public List<SelectListItem> Staffs { get; set; }
 
         [Required]
         public string StartDate { get; set; }

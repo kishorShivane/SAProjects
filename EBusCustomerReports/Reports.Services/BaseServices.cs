@@ -642,6 +642,40 @@ namespace Reports.Services
             return table1;
         }
 
+        public DataTable SellerSummaryDataset()
+        {
+            var table1 = new DataTable("ClassSummary");
+
+            table1.Columns.Add("ClassTypeName"); //0
+            table1.Columns.Add("Class"); //1
+
+            table1.Columns.Add("Revenue");//2
+            table1.Columns[2].DataType = typeof(double);
+            table1.Columns.Add("NonRevenue");//3
+            table1.Columns[3].DataType = typeof(double);
+
+            table1.Columns.Add("TicketCount");//4
+            table1.Columns[4].DataType = typeof(Int32);
+            table1.Columns.Add("TripCount");//5
+            table1.Columns[5].DataType = typeof(Int32);
+
+            table1.Columns.Add("DateRange");//6
+            table1.Columns.Add("ClassFilter");//7
+            table1.Columns.Add("ClassTypeFilter");//8
+            table1.Columns.Add("StaffFilter");//9
+            table1.Columns.Add("CompanyName");//10
+            table1.Columns.Add("AverageTicketValue");//11
+            table1.Columns[11].DataType = typeof(double);
+
+            table1.Columns.Add("Staff");
+            table1.Columns.Add("TransDate");
+            table1.Columns.Add("StartTime");
+            table1.Columns.Add("StopTime");
+            table1.Columns.Add("EtmID");
+
+            return table1;
+        }
+
         public DataTable CashierDataSet()
         {
             var table1 = new DataTable("CashierDataSet");

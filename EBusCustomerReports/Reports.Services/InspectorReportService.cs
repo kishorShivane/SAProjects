@@ -165,7 +165,7 @@ namespace Reports.Services
             return model;
         }
 
-        public DriverDetailsFilter GetDriverDetailsReportFilter(string connKey)
+        public DriverDetailsFilter GetStaffDetailsReportFilter(string connKey)
         {
             var model = new DriverDetailsFilter();
 

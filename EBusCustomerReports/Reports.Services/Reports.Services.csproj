@@ -175,6 +175,7 @@
     <Compile Include="Models\CashierReconciliationData.cs" />
     <Compile Include="Models\Asset.cs" />
     <Compile Include="Models\CashierReportMatatiele.cs" />
+    <Compile Include="Models\SellerSummaryData.cs" />
     <Compile Include="Models\JourneyAnalysisSummaryBySubRouteViewModel.cs" />
     <Compile Include="Models\PassengerTransFilter.cs" />
     <Compile Include="Models\RevenueByDuty.cs" />
