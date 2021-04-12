@@ -651,27 +651,25 @@ namespace Reports.Services
 
             table1.Columns.Add("Revenue");//2
             table1.Columns[2].DataType = typeof(double);
-            table1.Columns.Add("NonRevenue");//3
-            table1.Columns[3].DataType = typeof(double);
 
-            table1.Columns.Add("TicketCount");//4
+            table1.Columns.Add("TicketCount");//3
+            table1.Columns[3].DataType = typeof(Int32);
+            table1.Columns.Add("TripCount");//4
             table1.Columns[4].DataType = typeof(Int32);
-            table1.Columns.Add("TripCount");//5
-            table1.Columns[5].DataType = typeof(Int32);
 
-            table1.Columns.Add("DateRange");//6
-            table1.Columns.Add("ClassFilter");//7
-            table1.Columns.Add("ClassTypeFilter");//8
-            table1.Columns.Add("StaffFilter");//9
-            table1.Columns.Add("CompanyName");//10
-            table1.Columns.Add("AverageTicketValue");//11
-            table1.Columns[11].DataType = typeof(double);
+            table1.Columns.Add("DateRange");//5
+            table1.Columns.Add("ClassFilter");//6
+            table1.Columns.Add("ClassTypeFilter");//7
+            table1.Columns.Add("StaffFilter");//8
+            table1.Columns.Add("CompanyName");//9
+            table1.Columns.Add("AverageTicketValue");//10
+            table1.Columns[10].DataType = typeof(double);
 
-            table1.Columns.Add("Staff");
-            table1.Columns.Add("TransDate");
-            table1.Columns.Add("StartTime");
-            table1.Columns.Add("StopTime");
-            table1.Columns.Add("EtmID");
+            table1.Columns.Add("Staff");//11
+            table1.Columns.Add("TransDate");//12
+            table1.Columns.Add("StartTime");//13
+            table1.Columns.Add("StopTime");//14
+            table1.Columns.Add("EtmID");//15
 
             return table1;
         }

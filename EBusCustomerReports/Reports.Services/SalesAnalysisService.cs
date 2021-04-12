@@ -830,7 +830,6 @@ namespace Reports.Services
                                 item.ClassTypeName,
                                 item.Class,
                                 item.Revenue,
-                                item.NonRevenue,
                                 item.TicketCount,
                                 item.TripCount,
                                 item.DateRange,
@@ -839,9 +838,9 @@ namespace Reports.Services
                                 item.StaffFilter,
                                 item.CompanyName,
                                 (item.Revenue / (item.TicketCount == 0 ? 1 : item.TicketCount)),
-                                item.Staff,
+                                $"Seller : { item.Staff}",
                                 item.TransDate,
-                                item.StartTime,
+                                $"                 Sign On Time: { item.StartTime}           Sign Off Time: { item.StopTime}           ETM ID: { item.EtmID}", 
                                 item.StopTime,
                                 item.EtmID
                         );
@@ -1178,12 +1177,12 @@ namespace Reports.Services
 
                     if (dr["StartTime"] != null && dr["StartTime"].ToString() != string.Empty)
                     {
-                        sch.StartTime = Convert.ToDateTime(dr["StartTime"].ToString()).ToString("HH:mm"); 
+                        sch.StartTime = Convert.ToDateTime(dr["StartTime"].ToString()).ToString("HH:mm");
                     }
 
                     if (dr["StopTime"] != null && dr["StopTime"].ToString() != string.Empty)
                     {
-                        sch.StopTime = Convert.ToDateTime(dr["StopTime"].ToString()).ToString("HH:mm"); 
+                        sch.StopTime = Convert.ToDateTime(dr["StopTime"].ToString()).ToString("HH:mm");
                     }
 
                     if (dr["EtmID"] != null && dr["EtmID"].ToString() != string.Empty)
@@ -1209,11 +1208,6 @@ namespace Reports.Services
                     if (dr["Revenue"] != null && dr["Revenue"].ToString() != string.Empty)
                     {
                         sch.Revenue = Convert.ToDouble(dr["Revenue"].ToString());
-                    }
-
-                    if (dr["NonRevenue"] != null && dr["NonRevenue"].ToString() != string.Empty)
-                    {
-                        sch.NonRevenue = Convert.ToDouble(dr["NonRevenue"].ToString());
                     }
 
                     if (dr["TripCount"] != null && dr["TripCount"].ToString() != string.Empty)
