@@ -184,8 +184,15 @@ namespace EbusFileImporter.Core
                     #region Process Module Information
 
                     XElement node18 = nodes.Where(x => x.Attribute("STXID").Value.Equals("18")).FirstOrDefault();
+
                     if (node18 != null)
                     {
+
+                        if (node18.Element("NotUsed1") != null && (int)node18.Element("NotUsed1") == 1)
+                        {
+                            return ProcessRetailPOSCashier(nodes, dbName, filePath);
+                        }
+
                         moduleDetail = new Module
                         {
                             id_Module = latestModuleID,
@@ -1224,11 +1231,11 @@ namespace EbusFileImporter.Core
                             staffDetail.bit_InUse = true;
                             staffDetail.int4_StaffTypeID = 1;
                             staffDetail.int4_StaffSubTypeID = 0;
-                            //var runningBoard = dutyDetail.str_OperatorVersion;
-                            staffDetail.str4_LocationCode = "0001";//runningBoard.Substring(runningBoard.Length - 4, 4);
+                            staffDetail.str4_LocationCode = "0001";
                             staffDetail.str2_LocationCode = null;
                             string serialNumber = (string)node125.Element("DriverCardSerialNo");
                             staffDetail.SerialNumber = Convert.ToInt32(serialNumber, 16).ToString();
+                            staffDetail.dat_RecordMod = DateTime.Now;
                         }
                     }
                     #endregion
@@ -2609,6 +2616,111 @@ namespace EbusFileImporter.Core
                 return result;
             }
             return result;
+        }
+
+        private bool ProcessRetailPOSCashier(List<XElement> nodes, string dbName, string filePath)
+        {
+            try
+            {
+                if (nodes != null)
+                {
+                    List<Cashier> cashierDetails = new List<Cashier>();
+                    List<Staff> staffDetails = new List<Staff>();
+                    Staff staffDetail = null;
+                    Cashier cashier = null;
+
+                    IEnumerable<XElement> nodes177 = nodes.Where(x => x.Attribute("STXID").Value.Equals("177"));
+                    XElement node125 = nodes.Where(x => x.Attribute("STXID").Value.Equals("125")).FirstOrDefault();
+
+                    if (nodes177 != null)
+                    {
+                        foreach (var node177 in nodes177)
+                        {
+                            cashier.StaffNumber = (string)node177.Element("SellerNumber");
+
+                            #region Process Staff Information
+                            if (!dbService.DoesRecordExist("Staff", "int4_StaffID", cashier.StaffNumber, dbName))
+                            {
+                                staffDetail = new Staff();
+                                staffDetail.int4_StaffID = Convert.ToInt32(cashier.StaffNumber);
+                                staffDetail.str50_StaffName = "New Staff" + " - " + staffDetail.int4_StaffID;
+                                staffDetail.bit_InUse = true;
+                                staffDetail.int4_StaffTypeID = 1;
+                                staffDetail.int4_StaffSubTypeID = 0;
+                                staffDetail.str4_LocationCode = "0001";
+                                staffDetail.str2_LocationCode = null;
+                                staffDetails.Add(staffDetail);
+                            }
+                            #endregion
+
+                            string cashierDate = DateTime.ParseExact((string)node177.Element("CashInDate"), "yyyyMMdd", null).ToString("dd-MM-yyyy");
+                            string tempTime = DateTime.ParseExact((string)node177.Element("CashInTime"), "HHmmss", null).ToString("HH:mm:ss tt");
+                            string cashierTime = cashierDate + " " + tempTime;
+                            DateTime Time12 = DateTime.Parse(cashierTime);
+
+                            cashier.Date = DateTime.ParseExact(cashierDate, "dd-MM-yyyy", null);
+                            cashier.Time = DateTime.Parse(cashierTime);
+                            cashier.Revenue = (string)node177.Element("CashPaid");
+                            cashier.CashOnCard = (string)node177.Element("CashOnCard");
+                            cashier.ImportDateTime = DateTime.Now.ToLongDateString();
+
+
+                            if (node125 != null)
+                            {
+                                cashier.CashierID = (string)node177.Element("DriverNumber");
+
+                                #region Process Staff Information
+                                if (!dbService.DoesRecordExist("Staff", "int4_StaffID", cashier.CashierID, dbName))
+                                {
+                                    staffDetail = new Staff();
+                                    staffDetail.int4_StaffID = Convert.ToInt32(cashier.CashierID);
+                                    staffDetail.str50_StaffName = "New Staff" + " - " + staffDetail.int4_StaffID;
+                                    staffDetail.bit_InUse = true;
+                                    staffDetail.int4_StaffTypeID = 1;
+                                    staffDetail.int4_StaffSubTypeID = 0;
+                                    staffDetail.str4_LocationCode = "0001";
+                                    staffDetail.str2_LocationCode = null;
+                                    staffDetails.Add(staffDetail);
+                                }
+                                #endregion
+                            }
+
+                            if (dbService.DoesCashierRecordExist(cashier.StaffNumber, cashier.Revenue, cashier.Time.Value, cashier.CashierID, dbName))
+                            {
+                                if (Constants.DetailedLogging)
+                                {
+                                    Logger.Info("Duplicate file found - " + Path.GetFileName(filePath));
+                                }
+
+                                helper.MoveDuplicateFile(filePath, dbName);
+                                return false;
+                            }
+
+                        }
+
+                    }
+
+                    #region DB Insertion Section
+
+                    var csvDataToImport = new CsvDataToImport()
+                    {
+                        Cashiers = cashierDetails,
+                        Staffs = staffDetails
+                    };
+
+                    dbService.InsertCsvFileData(csvDataToImport, dbName);
+                    helper.MoveSuccessFile(filePath, dbName);
+
+                    return true;
+                    #endregion
+                }
+            }
+            catch
+            {
+                throw;
+            }
+
+            return false;
         }
 
         public void CopyPropertyValues(object source, object destination)
