@@ -2638,7 +2638,7 @@ namespace EbusFileImporter.Core
                         {
                             cashier = new Cashier
                             {
-                                StaffNumber = (string)node177.Element("SellerNumber")
+                                StaffNumber = ((int)node177.Element("SellerNumber")).ToString()
                             };
 
                             #region Process Staff Information
@@ -2665,14 +2665,14 @@ namespace EbusFileImporter.Core
 
                             cashier.Date = DateTime.ParseExact(cashierDate, "dd-MM-yyyy", null);
                             cashier.Time = DateTime.Parse(cashierTime);
-                            cashier.Revenue = (string)node177.Element("CashPaid");
-                            cashier.CashOnCard = (string)node177.Element("CashOnCard");
+                            cashier.Revenue = ((int)node177.Element("CashPaid")).ToString();
+                            cashier.CashOnCard = ((int)node177.Element("CashOnCard")).ToString();
                             cashier.ImportDateTime = DateTime.Now.ToString();
 
 
                             if (node125 != null)
                             {
-                                cashier.CashierID = (string)node125.Element("DriverNumber");
+                                cashier.CashierID = ((int)node125.Element("DriverNumber")).ToString();
 
                                 #region Process Staff Information
                                 if (!dbService.DoesRecordExist("Staff", "int4_StaffID", cashier.CashierID, dbName))
