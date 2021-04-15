@@ -2634,15 +2634,20 @@ namespace EbusFileImporter.Core
 
                     if (nodes177 != null)
                     {
-                        foreach (var node177 in nodes177)
+                        foreach (XElement node177 in nodes177)
                         {
-                            cashier.StaffNumber = (string)node177.Element("SellerNumber");
+                            cashier = new Cashier
+                            {
+                                StaffNumber = (string)node177.Element("SellerNumber")
+                            };
 
                             #region Process Staff Information
                             if (!dbService.DoesRecordExist("Staff", "int4_StaffID", cashier.StaffNumber, dbName))
                             {
-                                staffDetail = new Staff();
-                                staffDetail.int4_StaffID = Convert.ToInt32(cashier.StaffNumber);
+                                staffDetail = new Staff
+                                {
+                                    int4_StaffID = Convert.ToInt32(cashier.StaffNumber)
+                                };
                                 staffDetail.str50_StaffName = "New Staff" + " - " + staffDetail.int4_StaffID;
                                 staffDetail.bit_InUse = true;
                                 staffDetail.int4_StaffTypeID = 1;
@@ -2653,7 +2658,7 @@ namespace EbusFileImporter.Core
                             }
                             #endregion
 
-                            string cashierDate = DateTime.ParseExact((string)node177.Element("CashInDate"), "yyyyMMdd", null).ToString("dd-MM-yyyy");
+                            string cashierDate = DateTime.ParseExact((string)node177.Element("CashInDate"), "ddMMyy", null).ToString("dd-MM-yyyy");
                             string tempTime = DateTime.ParseExact((string)node177.Element("CashInTime"), "HHmmss", null).ToString("HH:mm:ss tt");
                             string cashierTime = cashierDate + " " + tempTime;
                             DateTime Time12 = DateTime.Parse(cashierTime);
@@ -2662,18 +2667,20 @@ namespace EbusFileImporter.Core
                             cashier.Time = DateTime.Parse(cashierTime);
                             cashier.Revenue = (string)node177.Element("CashPaid");
                             cashier.CashOnCard = (string)node177.Element("CashOnCard");
-                            cashier.ImportDateTime = DateTime.Now.ToLongDateString();
+                            cashier.ImportDateTime = DateTime.Now.ToString();
 
 
                             if (node125 != null)
                             {
-                                cashier.CashierID = (string)node177.Element("DriverNumber");
+                                cashier.CashierID = (string)node125.Element("DriverNumber");
 
                                 #region Process Staff Information
                                 if (!dbService.DoesRecordExist("Staff", "int4_StaffID", cashier.CashierID, dbName))
                                 {
-                                    staffDetail = new Staff();
-                                    staffDetail.int4_StaffID = Convert.ToInt32(cashier.CashierID);
+                                    staffDetail = new Staff
+                                    {
+                                        int4_StaffID = Convert.ToInt32(cashier.CashierID)
+                                    };
                                     staffDetail.str50_StaffName = "New Staff" + " - " + staffDetail.int4_StaffID;
                                     staffDetail.bit_InUse = true;
                                     staffDetail.int4_StaffTypeID = 1;
@@ -2685,7 +2692,7 @@ namespace EbusFileImporter.Core
                                 #endregion
                             }
 
-                            if (dbService.DoesCashierRecordExist(cashier.StaffNumber, cashier.Revenue, cashier.Time.Value, cashier.CashierID, dbName))
+                            if (!cashierDetails.Any() && dbService.DoesCashierRecordExist(cashier.StaffNumber, cashier.Revenue, cashier.Time.Value, cashier.CashierID, dbName))
                             {
                                 if (Constants.DetailedLogging)
                                 {
@@ -2696,13 +2703,14 @@ namespace EbusFileImporter.Core
                                 return false;
                             }
 
+                            cashierDetails.Add(cashier);
                         }
 
                     }
 
                     #region DB Insertion Section
 
-                    var csvDataToImport = new CsvDataToImport()
+                    CsvDataToImport csvDataToImport = new CsvDataToImport()
                     {
                         Cashiers = cashierDetails,
                         Staffs = staffDetails
