@@ -16,14 +16,14 @@ namespace Reports.Web.CrystalReports.Rpt.ClassSummary {
     using CrystalDecisions.CrystalReports.Engine;
     
     
-    public class SalesAnalysisBySeller : ReportClass {
+    public class SalesAnalysisBySellerSignOff : ReportClass {
         
-        public SalesAnalysisBySeller() {
+        public SalesAnalysisBySellerSignOff() {
         }
         
         public override string ResourceName {
             get {
-                return "SalesAnalysisBySeller.rpt";
+                return "SalesAnalysisBySellerSignOff.rpt";
             }
             set {
                 // Do nothing
@@ -41,7 +41,7 @@ namespace Reports.Web.CrystalReports.Rpt.ClassSummary {
         
         public override string FullResourceName {
             get {
-                return "Reports.Web.CrystalReports.Rpt.ClassSummary.SalesAnalysisBySeller.rpt";
+                return "Reports.Web.CrystalReports.Rpt.ClassSummary.SalesAnalysisBySellerSignOff.rpt";
             }
             set {
                 // Do nothing
@@ -82,7 +82,7 @@ namespace Reports.Web.CrystalReports.Rpt.ClassSummary {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section Section3 {
+        public CrystalDecisions.CrystalReports.Engine.Section GroupHeaderSection3 {
             get {
                 return this.ReportDefinition.Sections[4];
             }
@@ -90,7 +90,7 @@ namespace Reports.Web.CrystalReports.Rpt.ClassSummary {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section GroupFooterSection7 {
+        public CrystalDecisions.CrystalReports.Engine.Section GroupHeaderSection1 {
             get {
                 return this.ReportDefinition.Sections[5];
             }
@@ -98,7 +98,7 @@ namespace Reports.Web.CrystalReports.Rpt.ClassSummary {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section GroupFooterSection2 {
+        public CrystalDecisions.CrystalReports.Engine.Section Section3 {
             get {
                 return this.ReportDefinition.Sections[6];
             }
@@ -106,7 +106,7 @@ namespace Reports.Web.CrystalReports.Rpt.ClassSummary {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section Section4 {
+        public CrystalDecisions.CrystalReports.Engine.Section GroupFooterSection1 {
             get {
                 return this.ReportDefinition.Sections[7];
             }
@@ -114,17 +114,49 @@ namespace Reports.Web.CrystalReports.Rpt.ClassSummary {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section Section5 {
+        public CrystalDecisions.CrystalReports.Engine.Section GroupFooterSection3 {
             get {
                 return this.ReportDefinition.Sections[8];
+            }
+        }
+        
+        [Browsable(false)]
+        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        public CrystalDecisions.CrystalReports.Engine.Section GroupFooterSection7 {
+            get {
+                return this.ReportDefinition.Sections[9];
+            }
+        }
+        
+        [Browsable(false)]
+        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        public CrystalDecisions.CrystalReports.Engine.Section GroupFooterSection2 {
+            get {
+                return this.ReportDefinition.Sections[10];
+            }
+        }
+        
+        [Browsable(false)]
+        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        public CrystalDecisions.CrystalReports.Engine.Section Section4 {
+            get {
+                return this.ReportDefinition.Sections[11];
+            }
+        }
+        
+        [Browsable(false)]
+        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        public CrystalDecisions.CrystalReports.Engine.Section Section5 {
+            get {
+                return this.ReportDefinition.Sections[12];
             }
         }
     }
     
     [System.Drawing.ToolboxBitmapAttribute(typeof(CrystalDecisions.Shared.ExportOptions), "report.bmp")]
-    public class CachedSalesAnalysisBySeller : Component, ICachedReport {
+    public class CachedSalesAnalysisBySellerSignOff : Component, ICachedReport {
         
-        public CachedSalesAnalysisBySeller() {
+        public CachedSalesAnalysisBySellerSignOff() {
         }
         
         [Browsable(false)]
@@ -161,7 +193,7 @@ namespace Reports.Web.CrystalReports.Rpt.ClassSummary {
         }
         
         public virtual CrystalDecisions.CrystalReports.Engine.ReportDocument CreateReport() {
-            SalesAnalysisBySeller rpt = new SalesAnalysisBySeller();
+            SalesAnalysisBySellerSignOff rpt = new SalesAnalysisBySellerSignOff();
             rpt.Site = this.Site;
             return rpt;
         }

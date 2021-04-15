@@ -2384,6 +2384,41 @@ namespace Reports.Web.Controllers
 
         #endregion
 
+        #region Sales Analysis by Seller SignOff
+
+        public ActionResult SalesAnalysisBySellerSignOff()
+        {
+            SalesAnalysisService service = new SalesAnalysisService();
+            string conKey = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey;
+
+            SalesAnalysisFilter model = service.GetSalesAnalysisBySellerFilter(conKey);
+
+            return View("SalesAnalysisBySellerSignOff", model);
+        }
+
+        public ActionResult SalesAnalysisBySellerSignOffDownload(SalesAnalysisFilter filters)
+        {
+            UserSettings userset = GetUserSettings();
+            string conKey = userset.ConnectionKey;
+            string comp = userset.CompanyName;
+
+            SalesAnalysisService service = new SalesAnalysisService();
+
+            DataSet ds = service.GetSalesAnalysisBySellerSignOffDataSet(conKey, filters, comp, "EbusSalesAnalysisBySellerSignOff");
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                return DownLoadReportByDataSet(filters.ExcelOrPDF, "~/CrystalReports/Rpt/ClassSummary/SalesAnalysisBySellerSignOff.rpt", ds, "Sales Analysis By Seller SignOff ");
+            }
+            else
+            {
+                TempData["AlertMessage"] = "show";
+                return RedirectToAction("SalesAnalysisBySellerSignOff", "Report");
+            }
+
+        }        
+
+        #endregion
+
         #region Sales Analysis by Seller
 
         public ActionResult SalesAnalysisBySeller()
@@ -2404,7 +2439,7 @@ namespace Reports.Web.Controllers
 
             SalesAnalysisService service = new SalesAnalysisService();
 
-            DataSet ds = service.GetSellerSummaryDataSet(conKey, filters, comp, "EbusSalesAnalysisBySeller");
+            DataSet ds = service.GetSalesAnalysisBySellerDataSet(conKey, filters, comp, "EbusSalesAnalysisBySeller");
             if (ds.Tables[0].Rows.Count > 0)
             {
                 return DownLoadReportByDataSet(filters.ExcelOrPDF, "~/CrystalReports/Rpt/ClassSummary/SalesAnalysisBySeller.rpt", ds, "Sales Analysis By Seller ");
@@ -2415,282 +2450,7 @@ namespace Reports.Web.Controllers
                 return RedirectToAction("SalesAnalysisBySeller", "Report");
             }
 
-        }
-
-        //private ActionResult GenerateSalesAnalysisBySellerExcelReport(DataTable dt)
-        //{
-        //    ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-
-        //    using (ExcelPackage excelPackage = new ExcelPackage())
-        //    {
-        //        ExcelWorksheet Sheet = excelPackage.Workbook.Worksheets.Add("SalesAnalysisBySeller");
-
-        //        #region Declarations
-        //        double revenueGrandTotal;
-        //        double avgTicValGrandTotal;
-        //        int tikCountGrandTotal;
-
-        //        double revenueSellerTotal;
-        //        double avgTicValSellerTotal;
-        //        int tikCountSellerTotal;
-
-        //        double revenueDayTotal;
-        //        double avgTicValDayTotal;
-        //        int tikCountDayTotal;           
-
-        //        int colCount = 4;
-
-        //        DataRow dr = dt.Rows[0];
-        //        #endregion
-
-        //        #region Header Section
-        //        //Add Header section
-
-        //        string filterDateRange = dr["DateRange"].ToString();
-        //        string filterClasses = dr["ClassFilter"].ToString();
-        //        string filterClassTypes = dr["ClassTypeFilter"].ToString();
-        //        string filterStaffs= dr["StaffFilter"].ToString();
-        //        string companyName = dr["companyName"].ToString();
-
-        //        Sheet.Cells[1, 1, 1, colCount].Merge = true;
-        //        Sheet.Cells[1, 1, 1, colCount].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-        //        Sheet.Cells[1, 1, 1, colCount].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-        //        Sheet.Cells[1, 1, 1, colCount].Style.Font.Size = 16;
-        //        Sheet.Cells[1, 1, 1, colCount].Style.Font.Bold = true;
-        //        Sheet.Cells[1, 1, 1, colCount].Value = "Sales Analysis by Seller";
-
-        //        Sheet.Cells[2, 1, 2, colCount].Merge = true;
-        //        Sheet.Cells[2, 1, 2, colCount].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-        //        Sheet.Cells[2, 1, 2, colCount].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-        //        Sheet.Cells[2, 1, 2, colCount].Style.Font.Size = 20;
-        //        Sheet.Cells[2, 1, 2, colCount].Style.Font.Bold = true;
-        //        Sheet.Cells[2, 1, 2, colCount].Value = companyName;
-
-
-        //        Sheet.Cells[3, 1, 3, colCount].Merge = true;
-        //        Sheet.Cells[3, 1, 3, colCount].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-        //        Sheet.Cells[3, 1, 3, colCount].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
-
-        //        Sheet.Cells[4, 1, 4, colCount].Merge = true;
-        //        Sheet.Cells[4, 1, 4, colCount].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-        //        Sheet.Cells[4, 1, 4, colCount].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
-        //        Sheet.Cells[4, 1, 4, colCount].Style.Font.Size = 12;
-        //        Sheet.Cells[4, 1, 4, colCount].Value = filterClasses;
-
-        //        Sheet.Cells[5, 1, 5, colCount].Merge = true;
-        //        Sheet.Cells[5, 1, 5, colCount].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-        //        Sheet.Cells[5, 1, 5, colCount].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
-        //        Sheet.Cells[5, 1, 5, colCount].Style.Font.Size = 12;
-        //        Sheet.Cells[5, 1, 5, colCount].Value = filterClassTypes;
-
-        //        Sheet.Cells[6, 1, 6, colCount].Merge = true;
-        //        Sheet.Cells[6, 1, 6, colCount].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-        //        Sheet.Cells[6, 1, 6, colCount].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
-        //        Sheet.Cells[6, 1, 6, colCount].Style.Font.Size = 12;
-        //        Sheet.Cells[6, 1, 6, colCount].Value = filterStaffs;
-
-        //        Sheet.Cells[7, 1, 7, colCount].Merge = true;
-        //        Sheet.Cells[7, 1, 7, colCount].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-        //        Sheet.Cells[7, 1, 7, colCount].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
-        //        Sheet.Cells[7, 1, 7, colCount].Style.Font.Size = 12;
-        //        Sheet.Cells[7, 1, 7, colCount].Value = filterDateRange;
-
-        //        Sheet.Cells[8, 1, 8, colCount].Merge = true;
-        //        Sheet.Cells[8, 1, 8, colCount].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-        //        Sheet.Cells[8, 1, 8, colCount].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
-        //        #endregion
-
-        //        #region Header Row
-        //        Sheet.Cells["A9"].Value = "Class";
-        //        Sheet.Cells["B9"].Value = "Revenue";
-        //        Sheet.Cells["C9"].Value = "TicketCount";
-        //        Sheet.Cells["D9"].Value = "AverageTicketValue";              
-        //        Sheet.Cells[$"A9:D9"].Style.Font.Bold = true;
-        //        Sheet.Cells[$"A9:D9"].Style.Font.Size = 12;
-        //        Sheet.Cells[$"A9:D9"].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-        //        Sheet.Cells[$"A9:D9"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-        //        #endregion
-
-
-
-
-        //        //Sort datatable based on Contract
-
-        //        dt.DefaultView.Sort = "TransDate, StartTime, StopTime, EtmID, Staff, ClassTypeName, Class asc";
-        //        dt = dt.DefaultView.ToTable();
-        //        int currColumn = 10;
-
-        //        string previousTranDate = string.Empty;
-        //        foreach (DataRow row in dt.Rows)
-        //        {
-        //            var currentTranDate = row["TransDate"].ToString();
-        //            if (previousTranDate != currentTranDate)
-        //            {
-        //                if (!string.IsNullOrEmpty(previousTranDate))
-        //                {
-        //                    // Add totals per contract
-        //                    Sheet.Cells[$"A{currColumn}:C{currColumn}"].Merge = true;
-        //                    Sheet.Cells[$"A{currColumn}:C{currColumn}"].Value = "Date : 08/04/2021 ";
-        //                    Sheet.Cells[$"A{currColumn}:C{currColumn}"].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-        //                    Sheet.Cells[$"A{currColumn}:C{currColumn}"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
-        //                    Sheet.Cells[$"D{currColumn}"].Value = scheduledTrip;
-        //                    Sheet.Cells[$"E{currColumn}"].Value = operatedTrips;
-        //                    Sheet.Cells[$"F{currColumn}"].Value = notOperatedTrips;
-        //                    Sheet.Cells[$"G{currColumn}"].Value = scheduledKilometers.ToString(".00");
-        //                    Sheet.Cells[$"H{currColumn}"].Value = operatedKilometers;
-        //                    Sheet.Cells[$"I{currColumn}"].Value = cashTickets;
-        //                    Sheet.Cells[$"J{currColumn}"].Value = passes;
-        //                    Sheet.Cells[$"K{currColumn}"].Value = transfers;
-        //                    Sheet.Cells[$"L{currColumn}"].Value = totalPassengers;
-        //                    Sheet.Cells[$"M{currColumn}"].Value = "R " + cashRevenue;
-        //                    Sheet.Cells[$"N{currColumn}"].Value = "R " + nonRevenue;
-        //                    Sheet.Cells[$"O{currColumn}"].Value = "R " + totalRevenue;
-        //                    Sheet.Cells[$"P{currColumn}"].Value = (averagePassenger / perContractRowCount).ToString(".00");
-        //                    Sheet.Cells[$"Q{currColumn}"].Value = "R " + (averageRevenue / perContractRowCount).ToString(".00");
-        //                    Sheet.Cells[$"A{currColumn}:Q{currColumn}"].Style.Font.Bold = true;
-        //                    Sheet.Cells[$"A{currColumn}:Q{currColumn}"].Style.Font.Size = 12;
-        //                    Sheet.Cells[$"D{currColumn}:Q{currColumn}"].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-        //                    Sheet.Cells[$"D{currColumn}:Q{currColumn}"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
-
-        //                    scheduledTripTotal += scheduledTrip; operatedTripsTotal += operatedTrips; notOperatedTripsTotal += notOperatedTrips;
-        //                    scheduledKilometersTotal += scheduledKilometers; operatedKilometersTotal += operatedKilometers; cashTicketsTotal += cashTickets;
-        //                    passesTotal += passes; transfersTotal += transfers; cashRevenueTotal += cashRevenue; nonRevenueTotal += nonRevenue;
-        //                    totalRevenueTotal += totalRevenue; totalPassengersTotal += totalPassengers; averagePassengerTotal += averagePassenger;
-        //                    averageRevenueTotal += averageRevenue;
-
-        //                    scheduledTrip = 0; operatedTrips = 0; notOperatedTrips = 0; scheduledKilometers = 0; operatedKilometers = 0; cashTickets = 0; passes = 0; transfers = 0;
-        //                    cashRevenue = 0; nonRevenue = 0; totalRevenue = 0; totalPassengers = 0; averagePassenger = 0; averageRevenue = 0;
-
-        //                    perContractRowCount = 0; perContractRowCount++;
-        //                    currColumn++;
-        //                }
-
-        //                //Add empty row
-        //                Sheet.Cells[currColumn, 1, currColumn, colCount].Merge = true;
-        //                Sheet.Cells[currColumn, 1, currColumn, colCount].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-        //                Sheet.Cells[currColumn, 1, currColumn, colCount].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-
-        //                currColumn++;
-
-        //                //Add contract details
-        //                Sheet.Cells[currColumn, 1, currColumn, colCount].Merge = true;
-        //                Sheet.Cells[currColumn, 1, currColumn, colCount].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-        //                Sheet.Cells[currColumn, 1, currColumn, colCount].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
-        //                Sheet.Cells[currColumn, 1, currColumn, colCount].Style.Font.Size = 12;
-        //                Sheet.Cells[currColumn, 1, currColumn, colCount].Style.Font.Bold = true;
-        //                Sheet.Cells[currColumn, 1, currColumn, colCount].Value = $"Contract: {currentTranDate}";
-
-        //                currColumn++;
-        //            }
-
-        //            perContractRowCount++;
-
-        //            Sheet.Cells[$"A{currColumn}"].Value = row["DOTRoute"];
-        //            Sheet.Cells[$"B{currColumn}"].Value = row["From"];
-        //            Sheet.Cells[$"C{currColumn}"].Value = row["To"];
-        //            Sheet.Cells[$"D{currColumn}"].Value = Convert.ToDouble(row["ScheduledTrips"]).ToString(".00");
-        //            Sheet.Cells[$"E{currColumn}"].Value = row["OperatedTrips"];
-        //            Sheet.Cells[$"F{currColumn}"].Value = row["NotOperatedTrips"];
-        //            Sheet.Cells[$"G{currColumn}"].Value = row["Schedulekilometres"];
-        //            Sheet.Cells[$"H{currColumn}"].Value = row["OperatedKilometres"];
-        //            Sheet.Cells[$"I{currColumn}"].Value = row["Tickets"];
-        //            Sheet.Cells[$"J{currColumn}"].Value = row["Passes"];
-        //            Sheet.Cells[$"K{currColumn}"].Value = row["Transfers"];
-        //            Sheet.Cells[$"L{currColumn}"].Value = row["TotalPassengers"];
-        //            Sheet.Cells[$"M{currColumn}"].Value = "R " + row["Revenue"];
-        //            Sheet.Cells[$"N{currColumn}"].Value = "R " + row["NonRevenue"];
-        //            Sheet.Cells[$"O{currColumn}"].Value = "R " + row["TotalRevenue"];
-        //            Sheet.Cells[$"P{currColumn}"].Value = row["AvgPassengerPerTrip"];
-        //            Sheet.Cells[$"Q{currColumn}"].Value = "R " + Convert.ToDouble(row["AvgRevenuePerTrip"]).ToString(".00");
-
-        //            scheduledTrip += Convert.ToInt32(row["ScheduledTrips"]);
-        //            operatedTrips += Convert.ToInt32(row["OperatedTrips"]);
-        //            notOperatedTrips += Convert.ToInt32(row["NotOperatedTrips"]);
-        //            scheduledKilometers += Convert.ToDouble(row["Schedulekilometres"]);
-        //            operatedKilometers += Convert.ToDouble(row["OperatedKilometres"]);
-        //            cashTickets += Convert.ToInt32(row["Tickets"]);
-        //            passes += Convert.ToInt32(row["Passes"]);
-        //            transfers += Convert.ToInt32(row["Transfers"]);
-        //            totalPassengers += Convert.ToInt32(row["TotalPassengers"]);
-        //            cashRevenue += Convert.ToDouble(row["Revenue"]);
-        //            nonRevenue += Convert.ToDouble(row["NonRevenue"]);
-        //            totalRevenue += Convert.ToDouble(row["TotalRevenue"]);
-        //            averagePassenger += Convert.ToDouble(row["AvgPassengerPerTrip"]);
-        //            averageRevenue += Convert.ToDouble(row["AvgRevenuePerTrip"]);
-
-        //            previousTranDate = currentTranDate;
-        //            currColumn++;
-        //        }
-
-
-        //        // Add totals per contract
-        //        Sheet.Cells[$"A{currColumn}:C{currColumn}"].Merge = true;
-        //        Sheet.Cells[$"A{currColumn}:C{currColumn}"].Value = "Total: ";
-        //        Sheet.Cells[$"A{currColumn}:C{currColumn}"].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-        //        Sheet.Cells[$"A{currColumn}:C{currColumn}"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
-        //        Sheet.Cells[$"D{currColumn}"].Value = scheduledTrip;
-        //        Sheet.Cells[$"E{currColumn}"].Value = operatedTrips;
-        //        Sheet.Cells[$"F{currColumn}"].Value = notOperatedTrips;
-        //        Sheet.Cells[$"G{currColumn}"].Value = scheduledKilometers.ToString(".00");
-        //        Sheet.Cells[$"H{currColumn}"].Value = operatedKilometers;
-        //        Sheet.Cells[$"I{currColumn}"].Value = cashTickets;
-        //        Sheet.Cells[$"J{currColumn}"].Value = passes;
-        //        Sheet.Cells[$"K{currColumn}"].Value = transfers;
-        //        Sheet.Cells[$"L{currColumn}"].Value = totalPassengers;
-        //        Sheet.Cells[$"M{currColumn}"].Value = "R " + cashRevenue;
-        //        Sheet.Cells[$"N{currColumn}"].Value = "R " + nonRevenue;
-        //        Sheet.Cells[$"O{currColumn}"].Value = "R " + totalRevenue;
-        //        Sheet.Cells[$"P{currColumn}"].Value = (averagePassenger / perContractRowCount).ToString(".00");
-        //        Sheet.Cells[$"Q{currColumn}"].Value = "R " + (averageRevenue / perContractRowCount).ToString(".00");
-        //        Sheet.Cells[$"A{currColumn}:Q{currColumn}"].Style.Font.Bold = true;
-        //        Sheet.Cells[$"A{currColumn}:Q{currColumn}"].Style.Font.Size = 12;
-        //        Sheet.Cells[$"D{currColumn}:Q{currColumn}"].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-        //        Sheet.Cells[$"D{currColumn}:Q{currColumn}"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
-
-        //        scheduledTripTotal += scheduledTrip; operatedTripsTotal += operatedTrips; notOperatedTripsTotal += notOperatedTrips;
-        //        scheduledKilometersTotal += scheduledKilometers; operatedKilometersTotal += operatedKilometers; cashTicketsTotal += cashTickets;
-        //        passesTotal += passes; transfersTotal += transfers; cashRevenueTotal += cashRevenue; nonRevenueTotal += nonRevenue;
-        //        totalRevenueTotal += totalRevenue; totalPassengersTotal += totalPassengers; averagePassengerTotal += averagePassenger;
-        //        averageRevenueTotal += averageRevenue;
-
-        //        currColumn++;
-
-        //        // Add grand totals 
-        //        Sheet.Cells[$"A{currColumn}:C{currColumn}"].Merge = true;
-        //        Sheet.Cells[$"A{currColumn}:C{currColumn}"].Value = "Grand Total: ";
-        //        Sheet.Cells[$"A{currColumn}:C{currColumn}"].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-        //        Sheet.Cells[$"A{currColumn}:C{currColumn}"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
-        //        Sheet.Cells[$"D{currColumn}"].Value = scheduledTripTotal;
-        //        Sheet.Cells[$"E{currColumn}"].Value = operatedTripsTotal;
-        //        Sheet.Cells[$"F{currColumn}"].Value = notOperatedTripsTotal;
-        //        Sheet.Cells[$"G{currColumn}"].Value = scheduledKilometersTotal.ToString(".00");
-        //        Sheet.Cells[$"H{currColumn}"].Value = operatedKilometersTotal;
-        //        Sheet.Cells[$"I{currColumn}"].Value = cashTicketsTotal;
-        //        Sheet.Cells[$"J{currColumn}"].Value = passesTotal;
-        //        Sheet.Cells[$"K{currColumn}"].Value = transfersTotal;
-        //        Sheet.Cells[$"L{currColumn}"].Value = totalPassengersTotal;
-        //        Sheet.Cells[$"M{currColumn}"].Value = "R " + cashRevenueTotal;
-        //        Sheet.Cells[$"N{currColumn}"].Value = "R " + nonRevenueTotal;
-        //        Sheet.Cells[$"O{currColumn}"].Value = "R " + totalRevenueTotal;
-        //        Sheet.Cells[$"A{currColumn}:Q{currColumn}"].Style.Font.Bold = true;
-        //        Sheet.Cells[$"A{currColumn}:Q{currColumn}"].Style.Font.Size = 13;
-        //        Sheet.Cells[$"D{currColumn}:Q{currColumn}"].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-        //        Sheet.Cells[$"D{currColumn}:Q{currColumn}"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
-
-        //        Sheet.Cells["A:AZ"].AutoFitColumns();
-
-        //        Sheet.Cells[$"A1:Q{currColumn}"].Style.Border.Top.Style = ExcelBorderStyle.Thin;
-        //        Sheet.Cells[$"A1:Q{currColumn}"].Style.Border.Left.Style = ExcelBorderStyle.Thin;
-        //        Sheet.Cells[$"A1:Q{currColumn}"].Style.Border.Right.Style = ExcelBorderStyle.Thin;
-        //        Sheet.Cells[$"A1:Q{currColumn}"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-
-        //        var fileStream = new MemoryStream();
-        //        excelPackage.SaveAs(fileStream);
-        //        fileStream.Position = 0;
-
-        //        return new FileStreamResult(fileStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") { FileDownloadName = $"FormE {DateTime.Now.ToString("dd-MM-yyyy H:mm:ss")}.xlsx" };
-        //    }
-        //}
+        }        
 
         #endregion
 

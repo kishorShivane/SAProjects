@@ -267,6 +267,12 @@
       <SubType>Component</SubType>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="CrystalReports\Rpt\ClassSummary\SalesAnalysisBySellerSignOff.cs">
+      <DependentUpon>SalesAnalysisBySellerSignOff.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="CrystalReports\Rpt\ClassSummary\SalesAnalysisBySeller.cs">
       <DependentUpon>SalesAnalysisBySeller.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -695,6 +701,7 @@
     <Content Include="Views\Shared\_UserExpiryWarning.cshtml" />
     <Content Include="Views\Report\PassengerTransactions.cshtml" />
     <Content Include="Views\Report\TGXCashierReconciliationReport.cshtml" />
+    <Content Include="Views\Report\SalesAnalysisBySellerSignOff.cshtml" />
     <Content Include="Views\Report\SalesAnalysisBySeller.cshtml" />
   </ItemGroup>
   <ItemGroup>
@@ -765,6 +772,10 @@
     <EmbeddedResource Include="CrystalReports\Rpt\Cashier\CashierReport.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>CashierReport.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CrystalReports\Rpt\ClassSummary\SalesAnalysisBySellerSignOff.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>SalesAnalysisBySellerSignOff.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="CrystalReports\Rpt\ClassSummary\SalesAnalysisBySeller.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>

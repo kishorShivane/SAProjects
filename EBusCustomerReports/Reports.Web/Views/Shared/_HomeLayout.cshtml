@@ -118,6 +118,12 @@
                                             <a href="@Url.Action("SalesAnalysisByClass", "Report" )">Sales Analysis By Class</a>
                                         </li>
                                     }
+                                    @if (accessCodes.Contains("SABSS"))
+                                    {
+                                        <li>
+                                            <a href="@Url.Action("SalesAnalysisBySellerSignOff", "Report" )">Sales Analysis By Seller Signoff</a>
+                                        </li>
+                                    }
                                     @if (accessCodes.Contains("SABS"))
                                     {
                                         <li>

@@ -785,7 +785,7 @@ namespace Reports.Services
             return ds;
         }
 
-        public DataSet GetSellerSummaryDataSet(string connKey, SalesAnalysisFilter filter, string companyName, string spName)
+        public DataSet GetSalesAnalysisBySellerSignOffDataSet(string connKey, SalesAnalysisFilter filter, string companyName, string spName)
         {
             DataSet ds = new DataSet();
             DataTable table1 = SellerSummaryDataset();
@@ -814,7 +814,7 @@ namespace Reports.Services
                 filterClassTypesSelected = "Class Types: " + string.Join(", ", clsTypes);
             }
 
-            List<SellerSummaryData> result = GetSellerSummaryData(connKey, filter, spName);
+            List<SellerSummaryData> result = GetSalesAnalysisBySellerSignOffData(connKey, filter, spName);
 
             if (result.Any())
             {
@@ -842,6 +842,84 @@ namespace Reports.Services
                                 item.TransDate,
                                 $"                 Sign On Time: { item.StartTime}           Sign Off Time: { item.StopTime}           ETM ID: { item.EtmID}", 
                                 item.StopTime,
+                                item.EtmID
+                        );
+                }
+            }
+            else
+            {
+                DataRow dr = table1.NewRow();
+                dr["CompanyName"] = companyName;
+                dr["DateRange"] = filterDateRange;
+                dr["ClassFilter"] = filterClassesSelected;
+                dr["StaffFilter"] = filterRoutesSelected;
+                dr["ClassTypeFilter"] = filterClassTypesSelected;
+
+                table1.Rows.Add(dr);
+            }
+
+
+            ds.Tables.Add(table1);
+            return ds;
+        }
+
+        public DataSet GetSalesAnalysisBySellerDataSet(string connKey, SalesAnalysisFilter filter, string companyName, string spName)
+        {
+            DataSet ds = new DataSet();
+            DataTable table1 = SellerSummaryDataset();
+            string filterDateRange = string.Format("{0} :  {1} to {2}", "Date Range", filter.StartDate, filter.EndDate);
+
+            string filterClassesSelected = "Classes: Filter Not Selected";
+            string filterRoutesSelected = "Staffs: Filter Not Selected";
+            string filterClassTypesSelected = "Class Types: Filter Not Selected";
+
+
+            if (filter.ClassesSelected != null && filter.ClassesSelected.Length > 0)
+            {
+                List<string> classes = GetAllClasses(connKey).Where(s => filter.ClassesSelected.Contains(s.Value)).Select(s => s.Text).ToList();
+                filterClassesSelected = "Classes: " + string.Join(", ", classes);
+            }
+
+            if (filter.StaffsSelected != null && filter.StaffsSelected.Length > 0)
+            {
+                List<string> staffs = GetAllStaffs(connKey).Where(s => filter.StaffsSelected.Contains(s.Value)).Select(s => s.Text).ToList();
+                filterRoutesSelected = "Staffs: " + string.Join(", ", staffs);
+            }
+
+            if (filter.ClassTypesSelected != null && filter.ClassTypesSelected.Length > 0)
+            {
+                List<string> clsTypes = GetAllClassTypes(connKey).Where(s => filter.ClassTypesSelected.Contains(s.Value)).Select(s => s.Text).ToList();
+                filterClassTypesSelected = "Class Types: " + string.Join(", ", clsTypes);
+            }
+
+            List<SellerSummaryData> result = GetSalesAnalysisBySellerData(connKey, filter, spName);
+
+            if (result.Any())
+            {
+                foreach (SellerSummaryData item in result)
+                {
+                    item.CompanyName = companyName;
+                    item.DateRange = filterDateRange;
+                    item.ClassFilter = filterClassesSelected;
+                    item.StaffFilter = filterRoutesSelected;
+                    item.ClassTypeFilter = filterClassTypesSelected;
+
+                    table1.Rows.Add(
+                                item.ClassTypeName,
+                                item.Class,
+                                item.Revenue,
+                                item.TicketCount,
+                                item.TripCount,
+                                item.DateRange,
+                                item.ClassFilter,
+                                item.ClassTypeFilter,
+                                item.StaffFilter,
+                                item.CompanyName,
+                                (item.Revenue / (item.TicketCount == 0 ? 1 : item.TicketCount)),
+                                item.Staff,
+                                item.TransDate,
+                                "",
+                                "",
                                 item.EtmID
                         );
                 }
@@ -1143,7 +1221,7 @@ namespace Reports.Services
             return result;
         }
 
-        private List<SellerSummaryData> GetSellerSummaryData(string connKey, SalesAnalysisFilter filter, string spName)
+        private List<SellerSummaryData> GetSalesAnalysisBySellerSignOffData(string connKey, SalesAnalysisFilter filter, string spName)
         {
             List<SellerSummaryData> result = new List<SellerSummaryData>();
 
@@ -1189,6 +1267,79 @@ namespace Reports.Services
                     {
                         sch.EtmID = (dr["EtmID"].ToString());
                     }
+
+                    if (dr["Staff"] != null && dr["Staff"].ToString() != string.Empty)
+                    {
+                        sch.Staff = (dr["Staff"].ToString());
+                    }
+
+                    if (dr["ClassTypeName"] != null && dr["ClassTypeName"].ToString() != string.Empty)
+                    {
+                        sch.ClassTypeName = (dr["ClassTypeName"].ToString());
+                    }
+
+                    if (dr["Class"] != null && dr["Class"].ToString() != string.Empty)
+                    {
+                        sch.Class = (dr["Class"].ToString());
+                    }
+
+                    if (dr["Revenue"] != null && dr["Revenue"].ToString() != string.Empty)
+                    {
+                        sch.Revenue = Convert.ToDouble(dr["Revenue"].ToString());
+                    }
+
+                    if (dr["TripCount"] != null && dr["TripCount"].ToString() != string.Empty)
+                    {
+                        sch.TripCount = Convert.ToInt32(dr["TripCount"].ToString());
+                    }
+
+                    if (dr["TicketCount"] != null && dr["TicketCount"].ToString() != string.Empty)
+                    {
+                        sch.TicketCount = Convert.ToInt32(dr["TicketCount"].ToString());
+                    }
+                    result.Add(sch);
+                }
+            }
+
+            finally
+            {
+                myConnection.Close();
+            }
+
+            return result;
+        }
+
+        private List<SellerSummaryData> GetSalesAnalysisBySellerData(string connKey, SalesAnalysisFilter filter, string spName)
+        {
+            List<SellerSummaryData> result = new List<SellerSummaryData>();
+
+            SqlConnection myConnection = new SqlConnection(GetConnectionString(connKey));
+
+            try
+            {
+                SqlCommand cmd = new SqlCommand(spName, myConnection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+
+                cmd.Parameters.AddWithValue("@staffIds", filter.StaffsSelected == null ? "" : string.Join(",", filter.StaffsSelected));
+                cmd.Parameters.AddWithValue("@classIds", filter.ClassesSelected == null ? "" : string.Join(",", filter.ClassesSelected));
+                cmd.Parameters.AddWithValue("@classTypeIds", filter.ClassTypesSelected == null ? "" : string.Join(",", filter.ClassTypesSelected));
+                cmd.Parameters.AddWithValue("@fromDate", CustomDateTime.ConvertStringToDateSaFormat(filter.StartDate).ToString("yyyy-MM-dd"));
+                cmd.Parameters.AddWithValue("@toDate", CustomDateTime.ConvertStringToDateSaFormat(filter.EndDate).ToString("yyyy-MM-dd"));
+                cmd.CommandTimeout = 500000;
+
+                myConnection.Open();
+                SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+                SellerSummaryData sch = null;
+                while (dr.Read())
+                {
+                    sch = new SellerSummaryData();
+
+                    if (dr["TransDate"] != null && dr["TransDate"].ToString() != string.Empty)
+                    {
+                        sch.TransDate = (dr["TransDate"].ToString());
+                    }                  
 
                     if (dr["Staff"] != null && dr["Staff"].ToString() != string.Empty)
                     {
