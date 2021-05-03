@@ -464,6 +464,9 @@ namespace Reports.Services
             table1.Columns.Add("DutyFilter"); //25
             table1.Columns.Add("BusFilter"); //26
             table1.Columns.Add("CompanyName"); //27
+            table1.Columns.Add("BoardingStage");//28
+            table1.Columns.Add("AlightingStage");//28
+
             return table1;
         }
 

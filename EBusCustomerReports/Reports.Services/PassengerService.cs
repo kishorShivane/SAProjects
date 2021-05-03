@@ -231,7 +231,9 @@ namespace Reports.Services
                                 item.CellNumberFilter,
                                 item.DutyFilter,
                                 item.BusFilter,
-                                companyName
+                                companyName,
+                                item.BoardingStage,
+                                item.AlightingStage
                                 );
                 }
             }
@@ -333,6 +335,17 @@ namespace Reports.Services
                 while (dr.Read())
                 {
                     PassengerTransData sch = new PassengerTransData();
+
+
+                    if (dr["BoardingStage"] != null && dr["BoardingStage"].ToString() != string.Empty)
+                    {
+                        sch.BoardingStage = dr["BoardingStage"].ToString();
+                    }
+
+                    if (dr["AlightingStage"] != null && dr["AlightingStage"].ToString() != string.Empty)
+                    {
+                        sch.AlightingStage = dr["AlightingStage"].ToString();
+                    }
 
                     if (dr["SerialNumber"] != null && dr["SerialNumber"].ToString() != string.Empty)
                     {

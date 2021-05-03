@@ -37,6 +37,8 @@ namespace Reports.Services.Models
         public string DutyFilter { get; set; }
         public string BusFilter { get; set; }
 
+        public string BoardingStage { get; set; }
+        public string AlightingStage { get; set; }
 
     }
 }

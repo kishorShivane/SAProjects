@@ -14845,6 +14845,10 @@ namespace Reports.Web.CrystalReports.Datasets
 
             private global::System.Data.DataColumn columnCompanyName;
 
+            private global::System.Data.DataColumn columnBoardingStage;
+
+            private global::System.Data.DataColumn columnAlightingStage;
+
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
             public PassengerTransDataTable()
@@ -15166,6 +15170,26 @@ namespace Reports.Web.CrystalReports.Datasets
 
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public global::System.Data.DataColumn BoardingStageColumn
+            {
+                get
+                {
+                    return this.columnBoardingStage;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public global::System.Data.DataColumn AlightingStageColumn
+            {
+                get
+                {
+                    return this.columnAlightingStage;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count
             {
@@ -15234,7 +15258,9 @@ namespace Reports.Web.CrystalReports.Datasets
                         string CellNumberFilter,
                         string DutyFilter,
                         string BusFilter,
-                        string CompanyName)
+                        string CompanyName,
+                        string BoardingStage,
+                        string AlightingStage)
             {
                 PassengerTransRow rowPassengerTransRow = ((PassengerTransRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
@@ -15265,7 +15291,9 @@ namespace Reports.Web.CrystalReports.Datasets
                         CellNumberFilter,
                         DutyFilter,
                         BusFilter,
-                        CompanyName};
+                        CompanyName,
+                        BoardingStage,
+                        AlightingStage};
                 rowPassengerTransRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowPassengerTransRow);
                 return rowPassengerTransRow;
@@ -15319,6 +15347,8 @@ namespace Reports.Web.CrystalReports.Datasets
                 this.columnDutyFilter = base.Columns["DutyFilter"];
                 this.columnBusFilter = base.Columns["BusFilter"];
                 this.columnCompanyName = base.Columns["CompanyName"];
+                this.columnBoardingStage = base.Columns["BoardingStage"];
+                this.columnAlightingStage = base.Columns["AlightingStage"];
             }
 
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -15381,6 +15411,10 @@ namespace Reports.Web.CrystalReports.Datasets
                 base.Columns.Add(this.columnBusFilter);
                 this.columnCompanyName = new global::System.Data.DataColumn("CompanyName", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnCompanyName);
+                this.columnBoardingStage = new global::System.Data.DataColumn("BoardingStage", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnBoardingStage);
+                this.columnAlightingStage = new global::System.Data.DataColumn("AlightingStage", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnAlightingStage);
                 this.columnSerialNumber.Caption = "DataColumn1";
                 this.columnFirstName.Caption = "ClassID";
                 this.columnSurname.Caption = "ClassName";
@@ -33427,6 +33461,48 @@ namespace Reports.Web.CrystalReports.Datasets
 
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public string BoardingStage
+            {
+                get
+                {
+                    try
+                    {
+                        return ((string)(this[this.tablePassengerTrans.BoardingStageColumn]));
+                    }
+                    catch (global::System.InvalidCastException e)
+                    {
+                        throw new global::System.Data.StrongTypingException("The value for column \'BoardingStage\' in table \'PassengerTrans\' is DBNull.", e);
+                    }
+                }
+                set
+                {
+                    this[this.tablePassengerTrans.BoardingStageColumn] = value;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public string AlightingStage
+            {
+                get
+                {
+                    try
+                    {
+                        return ((string)(this[this.tablePassengerTrans.AlightingStageColumn]));
+                    }
+                    catch (global::System.InvalidCastException e)
+                    {
+                        throw new global::System.Data.StrongTypingException("The value for column \'AlightingStage\' in table \'PassengerTrans\' is DBNull.", e);
+                    }
+                }
+                set
+                {
+                    this[this.tablePassengerTrans.AlightingStageColumn] = value;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
             public bool IsSerialNumberNull()
             {
                 return this.IsNull(this.tablePassengerTrans.SerialNumberColumn);
@@ -33815,6 +33891,34 @@ namespace Reports.Web.CrystalReports.Datasets
             public void SetCompanyNameNull()
             {
                 this[this.tablePassengerTrans.CompanyNameColumn] = global::System.Convert.DBNull;
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public bool IsBoardingStageNull()
+            {
+                return this.IsNull(this.tablePassengerTrans.BoardingStageColumn);
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public void SetBoardingStageNull()
+            {
+                this[this.tablePassengerTrans.BoardingStageColumn] = global::System.Convert.DBNull;
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public bool IsAlightingStageNull()
+            {
+                return this.IsNull(this.tablePassengerTrans.AlightingStageColumn);
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public void SetAlightingStageNull()
+            {
+                this[this.tablePassengerTrans.AlightingStageColumn] = global::System.Convert.DBNull;
             }
         }
 
