@@ -207,6 +207,12 @@
     <Compile Include="CrystalReports\Datasets\ReportDatasets.designer.cs">
       <DependentUpon>ReportDatasets.cs</DependentUpon>
     </Compile>
+    <Compile Include="CrystalReports\Rpt\Cashier\CashierSummary.cs">
+      <DependentUpon>CashierSummary.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="CrystalReports\Rpt\Cashier\TGXCashierReconciliationSummay.cs">
       <DependentUpon>TGXCashierReconciliationSummay.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -249,8 +255,8 @@
       <SubType>Component</SubType>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="CrystalReports\Rpt\Cashier\CashierSummary.cs">
-      <DependentUpon>CashierSummary.rpt</DependentUpon>
+    <Compile Include="CrystalReports\Rpt\Cashier\CashierReportAT.cs">
+      <DependentUpon>CashierReportAT.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
       <SubType>Component</SubType>
       <DesignTime>True</DesignTime>
@@ -299,6 +305,12 @@
     </Compile>
     <Compile Include="CrystalReports\Rpt\DailyAudit\DailyAuditAtamelang.cs">
       <DependentUpon>DailyAuditAtamelang.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="CrystalReports\Rpt\SecurityReport.cs">
+      <DependentUpon>SecurityReport.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
       <SubType>Component</SubType>
       <DesignTime>True</DesignTime>
@@ -703,6 +715,9 @@
     <Content Include="Views\Report\TGXCashierReconciliationReport.cshtml" />
     <Content Include="Views\Report\SalesAnalysisBySellerSignOff.cshtml" />
     <Content Include="Views\Report\SalesAnalysisBySeller.cshtml" />
+    <Content Include="Views\Report\CashierSummary.cshtml" />
+    <Content Include="Views\Report\SecurityReport.cshtml" />
+    <Content Include="Views\Report\OperationalSummary.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -733,6 +748,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="CrystalReports\Rpt\Cashier\CashierSummary.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CashierSummary.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="CrystalReports\Rpt\Cashier\TGXCashierReconciliationSummay.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>TGXCashierReconciliationSummay.cs</LastGenOutput>
@@ -761,9 +780,9 @@
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>DailyAuditByCashierTerminal.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="CrystalReports\Rpt\Cashier\CashierSummary.rpt">
+    <EmbeddedResource Include="CrystalReports\Rpt\Cashier\CashierReportAT.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>CashierSummary.cs</LastGenOutput>
+      <LastGenOutput>CashierReportAT.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="CrystalReports\Rpt\ClassSummary\ClassSummaryByClassType.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
@@ -796,6 +815,10 @@
     <EmbeddedResource Include="CrystalReports\Rpt\DailyAudit\DailyAuditAtamelang.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>DailyAuditAtamelang.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CrystalReports\Rpt\SecurityReport.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>SecurityReport.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="CrystalReports\Rpt\EarlyLateRunning.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>

@@ -158,7 +158,7 @@ namespace Reports.Web.Controllers
             DataSet ds = new SmartCardService().GetCashierSummaryReportDataset(userset.ConnectionKey, userset.CompanyName, filter);
             if (ds.Tables[0].Rows.Count > 0)
             {
-                return DownLoadReportByDataSet(filter.ExcelOrPDF, "~/CrystalReports/Rpt/Cashier/CashierSummary.rpt", ds, "CashierReport ");
+                return DownLoadReportByDataSet(filter.ExcelOrPDF, "~/CrystalReports/Rpt/Cashier/CashierReportAT.rpt", ds, "CashierReport ");
             }
             else
             {
@@ -446,7 +446,7 @@ namespace Reports.Web.Controllers
 
             UserSettings userset = GetUserSettings();
 
-            CashierServices service = new CashierServices();
+            CashierService service = new CashierService();
 
             DataSet ds = new SmartCardService().GetSmartCardUsageData(userset.ConnectionKey, userset.CompanyName, filter.NumberOfTimesUsed.Value, filter.StartDate, filter.EndDate);
             if (ds.Tables[0].Rows.Count > 0)
@@ -486,7 +486,7 @@ namespace Reports.Web.Controllers
             string duties = filter.DutiesSelected == null ? "" : string.Join(",", filter.DutiesSelected);
             string consSel = filter.ContractsSelected == null ? "" : string.Join(",", filter.ContractsSelected);
 
-            CashierServices service = new CashierServices();
+            CashierService service = new CashierService();
 
             DataSet ds = new DutySheetsService().GetTimeTableDetails(userset.ConnectionKey, userset.CompanyName, filter.ShowAllOperatingDays, filter.DutyDate, duties, consSel);
             if (ds.Tables[0].Rows.Count > 0)
@@ -521,7 +521,7 @@ namespace Reports.Web.Controllers
             UserSettings userset = GetUserSettings();
             string duties = filter.DutiesSelected == null ? "" : string.Join(",", filter.DutiesSelected);
 
-            CashierServices service = new CashierServices();
+            CashierService service = new CashierService();
 
             DataSet ds = new DutySheetsService().GetDutySheetDetails(userset.ConnectionKey, userset.CompanyName, filter.ShowAllOperatingDays, filter.DutyDate, duties);
             if (ds.Tables[0].Rows.Count > 0)
@@ -593,7 +593,7 @@ namespace Reports.Web.Controllers
             string conKey = userset.ConnectionKey;
             string comp = userset.CompanyName;
 
-            CashierServices service = new CashierServices();
+            CashierService service = new CashierService();
 
             DataSet ds = new InspectorReportService().GetDriverTransactionDetails(conKey, CustomDateTime.ConvertStringToDateSaFormat(filter.StartDate), Convert.ToInt32(filter.DriversSelected), comp);
             if (ds.Tables[0].Rows.Count > 0)
@@ -748,7 +748,6 @@ namespace Reports.Web.Controllers
             return RedirectToAction("Index", "Report");
         }
 
-
         private ActionResult GenerateFormESummaryExcelReport(DataTable dt)
         {
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
@@ -861,9 +860,6 @@ namespace Reports.Web.Controllers
                 Sheet.Cells[$"A7:Q7"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
                 #endregion
 
-
-
-
                 //Sort datatable based on Contract
 
                 dt.DefaultView.Sort = "Contract asc";
@@ -872,7 +868,7 @@ namespace Reports.Web.Controllers
                 string previousContract = string.Empty;
                 foreach (DataRow row in dt.Rows)
                 {
-                    var currentContract = row["Contract"].ToString();
+                    string currentContract = row["Contract"].ToString();
                     if (previousContract != currentContract)
                     {
                         if (!string.IsNullOrEmpty(previousContract))
@@ -950,7 +946,7 @@ namespace Reports.Web.Controllers
                     Sheet.Cells[$"N{currColumn}"].Value = "R " + row["NonRevenue"];
                     Sheet.Cells[$"O{currColumn}"].Value = "R " + row["TotalRevenue"];
                     Sheet.Cells[$"P{currColumn}"].Value = row["AvgPassengerPerTrip"];
-                    Sheet.Cells[$"Q{currColumn}"].Value = "R " + Convert.ToDouble(row["AvgRevenuePerTrip"]).ToString(".00"); 
+                    Sheet.Cells[$"Q{currColumn}"].Value = "R " + Convert.ToDouble(row["AvgRevenuePerTrip"]).ToString(".00");
 
                     scheduledTrip += Convert.ToInt32(row["ScheduledTrips"]);
                     operatedTrips += Convert.ToInt32(row["OperatedTrips"]);
@@ -1033,7 +1029,7 @@ namespace Reports.Web.Controllers
                 Sheet.Cells[$"A1:Q{currColumn}"].Style.Border.Right.Style = ExcelBorderStyle.Thin;
                 Sheet.Cells[$"A1:Q{currColumn}"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
 
-                var fileStream = new MemoryStream();
+                MemoryStream fileStream = new MemoryStream();
                 excelPackage.SaveAs(fileStream);
                 fileStream.Position = 0;
 
@@ -1089,7 +1085,6 @@ namespace Reports.Web.Controllers
             }
             return RedirectToAction("Index", "Report");
         }
-
 
         public ActionResult DownloadFullDuty(SchVsOprViewModel filters, string rptPath, string fileName, string spName, bool isFormE = false)
         {
@@ -2143,6 +2138,201 @@ namespace Reports.Web.Controllers
 
         #endregion
 
+        #region Security Report
+
+        public ActionResult SecurityReport()
+        {
+            SecurityReportService service = new SecurityReportService();
+            string conKey = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey;
+
+            SecurityReportFilter model = service.GetSecurityReportFilter(conKey);
+
+            return View("SecurityReport", model);
+        }
+
+        public ActionResult SecurityReportDownload(SecurityReportFilter filters)
+        {
+            string conKey = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey;
+            string comp = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.CompanyName;
+
+            SecurityReportService service = new SecurityReportService();
+
+            DataSet ds = service.GetSecurityReportDataSet(conKey, filters, comp);
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                CrystalDecisions.Shared.ExportFormatType fileType = filters.ExcelOrPDF ? CrystalDecisions.Shared.ExportFormatType.PortableDocFormat : CrystalDecisions.Shared.ExportFormatType.Excel;
+
+                ReportClass rptH = new ReportClass
+                {
+                    FileName = Server.MapPath("~/CrystalReports/Rpt/SecurityReport.rpt")
+                };
+
+                try
+                {
+                    rptH.Load();
+
+                    rptH.SetDataSource(ds.Tables[0]);
+
+                    rptH.ExportToHttpResponse(fileType, System.Web.HttpContext.Current.Response, true, "SecurityReport" + DateTime.Now.ToString("dd-MM-yyyy H:mm:ss"));
+
+                    return new DownloadPdfResult(rptH, "Security Report " + DateTime.Now.ToString("dd-MM-yyyy H:mm:ss"));
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+                finally
+                {
+                    rptH.Close();
+                    rptH.Dispose();
+                }
+
+            }
+            else
+            {
+                TempData["AlertMessage"] = "show";
+                return RedirectToAction("DailyInspectorReport", "Report");
+            }
+
+        }
+
+        #endregion
+
+        #region OperationalSummary
+
+        public ActionResult OperationalSummaryReport()
+        {
+            OperationalSummaryService service = new OperationalSummaryService();
+            string conKey = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey;
+
+            OperationalSummaryReportFilter model = service.GetOperationalSummaryReportFilter(conKey);
+
+            return View("OperationalSummary", model);
+        }
+
+        public ActionResult OperationalSummaryReportDownload(OperationalSummaryReportFilter filters)
+        {
+            string conKey = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey;
+            string comp = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.CompanyName;
+
+            OperationalSummaryService service = new OperationalSummaryService();
+
+
+            DataSet ds = service.GetOperationalSummaryDataSet(conKey, filters, comp);
+
+            return GenerateOperationalSummaryExcelReport(ds, filters);
+
+        }
+
+        private ActionResult GenerateOperationalSummaryExcelReport(DataSet ds, OperationalSummaryReportFilter filters)
+        {
+
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+            using (ExcelPackage excelPackage = new ExcelPackage())
+            {
+                if (filters.ReportSelected == null)
+                {
+                    FillWorkSheet("RevenueByDuty", ds.Tables[0], excelPackage, filters);
+                    FillWorkSheet("RevenueByDriver", ds.Tables[1], excelPackage, filters);
+                    FillWorkSheet("RevenueByRoute", ds.Tables[2], excelPackage, filters);
+                    FillWorkSheet("InspectionsByInspector", ds.Tables[3], excelPackage, filters);
+                    FillWorkSheet("BussesNotInspected", ds.Tables[4], excelPackage, filters);
+                }
+                else
+                {
+                    foreach (string report in filters.ReportSelected)
+                    {
+                        switch (report)
+                        {
+                            case "RevenueByDuty":
+                                FillWorkSheet("RevenueByDuty", ds.Tables[0], excelPackage, filters);
+                                break;
+                            case "RevenueByDriver":
+                                FillWorkSheet("RevenueByDriver", ds.Tables[1], excelPackage, filters);
+                                break;
+                            case "RevenueByRoute":
+                                FillWorkSheet("RevenueByRoute", ds.Tables[2], excelPackage, filters);
+                                break;
+                            case "InspectionsByInspector":
+                                FillWorkSheet("InspectionsByInspector", ds.Tables[3], excelPackage, filters);
+                                break;
+                            case "BussesNotInspected":
+                                FillWorkSheet("BussesNotInspected", ds.Tables[4], excelPackage, filters);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+
+                MemoryStream fileStream = new MemoryStream();
+                excelPackage.SaveAs(fileStream);
+                fileStream.Position = 0;
+
+                return new FileStreamResult(fileStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") { FileDownloadName = $"OperationalSummary {DateTime.Now.ToString("dd-MM-yyyy H:mm:ss")}.xlsx" };
+            }
+        }
+
+        public void FillWorkSheet(string sheetName, DataTable dt, ExcelPackage excelPackage, OperationalSummaryReportFilter filters)
+        {
+            if (dt != null)
+            {
+                int colCount = 0;
+                int actualRowCount = 2;
+                int colNumber = 0;
+
+                ExcelWorksheet workBook = excelPackage.Workbook.Worksheets.Add(sheetName);
+
+                colCount = dt.Columns.Count;
+
+                workBook.Cells[1, 1, 1, colCount].Merge = true;
+                workBook.Cells[1, 1, 1, colCount].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                workBook.Cells[1, 1, 1, colCount].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                workBook.Cells[1, 1, 1, colCount].Style.Font.Size = 12;
+                workBook.Cells[1, 1, 1, colCount].Style.Font.Bold = true;
+                workBook.Cells[1, 1, 1, colCount].Value = $"{ sheetName}  From: {filters.StartDate} To: {filters.EndDate}";
+                workBook.Cells[1, 1, 1, colCount].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                workBook.Cells[1, 1, 1, colCount].Style.Fill.BackgroundColor.SetColor(Color.Gray);
+
+
+
+                for (int i = 0; i < colCount; i++)
+                {
+                    colNumber = i + 1;
+                    workBook.Cells[actualRowCount, colNumber].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                    workBook.Cells[actualRowCount, colNumber].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                    workBook.Cells[actualRowCount, colNumber].Style.Font.Size = 12;
+                    workBook.Cells[actualRowCount, colNumber].Style.Font.Bold = true;
+                    workBook.Cells[actualRowCount, colNumber].Value = dt.Columns[i];
+                    workBook.Cells[actualRowCount, colNumber].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                    workBook.Cells[actualRowCount, colNumber].Style.Fill.BackgroundColor.SetColor(Color.Yellow);
+                    workBook.Cells[actualRowCount, colNumber].Style.Border.Top.Style = ExcelBorderStyle.Thick;
+                    workBook.Cells[actualRowCount, colNumber].Style.Border.Right.Style = ExcelBorderStyle.Thick;
+                    workBook.Cells[actualRowCount, colNumber].Style.Border.Bottom.Style = ExcelBorderStyle.Thick;
+                    workBook.Cells[actualRowCount, colNumber].Style.Border.Left.Style = ExcelBorderStyle.Thick;
+                    workBook.Cells[actualRowCount, colNumber].AutoFitColumns();
+                }
+
+
+                foreach (DataRow dataRow in dt.Rows)
+                {
+                    actualRowCount++;
+                    for (int col = 0; col < colCount; col++)
+                    {
+                        workBook.Cells[actualRowCount, col + 1].Value = dataRow[col];
+                    }
+                }
+
+                workBook.Cells[1, 1, dt.Rows.Count + 1, dt.Columns.Count].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                workBook.Cells[1, 1, dt.Rows.Count + 1, dt.Columns.Count].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                workBook.Cells[1, 1, dt.Rows.Count + 1, dt.Columns.Count].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                workBook.Cells[1, 1, dt.Rows.Count + 1, dt.Columns.Count].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+            }
+
+        }
+        #endregion
+
         #region Origin AnalysisByRoute
 
         public ActionResult OriginAnalysisByRoute()
@@ -2415,7 +2605,7 @@ namespace Reports.Web.Controllers
                 return RedirectToAction("SalesAnalysisBySellerSignOff", "Report");
             }
 
-        }        
+        }
 
         #endregion
 
@@ -2450,7 +2640,7 @@ namespace Reports.Web.Controllers
                 return RedirectToAction("SalesAnalysisBySeller", "Report");
             }
 
-        }        
+        }
 
         #endregion
 
@@ -2470,7 +2660,7 @@ namespace Reports.Web.Controllers
             string conKey = userset.ConnectionKey;
             string comp = userset.CompanyName;
 
-            CashierServices service = new CashierServices();
+            CashierService service = new CashierService();
 
             DataSet ds = service.GetCashierDataSet(conKey, filters, comp);
             if (ds.Tables[0].Rows.Count > 0)
@@ -2487,6 +2677,43 @@ namespace Reports.Web.Controllers
 
         #endregion
 
+        #region Cahier Summary
+
+        public ActionResult CashierSummary()
+        {
+            CashierFilter model = new CashierFilter();
+            CashierService service = new CashierService();
+
+            UserSettings userset = GetUserSettings();
+            string conKey = userset.ConnectionKey;
+
+            model.Cashiers = service.GetAllCashier(conKey).ToList();
+
+            return View("CashierSummary", model);
+        }
+
+        public ActionResult CashierSummaryDownload(CashierFilter filters)
+        {
+            UserSettings userset = GetUserSettings();
+            string conKey = userset.ConnectionKey;
+            string comp = userset.CompanyName;
+
+            CashierService service = new CashierService();
+
+            DataSet ds = service.GetCashierSummaryDataSet(conKey, filters, comp);
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                return DownLoadReportByDataSet(filters.ExcelOrPDF, "~/CrystalReports/Rpt/Cashier/CashierSummary.rpt", ds, "CashierSummary ");
+            }
+            else
+            {
+                TempData["AlertMessage"] = "show";
+                return RedirectToAction("CashierSummary", "Report");
+            }
+
+        }
+
+        #endregion
         #region Helpers
 
         private ActionResult DownLoadReportByDataSet(bool excelOrPDF, string rptPath, DataSet ds, string reportName)

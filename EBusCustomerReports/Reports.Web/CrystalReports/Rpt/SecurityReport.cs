@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Reports.Web.CrystalReports.Rpt.Cashier {
+namespace Reports.Web.CrystalReports.Rpt {
     using System;
     using System.ComponentModel;
     using CrystalDecisions.Shared;
@@ -16,14 +16,14 @@ namespace Reports.Web.CrystalReports.Rpt.Cashier {
     using CrystalDecisions.CrystalReports.Engine;
     
     
-    public class CashierSummary : ReportClass {
+    public class SecurityReport : ReportClass {
         
-        public CashierSummary() {
+        public SecurityReport() {
         }
         
         public override string ResourceName {
             get {
-                return "CashierSummary.rpt";
+                return "SecurityReport.rpt";
             }
             set {
                 // Do nothing
@@ -41,7 +41,7 @@ namespace Reports.Web.CrystalReports.Rpt.Cashier {
         
         public override string FullResourceName {
             get {
-                return "Reports.Web.CrystalReports.Rpt.Cashier.CashierSummary.rpt";
+                return "Reports.Web.CrystalReports.Rpt.SecurityReport.rpt";
             }
             set {
                 // Do nothing
@@ -66,7 +66,7 @@ namespace Reports.Web.CrystalReports.Rpt.Cashier {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section Section3 {
+        public CrystalDecisions.CrystalReports.Engine.Section GroupHeaderSection1 {
             get {
                 return this.ReportDefinition.Sections[2];
             }
@@ -74,7 +74,7 @@ namespace Reports.Web.CrystalReports.Rpt.Cashier {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section Section4 {
+        public CrystalDecisions.CrystalReports.Engine.Section Section3 {
             get {
                 return this.ReportDefinition.Sections[3];
             }
@@ -82,17 +82,33 @@ namespace Reports.Web.CrystalReports.Rpt.Cashier {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section Section5 {
+        public CrystalDecisions.CrystalReports.Engine.Section GroupFooterSection1 {
             get {
                 return this.ReportDefinition.Sections[4];
+            }
+        }
+        
+        [Browsable(false)]
+        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        public CrystalDecisions.CrystalReports.Engine.Section Section4 {
+            get {
+                return this.ReportDefinition.Sections[5];
+            }
+        }
+        
+        [Browsable(false)]
+        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        public CrystalDecisions.CrystalReports.Engine.Section Section5 {
+            get {
+                return this.ReportDefinition.Sections[6];
             }
         }
     }
     
     [System.Drawing.ToolboxBitmapAttribute(typeof(CrystalDecisions.Shared.ExportOptions), "report.bmp")]
-    public class CachedCashierSummary : Component, ICachedReport {
+    public class CachedSecurityReport : Component, ICachedReport {
         
-        public CachedCashierSummary() {
+        public CachedSecurityReport() {
         }
         
         [Browsable(false)]
@@ -129,7 +145,7 @@ namespace Reports.Web.CrystalReports.Rpt.Cashier {
         }
         
         public virtual CrystalDecisions.CrystalReports.Engine.ReportDocument CreateReport() {
-            CashierSummary rpt = new CashierSummary();
+            SecurityReport rpt = new SecurityReport();
             rpt.Site = this.Site;
             return rpt;
         }

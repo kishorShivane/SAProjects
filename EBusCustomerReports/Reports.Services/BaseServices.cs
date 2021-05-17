@@ -567,7 +567,6 @@ namespace Reports.Services
             table1.Columns.Add("driverno"); //4
             table1.Columns.Add("busid"); //5
             table1.Columns.Add("inspectorno"); //6
-            table1.Columns[5].DataType = typeof(Int32);
 
             table1.Columns.Add("int4_dutyid"); //7
             table1.Columns.Add("int2_stageid"); //8
@@ -694,6 +693,20 @@ namespace Reports.Services
             table1.Columns.Add("CompanyName");//9
             table1.Columns.Add("DateTime"); //10
 
+            return table1;
+        }
+
+
+        public DataTable CashierSummaryDataSet()
+        {
+            var table1 = new DataTable("CashierSummaryDataSet");
+            table1.Columns.Add("CashierName"); //0
+            table1.Columns.Add("CashierID"); //1
+            table1.Columns.Add("Revenue"); //2
+            table1.Columns[2].DataType = typeof(Decimal);
+            table1.Columns.Add("dateFilter"); //3
+            table1.Columns.Add("Cashiers");//4
+            table1.Columns.Add("CompanyName");//5
             return table1;
         }
 

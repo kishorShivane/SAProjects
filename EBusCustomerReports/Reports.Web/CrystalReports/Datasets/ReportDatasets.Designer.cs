@@ -72,6 +72,8 @@ namespace Reports.Web.CrystalReports.Datasets
 
         private SellerSummaryDataTable tableSellerSummary;
 
+        private CashierSummaryOnlyDataTable tableCashierSummaryOnly;
+
         private global::System.Data.SchemaSerializationMode _schemaSerializationMode = global::System.Data.SchemaSerializationMode.IncludeSchema;
 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -195,6 +197,10 @@ namespace Reports.Web.CrystalReports.Datasets
                 if ((ds.Tables["SellerSummary"] != null))
                 {
                     base.Tables.Add(new SellerSummaryDataTable(ds.Tables["SellerSummary"]));
+                }
+                if ((ds.Tables["CashierSummaryOnly"] != null))
+                {
+                    base.Tables.Add(new CashierSummaryOnlyDataTable(ds.Tables["CashierSummaryOnly"]));
                 }
                 this.DataSetName = ds.DataSetName;
                 this.Prefix = ds.Prefix;
@@ -493,6 +499,18 @@ namespace Reports.Web.CrystalReports.Datasets
 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+        [global::System.ComponentModel.Browsable(false)]
+        [global::System.ComponentModel.DesignerSerializationVisibility(global::System.ComponentModel.DesignerSerializationVisibility.Content)]
+        public CashierSummaryOnlyDataTable CashierSummaryOnly
+        {
+            get
+            {
+                return this.tableCashierSummaryOnly;
+            }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
         [global::System.ComponentModel.BrowsableAttribute(true)]
         [global::System.ComponentModel.DesignerSerializationVisibilityAttribute(global::System.ComponentModel.DesignerSerializationVisibility.Visible)]
         public override global::System.Data.SchemaSerializationMode SchemaSerializationMode
@@ -662,6 +680,10 @@ namespace Reports.Web.CrystalReports.Datasets
                 if ((ds.Tables["SellerSummary"] != null))
                 {
                     base.Tables.Add(new SellerSummaryDataTable(ds.Tables["SellerSummary"]));
+                }
+                if ((ds.Tables["CashierSummaryOnly"] != null))
+                {
+                    base.Tables.Add(new CashierSummaryOnlyDataTable(ds.Tables["CashierSummaryOnly"]));
                 }
                 this.DataSetName = ds.DataSetName;
                 this.Prefix = ds.Prefix;
@@ -884,6 +906,14 @@ namespace Reports.Web.CrystalReports.Datasets
                     this.tableSellerSummary.InitVars();
                 }
             }
+            this.tableCashierSummaryOnly = ((CashierSummaryOnlyDataTable)(base.Tables["CashierSummaryOnly"]));
+            if ((initTable == true))
+            {
+                if ((this.tableCashierSummaryOnly != null))
+                {
+                    this.tableCashierSummaryOnly.InitVars();
+                }
+            }
         }
 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -941,6 +971,8 @@ namespace Reports.Web.CrystalReports.Datasets
             base.Tables.Add(this.tablePassengerTrans);
             this.tableSellerSummary = new SellerSummaryDataTable();
             base.Tables.Add(this.tableSellerSummary);
+            this.tableCashierSummaryOnly = new CashierSummaryOnlyDataTable();
+            base.Tables.Add(this.tableCashierSummaryOnly);
         }
 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1106,6 +1138,13 @@ namespace Reports.Web.CrystalReports.Datasets
 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+        private bool ShouldSerializeCashierSummaryOnly()
+        {
+            return false;
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
         private void SchemaChanged(object sender, global::System.ComponentModel.CollectionChangeEventArgs e)
         {
             if ((e.Action == global::System.ComponentModel.CollectionChangeAction.Remove))
@@ -1239,6 +1278,9 @@ namespace Reports.Web.CrystalReports.Datasets
 
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
         public delegate void SellerSummaryRowChangeEventHandler(object sender, SellerSummaryRowChangeEvent e);
+
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+        public delegate void CashierSummaryOnlyRowChangeEventHandler(object sender, CashierSummaryOnlyRowChangeEvent e);
 
         /// <summary>
         ///Represents the strongly named DataTable class.
@@ -4319,7 +4361,7 @@ namespace Reports.Web.CrystalReports.Datasets
 
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
-            public InspectorReportRow AddInspectorReportRow(string stagetime, string journeyid, string routeId, string driverno, int busid, int inspectorno, string int4_dutyid, string int2_stageid, string StageName, string InsDate, string InsTime, string DateRangeFilter, string CompanyName, string DriversFilter)
+            public InspectorReportRow AddInspectorReportRow(string stagetime, string journeyid, string routeId, string driverno, int busid, string inspectorno, string int4_dutyid, string int2_stageid, string StageName, string InsDate, string InsTime, string DateRangeFilter, string CompanyName, string DriversFilter)
             {
                 InspectorReportRow rowInspectorReportRow = ((InspectorReportRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
@@ -4392,7 +4434,7 @@ namespace Reports.Web.CrystalReports.Datasets
                 base.Columns.Add(this.columndriverno);
                 this.columnbusid = new global::System.Data.DataColumn("busid", typeof(int), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnbusid);
-                this.columninspectorno = new global::System.Data.DataColumn("inspectorno", typeof(int), null, global::System.Data.MappingType.Element);
+                this.columninspectorno = new global::System.Data.DataColumn("inspectorno", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columninspectorno);
                 this.columnint4_dutyid = new global::System.Data.DataColumn("int4_dutyid", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnint4_dutyid);
@@ -16136,6 +16178,375 @@ namespace Reports.Web.CrystalReports.Datasets
         }
 
         /// <summary>
+        ///Represents the strongly named DataTable class.
+        ///</summary>
+        [global::System.Serializable()]
+        [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedTableSchema")]
+        public partial class CashierSummaryOnlyDataTable : global::System.Data.TypedTableBase<CashierSummaryOnlyRow>
+        {
+
+            private global::System.Data.DataColumn columnCashierName;
+
+            private global::System.Data.DataColumn columnCashierID;
+
+            private global::System.Data.DataColumn columnRevenue;
+
+            private global::System.Data.DataColumn columndateFilter;
+
+            private global::System.Data.DataColumn columncompanyName;
+
+            private global::System.Data.DataColumn columnCashiers;
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public CashierSummaryOnlyDataTable()
+            {
+                this.TableName = "CashierSummaryOnly";
+                this.BeginInit();
+                this.InitClass();
+                this.EndInit();
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            internal CashierSummaryOnlyDataTable(global::System.Data.DataTable table)
+            {
+                this.TableName = table.TableName;
+                if ((table.CaseSensitive != table.DataSet.CaseSensitive))
+                {
+                    this.CaseSensitive = table.CaseSensitive;
+                }
+                if ((table.Locale.ToString() != table.DataSet.Locale.ToString()))
+                {
+                    this.Locale = table.Locale;
+                }
+                if ((table.Namespace != table.DataSet.Namespace))
+                {
+                    this.Namespace = table.Namespace;
+                }
+                this.Prefix = table.Prefix;
+                this.MinimumCapacity = table.MinimumCapacity;
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            protected CashierSummaryOnlyDataTable(global::System.Runtime.Serialization.SerializationInfo info, global::System.Runtime.Serialization.StreamingContext context) :
+                    base(info, context)
+            {
+                this.InitVars();
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public global::System.Data.DataColumn CashierNameColumn
+            {
+                get
+                {
+                    return this.columnCashierName;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public global::System.Data.DataColumn CashierIDColumn
+            {
+                get
+                {
+                    return this.columnCashierID;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public global::System.Data.DataColumn RevenueColumn
+            {
+                get
+                {
+                    return this.columnRevenue;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public global::System.Data.DataColumn dateFilterColumn
+            {
+                get
+                {
+                    return this.columndateFilter;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public global::System.Data.DataColumn companyNameColumn
+            {
+                get
+                {
+                    return this.columncompanyName;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public global::System.Data.DataColumn CashiersColumn
+            {
+                get
+                {
+                    return this.columnCashiers;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            [global::System.ComponentModel.Browsable(false)]
+            public int Count
+            {
+                get
+                {
+                    return this.Rows.Count;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public CashierSummaryOnlyRow this[int index]
+            {
+                get
+                {
+                    return ((CashierSummaryOnlyRow)(this.Rows[index]));
+                }
+            }
+
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public event CashierSummaryOnlyRowChangeEventHandler CashierSummaryOnlyRowChanging;
+
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public event CashierSummaryOnlyRowChangeEventHandler CashierSummaryOnlyRowChanged;
+
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public event CashierSummaryOnlyRowChangeEventHandler CashierSummaryOnlyRowDeleting;
+
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public event CashierSummaryOnlyRowChangeEventHandler CashierSummaryOnlyRowDeleted;
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public void AddCashierSummaryOnlyRow(CashierSummaryOnlyRow row)
+            {
+                this.Rows.Add(row);
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public CashierSummaryOnlyRow AddCashierSummaryOnlyRow(string CashierName, string CashierID, decimal Revenue, string dateFilter, string companyName, string Cashiers)
+            {
+                CashierSummaryOnlyRow rowCashierSummaryOnlyRow = ((CashierSummaryOnlyRow)(this.NewRow()));
+                object[] columnValuesArray = new object[] {
+                        CashierName,
+                        CashierID,
+                        Revenue,
+                        dateFilter,
+                        companyName,
+                        Cashiers};
+                rowCashierSummaryOnlyRow.ItemArray = columnValuesArray;
+                this.Rows.Add(rowCashierSummaryOnlyRow);
+                return rowCashierSummaryOnlyRow;
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public override global::System.Data.DataTable Clone()
+            {
+                CashierSummaryOnlyDataTable cln = ((CashierSummaryOnlyDataTable)(base.Clone()));
+                cln.InitVars();
+                return cln;
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            protected override global::System.Data.DataTable CreateInstance()
+            {
+                return new CashierSummaryOnlyDataTable();
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            internal void InitVars()
+            {
+                this.columnCashierName = base.Columns["CashierName"];
+                this.columnCashierID = base.Columns["CashierID"];
+                this.columnRevenue = base.Columns["Revenue"];
+                this.columndateFilter = base.Columns["dateFilter"];
+                this.columncompanyName = base.Columns["companyName"];
+                this.columnCashiers = base.Columns["Cashiers"];
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            private void InitClass()
+            {
+                this.columnCashierName = new global::System.Data.DataColumn("CashierName", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnCashierName);
+                this.columnCashierID = new global::System.Data.DataColumn("CashierID", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnCashierID);
+                this.columnRevenue = new global::System.Data.DataColumn("Revenue", typeof(decimal), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnRevenue);
+                this.columndateFilter = new global::System.Data.DataColumn("dateFilter", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columndateFilter);
+                this.columncompanyName = new global::System.Data.DataColumn("companyName", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columncompanyName);
+                this.columnCashiers = new global::System.Data.DataColumn("Cashiers", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnCashiers);
+                this.columnCashiers.Caption = "Locations";
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public CashierSummaryOnlyRow NewCashierSummaryOnlyRow()
+            {
+                return ((CashierSummaryOnlyRow)(this.NewRow()));
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            protected override global::System.Data.DataRow NewRowFromBuilder(global::System.Data.DataRowBuilder builder)
+            {
+                return new CashierSummaryOnlyRow(builder);
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            protected override global::System.Type GetRowType()
+            {
+                return typeof(CashierSummaryOnlyRow);
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            protected override void OnRowChanged(global::System.Data.DataRowChangeEventArgs e)
+            {
+                base.OnRowChanged(e);
+                if ((this.CashierSummaryOnlyRowChanged != null))
+                {
+                    this.CashierSummaryOnlyRowChanged(this, new CashierSummaryOnlyRowChangeEvent(((CashierSummaryOnlyRow)(e.Row)), e.Action));
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            protected override void OnRowChanging(global::System.Data.DataRowChangeEventArgs e)
+            {
+                base.OnRowChanging(e);
+                if ((this.CashierSummaryOnlyRowChanging != null))
+                {
+                    this.CashierSummaryOnlyRowChanging(this, new CashierSummaryOnlyRowChangeEvent(((CashierSummaryOnlyRow)(e.Row)), e.Action));
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            protected override void OnRowDeleted(global::System.Data.DataRowChangeEventArgs e)
+            {
+                base.OnRowDeleted(e);
+                if ((this.CashierSummaryOnlyRowDeleted != null))
+                {
+                    this.CashierSummaryOnlyRowDeleted(this, new CashierSummaryOnlyRowChangeEvent(((CashierSummaryOnlyRow)(e.Row)), e.Action));
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            protected override void OnRowDeleting(global::System.Data.DataRowChangeEventArgs e)
+            {
+                base.OnRowDeleting(e);
+                if ((this.CashierSummaryOnlyRowDeleting != null))
+                {
+                    this.CashierSummaryOnlyRowDeleting(this, new CashierSummaryOnlyRowChangeEvent(((CashierSummaryOnlyRow)(e.Row)), e.Action));
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public void RemoveCashierSummaryOnlyRow(CashierSummaryOnlyRow row)
+            {
+                this.Rows.Remove(row);
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public static global::System.Xml.Schema.XmlSchemaComplexType GetTypedTableSchema(global::System.Xml.Schema.XmlSchemaSet xs)
+            {
+                global::System.Xml.Schema.XmlSchemaComplexType type = new global::System.Xml.Schema.XmlSchemaComplexType();
+                global::System.Xml.Schema.XmlSchemaSequence sequence = new global::System.Xml.Schema.XmlSchemaSequence();
+                ReportDatasets ds = new ReportDatasets();
+                global::System.Xml.Schema.XmlSchemaAny any1 = new global::System.Xml.Schema.XmlSchemaAny();
+                any1.Namespace = "http://www.w3.org/2001/XMLSchema";
+                any1.MinOccurs = new decimal(0);
+                any1.MaxOccurs = decimal.MaxValue;
+                any1.ProcessContents = global::System.Xml.Schema.XmlSchemaContentProcessing.Lax;
+                sequence.Items.Add(any1);
+                global::System.Xml.Schema.XmlSchemaAny any2 = new global::System.Xml.Schema.XmlSchemaAny();
+                any2.Namespace = "urn:schemas-microsoft-com:xml-diffgram-v1";
+                any2.MinOccurs = new decimal(1);
+                any2.ProcessContents = global::System.Xml.Schema.XmlSchemaContentProcessing.Lax;
+                sequence.Items.Add(any2);
+                global::System.Xml.Schema.XmlSchemaAttribute attribute1 = new global::System.Xml.Schema.XmlSchemaAttribute();
+                attribute1.Name = "namespace";
+                attribute1.FixedValue = ds.Namespace;
+                type.Attributes.Add(attribute1);
+                global::System.Xml.Schema.XmlSchemaAttribute attribute2 = new global::System.Xml.Schema.XmlSchemaAttribute();
+                attribute2.Name = "tableTypeName";
+                attribute2.FixedValue = "CashierSummaryOnlyDataTable";
+                type.Attributes.Add(attribute2);
+                type.Particle = sequence;
+                global::System.Xml.Schema.XmlSchema dsSchema = ds.GetSchemaSerializable();
+                if (xs.Contains(dsSchema.TargetNamespace))
+                {
+                    global::System.IO.MemoryStream s1 = new global::System.IO.MemoryStream();
+                    global::System.IO.MemoryStream s2 = new global::System.IO.MemoryStream();
+                    try
+                    {
+                        global::System.Xml.Schema.XmlSchema schema = null;
+                        dsSchema.Write(s1);
+                        for (global::System.Collections.IEnumerator schemas = xs.Schemas(dsSchema.TargetNamespace).GetEnumerator(); schemas.MoveNext();)
+                        {
+                            schema = ((global::System.Xml.Schema.XmlSchema)(schemas.Current));
+                            s2.SetLength(0);
+                            schema.Write(s2);
+                            if ((s1.Length == s2.Length))
+                            {
+                                s1.Position = 0;
+                                s2.Position = 0;
+                                for (; ((s1.Position != s1.Length)
+                                            && (s1.ReadByte() == s2.ReadByte()));)
+                                {
+                                    ;
+                                }
+                                if ((s1.Position == s1.Length))
+                                {
+                                    return type;
+                                }
+                            }
+                        }
+                    }
+                    finally
+                    {
+                        if ((s1 != null))
+                        {
+                            s1.Close();
+                        }
+                        if ((s2 != null))
+                        {
+                            s2.Close();
+                        }
+                    }
+                }
+                xs.Add(dsSchema);
+                return type;
+            }
+        }
+
+        /// <summary>
         ///Represents strongly named DataRow class.
         ///</summary>
         public partial class SchVsOprRow : global::System.Data.DataRow
@@ -19897,13 +20308,13 @@ namespace Reports.Web.CrystalReports.Datasets
 
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
-            public int inspectorno
+            public string inspectorno
             {
                 get
                 {
                     try
                     {
-                        return ((int)(this[this.tableInspectorReport.inspectornoColumn]));
+                        return ((string)(this[this.tableInspectorReport.inspectornoColumn]));
                     }
                     catch (global::System.InvalidCastException e)
                     {
@@ -34535,6 +34946,233 @@ namespace Reports.Web.CrystalReports.Datasets
         }
 
         /// <summary>
+        ///Represents strongly named DataRow class.
+        ///</summary>
+        public partial class CashierSummaryOnlyRow : global::System.Data.DataRow
+        {
+
+            private CashierSummaryOnlyDataTable tableCashierSummaryOnly;
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            internal CashierSummaryOnlyRow(global::System.Data.DataRowBuilder rb) :
+                    base(rb)
+            {
+                this.tableCashierSummaryOnly = ((CashierSummaryOnlyDataTable)(this.Table));
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public string CashierName
+            {
+                get
+                {
+                    try
+                    {
+                        return ((string)(this[this.tableCashierSummaryOnly.CashierNameColumn]));
+                    }
+                    catch (global::System.InvalidCastException e)
+                    {
+                        throw new global::System.Data.StrongTypingException("The value for column \'CashierName\' in table \'CashierSummaryOnly\' is DBNull.", e);
+                    }
+                }
+                set
+                {
+                    this[this.tableCashierSummaryOnly.CashierNameColumn] = value;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public string CashierID
+            {
+                get
+                {
+                    try
+                    {
+                        return ((string)(this[this.tableCashierSummaryOnly.CashierIDColumn]));
+                    }
+                    catch (global::System.InvalidCastException e)
+                    {
+                        throw new global::System.Data.StrongTypingException("The value for column \'CashierID\' in table \'CashierSummaryOnly\' is DBNull.", e);
+                    }
+                }
+                set
+                {
+                    this[this.tableCashierSummaryOnly.CashierIDColumn] = value;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public decimal Revenue
+            {
+                get
+                {
+                    try
+                    {
+                        return ((decimal)(this[this.tableCashierSummaryOnly.RevenueColumn]));
+                    }
+                    catch (global::System.InvalidCastException e)
+                    {
+                        throw new global::System.Data.StrongTypingException("The value for column \'Revenue\' in table \'CashierSummaryOnly\' is DBNull.", e);
+                    }
+                }
+                set
+                {
+                    this[this.tableCashierSummaryOnly.RevenueColumn] = value;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public string dateFilter
+            {
+                get
+                {
+                    try
+                    {
+                        return ((string)(this[this.tableCashierSummaryOnly.dateFilterColumn]));
+                    }
+                    catch (global::System.InvalidCastException e)
+                    {
+                        throw new global::System.Data.StrongTypingException("The value for column \'dateFilter\' in table \'CashierSummaryOnly\' is DBNull.", e);
+                    }
+                }
+                set
+                {
+                    this[this.tableCashierSummaryOnly.dateFilterColumn] = value;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public string companyName
+            {
+                get
+                {
+                    try
+                    {
+                        return ((string)(this[this.tableCashierSummaryOnly.companyNameColumn]));
+                    }
+                    catch (global::System.InvalidCastException e)
+                    {
+                        throw new global::System.Data.StrongTypingException("The value for column \'companyName\' in table \'CashierSummaryOnly\' is DBNull.", e);
+                    }
+                }
+                set
+                {
+                    this[this.tableCashierSummaryOnly.companyNameColumn] = value;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public string Cashiers
+            {
+                get
+                {
+                    try
+                    {
+                        return ((string)(this[this.tableCashierSummaryOnly.CashiersColumn]));
+                    }
+                    catch (global::System.InvalidCastException e)
+                    {
+                        throw new global::System.Data.StrongTypingException("The value for column \'Cashiers\' in table \'CashierSummaryOnly\' is DBNull.", e);
+                    }
+                }
+                set
+                {
+                    this[this.tableCashierSummaryOnly.CashiersColumn] = value;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public bool IsCashierNameNull()
+            {
+                return this.IsNull(this.tableCashierSummaryOnly.CashierNameColumn);
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public void SetCashierNameNull()
+            {
+                this[this.tableCashierSummaryOnly.CashierNameColumn] = global::System.Convert.DBNull;
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public bool IsCashierIDNull()
+            {
+                return this.IsNull(this.tableCashierSummaryOnly.CashierIDColumn);
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public void SetCashierIDNull()
+            {
+                this[this.tableCashierSummaryOnly.CashierIDColumn] = global::System.Convert.DBNull;
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public bool IsRevenueNull()
+            {
+                return this.IsNull(this.tableCashierSummaryOnly.RevenueColumn);
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public void SetRevenueNull()
+            {
+                this[this.tableCashierSummaryOnly.RevenueColumn] = global::System.Convert.DBNull;
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public bool IsdateFilterNull()
+            {
+                return this.IsNull(this.tableCashierSummaryOnly.dateFilterColumn);
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public void SetdateFilterNull()
+            {
+                this[this.tableCashierSummaryOnly.dateFilterColumn] = global::System.Convert.DBNull;
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public bool IscompanyNameNull()
+            {
+                return this.IsNull(this.tableCashierSummaryOnly.companyNameColumn);
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public void SetcompanyNameNull()
+            {
+                this[this.tableCashierSummaryOnly.companyNameColumn] = global::System.Convert.DBNull;
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public bool IsCashiersNull()
+            {
+                return this.IsNull(this.tableCashierSummaryOnly.CashiersColumn);
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public void SetCashiersNull()
+            {
+                this[this.tableCashierSummaryOnly.CashiersColumn] = global::System.Convert.DBNull;
+            }
+        }
+
+        /// <summary>
         ///Row event argument class
         ///</summary>
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
@@ -35436,6 +36074,46 @@ namespace Reports.Web.CrystalReports.Datasets
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
             public SellerSummaryRow Row
+            {
+                get
+                {
+                    return this.eventRow;
+                }
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public global::System.Data.DataRowAction Action
+            {
+                get
+                {
+                    return this.eventAction;
+                }
+            }
+        }
+
+        /// <summary>
+        ///Row event argument class
+        ///</summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+        public class CashierSummaryOnlyRowChangeEvent : global::System.EventArgs
+        {
+
+            private CashierSummaryOnlyRow eventRow;
+
+            private global::System.Data.DataRowAction eventAction;
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public CashierSummaryOnlyRowChangeEvent(CashierSummaryOnlyRow row, global::System.Data.DataRowAction action)
+            {
+                this.eventRow = row;
+                this.eventAction = action;
+            }
+
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public CashierSummaryOnlyRow Row
             {
                 get
                 {

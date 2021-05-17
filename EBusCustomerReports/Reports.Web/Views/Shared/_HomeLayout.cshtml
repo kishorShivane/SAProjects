@@ -233,6 +233,12 @@
                             <li>
                                 <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i>Financial</a>
                                 <ul class="nav nav-second-level">
+                                    @if (accessCodes.Contains("CS"))
+                                    {
+                                        <li>
+                                            <a href="@Url.Action("CashierSummary", "Report" )">Cashier Summary</a>
+                                        </li>
+                                    }
                                     @if (accessCodes.Contains("CRA"))
                                     {
                                         <li>
@@ -358,6 +364,18 @@
                             <li>
                                 <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i>Operational</a>
                                 <ul class="nav nav-second-level">
+                                    @if (accessCodes.Contains("OS"))
+                                    {
+                                        <li>
+                                            <a href="@Url.Action("OperationalSummary", "Report" )">Security Report</a>
+                                        </li>
+                                    }
+                                    @if (accessCodes.Contains("SR"))
+                                    {
+                                        <li>
+                                            <a href="@Url.Action("SecurityReport", "Report" )">Security Report</a>
+                                        </li>
+                                    }
                                     @if (accessCodes.Contains("DARALL"))
                                     {
                                         <li>

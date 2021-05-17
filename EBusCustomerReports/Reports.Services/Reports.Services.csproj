@@ -171,7 +171,13 @@
     <Compile Include="CashierServices.cs" />
     <Compile Include="Helpers\MasterHelper.cs" />
     <Compile Include="AssetMasterService.cs" />
+    <Compile Include="Models\SecurityReportData.cs" />
+    <Compile Include="Models\OperationalSummaryReportFilter.cs" />
+    <Compile Include="Models\SecurityReportFilter.cs" />
+    <Compile Include="OprationalSummaryService.cs" />
+    <Compile Include="SecurityReportService.cs" />
     <Compile Include="Models\AuditStatusModel.cs" />
+    <Compile Include="Models\CashierSummary.cs" />
     <Compile Include="Models\CashierReconciliationData.cs" />
     <Compile Include="Models\Asset.cs" />
     <Compile Include="Models\CashierReportMatatiele.cs" />

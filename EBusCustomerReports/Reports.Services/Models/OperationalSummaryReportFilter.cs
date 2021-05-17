@@ -8,27 +8,22 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Reports.Services.Models
 {
-    public class CashierFilter
+    public class OperationalSummaryReportFilter
     {
-        public CashierFilter()
+        public OperationalSummaryReportFilter()
         {
-            Locations = new List<SelectListItem>();
-            Cashiers = new List<SelectListItem>();
-        }
+            Reports = new List<SelectListItem>();
+            ExcelOrPDF = true; //PDF=true, EXCEL=false
+        }     
+
+        public string[] ReportSelected { get; set; }
+        public List<SelectListItem> Reports { get; set; }
 
         [Required]
         public string StartDate { get; set; }
         [Required]
         public string EndDate { get; set; }
 
-        public string[] LocationsSelected { get; set; }
-        public List<SelectListItem> Locations { get; set; }
-
         public bool ExcelOrPDF { get; set; }
-
-        public List<SelectListItem> Cashiers { get; set; }
-
-        public string[] CashierSelected { get; set; }
-
     }
 }
