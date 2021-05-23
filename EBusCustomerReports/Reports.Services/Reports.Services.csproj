@@ -172,9 +172,9 @@
     <Compile Include="Helpers\MasterHelper.cs" />
     <Compile Include="AssetMasterService.cs" />
     <Compile Include="Models\SecurityReportData.cs" />
-    <Compile Include="Models\OperationalSummaryReportFilter.cs" />
+    <Compile Include="Models\AnalyticalReportFilter.cs" />
     <Compile Include="Models\SecurityReportFilter.cs" />
-    <Compile Include="OprationalSummaryService.cs" />
+    <Compile Include="AnalyticalReportService.cs" />
     <Compile Include="SecurityReportService.cs" />
     <Compile Include="Models\AuditStatusModel.cs" />
     <Compile Include="Models\CashierSummary.cs" />

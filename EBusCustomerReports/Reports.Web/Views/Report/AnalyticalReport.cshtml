@@ -1,6 +1,6 @@
-﻿@model Reports.Services.Models.OperationalSummaryReportFilter
+﻿@model Reports.Services.Models.AnalyticalReportFilter
 @{
-    ViewBag.Title = "Operational Summary Report";
+    ViewBag.Title = "Analytical Report";
     Layout = "~/Views/Shared/_HomeLayout.cshtml";
     var date = DateTime.Now.Date;
     var accessCodes = ((Helpers.Security.EBusPrinciple)System.Threading.Thread.CurrentPrincipal).Properties.AccessCodes;
@@ -79,11 +79,11 @@
 <div id="page-wrapper">
     <div class="row">
         <div class="col-lg-12">
-            <h2 class="page-header" style="margin: 10px; color: #5e5e5e !important">Operational Summary Report</h2>
+            <h2 class="page-header" style="margin: 10px; color: #5e5e5e !important">Analytical Report</h2>
         </div>
     </div>
     <div class="row">
-        @using (Html.BeginForm("OperationalSummaryReportDownload", "Report", FormMethod.Post, new { autocomplete = "off" }))
+        @using (Html.BeginForm("AnalyticalReportDownload", "Report", FormMethod.Post, new { autocomplete = "off" }))
         {
             @Html.ValidationSummary(true)
             @Html.Partial("_Shortcut")
@@ -109,7 +109,7 @@
             </div>
             <div class="form-group width80">
                 <div align="left" class="col-md-6 col-sm-12" style="margin-top: 20px;">                
-                    @if (accessCodes.Contains("OSDE"))
+                    @if (accessCodes.Contains("ARDE"))
                     {
                         <button id="dnExcel" type="submit" class="btn btn-info">
                             Download Excel

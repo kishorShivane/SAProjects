@@ -717,7 +717,7 @@
     <Content Include="Views\Report\SalesAnalysisBySeller.cshtml" />
     <Content Include="Views\Report\CashierSummary.cshtml" />
     <Content Include="Views\Report\SecurityReport.cshtml" />
-    <Content Include="Views\Report\OperationalSummary.cshtml" />
+    <Content Include="Views\Report\AnalyticalReport.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

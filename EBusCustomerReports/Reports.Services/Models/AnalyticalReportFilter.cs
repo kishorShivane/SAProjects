@@ -8,9 +8,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Reports.Services.Models
 {
-    public class OperationalSummaryReportFilter
+    public class AnalyticalReportFilter
     {
-        public OperationalSummaryReportFilter()
+        public AnalyticalReportFilter()
         {
             Reports = new List<SelectListItem>();
             ExcelOrPDF = true; //PDF=true, EXCEL=false

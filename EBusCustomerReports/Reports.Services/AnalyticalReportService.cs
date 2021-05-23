@@ -7,11 +7,11 @@ using System.Web.Mvc;
 
 namespace Reports.Services
 {
-    public class OperationalSummaryService : BaseServices
+    public class AnalyticalReportService : BaseServices
     {
-        public OperationalSummaryReportFilter GetOperationalSummaryReportFilter(string connKey)
+        public AnalyticalReportFilter GetAnalyticalReportFilter(string connKey)
         {
-            OperationalSummaryReportFilter model = new OperationalSummaryReportFilter
+            AnalyticalReportFilter model = new AnalyticalReportFilter
             {
                 Reports = GetValidReportTypes()
             };
@@ -24,10 +24,12 @@ namespace Reports.Services
             new SelectListItem() { Text = "Revenue By Driver", Value = "RevenueByDriver" },
             new SelectListItem() { Text = "Revenue By Route", Value = "RevenueByRoute" },
             new SelectListItem() { Text = "Inspections By Inspector", Value = "InspectionsByInspector" },
-            new SelectListItem() { Text = "Busses Not Inspected", Value = "BussesNotInspected" } };
+            new SelectListItem() { Text = "Busses Not Inspected", Value = "BussesNotInspected" },
+            new SelectListItem() { Text = "Daily Audit", Value = "DailyAudit" } ,
+            new SelectListItem() { Text = "Cashier Report", Value = "CashierReport" } };
         }
 
-        public DataSet GetOperationalSummaryDataSet(string conKey, OperationalSummaryReportFilter filters, string companyName)
+        public DataSet GetAnalyticalDataSet(string conKey, AnalyticalReportFilter filters, string companyName)
         {
             var result = new DataSet();
             SqlConnection myConnection = new SqlConnection(GetConnectionString(conKey));
@@ -38,7 +40,7 @@ namespace Reports.Services
                 {
                     cmd.Connection = myConnection;
                     cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.CommandText = "EbusOperationalSummaryReport";
+                    cmd.CommandText = "EbusAnalyticalReport";
 
                     cmd.Parameters.AddWithValue("@fromDate", filters.StartDate);
                     cmd.Parameters.AddWithValue("@toDate", filters.EndDate);

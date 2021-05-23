@@ -2198,33 +2198,31 @@ namespace Reports.Web.Controllers
 
         #endregion
 
-        #region OperationalSummary
+        #region AnalyticalReport
 
-        public ActionResult OperationalSummaryReport()
+        public ActionResult AnalyticalReport()
         {
-            OperationalSummaryService service = new OperationalSummaryService();
+            AnalyticalReportService service = new AnalyticalReportService();
             string conKey = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey;
 
-            OperationalSummaryReportFilter model = service.GetOperationalSummaryReportFilter(conKey);
+            AnalyticalReportFilter model = service.GetAnalyticalReportFilter(conKey);
 
-            return View("OperationalSummary", model);
+            return View("AnalyticalReport", model);
         }
 
-        public ActionResult OperationalSummaryReportDownload(OperationalSummaryReportFilter filters)
+        public ActionResult AnalyticalReportDownload(AnalyticalReportFilter filters)
         {
             string conKey = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.ConnKey;
             string comp = ((EBusPrinciple)Thread.CurrentPrincipal).Properties.CompanyName;
 
-            OperationalSummaryService service = new OperationalSummaryService();
+            AnalyticalReportService service = new AnalyticalReportService();
 
+            DataSet ds = service.GetAnalyticalDataSet(conKey, filters, comp);
 
-            DataSet ds = service.GetOperationalSummaryDataSet(conKey, filters, comp);
-
-            return GenerateOperationalSummaryExcelReport(ds, filters);
-
+            return GenerateAnalyticalExcelReport(ds, filters);
         }
 
-        private ActionResult GenerateOperationalSummaryExcelReport(DataSet ds, OperationalSummaryReportFilter filters)
+        private ActionResult GenerateAnalyticalExcelReport(DataSet ds, AnalyticalReportFilter filters)
         {
 
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
@@ -2238,6 +2236,8 @@ namespace Reports.Web.Controllers
                     FillWorkSheet("RevenueByRoute", ds.Tables[2], excelPackage, filters);
                     FillWorkSheet("InspectionsByInspector", ds.Tables[3], excelPackage, filters);
                     FillWorkSheet("BussesNotInspected", ds.Tables[4], excelPackage, filters);
+                    FillWorkSheet("DailyAudit", ds.Tables[5], excelPackage, filters);
+                    FillWorkSheet("CashierReport", ds.Tables[6], excelPackage, filters);
                 }
                 else
                 {
@@ -2260,6 +2260,12 @@ namespace Reports.Web.Controllers
                             case "BussesNotInspected":
                                 FillWorkSheet("BussesNotInspected", ds.Tables[4], excelPackage, filters);
                                 break;
+                            case "DailyAudit":
+                                FillWorkSheet("DailyAudit", ds.Tables[5], excelPackage, filters);
+                                break;
+                            case "CashierReport":
+                                FillWorkSheet("CashierReport", ds.Tables[6], excelPackage, filters);
+                                break;
                             default:
                                 break;
                         }
@@ -2270,11 +2276,11 @@ namespace Reports.Web.Controllers
                 excelPackage.SaveAs(fileStream);
                 fileStream.Position = 0;
 
-                return new FileStreamResult(fileStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") { FileDownloadName = $"OperationalSummary {DateTime.Now.ToString("dd-MM-yyyy H:mm:ss")}.xlsx" };
+                return new FileStreamResult(fileStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") { FileDownloadName = $"AnalyticalReport {DateTime.Now.ToString("dd-MM-yyyy H:mm:ss")}.xlsx" };
             }
         }
 
-        public void FillWorkSheet(string sheetName, DataTable dt, ExcelPackage excelPackage, OperationalSummaryReportFilter filters)
+        public void FillWorkSheet(string sheetName, DataTable dt, ExcelPackage excelPackage, AnalyticalReportFilter filters)
         {
             if (dt != null)
             {
@@ -2324,10 +2330,10 @@ namespace Reports.Web.Controllers
                     }
                 }
 
-                workBook.Cells[1, 1, dt.Rows.Count + 1, dt.Columns.Count].Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                workBook.Cells[1, 1, dt.Rows.Count + 1, dt.Columns.Count].Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                workBook.Cells[1, 1, dt.Rows.Count + 1, dt.Columns.Count].Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                workBook.Cells[1, 1, dt.Rows.Count + 1, dt.Columns.Count].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                workBook.Cells[1, 1, dt.Rows.Count + 2, dt.Columns.Count].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                workBook.Cells[1, 1, dt.Rows.Count + 2, dt.Columns.Count].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                workBook.Cells[1, 1, dt.Rows.Count + 2, dt.Columns.Count].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                workBook.Cells[1, 1, dt.Rows.Count + 2, dt.Columns.Count].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
             }
 
         }
@@ -2714,6 +2720,7 @@ namespace Reports.Web.Controllers
         }
 
         #endregion
+
         #region Helpers
 
         private ActionResult DownLoadReportByDataSet(bool excelOrPDF, string rptPath, DataSet ds, string reportName)
