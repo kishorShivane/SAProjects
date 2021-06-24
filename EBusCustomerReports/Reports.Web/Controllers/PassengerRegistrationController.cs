@@ -53,7 +53,10 @@ namespace Reports.Web.Controllers
             try
             {
                 List<PassengerData> response = passengerService.GetPassenger(ConnectionKey, smartCardNumber, firstName, status, idNumber, cellPhone, passengerType);
-                return Json(response);
+
+                JsonResult jsonResult = Json(response, JsonRequestBehavior.AllowGet);
+                jsonResult.MaxJsonLength = int.MaxValue;
+                return jsonResult;
             }
             catch (System.Exception)
             {
