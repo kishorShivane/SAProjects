@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using EbusFileImporter.DataProvider.Helpers;
+using EbusFileImporter.DataProvider.Models;
+using EbusFileImporter.Logger;
+using System;
 using System.Configuration;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using EbusFileImporter.DataProvider.Models;
-using EbusFileImporter.Logger;
-using System.Data;
-using System.ComponentModel;
-using EbusFileImporter.DataProvider.Helpers;
 
 namespace EbusFileImporter.DataProvider
 {
@@ -33,7 +28,7 @@ namespace EbusFileImporter.DataProvider
 
         public bool DoesRecordExist(string tableName, string searchField, string searchString, string connectionKey)
         {
-            var result = false;
+            bool result = false;
             SqlConnection con = null;
             SqlCommand cmd = null;
             try
@@ -44,7 +39,7 @@ namespace EbusFileImporter.DataProvider
                     string query = "SELECT " + searchField + " FROM " + tableName + " WHERE " + searchField + " ='" + searchString + "';";
                     using (cmd = new SqlCommand(query, con))
                     {
-                        var item = cmd.ExecuteScalar();
+                        object item = cmd.ExecuteScalar();
                         if (item != null)
                         {
                             result = true;
@@ -69,7 +64,7 @@ namespace EbusFileImporter.DataProvider
 
         public bool DoesCashierRecordExist(string employee, string revenue, DateTime dateTime, string cashierID, string connectionKey)
         {
-            var result = false;
+            bool result = false;
             SqlConnection con = null;
             SqlCommand cmd = null;
             try
@@ -80,7 +75,7 @@ namespace EbusFileImporter.DataProvider
                     string query = "SELECT * FROM Cashier WHERE StaffNumber ='" + employee + "' AND Revenue ='" + revenue + "' AND CashierID ='" + cashierID + "' AND CONVERT(VARCHAR(24),ImportDateTime,113) = CONVERT(VARCHAR(24),'" + dateTime + "',113);";
                     using (cmd = new SqlCommand(query, con))
                     {
-                        var item = cmd.ExecuteScalar();
+                        object item = cmd.ExecuteScalar();
                         if (item != null)
                         {
                             result = true;
@@ -105,7 +100,7 @@ namespace EbusFileImporter.DataProvider
 
         public bool DoesRecordExist(string tableName, string searchField, int searchString, string connectionKey)
         {
-            var result = false;
+            bool result = false;
             SqlConnection con = null;
             SqlCommand cmd = null;
             try
@@ -116,7 +111,7 @@ namespace EbusFileImporter.DataProvider
                     string query = "SELECT " + searchField + " FROM " + tableName + " WHERE " + searchField + " =" + searchString + ";";
                     using (cmd = new SqlCommand(query, con))
                     {
-                        var item = cmd.ExecuteScalar();
+                        object item = cmd.ExecuteScalar();
                         if (item != null)
                         {
                             result = true;
@@ -140,13 +135,12 @@ namespace EbusFileImporter.DataProvider
 
         public bool IsNumeric(string input)
         {
-            int test;
-            return int.TryParse(input, out test);
+            return int.TryParse(input, out int test);
         }
 
         public bool DoesCSVRecordExist(string tableName, string searchField, string searchString, string connectionKey)
         {
-            var result = false;
+            bool result = false;
             SqlConnection con = null;
             SqlCommand cmd = null;
             try
@@ -154,14 +148,14 @@ namespace EbusFileImporter.DataProvider
                 using (con = GetConnection(GetConnectionString(connectionKey)))
                 {
                     con.Open();
-                    var searchFieldList = searchField.Split(',');
-                    var searchStringList = searchString.Split(',');
-                    var whereClause = "";
+                    string[] searchFieldList = searchField.Split(',');
+                    string[] searchStringList = searchString.Split(',');
+                    string whereClause = "";
                     if (searchFieldList.Count() == searchStringList.Count())
                     {
-                        for (var i = 0; i < searchFieldList.Count(); i++)
+                        for (int i = 0; i < searchFieldList.Count(); i++)
                         {
-                            var searchValue = searchStringList[i];
+                            string searchValue = searchStringList[i];
                             if (!IsNumeric(searchStringList[i]))
                             {
                                 searchValue = "'" + searchValue + "'";
@@ -181,7 +175,7 @@ namespace EbusFileImporter.DataProvider
                     string query = "SELECT " + searchField + " FROM " + tableName + " WHERE " + whereClause + ";";
                     using (cmd = new SqlCommand(query, con))
                     {
-                        var item = cmd.ExecuteScalar();
+                        object item = cmd.ExecuteScalar();
                         if (item != null)
                         {
                             result = true;
@@ -206,7 +200,7 @@ namespace EbusFileImporter.DataProvider
 
         public int GetLatestIDUsed(string tableName, string keyField, string connectionKey)
         {
-            var result = 0;
+            int result = 0;
             SqlConnection con = null;
             SqlCommand cmd = null;
             try
@@ -217,7 +211,7 @@ namespace EbusFileImporter.DataProvider
                     string query = "SELECT TOP 1" + keyField + " FROM " + tableName + " ORDER BY " + keyField + " DESC;";
                     using (cmd = new SqlCommand(query, con))
                     {
-                        var item = cmd.ExecuteScalar();
+                        object item = cmd.ExecuteScalar();
                         if (item != null)
                         {
                             result = Convert.ToInt32(item);
@@ -241,45 +235,125 @@ namespace EbusFileImporter.DataProvider
 
         public bool InsertXmlFileData(XmlDataToImport xmlDataToImport, string connectionKey)
         {
-            var result = false;
+            bool result = false;
             SqlTransaction transaction = null;
             SqlConnection con = null;
             using (con = GetConnection(GetConnectionString(connectionKey)))
             {
                 try
                 {
-                    if (Constants.DetailedLogging) Logger.Info("-------DB Transaction - Start-------");
+                    if (Constants.DetailedLogging)
+                    {
+                        Logger.Info("-------DB Transaction - Start-------");
+                    }
 
                     con.Open();
                     transaction = con.BeginTransaction();
-                    if (xmlDataToImport.Modules.Any()) DbHelper.BulkCopyDataToTable<Module>("Module", xmlDataToImport.Modules, con, transaction);
+
+                    if (xmlDataToImport.Modules.Any())
+                    {
+                        DbHelper.BulkCopyDataToTable<Module>("Module", xmlDataToImport.Modules, con, transaction);
+                    }
+
                     Logger.Info("Inserted Module");
-                    if (xmlDataToImport.Duties.Any()) DbHelper.BulkCopyDataToTable<Duty>("Duty", xmlDataToImport.Duties, con, transaction);
+
+                    if (xmlDataToImport.Duties.Any())
+                    {
+                        DbHelper.BulkCopyDataToTable<Duty>("Duty", xmlDataToImport.Duties, con, transaction);
+                    }
+
                     Logger.Info("Inserted Duty");
-                    if (xmlDataToImport.Waybills.Any()) DbHelper.BulkCopyDataToTable<Waybill>("Waybill", xmlDataToImport.Waybills, con, transaction);
+
+                    if (xmlDataToImport.Waybills.Any())
+                    {
+                        DbHelper.BulkCopyDataToTable<Waybill>("Waybill", xmlDataToImport.Waybills, con, transaction);
+                    }
+
                     Logger.Info("Inserted Waybill");
-                    if (xmlDataToImport.Journeys.Any()) DbHelper.BulkCopyDataToTable<Journey>("Journey", xmlDataToImport.Journeys, con, transaction);
+
+                    if (xmlDataToImport.Journeys.Any())
+                    {
+                        DbHelper.BulkCopyDataToTable<Journey>("Journey", xmlDataToImport.Journeys, con, transaction);
+                    }
+
                     Logger.Info("Inserted Journey");
-                    if (xmlDataToImport.Stages.Any()) DbHelper.BulkCopyDataToTable<Stage>("Stage", xmlDataToImport.Stages, con, transaction);
+
+                    if (xmlDataToImport.Stages.Any())
+                    {
+                        DbHelper.BulkCopyDataToTable<Stage>("Stage", xmlDataToImport.Stages, con, transaction);
+                    }
+
                     Logger.Info("Inserted Stage");
-                    if (xmlDataToImport.Staffs.Any()) DbHelper.BulkCopyDataToTable<Staff>("Staff", xmlDataToImport.Staffs, con, transaction);
+
+                    if (xmlDataToImport.Staffs.Any())
+                    {
+                        DbHelper.BulkCopyDataToTable<Staff>("Staff", xmlDataToImport.Staffs, con, transaction);
+                    }
+
                     Logger.Info("Inserted Staff");
-                    if (xmlDataToImport.Inspectors.Any()) DbHelper.BulkCopyDataToTable<Inspector>("Inspector", xmlDataToImport.Inspectors, con, transaction);
+
+                    if (xmlDataToImport.Inspectors.Any())
+                    {
+                        DbHelper.BulkCopyDataToTable<Inspector>("Inspector", xmlDataToImport.Inspectors, con, transaction);
+                    }
+
                     Logger.Info("Inserted Inspector");
-                    if (xmlDataToImport.Trans.Any()) DbHelper.BulkCopyDataToTable<Trans>("Trans", xmlDataToImport.Trans, con, transaction);
+
+                    if (xmlDataToImport.Trans.Any())
+                    {
+                        DbHelper.BulkCopyDataToTable<Trans>("Trans", xmlDataToImport.Trans, con, transaction);
+                    }
+
                     Logger.Info("Inserted Trans");
-                    if (xmlDataToImport.PosTrans.Any()) DbHelper.BulkCopyDataToTable<PosTrans>("PosTrans", xmlDataToImport.PosTrans, con, transaction);
+
+                    if (xmlDataToImport.PosTrans.Any())
+                    {
+                        DbHelper.BulkCopyDataToTable<PosTrans>("PosTrans", xmlDataToImport.PosTrans, con, transaction);
+                    }
+
                     Logger.Info("Inserted PosTrans");
-                    if (xmlDataToImport.AuditFileStatuss.Any()) DbHelper.BulkCopyDataToTable<AuditFileStatus>("AuditFileStatus", xmlDataToImport.AuditFileStatuss, con, transaction);
+
+                    if (xmlDataToImport.AuditFileStatuss.Any())
+                    {
+                        DbHelper.BulkCopyDataToTable<AuditFileStatus>("AuditFileStatus", xmlDataToImport.AuditFileStatuss, con, transaction);
+                    }
+
                     Logger.Info("Inserted AuditFileStatus");
-                    if (xmlDataToImport.DiagnosticRecords.Any()) DbHelper.BulkCopyDataToTable<DiagnosticRecord>("DiagnosticRecord", xmlDataToImport.DiagnosticRecords, con, transaction);
+
+                    if (xmlDataToImport.DiagnosticRecords.Any())
+                    {
+                        DbHelper.BulkCopyDataToTable<DiagnosticRecord>("DiagnosticRecord", xmlDataToImport.DiagnosticRecords, con, transaction);
+                    }
+
                     Logger.Info("Inserted DiagnosticRecords");
-                    if (xmlDataToImport.BusChecklistRecords.Any()) DbHelper.BulkCopyDataToTable<BusChecklist>("BusChecklist", xmlDataToImport.BusChecklistRecords, con, transaction);
+
+                    if (xmlDataToImport.BusChecklistRecords.Any())
+                    {
+                        DbHelper.BulkCopyDataToTable<BusChecklist>("BusChecklist", xmlDataToImport.BusChecklistRecords, con, transaction);
+                    }
+
                     Logger.Info("Inserted BusChecklistRecords");
-                    if (xmlDataToImport.GPSCoordinates.Any()) DbHelper.BulkCopyDataToTable<GPSCoordinate>("GPSCoordinates", xmlDataToImport.GPSCoordinates, con, transaction);
+
+                    if (xmlDataToImport.GPSCoordinates.Any())
+                    {
+                        DbHelper.BulkCopyDataToTable<GPSCoordinate>("GPSCoordinates", xmlDataToImport.GPSCoordinates, con, transaction);
+                    }
+
                     Logger.Info("Inserted GPS Coordinates");
-                    if (xmlDataToImport.BusNumberLists.Any()) DbHelper.BulkCopyDataToTable<BusNumberList>("BusNumberList", xmlDataToImport.BusNumberLists, con, transaction);
+
+                    if (xmlDataToImport.BusNumberLists.Any())
+                    {
+                        DbHelper.BulkCopyDataToTable<BusNumberList>("BusNumberList", xmlDataToImport.BusNumberLists, con, transaction);
+                    }
+
                     Logger.Info("Inserted BusNumberList");
+
+                    if (xmlDataToImport.ComuterTagOffs.Any())
+                    {
+                        DbHelper.BulkCopyDataToTable<ComuterTagOff>("ComuterTagOff", xmlDataToImport.ComuterTagOffs, con, transaction);
+                    }
+
+                    Logger.Info("Inserted ComuterTagOff");
                     transaction.Commit();
 
                     if (Constants.DetailedLogging)
@@ -304,10 +378,22 @@ namespace EbusFileImporter.DataProvider
                 }
                 catch (Exception)
                 {
-                    if (Constants.DetailedLogging) Logger.Error("Failed in InsertXmlFileData");
+                    if (Constants.DetailedLogging)
+                    {
+                        Logger.Error("Failed in InsertXmlFileData");
+                    }
+
                     transaction.Rollback();
-                    if (Constants.DetailedLogging) Logger.Info("Transaction Rolledback");
-                    if (Constants.DetailedLogging) Logger.Info("XML Data Insertion Failed in DB Service");
+                    if (Constants.DetailedLogging)
+                    {
+                        Logger.Info("Transaction Rolledback");
+                    }
+
+                    if (Constants.DetailedLogging)
+                    {
+                        Logger.Info("XML Data Insertion Failed in DB Service");
+                    }
+
                     throw;
                 }
                 finally
@@ -322,22 +408,44 @@ namespace EbusFileImporter.DataProvider
 
         public bool InsertCsvFileData(CsvDataToImport csvDataToImport, string connectionKey)
         {
-            var result = false;
+            bool result = false;
             SqlTransaction transaction = null;
             SqlConnection con = null;
             using (con = GetConnection(GetConnectionString(connectionKey)))
             {
                 try
                 {
-                    if (Constants.DetailedLogging) Logger.Info("-------DB Transaction - Start-------");
+                    if (Constants.DetailedLogging)
+                    {
+                        Logger.Info("-------DB Transaction - Start-------");
+                    }
 
                     con.Open();
                     transaction = con.BeginTransaction();
-                    if (csvDataToImport.Cashiers.Any()) DbHelper.BulkCopyDataToTable<Cashier>("Cashier", csvDataToImport.Cashiers, con, transaction);
-                    if (csvDataToImport.CashierDetails.Any()) DbHelper.BulkCopyDataToTable<CashierDetail>("CashierDetail", csvDataToImport.CashierDetails, con, transaction);
-                    if (csvDataToImport.CashierSigonSignoffs.Any()) DbHelper.BulkCopyDataToTable<CashierSigonSignoff>("CashierSigonSignoff", csvDataToImport.CashierSigonSignoffs, con, transaction);
-                    if (csvDataToImport.CashierStaffESNs.Any()) DbHelper.BulkCopyDataToTable<CashierStaffESN>("CashierStaffESN", csvDataToImport.CashierStaffESNs, con, transaction);
-                    if (csvDataToImport.Staffs.Any()) DbHelper.BulkCopyDataToTable<Staff>("Staff", csvDataToImport.Staffs, con, transaction);
+                    if (csvDataToImport.Cashiers.Any())
+                    {
+                        DbHelper.BulkCopyDataToTable<Cashier>("Cashier", csvDataToImport.Cashiers, con, transaction);
+                    }
+
+                    if (csvDataToImport.CashierDetails.Any())
+                    {
+                        DbHelper.BulkCopyDataToTable<CashierDetail>("CashierDetail", csvDataToImport.CashierDetails, con, transaction);
+                    }
+
+                    if (csvDataToImport.CashierSigonSignoffs.Any())
+                    {
+                        DbHelper.BulkCopyDataToTable<CashierSigonSignoff>("CashierSigonSignoff", csvDataToImport.CashierSigonSignoffs, con, transaction);
+                    }
+
+                    if (csvDataToImport.CashierStaffESNs.Any())
+                    {
+                        DbHelper.BulkCopyDataToTable<CashierStaffESN>("CashierStaffESN", csvDataToImport.CashierStaffESNs, con, transaction);
+                    }
+
+                    if (csvDataToImport.Staffs.Any())
+                    {
+                        DbHelper.BulkCopyDataToTable<Staff>("Staff", csvDataToImport.Staffs, con, transaction);
+                    }
 
                     transaction.Commit();
                     if (Constants.DetailedLogging)
@@ -352,10 +460,22 @@ namespace EbusFileImporter.DataProvider
                 }
                 catch (Exception)
                 {
-                    if (Constants.DetailedLogging) Logger.Error("Failed in InsertCsvFileData");
+                    if (Constants.DetailedLogging)
+                    {
+                        Logger.Error("Failed in InsertCsvFileData");
+                    }
+
                     transaction.Rollback();
-                    if (Constants.DetailedLogging) Logger.Info("Transaction Rolledback");
-                    if (Constants.DetailedLogging) Logger.Info("CSV Data Insertion Failed in DB Service");
+                    if (Constants.DetailedLogging)
+                    {
+                        Logger.Info("Transaction Rolledback");
+                    }
+
+                    if (Constants.DetailedLogging)
+                    {
+                        Logger.Info("CSV Data Insertion Failed in DB Service");
+                    }
+
                     throw;
                 }
                 finally
@@ -370,10 +490,10 @@ namespace EbusFileImporter.DataProvider
 
         public int GetNonRevenueFromPosTransTable(string serialNumber, string connectionKey)
         {
-            var result = Constants.DefaultNonRevenueValue;
+            int result = Constants.DefaultNonRevenueValue;
             SqlConnection con = null;
             SqlCommand cmd = null;
-            var classIDs = @"10002,10004,10000,10022,10024,10001,731,732,733‬,741,742,743,744,745,746";
+            string classIDs = @"10002,10004,10000,10022,10024,10001,731,732,733‬,741,742,743,744,745,746";
 
             using (con = GetConnection(GetConnectionString(connectionKey)))
             {
@@ -386,7 +506,7 @@ namespace EbusFileImporter.DataProvider
                 {
                     using (cmd = new SqlCommand(query, con))
                     {
-                        var item = cmd.ExecuteReader();
+                        SqlDataReader item = cmd.ExecuteReader();
                         while (item.Read())
                         {
                             int int4_Revenue = Convert.ToInt32(item["int4_Revenue"]);
@@ -415,7 +535,7 @@ namespace EbusFileImporter.DataProvider
 
         public bool CheckForDutyDuplicates(int int4_OperatorID, DateTime dat_DutyStartTime, DateTime dat_DutyStopTime, string connectionKey)
         {
-            var result = false;
+            bool result = false;
             SqlConnection con = null;
             SqlCommand cmd = null;
             try
@@ -426,7 +546,7 @@ namespace EbusFileImporter.DataProvider
                     string query = "SELECT * FROM Duty WHERE int4_OperatorID = " + int4_OperatorID + " AND CONVERT(VARCHAR(10),dat_DutyStartTime, 103) + ' ' + CONVERT(VARCHAR(8),dat_DutyStartTime, 108) = CONVERT(VARCHAR(24),'" + dat_DutyStartTime + "',113) AND CONVERT(VARCHAR(10),dat_DutyStopTime, 103) + ' ' + CONVERT(VARCHAR(8),dat_DutyStopTime, 108) =  CONVERT(VARCHAR(24),'" + dat_DutyStopTime + "',113);";
                     using (cmd = new SqlCommand(query, con))
                     {
-                        var item = cmd.ExecuteScalar();
+                        object item = cmd.ExecuteScalar();
                         if (item != null)
                         {
                             result = true;
@@ -437,6 +557,114 @@ namespace EbusFileImporter.DataProvider
             catch (Exception)
             {
                 Logger.Error("Failed in DoesRecordExist integer");
+                throw;
+            }
+            finally
+            {
+                con.Close();
+                con.Dispose();
+                cmd.Dispose();
+            }
+            return result;
+        }
+
+
+        public bool InsertOrUpdateStatus(Status status, bool statusExist, string connectionKey)
+        {
+            bool result = false;
+            SqlConnection con = null;
+            SqlCommand cmd = null;
+            try
+            {
+                using (con = GetConnection(GetConnectionString(connectionKey)))
+                {
+                    con.Open();
+                    string query = "";
+                    if (statusExist)
+                    {
+                        query = "UPDATE Status SET ModuleNum = '" + status.ModuleNum + "', IPAddress = '" + status.IPAddress +
+                            "', EquipmentTy=" + status.EquipmentTy + ", BusNum='" + status.BusNum +
+                            "', DistrictId=" + status.DistrictId + ", GarageId=" + status.GarageId +
+                            ", CustomerCode=" + status.CustomerCode + ", SubCustomer=" + status.SubCustomer +
+                            ", VCFVersion='" + status.VCFVersion + "', CodeVersion='" + status.CodeVersion +
+                            "', FLUVersion='" + status.FLUVersion + "', FileMan='" + status.FileMan +
+                            "', OptionsVer='" + status.OptionsVer + "', LastGoodCalDate='" + status.LastGoodCalDate +
+                            "', LastGoodCalTime='" + status.LastGoodCalTime + "', ETMDate='" + status.ETMDate +
+                            "', ETMTime='" + status.ETMTime + "', LastAuditSeqNum='" + status.LastAuditSeqNum +
+                            "', SIMID='" + status.SIMID + "' WHERE ETMID = " + status.ETMNum + ";";
+                    }
+                    else
+                    {
+                        query = "INSERT INTO Status VALUES('" + status.ETMNum + "','" + status.ModuleNum + "','" + status.IPAddress + "'," + status.EquipmentTy
+                            + ",'" + status.BusNum + "'," + status.DistrictId
+                            + "," + status.GarageId + "," + status.CustomerCode
+                            + "," + status.SubCustomer + ",'" + status.VCFVersion
+                            + "','" + status.CodeVersion + "','" + status.FLUVersion
+                            + "','" + status.FileMan + "','" + status.OptionsVer
+                            + "','" + status.LastGoodCalDate + "','" + status.LastGoodCalTime
+                            + "','" + status.ETMDate + "','" + status.ETMTime + "','" + status.LastAuditSeqNum
+                            + "','" + status.SIMID + "');";
+                    }
+                    Logger.Info(query);
+                    using (cmd = new SqlCommand(query, con))
+                    {
+                        cmd.CommandTimeout = 0;
+                        int count = cmd.ExecuteNonQuery();
+                        if (count != 0)
+                        {
+                            result = true;
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                Logger.Error("Failed in InsertOrUpdateAssetETM with ETMID: " + status.ETMNum);
+                throw;
+            }
+            finally
+            {
+                con.Close();
+                con.Dispose();
+                cmd.Dispose();
+            }
+            return result;
+        }
+
+        public bool InsertOrUpdateSmartCardHotlistStatus(string serialNumber, bool isUpdate, string connectionKey)
+        {
+            bool result = false;
+            SqlConnection con = null;
+            SqlCommand cmd = null;
+            try
+            {
+                using (con = GetConnection(GetConnectionString(connectionKey)))
+                {
+                    con.Open();
+                    string query = "";
+                    if (isUpdate)
+                    {
+                        query = "UPDATE SmartCardHotlisting SET ETMHotlisted = 1, ETMHotlistDateTime = '" + DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss") + "'; ";
+                    }
+                    else
+                    {
+                        query = "INSERT INTO SmartCardHotlisting VALUES('" + serialNumber + "', 7 , 'Hotlisted based on audit file data','System','" + DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss") + "',NULL,1,'" + DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss") + "',NULL,NULL);";
+                    }
+                    Logger.Info(query);
+                    using (cmd = new SqlCommand(query, con))
+                    {
+                        cmd.CommandTimeout = 0;
+                        int count = cmd.ExecuteNonQuery();
+                        if (count != 0)
+                        {
+                            result = true;
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                Logger.Error("Failed in InsertOrUpdateSmartCardHotlistStatus with serialNumber: " + serialNumber + " DB:" + connectionKey);
                 throw;
             }
             finally

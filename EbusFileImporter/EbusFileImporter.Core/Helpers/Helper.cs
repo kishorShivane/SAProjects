@@ -274,6 +274,90 @@ namespace EbusFileImporter.Core.Helpers
             }
         }
 
+        public void MoveSuccessStatusFile(string currentpath, string dbname)
+        {
+            try
+            {
+                //Declarations 
+                string result = Path.GetFileNameWithoutExtension(currentpath);
+                string path = currentpath;
+                string file = Path.GetFileName(currentpath);
+
+                string dirPath1 = Constants.DirectoryPath + @"\" + dbname + @"\" + @"Out\Status\" + DateTime.Now.Year + @"\" + DateTime.Now.ToString("MMMM") + @"\" + DateTime.Now.Day;
+                string path2 = dirPath1 + @"\" + file;
+
+                //Checks directory or create it
+                if (!Directory.Exists(dirPath1))
+                {
+                    Directory.CreateDirectory(dirPath1);
+                }
+                //Checks if files exists and deletes if they do
+                if (File.Exists(path2))
+                {
+                    File.Delete(path2);
+                }
+                File.Copy(path, path2);
+                if (File.Exists(path))
+                {
+                    File.Delete(path);
+                }
+                if (Constants.DetailedLogging) Log.Info("Moved successful file - " + file);
+            }
+            catch (Exception ex)
+            {
+                var exception = JsonConvert.SerializeObject(ex).ToString();
+                if (Constants.DetailedLogging)
+                {
+                    Log.Info("File move to success folder failed:" + exception);
+                    Log.Info("File name: " + currentpath + " DBName: " + dbname);
+                }
+                if (Constants.EnableEmailTrigger) emailHelper.SendMail(currentpath, dbname, exception, EmailType.Error);
+                return;
+            }
+        }
+
+        public void MoveErrorStatusFile(string currentpath, string dbname)
+        {
+            try
+            {
+                //Declarations
+                string path = currentpath;
+                string file = Path.GetFileName(currentpath);
+                //Current Path
+                string dirPath1 = Constants.DirectoryPath + @"\" + dbname + @"\" + @"Error\Status\" + DateTime.Now.Year + @"\" + DateTime.Now.ToString("MMMM") + @"\" + DateTime.Now.Day;
+                //New Path
+                string path2 = dirPath1 + @"\" + file;
+
+                //Checks if path exists and creates it if not
+                if (!Directory.Exists(dirPath1))
+                {
+                    Directory.CreateDirectory(dirPath1);
+                }
+                if (File.Exists(path2))
+                {
+                    File.Delete(path2);
+                }
+                //Checks if path exists and creates it if not
+                File.Copy(path, path2);
+                if (File.Exists(path))
+                {
+                    File.Delete(path);
+                }
+                if (Constants.DetailedLogging) Log.Info("Moved error file - " + file);
+            }
+            catch (Exception ex)
+            {
+                var exception = JsonConvert.SerializeObject(ex).ToString();
+                if (Constants.DetailedLogging)
+                {
+                    Log.Info("File move to error folder failed:" + exception);
+                    Log.Info("File name: " + currentpath + " DBName: " + dbname);
+                }
+                if (Constants.EnableEmailTrigger) emailHelper.SendMail(currentpath, dbname, exception, EmailType.Error);
+                return;
+            }
+        }
+
         public int GetTripBalanceFromProductData(string productData)
         {
             try

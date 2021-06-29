@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using System.Threading;
 using System.Xml.Linq;
 
@@ -137,6 +138,7 @@ namespace EbusFileImporter.Core
                 #endregion
 
                 #region Initialize Variables
+
                 int latestModuleID = 0;
                 int latestDutyID = 0;
                 int latestJourneyID = 0;
@@ -147,6 +149,7 @@ namespace EbusFileImporter.Core
                 int latestAuditFileStatus = 0;
                 int latestdiagnosticRecord = 0;
                 int latestBusChecklistID = 0;
+                int latestComuterTagOffID = 0;
 
                 Module moduleDetail = null;
                 List<Waybill> wayBillDetails = new List<Waybill>();
@@ -173,6 +176,10 @@ namespace EbusFileImporter.Core
                 BusChecklist busChecklistDetail = null;
                 List<BusNumberList> busNumberLists = new List<BusNumberList>();
                 BusNumberList busNumberList = null;
+                ComuterTagOff comuterTagOff = null;
+                List<ComuterTagOff> ComuterTagOffs = new List<ComuterTagOff>();
+                List<Status> Statuss = new List<Status>();
+
                 #endregion
 
                 XAttribute way6OrTGXCheck = nodes.Where(x => x.Attribute("STXID").Value.Equals("18")).FirstOrDefault().Attribute("Position");
@@ -470,6 +477,7 @@ namespace EbusFileImporter.Core
                             journeyDetail.int4_GPSDistance = null;
                             journeyDetails.Add(journeyDetail);
 
+
                             #region Process Stage Information
 
                             IEnumerable<XElement> nodes113 = eachJourneyNodes.Where(i => i.Attribute("STXID").Value.Equals("113"));
@@ -478,9 +486,11 @@ namespace EbusFileImporter.Core
                             {
                                 List<XElement> listNodes113 = nodes113.ToList();
                                 int count = listNodes113.Count();
+                                XElement thisNode113;
+
                                 for (int i = 0; i < count; i++)
                                 {
-                                    XElement thisNode113 = listNodes113[i];
+                                    thisNode113 = listNodes113[i];
                                     stageDetail = new Stage();
                                     tempStage = new TempStage();
                                     stageDetail.id_Stage = latestStageID;
@@ -501,6 +511,78 @@ namespace EbusFileImporter.Core
                                     tempStageDetails.Add(tempStage);
 
                                     latestStageID++;
+
+
+                                    #region Process ComuterTagOff Information
+
+                                    IEnumerable<XElement> nodes174 = eachJourneyNodes.Where(x => x.Attribute("STXID").Value.Equals("174"));
+
+                                    if (nodes174 != null && nodes174.Count() > 0)
+                                    {
+                                        List<XElement> listNodes174 = nodes174.ToList();
+                                        XElement thisNode174;
+                                        for (int j = 0; j < listNodes174.Count(); j++)
+                                        {
+                                            thisNode174 = listNodes174[j];
+
+                                            comuterTagOff = new ComuterTagOff
+                                            {
+                                                id_ComuterTagOff = latestComuterTagOffID,
+                                                id_Stage = stageDetail.id_Stage,
+                                                id_Journey = journeyDetail.id_Journey,
+                                                id_Duty = dutyDetail.id_Duty,
+                                                id_Module = moduleDetail.id_Module
+                                            };
+                                            date = helper.ConvertToInsertDateString((string)thisNode174.Element("TagOffDate"));
+                                            comuterTagOff.TagOffDate = date;
+                                            comuterTagOff.TagOffTime = helper.ConvertToInsertDateTimeString((string)thisNode174.Element("TagOffDate"), (string)thisNode174.Element("TagOffTime"));
+                                            comuterTagOff.CardEsn = (string)thisNode174.Element("CardEsn");
+                                            comuterTagOff.AllowedAlightStage = Convert.ToInt64((string)thisNode174.Element("AllowedAlightStage"), 16).ToString();
+                                            comuterTagOff.AlightStage = Convert.ToInt64((string)thisNode174.Element("AlightStage"), 16).ToString();
+                                            comuterTagOff.OverrideFlag = ((string)thisNode174.Element("OverrideFlag") == "00") ? false : true;
+                                            comuterTagOff.JourneysDeducted = (int)thisNode174.Element("JourneysDeducted");
+                                            comuterTagOff.InitialJourneyCount = (int)thisNode174.Element("InitialJourneyCount");
+                                            ComuterTagOffs.Add(comuterTagOff);
+
+                                            latestComuterTagOffID++;
+                                        }
+                                    }
+
+                                    #endregion
+
+                                    #region Smart Card Hotlisting
+
+
+                                    IEnumerable<XElement> nodes191 = eachJourneyNodes.Where(x => x.Attribute("STXID").Value.Equals("191"));
+
+                                    if (nodes191 != null && nodes191.Count() > 0)
+                                    {
+                                        string serialNumber = string.Empty;
+                                        try
+                                        {
+                                            List<XElement> listNodes191 = nodes191.ToList();
+                                            XElement thisNode191;
+                                            string esn, output;
+                                            for (int j = 0; j < listNodes191.Count(); j++)
+                                            {
+                                                thisNode191 = listNodes191[j];
+
+                                                esn = (string)thisNode191.Element("ESN");
+                                                output = new SoapHexBinary(SoapHexBinary.Parse(esn).Value.Reverse().ToArray()).ToString();
+                                                serialNumber = Convert.ToInt64(output, 16).ToString();
+
+                                                dbService.InsertOrUpdateSmartCardHotlistStatus(serialNumber, dbService.DoesRecordExist("SmartCardHotlisting", "SmartCardID", serialNumber, dbName), dbName);
+                                            }
+                                        }
+                                        catch (Exception)
+                                        {
+                                            Logger.Error("Error in SmartCardHotlisting:" + serialNumber);
+                                            throw;
+                                        }
+
+                                    }
+
+                                    #endregion
 
                                     #region Process Trans Information
                                     int nextPosition = 0;
@@ -2441,6 +2523,7 @@ namespace EbusFileImporter.Core
                             latestBusChecklistID++;
                         }
                     }
+
                     #endregion
                     #endregion
                 }
@@ -2494,6 +2577,8 @@ namespace EbusFileImporter.Core
                     latestInspectorID = dbService.GetLatestIDUsed("Inspector", "id_Inspector", dbName);
                     latestAuditFileStatus = dbService.GetLatestIDUsed("AuditFileStatus", "Id_Status", dbName);
                     latestdiagnosticRecord = dbService.GetLatestIDUsed("DiagnosticRecord", "Id_DiagnosticRecord", dbName);
+                    latestComuterTagOffID = dbService.GetLatestIDUsed("ComuterTagOff", "id_ComuterTagOff", dbName);
+
                     if (latestBusChecklistID > 0)
                     {
                         latestBusChecklistID = dbService.GetLatestIDUsed("BusChecklist", "Id_BusChecklist", dbName);
@@ -2572,6 +2657,16 @@ namespace EbusFileImporter.Core
                         x.Id_Status = x.Id_Status + latestAuditFileStatus;
                         x.Id_DiagnosticRecord = x.Id_DiagnosticRecord + latestdiagnosticRecord;
                     });
+
+                    ComuterTagOffs.ForEach(x =>
+                    {
+                        x.id_ComuterTagOff = x.id_ComuterTagOff + latestComuterTagOffID;
+                        x.id_Module = x.id_Module + latestModuleID;
+                        x.id_Duty = x.id_Duty + latestDutyID;
+                        x.id_Journey = x.id_Journey + latestJourneyID;
+                        x.id_Stage = x.id_Stage + latestStageID;
+                    });
+
                     #endregion
 
                     XmlDataToImport xmlDataToImport = new XmlDataToImport()
@@ -2589,7 +2684,8 @@ namespace EbusFileImporter.Core
                         DiagnosticRecords = diagnosticRecords,
                         BusChecklistRecords = busChecklistDetail != null ? new List<BusChecklist>() { busChecklistDetail } : new List<BusChecklist>(),
                         GPSCoordinates = gPSCoordinates,
-                        BusNumberLists = busNumberLists
+                        BusNumberLists = busNumberLists,
+                        ComuterTagOffs = ComuterTagOffs
                     };
 
                     result = dbService.InsertXmlFileData(xmlDataToImport, dbName);

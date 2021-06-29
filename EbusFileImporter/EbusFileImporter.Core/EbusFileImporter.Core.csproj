@@ -55,6 +55,7 @@
     <Compile Include="Helpers\Helper.cs" />
     <Compile Include="Interfaces\IImporter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StatusImporter.cs" />
     <Compile Include="XmlImporter.cs" />
   </ItemGroup>
   <ItemGroup>

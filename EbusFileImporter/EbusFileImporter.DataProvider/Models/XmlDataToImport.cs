@@ -22,5 +22,6 @@ namespace EbusFileImporter.DataProvider.Models
         public List<BusChecklist> BusChecklistRecords { get; set; } = new List<BusChecklist>();
         public List<GPSCoordinate> GPSCoordinates { get; set; } = new List<GPSCoordinate>();
         public List<BusNumberList> BusNumberLists { get; set; } = new List<BusNumberList>();
+        public List<ComuterTagOff> ComuterTagOffs { get; set; } = new List<ComuterTagOff>();
     }
 }
