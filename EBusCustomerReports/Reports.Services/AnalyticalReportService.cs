@@ -26,7 +26,8 @@ namespace Reports.Services
             new SelectListItem() { Text = "Inspections By Inspector", Value = "InspectionsByInspector" },
             new SelectListItem() { Text = "Busses Not Inspected", Value = "BussesNotInspected" },
             new SelectListItem() { Text = "Daily Audit", Value = "DailyAudit" } ,
-            new SelectListItem() { Text = "Cashier Report", Value = "CashierReport" } };
+            new SelectListItem() { Text = "Cashier Report", Value = "CashierReport" },
+            new SelectListItem() { Text = "SalesAnalysis By Class", Value = "SalesAnalysisByClass" } };
         }
 
         public DataSet GetAnalyticalDataSet(string conKey, AnalyticalReportFilter filters, string companyName)

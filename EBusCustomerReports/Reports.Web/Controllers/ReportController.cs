@@ -2238,6 +2238,7 @@ namespace Reports.Web.Controllers
                     FillWorkSheet("BussesNotInspected", ds.Tables[4], excelPackage, filters);
                     FillWorkSheet("DailyAudit", ds.Tables[5], excelPackage, filters);
                     FillWorkSheet("CashierReport", ds.Tables[6], excelPackage, filters);
+                    FillWorkSheet("SalesAnalysisByClass", ds.Tables[7], excelPackage, filters);
                 }
                 else
                 {
@@ -2265,6 +2266,9 @@ namespace Reports.Web.Controllers
                                 break;
                             case "CashierReport":
                                 FillWorkSheet("CashierReport", ds.Tables[6], excelPackage, filters);
+                                break;
+                            case "SalesAnalysisByClass":
+                                FillWorkSheet("SalesAnalysisByClass", ds.Tables[7], excelPackage, filters);
                                 break;
                             default:
                                 break;
@@ -2326,7 +2330,15 @@ namespace Reports.Web.Controllers
                     actualRowCount++;
                     for (int col = 0; col < colCount; col++)
                     {
-                        workBook.Cells[actualRowCount, col + 1].Value = dataRow[col];
+                        if (dataRow[col].ToString().StartsWith("R "))
+                        {                            
+                            workBook.Cells[actualRowCount, col + 1].Style.Numberformat.Format = "R #,##0.00";
+                            workBook.Cells[actualRowCount, col + 1].Value = Convert.ToDecimal(dataRow[col].ToString().Replace("R ", ""));
+                        }
+                        else
+                        {
+                            workBook.Cells[actualRowCount, col + 1].Value = dataRow[col];
+                        }
                     }
                 }
 
@@ -2566,6 +2578,7 @@ namespace Reports.Web.Controllers
             SalesAnalysisService service = new SalesAnalysisService();
 
             DataSet ds = service.GetClassSummaryDataSet(conKey, filters, comp, "EbusSalesAnalysisByClass", false);
+
             if (ds.Tables[0].Rows.Count > 0)
             {
                 return DownLoadReportByDataSet(filters.ExcelOrPDF, "~/CrystalReports/Rpt/ClassSummary/SalesAnalysisByClass.rpt", ds, "Sales Analysis By Class ");
